@@ -26,18 +26,24 @@ async function bootstrap() {
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const config = new DocumentBuilder()
-    .setTitle('title example')
-    .setDescription('description example')
-    .setVersion('1.0')
-    .addTag('tag example')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
-
   // Starts listening for shutdown hooks
   if (isProduction) {
     app.enableShutdownHooks();
+
+    app.enableCors({ origin: ['domain'], credentials: true });
+  } else {
+    app.enableCors({ origin: true, credentials: true });
+
+    const config = new DocumentBuilder()
+      .setTitle('title example')
+      .setDescription('description example')
+      .setVersion('1.0')
+      .addTag('tag example')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup('api-docs', app, document);
   }
 
   const PORT = configService.get<number>('PORT');
