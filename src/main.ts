@@ -12,6 +12,7 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
+  const isProduction = configService.get<string>('NODE_ENV') === 'production';
 
   app.use(helmet());
   app.useGlobalPipes(
@@ -33,6 +34,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
+
+  // Starts listening for shutdown hooks
+  if (isProduction) {
+    app.enableShutdownHooks();
+  }
 
   const PORT = configService.get<number>('PORT');
 
