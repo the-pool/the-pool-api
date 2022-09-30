@@ -4,11 +4,13 @@ import helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get<ConfigService>(ConfigService);
 
   app.use(helmet());
   app.useGlobalPipes(
@@ -30,7 +32,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  await app.listen(3000);
+  const PORT = configService.get<number>('PORT');
+
+  await app.listen(PORT);
+
+  console.info(`server listening on port ${PORT}`);
+
   if (module.hot) {
     module.hot.accept();
     module.hot.dispose(() => app.close());
