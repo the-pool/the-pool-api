@@ -6,6 +6,7 @@ import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from '@src/filters/http-exception.filter';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 
 declare const module: any;
 
@@ -13,6 +14,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
   const isProduction = configService.get<string>('NODE_ENV') === 'production';
+
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
 
   app.use(helmet());
   app.useGlobalPipes(
