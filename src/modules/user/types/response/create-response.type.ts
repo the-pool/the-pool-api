@@ -1,17 +1,14 @@
 import { Role } from '@src/modules/user/constansts/enum';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
-import { IsRecord } from '@src/decorators/is-record.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class CreateResponseType {
   @ApiProperty({
-    example: 'password',
-    description: 'user password',
+    example: 1,
+    description: 'user 고유 id',
     required: true,
     type: 'string',
   })
-  @IsString()
-  password: string;
+  id: number;
 
   @ApiProperty({
     example: 'example@example.com',
@@ -19,8 +16,6 @@ export class CreateUserDto {
     required: true,
     type: 'string',
   })
-  @IsEmail()
-  @IsRecord({ model: 'user' }, false)
   email: string;
 
   @ApiProperty({
@@ -29,7 +24,6 @@ export class CreateUserDto {
     required: true,
     type: 'string',
   })
-  @IsString()
   name: string;
 
   @ApiProperty({
@@ -38,6 +32,13 @@ export class CreateUserDto {
     required: true,
     enum: Role,
   })
-  @IsEnum(Role)
   role: Role;
+
+  @ApiProperty({
+    example: '2022-10-03T09:54:50.563Z',
+    description: 'user 생성일자',
+    required: true,
+    type: 'string',
+  })
+  createAt: string;
 }
