@@ -9,22 +9,23 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { Target } from '@src/types/type';
 
 @ValidatorConstraint({ async: true })
-export class IsAlreadyExistConstraint implements ValidatorConstraintInterface {
+export class IsRecordConstraint implements ValidatorConstraintInterface {
   constructor(private readonly prismaService: PrismaService) {}
 
   async validate(value: any, args: ValidationArguments): Promise<boolean> {
     const { model, field }: Target = args.constraints[0];
+    const isShouldBeExist = args.constraints[1];
     const targetName = field || args.property;
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const uniqueRecord = await this.prismaService[model].findUnique({
+    const uniqueRecord = await this.prismaService[model].findFirst({
       where: {
         [targetName]: value,
       },
     });
 
-    return !uniqueRecord;
+    return isShouldBeExist === !!uniqueRecord;
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
@@ -35,8 +36,9 @@ export class IsAlreadyExistConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function IsAlreadyExist(
+export function IsRecord(
   target: Target,
+  isShouldBeExist: boolean,
   validationOptions?: ValidationOptions,
 ) {
   return function (object: object, propertyName: string) {
@@ -44,8 +46,8 @@ export function IsAlreadyExist(
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      constraints: [target],
-      validator: IsAlreadyExistConstraint,
+      constraints: [target, isShouldBeExist],
+      validator: IsRecordConstraint,
     });
   };
 }

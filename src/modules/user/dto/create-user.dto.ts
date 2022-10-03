@@ -1,13 +1,13 @@
 import { Role } from '@src/modules/user/constansts/enum';
 import { IsEmail, IsEnum, IsString } from 'class-validator';
-import { IsAlreadyExist } from '@src/decorators/is-already-exist.decorator';
+import { IsRecord } from '@src/decorators/is-record.decorator';
 
 export class CreateUserDto {
   @IsString()
   password: string;
 
   @IsEmail()
-  @IsAlreadyExist({ model: 'user' })
+  @IsRecord({ model: 'user' }, false)
   email: string;
 
   @IsString()
