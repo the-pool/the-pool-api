@@ -2,15 +2,19 @@
 
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
+import bcrypt from 'bcrypt';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
 async function main() {
+  const SALT = 10;
+
   for (let i = 0; i < 500; i += 1) {
     const email = faker.internet.email();
-    const name = faker.name.findName();
+    const name = faker.name.fullName();
     const role = faker.datatype.boolean() ? 'USER' : 'ADMIN';
+    const password = await bcrypt.hash(faker.internet.password(), SALT);
 
     const user = await prisma.user.upsert({
       where: { email },
@@ -19,6 +23,7 @@ async function main() {
         email,
         name,
         role,
+        password,
       },
     });
 
