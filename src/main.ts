@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from '@src/filters/http-exception.filter';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { useContainer } from 'class-validator';
 
 declare const module: any;
 
@@ -29,6 +30,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Starts listening for shutdown hooks
   if (isProduction) {
