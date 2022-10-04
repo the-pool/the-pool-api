@@ -9,7 +9,12 @@ import { modules } from '@src/modules';
   imports: [
     ConfigModule.forRoot({
       envFilePath: ['.env'],
-      validationSchema: Joi.object({ PORT: Joi.number().default(3000) }),
+      validationSchema: Joi.object({
+        PORT: Joi.number().default(3000),
+        SECRET_KEY: Joi.string(),
+        DATABASE_URL: Joi.string(),
+      }),
+      isGlobal: true,
     }),
     ...modules,
   ],

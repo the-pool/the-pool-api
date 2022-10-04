@@ -1,5 +1,4 @@
-import { Role } from '@src/modules/user/constansts/enum';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsEmail, IsNumber, IsString } from 'class-validator';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -33,11 +32,11 @@ export class CreateUserDto {
   name: string;
 
   @ApiProperty({
-    example: Role.Admin,
+    example: 1,
     description: 'user 권한',
     required: true,
-    enum: Role,
+    type: 'number',
   })
-  @IsEnum(Role)
-  role: Role;
+  @IsNumber()
+  role: number;
 }

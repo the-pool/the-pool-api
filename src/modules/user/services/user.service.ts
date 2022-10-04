@@ -3,25 +3,30 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
+import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
 
 @Injectable()
 export class UserService {
-  private readonly SORT = 10;
+  private readonly SALT = 10;
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<CreateUserResponseType> {
     createUserDto.password = await bcrypt.hash(
       createUserDto.password,
-      this.SORT,
+      this.SALT,
     );
 
-    const user = await this.prismaService.user.create({
-      data: createUserDto,
-    });
+    const { password, ...user }: { password: string } & CreateUserResponseType =
+      await this.prismaService.user.create({
+        data: createUserDto,
+      });
 
-    delete user.password;
+    user.accessToken = this.authService.login(user.id);
 
     return user;
   }

@@ -13,7 +13,7 @@ async function main() {
   for (let i = 0; i < 500; i += 1) {
     const email = faker.internet.email();
     const name = faker.name.fullName();
-    const role = faker.datatype.boolean() ? 'USER' : 'ADMIN';
+    const role = Number(faker.datatype.boolean());
     const password = await bcrypt.hash(faker.internet.password(), SALT);
 
     const user = await prisma.user.upsert({

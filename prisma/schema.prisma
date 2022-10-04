@@ -16,7 +16,7 @@ model User {
   password  String   @db.VarChar(255)
   email     String   @unique
   name      String?
-  role      Role     @default(USER)
+  role      Int
   posts     Post[]
 }
 
@@ -38,9 +38,4 @@ model Article {
   published   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
-
-enum Role {
-  USER
-  ADMIN
 }

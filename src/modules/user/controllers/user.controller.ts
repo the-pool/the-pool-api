@@ -11,8 +11,8 @@ import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
-import { CreateResponseType } from '@src/modules/user/types/response/create-response.type';
+import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
+import { IdParamDto } from '@src/dtos/id-param.dto';
 
 @ApiTags('유저')
 @Controller('api/user')
@@ -21,14 +21,16 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: '유저 생성' })
-  @ApiCreatedResponse({ type: CreateResponseType })
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  @ApiCreatedResponse({ type: CreateUserResponseType })
+  create(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<CreateUserResponseType> {
     return this.userService.create(createUserDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  findOne(@Param() param: IdParamDto) {
+    return this.userService.findOne(+param);
   }
 
   @Patch(':id')

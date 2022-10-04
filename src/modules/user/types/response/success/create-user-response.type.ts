@@ -1,7 +1,7 @@
-import { Role } from '@src/modules/user/constansts/enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { AccessTokenType } from '@src/modules/user/types/access-token.type';
 
-export class CreateResponseType {
+export class CreateUserResponseType extends AccessTokenType {
   @ApiProperty({
     example: 1,
     description: 'user 고유 id',
@@ -27,12 +27,12 @@ export class CreateResponseType {
   name: string;
 
   @ApiProperty({
-    example: Role.Admin,
+    example: 1,
     description: 'user 권한',
     required: true,
-    enum: Role,
+    type: 'number',
   })
-  role: Role;
+  role: number;
 
   @ApiProperty({
     example: '2022-10-03T09:54:50.563Z',
@@ -40,5 +40,5 @@ export class CreateResponseType {
     required: true,
     type: 'string',
   })
-  createAt: string;
+  createdAt: Date;
 }
