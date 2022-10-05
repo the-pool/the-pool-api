@@ -11,7 +11,12 @@ import {
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
 import { IdParamDto } from '@src/dtos/id-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
@@ -30,6 +35,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param() param: IdParamDto) {
