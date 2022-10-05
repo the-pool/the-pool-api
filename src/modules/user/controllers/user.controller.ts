@@ -20,6 +20,7 @@ import {
 import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
 import { IdParamDto } from '@src/dtos/id-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { UserLogin } from '@src/decorators/user-login.decorator';
 
 @ApiTags('유저')
 @Controller('api/user')
@@ -38,7 +39,7 @@ export class UserController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param() param: IdParamDto) {
+  findOne(@Param() param: IdParamDto, @UserLogin('id') user) {
     return this.userService.findOne(+param);
   }
 
