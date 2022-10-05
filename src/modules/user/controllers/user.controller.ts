@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -13,6 +14,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
 import { IdParamDto } from '@src/dtos/id-param.dto';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 
 @ApiTags('유저')
 @Controller('api/user')
@@ -28,6 +30,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param() param: IdParamDto) {
     return this.userService.findOne(+param);
