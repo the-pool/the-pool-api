@@ -29,43 +29,23 @@ async function main() {
 
     console.log(user);
 
-    let randomNumber = +faker.random.numeric(1);
+    const randomNumber = +faker.random.numeric(1);
 
     for (let j = 0; j < randomNumber; j += 1) {
       const published = faker.datatype.boolean();
       const title = faker.random.words(3);
+      const description = faker.random.words(10);
 
       const post = await prisma.post.create({
         data: {
           title,
           published,
+          description,
           authorId: user.id,
         },
       });
 
       console.log(post);
-    }
-
-    randomNumber = +faker.random.numeric(1);
-
-    for (let j = 0; j < randomNumber; j += 1) {
-      const title = faker.random.words(3);
-      const description = faker.random.words(3);
-      const body = faker.random.words(3);
-      const published = faker.datatype.boolean();
-
-      const article = await prisma.article.upsert({
-        where: { title },
-        update: {},
-        create: {
-          title,
-          description,
-          body,
-          published,
-        },
-      });
-
-      console.log(article);
     }
   }
 }
