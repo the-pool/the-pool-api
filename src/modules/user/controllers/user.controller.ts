@@ -1,26 +1,17 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
+  IntersectionType,
 } from '@nestjs/swagger';
-import { CreateUserResponseType } from '@src/modules/user/types/response/success/create-user-response.type';
+import { UserResponseType } from '@src/modules/user/types/response/success/user-response.type';
 import { IdParamDto } from '@src/dtos/id-param.dto';
-import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { UserLogin } from '@src/decorators/user-login.decorator';
+import { User } from '@prisma/client';
+import { AccessTokenType } from '@src/modules/user/types/access-token.type';
 
 @ApiTags('유저')
 @Controller('api/user')
@@ -29,27 +20,17 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: '유저 생성' })
-  @ApiCreatedResponse({ type: CreateUserResponseType })
-  create(
-    @Body() createUserDto: CreateUserDto,
-  ): Promise<CreateUserResponseType> {
+  @ApiCreatedResponse({
+    type: IntersectionType(UserResponseType, AccessTokenType),
+  })
+  create(@Body() createUserDto: CreateUserDto): Promise<UserResponseType> {
     return this.userService.create(createUserDto);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param() param: IdParamDto, @UserLogin('id') user) {
-    return this.userService.findOne(+param);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @ApiOperation({ summary: '유저 조회' })
+  @ApiOkResponse({ type: UserResponseType })
+  findOne(@Param() param: IdParamDto): Promise<Omit<User, 'password'>> {
+    return this.userService.findOne(param.id);
   }
 }

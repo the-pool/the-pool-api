@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AccessTokenType } from '@src/modules/user/types/access-token.type';
 
-export class CreateUserResponseType extends AccessTokenType {
+export class UserResponseType {
   @ApiProperty({
     example: 1,
     description: 'user 고유 id',
