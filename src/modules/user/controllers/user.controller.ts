@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserRequestBodyDto } from '../dto/create-user-request-body.dto';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
@@ -9,7 +9,7 @@ import {
   IntersectionType,
 } from '@nestjs/swagger';
 import { UserResponseType } from '@src/modules/user/types/response/success/user-response.type';
-import { IdParamDto } from '@src/dtos/id-param.dto';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { User } from '@prisma/client';
 import { AccessTokenType } from '@src/modules/user/types/access-token.type';
 
@@ -23,14 +23,16 @@ export class UserController {
   @ApiCreatedResponse({
     type: IntersectionType(UserResponseType, AccessTokenType),
   })
-  create(@Body() createUserDto: CreateUserDto): Promise<UserResponseType> {
+  create(
+    @Body() createUserDto: CreateUserRequestBodyDto,
+  ): Promise<UserResponseType> {
     return this.userService.create(createUserDto);
   }
 
   @Get(':id')
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: UserResponseType })
-  findOne(@Param() param: IdParamDto): Promise<Omit<User, 'password'>> {
+  findOne(@Param() param: IdRequestParamDto): Promise<Omit<User, 'password'>> {
     return this.userService.findOne(param.id);
   }
 }

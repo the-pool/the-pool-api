@@ -2,7 +2,7 @@ import { IsEmail, IsNumber, IsString } from 'class-validator';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class CreateUserRequestBodyDto {
   @ApiProperty({
     example: 'password',
     description: 'user password',

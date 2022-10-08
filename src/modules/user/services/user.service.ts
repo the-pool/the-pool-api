@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
+import { CreateUserRequestBodyDto } from '../dto/create-user-request-body.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import bcrypt from 'bcrypt';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
@@ -17,7 +17,7 @@ export class UserService {
   ) {}
 
   async create(
-    createUserDto: CreateUserDto,
+    createUserDto: CreateUserRequestBodyDto,
   ): Promise<UserResponseType & AccessTokenType> {
     createUserDto.password = await bcrypt.hash(
       createUserDto.password,

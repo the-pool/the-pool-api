@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class IdParamDto {
+export class IdRequestParamDto {
   @ApiProperty({
     description: '고유 ID',
     type: 'number',
