@@ -6,18 +6,37 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserLogin } from '@src/decorators/user-login.decorator';
+import { Post as PostModel } from '@prisma/client';
+import { PostEntity } from '@src/modules/post/entities/post.entity';
 
-@Controller('post')
+@ApiBearerAuth()
+@ApiTags('post')
+@Controller('api/post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @ApiOperation({ summary: 'post 생성' })
+  @ApiCreatedResponse({ type: PostEntity })
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  create(
+    @UserLogin() user,
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<PostModel> {
+    return this.postService.create(user.id, createPostDto);
   }
 
   @Get()
