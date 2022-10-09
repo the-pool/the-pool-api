@@ -56,12 +56,16 @@ export class PostController {
     return this.postService.findOne(param.id);
   }
 
+  @ApiOperation({ summary: 'post 일부 수정' })
+  @ApiOkResponse({ type: PostEntity })
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   patchUpdate(
     @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+    @UserLogin('id') authorId: number,
     @Body() updatePatchPostDto: PatchUpdatePostDto,
-  ) {
-    return this.postService.update(param.id, updatePatchPostDto);
+  ): Promise<PostEntity> {
+    return this.postService.patchUpdate(param.id, authorId, updatePatchPostDto);
   }
 
   @Delete(':id')
