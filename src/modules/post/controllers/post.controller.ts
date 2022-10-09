@@ -26,6 +26,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { PatchUpdatePostDto } from '@src/modules/post/dto/patch-update-post.dto';
 import { PutUpdatePostDto } from '@src/modules/post/dto/put-update-post-dto';
+import { ModelName } from '@src/constants/enum';
 
 @ApiBearerAuth()
 @ApiTags('post')
@@ -53,7 +54,7 @@ export class PostController {
   @ApiOperation({ summary: 'post 상세 조회' })
   @ApiOkResponse({ type: PostEntity })
   findOne(
-    @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+    @Param() @SetModelNameToParam(ModelName.Post) param: IdRequestParamDto,
   ): Promise<PostEntity> {
     return this.postService.findOne(param.id);
   }
@@ -63,7 +64,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   putUpdate(
-    @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+    @Param() @SetModelNameToParam(ModelName.Post) param: IdRequestParamDto,
     @UserLogin('id') authorId: number,
     @Body() putUpdatePostDto: PutUpdatePostDto,
   ): Promise<PostEntity> {
@@ -75,7 +76,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   patchUpdate(
-    @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+    @Param() @SetModelNameToParam(ModelName.Post) param: IdRequestParamDto,
     @UserLogin('id') authorId: number,
     @Body() patchUpdatePostDto: PatchUpdatePostDto,
   ): Promise<PostEntity> {
