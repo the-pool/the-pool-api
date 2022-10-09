@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Min } from 'class-validator';
+import { IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsRecord } from '@src/decorators/is-record.decorator';
 
 export class IdRequestParamDto {
   @ApiProperty({
@@ -10,5 +11,9 @@ export class IdRequestParamDto {
   })
   @Min(1)
   @Type(() => Number)
+  @IsRecord({}, true)
   id: number;
+
+  @IsOptional()
+  model;
 }

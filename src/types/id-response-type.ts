@@ -5,7 +5,7 @@ export class IdResponseType {
     example: 1,
     description: 'user 고유 id',
     required: true,
-    type: 'string',
+    type: 'number',
   })
   id: number;
 }

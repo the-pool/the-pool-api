@@ -16,10 +16,11 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
     const { model, field }: Target = args.constraints[0];
     const isShouldBeExist = args.constraints[1];
     const targetName = field || args.property;
+    const modelName = model || args.object['model'];
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const uniqueRecord = await this.prismaService[model].findFirst({
+    const uniqueRecord = await this.prismaService[modelName].findFirst({
       where: {
         [targetName]: value,
       },
@@ -37,7 +38,7 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsRecord(
-  target: Target,
+  target: any,
   isShouldBeExist: boolean,
   validationOptions?: ValidationOptions,
 ) {

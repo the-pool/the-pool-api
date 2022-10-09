@@ -15,12 +15,14 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { Post as PostModel } from '@prisma/client';
 import { PostEntity } from '@src/modules/post/entities/post.entity';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 
 @ApiBearerAuth()
 @ApiTags('post')
@@ -45,8 +47,10 @@ export class PostController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @ApiOperation({ summary: 'post 상세 조회' })
+  @ApiOkResponse({ type: PostEntity })
+  findOne(@Param() param: IdRequestParamDto): Promise<PostEntity> {
+    return this.postService.findOne(param.id);
   }
 
   @Patch(':id')

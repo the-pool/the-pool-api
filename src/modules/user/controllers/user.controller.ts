@@ -12,6 +12,7 @@ import { UserResponseType } from '@src/modules/user/types/response/success/user-
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { User } from '@prisma/client';
 import { AccessTokenType } from '@src/modules/user/types/access-token.type';
+import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 
 @ApiTags('유저')
 @Controller('api/user')
@@ -32,7 +33,9 @@ export class UserController {
   @Get(':id')
   @ApiOperation({ summary: '유저 조회' })
   @ApiOkResponse({ type: UserResponseType })
-  findOne(@Param() param: IdRequestParamDto): Promise<Omit<User, 'password'>> {
+  findOne(
+    @Param() @SetModelNameToParam('user') param: IdRequestParamDto,
+  ): Promise<Omit<User, 'password'>> {
     return this.userService.findOne(param.id);
   }
 }
