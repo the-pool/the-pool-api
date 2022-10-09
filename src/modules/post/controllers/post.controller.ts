@@ -46,6 +46,8 @@ export class PostController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'post 전체 조회' })
+  @ApiOkResponse({ type: [PostEntity] })
   findAll() {
     return this.postService.findAll();
   }
