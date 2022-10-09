@@ -43,7 +43,7 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
 }
 
 export function IsRecord(
-  target: any,
+  target: Target,
   isShouldBeExist: boolean,
   validationOptions?: ValidationOptions,
 ) {

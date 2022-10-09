@@ -1,6 +1,6 @@
-export type PrismaModel = 'user' | 'post' | 'article';
+export type PrismaModel = 'user' | 'post';
 
 export type Target = {
-  model: PrismaModel;
+  model?: PrismaModel;
   field?: string;
 };
