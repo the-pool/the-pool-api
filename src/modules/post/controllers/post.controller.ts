@@ -35,6 +35,8 @@ import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorat
 @ApiTags('post')
 @Controller('api/post')
 export class PostController {
+  protected readonly LIKE_SEARCH_FIELDS = [];
+
   constructor(private readonly postService: PostService) {}
 
   @ApiOperation({ summary: 'post 생성' })
@@ -56,7 +58,6 @@ export class PostController {
     @SetDefaultPageSize(30)
     query: PostListQueryDto,
   ) {
-    console.log(query);
     return this.postService.findAll();
   }
 
