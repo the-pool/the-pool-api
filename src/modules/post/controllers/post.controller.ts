@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
@@ -24,6 +25,7 @@ import { PostEntity } from '@src/modules/post/entities/post.entity';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { PatchUpdatePostDto } from '@src/modules/post/dto/patch-update-post.dto';
+import { PutUpdatePostDto } from '@src/modules/post/dto/put-update-post-dto';
 
 @ApiBearerAuth()
 @ApiTags('post')
@@ -56,6 +58,16 @@ export class PostController {
     return this.postService.findOne(param.id);
   }
 
+  @ApiOperation({ summary: 'post 수정' })
+  @ApiOkResponse({ type: PostEntity })
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
+  putUpdate(
+    @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+    @UserLogin('id') authorId: number,
+    @Body() putUpdatePostDto: PutUpdatePostDto,
+  ) {}
+
   @ApiOperation({ summary: 'post 일부 수정' })
   @ApiOkResponse({ type: PostEntity })
   @UseGuards(JwtAuthGuard)
@@ -63,9 +75,9 @@ export class PostController {
   patchUpdate(
     @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
     @UserLogin('id') authorId: number,
-    @Body() updatePatchPostDto: PatchUpdatePostDto,
+    @Body() patchUpdatePostDto: PatchUpdatePostDto,
   ): Promise<PostEntity> {
-    return this.postService.patchUpdate(param.id, authorId, updatePatchPostDto);
+    return this.postService.patchUpdate(param.id, authorId, patchUpdatePostDto);
   }
 
   @Delete(':id')
