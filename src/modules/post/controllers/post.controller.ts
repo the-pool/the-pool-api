@@ -91,6 +91,6 @@ export class PostController {
     @Param() @SetModelNameToParam(ModelName.Post) param: IdRequestParamDto,
     @UserLogin('id') authorId: number,
   ): Promise<PostEntity> {
-    return this.postService.remove(param.id);
+    return this.postService.remove(param.id, authorId);
   }
 }

@@ -81,7 +81,18 @@ export class PostService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  async remove(id: number, authorId: number): Promise<PostEntity> {
+    const postByUser: PostEntity =
+      await this.postAuthorityHelper.checkIdentification(id, authorId);
+
+    if (!postByUser) {
+      throw new ForbiddenException();
+    }
+
+    return this.prismaService.post.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
