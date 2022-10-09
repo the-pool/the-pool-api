@@ -83,8 +83,14 @@ export class PostController {
     return this.postService.patchUpdate(param.id, authorId, patchUpdatePostDto);
   }
 
+  @ApiOperation({ summary: 'post 삭제' })
+  @ApiOkResponse({ type: PostEntity })
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  remove(
+    @Param() @SetModelNameToParam(ModelName.Post) param: IdRequestParamDto,
+    @UserLogin('id') authorId: number,
+  ): Promise<PostEntity> {
+    return this.postService.remove(param.id);
   }
 }
