@@ -4,8 +4,8 @@ export enum ModelName {
 }
 
 export enum OrderBy {
-  Desc = 'DESC',
-  Asc = 'ASC',
+  Desc = 'desc',
+  Asc = 'asc',
 }
 
 export enum BooleanString {
