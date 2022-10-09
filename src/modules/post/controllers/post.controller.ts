@@ -23,6 +23,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { Post as PostModel } from '@prisma/client';
 import { PostEntity } from '@src/modules/post/entities/post.entity';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 
 @ApiBearerAuth()
 @ApiTags('post')
@@ -49,7 +50,9 @@ export class PostController {
   @Get(':id')
   @ApiOperation({ summary: 'post 상세 조회' })
   @ApiOkResponse({ type: PostEntity })
-  findOne(@Param() param: IdRequestParamDto): Promise<PostEntity> {
+  findOne(
+    @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
+  ): Promise<PostEntity> {
     return this.postService.findOne(param.id);
   }
 

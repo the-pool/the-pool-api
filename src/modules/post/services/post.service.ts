@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
@@ -23,18 +23,12 @@ export class PostService {
     return `This action returns all post`;
   }
 
-  async findOne(id: number): Promise<PostEntity> {
-    const post: Post = await this.prismaService.post.findUnique({
+  findOne(id: number): Promise<PostEntity> {
+    return this.prismaService.post.findUnique({
       where: {
         id,
       },
     });
-
-    if (!post) {
-      throw new NotFoundException();
-    }
-
-    return post;
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
