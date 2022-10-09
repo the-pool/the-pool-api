@@ -5,6 +5,7 @@ import { Post } from '@prisma/client';
 import { PostEntity } from '@src/modules/post/entities/post.entity';
 import { PatchUpdatePostDto } from '@src/modules/post/dto/patch-update-post.dto';
 import { PostAuthorityHelper } from '@src/modules/post/helpers/post-authority.helper';
+import { PutUpdatePostDto } from '@src/modules/post/dto/put-update-post-dto';
 
 @Injectable()
 export class PostService {
@@ -31,6 +32,29 @@ export class PostService {
     return this.prismaService.post.findUnique({
       where: {
         id,
+      },
+    });
+  }
+
+  async putUpdate(
+    id: number,
+    authorId: number,
+    putUpdatePostDto: PutUpdatePostDto,
+  ): Promise<PostEntity> {
+    const postByUser: PostEntity =
+      await this.postAuthorityHelper.checkIdentification(id, authorId);
+
+    if (!postByUser) {
+      throw new ForbiddenException();
+    }
+
+    return this.prismaService.post.update({
+      where: {
+        id,
+      },
+      data: {
+        title: putUpdatePostDto.title,
+        description: putUpdatePostDto.description,
       },
     });
   }

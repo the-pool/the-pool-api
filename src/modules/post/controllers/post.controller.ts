@@ -66,7 +66,9 @@ export class PostController {
     @Param() @SetModelNameToParam('post') param: IdRequestParamDto,
     @UserLogin('id') authorId: number,
     @Body() putUpdatePostDto: PutUpdatePostDto,
-  ) {}
+  ): Promise<PostEntity> {
+    return this.postService.putUpdate(param.id, authorId, putUpdatePostDto);
+  }
 
   @ApiOperation({ summary: 'post 일부 수정' })
   @ApiOkResponse({ type: PostEntity })
