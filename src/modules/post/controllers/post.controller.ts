@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
@@ -27,6 +28,8 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { PatchUpdatePostDto } from '@src/modules/post/dto/patch-update-post.dto';
 import { PutUpdatePostDto } from '@src/modules/post/dto/put-update-post-dto';
 import { ModelName } from '@src/constants/enum';
+import { PostListQueryDto } from '@src/modules/post/dto/post-list-query-dto';
+import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
 
 @ApiBearerAuth()
 @ApiTags('post')
@@ -48,7 +51,12 @@ export class PostController {
   @Get()
   @ApiOperation({ summary: 'post 전체 조회' })
   @ApiOkResponse({ type: [PostEntity] })
-  findAll() {
+  findAll(
+    @Query()
+    @SetDefaultPageSize(30)
+    query: PostListQueryDto,
+  ) {
+    console.log(query);
     return this.postService.findAll();
   }
 
