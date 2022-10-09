@@ -6,12 +6,21 @@ import { PostEntity } from '@src/modules/post/entities/post.entity';
 import { PatchUpdatePostDto } from '@src/modules/post/dto/patch-update-post.dto';
 import { PostAuthorityHelper } from '@src/modules/post/helpers/post-authority.helper';
 import { PutUpdatePostDto } from '@src/modules/post/dto/put-update-post-dto';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { PostListQueryDto } from '@src/modules/post/dto/post-list-query-dto';
+import { PostField } from '@src/modules/post/constants/enum';
 
 @Injectable()
 export class PostService {
+  private readonly LIKE_SEARCH_FIELDS = [
+    PostField.Title,
+    PostField.Description,
+  ];
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly postAuthorityHelper: PostAuthorityHelper,
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   create(userId: number, createPostDto: CreatePostDto): Promise<Post> {
@@ -24,8 +33,25 @@ export class PostService {
     });
   }
 
-  findAll() {
-    return `This action returns all post`;
+  findAll(query: PostListQueryDto) {
+    const { page, pageSize, orderBy, sortBy, ...filter } = query;
+
+    const where = this.queryHelper.buildWherePropForFind<PostEntity>(
+      filter,
+      this.LIKE_SEARCH_FIELDS,
+    );
+
+    const order = this.queryHelper.buildOrderByPropForFind<PostField>(
+      [orderBy],
+      [sortBy],
+    );
+
+    return this.prismaService.post.findMany({
+      where,
+      orderBy: order,
+      skip: page * pageSize,
+      take: pageSize,
+    });
   }
 
   findOne(id: number): Promise<PostEntity> {

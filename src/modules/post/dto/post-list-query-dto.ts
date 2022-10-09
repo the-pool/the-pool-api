@@ -11,6 +11,7 @@ export class PostListQueryDto extends IntersectionType(PageDto, SortDto) {
     description: 'post 고유 Id',
     required: false,
   })
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
   id?: number | null;
