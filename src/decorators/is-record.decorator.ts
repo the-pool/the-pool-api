@@ -30,10 +30,15 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(validationArguments?: ValidationArguments): string {
-    const { value, property, constraints } = validationArguments;
+    const { value, property, constraints, object } = validationArguments;
     const { model, field } = constraints[0];
+    const modelName = model || object['model'];
+    const isShouldBeExist = constraints[1];
+    const middleMessage = isShouldBeExist
+      ? "doesn't exist"
+      : 'is already exist';
 
-    return `${value} is already exist ${field || property} in ${model}`;
+    return `${value} ${middleMessage} ${field || property} in ${modelName}`;
   }
 }
 
