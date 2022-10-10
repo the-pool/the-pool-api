@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # config
 .env*
+.flaskenv*
+!.env.project
+!.env.vault
