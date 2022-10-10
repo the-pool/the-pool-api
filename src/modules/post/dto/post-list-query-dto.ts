@@ -45,7 +45,7 @@ export class PostListQueryDto extends IntersectionType(PageDto, SortDto) {
 
   @ApiProperty({
     description: '게시한 유저 고유 id',
-    required: true,
+    required: false,
   })
   @IsOptional()
   @IsInt()
