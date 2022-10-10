@@ -3,7 +3,7 @@ import { OrderBy } from '@src/constants/enum';
 
 @Injectable()
 export class QueryHelper {
-  buildWherePropForFind<T>(
+  buildWherePropForFind(
     filter: Record<string, any>,
     likeSearchFields?: string[],
   ): Record<string, any> {

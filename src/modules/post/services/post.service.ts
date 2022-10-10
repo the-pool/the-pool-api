@@ -36,7 +36,7 @@ export class PostService {
   findAll(query: PostListQueryDto) {
     const { page, pageSize, orderBy, sortBy, ...filter } = query;
 
-    const where = this.queryHelper.buildWherePropForFind<PostEntity>(
+    const where = this.queryHelper.buildWherePropForFind(
       filter,
       this.LIKE_SEARCH_FIELDS,
     );
