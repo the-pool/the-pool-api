@@ -5,9 +5,13 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
-import { HttpExceptionFilter } from '@src/filters/http-exception.filter';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { useContainer } from 'class-validator';
+import { HttpBadRequestExceptionFilter } from '@src/filters/http-bad-request-exception.filter';
+import { HttpNodeInternalServerErrorExceptionFilter } from '@src/filters/http-node-internal-server-error-exception.filter';
+import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
+import { HttpNestInternalServerErrorExceptionFilter } from '@src/filters/http-nest-Internal-server-error-exception.filter';
+import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-exception.filter';
 
 declare const module: any;
 
@@ -29,7 +33,14 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(
+    new HttpNodeInternalServerErrorExceptionFilter(isProduction),
+    new HttpRemainderExceptionFilter(),
+    new HttpNestInternalServerErrorExceptionFilter(isProduction),
+    new HttpNotFoundExceptionFilter(),
+    new HttpBadRequestExceptionFilter(),
+  );
+
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Starts listening for shutdown hooks
