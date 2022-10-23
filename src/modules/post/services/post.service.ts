@@ -29,6 +29,7 @@ export class PostService {
         title: createPostDto.title,
         description: createPostDto.description,
         authorId: userId,
+        updatedAt: new Date(),
       },
     });
   }

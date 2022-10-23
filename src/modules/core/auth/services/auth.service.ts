@@ -1,7 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateMemberByOAuthDto } from '@src/modules/member/dtos/create-member-by-oauth.dto';
+import { lastValueFrom, map } from 'rxjs';
+import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 
 @Injectable()
 export class AuthService {
@@ -16,9 +18,34 @@ export class AuthService {
     return this.jwtService.sign(payload);
   }
 
-  async validateOAuth(createMemberByOAuthDto: CreateMemberByOAuthDto) {
-    /**
-     * 각 인증기관에서 넘어온 access token이 맞는지 검증하는 로직 추가
-     */
+  createAccessToken(id: string) {
+    const payload = { id };
+
+    return this.jwtService.sign(payload);
+  }
+
+  /**
+   * 각 인증기관에서 넘어온 access token이 맞는지 검증하는 로직
+   */
+  async validateOAuth(
+    accessToken: string,
+    oAuthAgency: number,
+  ): Promise<string> {
+    try {
+      // oAuthAgency에 따른 분기처리는 추후에 추가되는 기관의 ajax요청의 형태에 따라 만들어주겠음
+
+      const ajaxConfig = {
+        headers: { Authorization: 'Bearer' + ' ' + accessToken },
+      };
+      const response: any = await lastValueFrom(
+        this.httpService
+          .get('https://kapi.kakao.com/v1/user/access_token_info', ajaxConfig)
+          .pipe(map((res) => res.data)),
+      );
+
+      return OAUTH_AGENCY_COLUMN[oAuthAgency] + response.id;
+    } catch (error) {
+      throw new UnauthorizedException('로셜 로그인에 실패하였습니다.');
+    }
   }
 }

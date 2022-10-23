@@ -1,28 +1,39 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { CreateMemberByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { UpdateMemberDto } from '../dtos/update-member.dto';
 import { MemberService } from '../services/member.service';
 
 @ApiTags('멤버')
 @Controller('api/member')
 export class MemberController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly memberService: MemberService,
-  ) {}
+  constructor(private readonly memberService: MemberService) {}
 
-  @Post()
+  @Post('/social')
   @ApiOperation({ summary: '멤버 생성' })
   @ApiCreatedResponse()
-  async createByOAuth(
+  async logInByOAuth(
     @Body()
     createMemberByOAuthDto: CreateMemberByOAuthDto,
   ) {
-    // 넘어온 access token 검증
-    await this.authService.validateOAuth(createMemberByOAuthDto);
+    return await this.memberService.loginByOAuth(createMemberByOAuthDto);
+  }
 
-    // 유저 로그인 및 회원가입 로직
-    await this.memberService.createByOAuth();
+  @Put(':memberNo')
+  @ApiOperation({ summary: '멤버 정보 수정' })
+  @ApiCreatedResponse()
+  async updateMember(
+    @Param('memberNo', ParseIntPipe) memberNo: number,
+    @Body() updateMemberDto: UpdateMemberDto,
+  ) {
+    return await this.memberService.updateMember(memberNo, updateMemberDto);
   }
 }

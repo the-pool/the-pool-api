@@ -41,6 +41,7 @@ async function main() {
           title,
           published,
           description,
+          updatedAt: new Date(),
           authorId: user.id,
         },
       });
