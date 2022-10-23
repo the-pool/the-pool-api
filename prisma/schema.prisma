@@ -7,39 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  name      String?
-  password  String   @db.VarChar(255)
-  role      Int
-  posts     Post[]
-}
-
-model Post {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  published   Boolean  @default(false)
-  title       String   @db.VarChar(255)
-  authorId    Int?
-  description String?
-  author      User?    @relation(fields: [authorId], references: [id])
-}
-
 model MainSkill {
   id        Int      @id @default(autoincrement())
-  majorId   BigInt
+  majorId   Int
   name      String   @unique @db.VarChar(30)
-  createdAt DateTime @default(dbgenerated("'2022-10-23 16:34:42.761198'::timestamp without time zone")) @db.Timestamp(6)
+  createdAt DateTime @default(dbgenerated("'2022-10-23 16:54:47.041118'::timestamp without time zone")) @db.Timestamp(6)
   Major     Major    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model Major {
   id          Int           @id @default(autoincrement())
   name        String        @unique @db.VarChar(30)
-  createdAt   DateTime      @default(dbgenerated("'2022-10-23 16:34:40.584536'::timestamp without time zone")) @db.Timestamp(6)
+  createdAt   DateTime      @default(dbgenerated("'2022-10-23 16:54:43.92909'::timestamp without time zone")) @db.Timestamp(6)
   MainSkill   MainSkill[]
   Member      Member[]
   MemberSkill MemberSkill[]
@@ -47,13 +26,13 @@ model Major {
 
 model Member {
   id          Int           @id @default(autoincrement())
-  majorId     BigInt
+  majorId     Int
   account     String        @unique @db.VarChar(255)
   nickname    String?       @unique @db.VarChar(30)
   status      Int           @default(0) @db.SmallInt
   loginType   Int           @db.SmallInt
-  createdAt   DateTime      @default(dbgenerated("'2022-10-23 16:34:41.664535'::timestamp without time zone")) @db.Timestamp(6)
-  updatedAt   DateTime      @default(dbgenerated("'2022-10-23 16:34:41.664535'::timestamp without time zone")) @db.Timestamp(6)
+  createdAt   DateTime      @default(dbgenerated("'2022-10-23 16:54:45.167588'::timestamp without time zone")) @db.Timestamp(6)
+  updatedAt   DateTime      @default(dbgenerated("'2022-10-23 16:54:45.167588'::timestamp without time zone")) @db.Timestamp(6)
   deletedAt   DateTime?     @db.Timestamp(6)
   Major       Major         @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   MemberSkill MemberSkill[]
@@ -61,9 +40,30 @@ model Member {
 
 model MemberSkill {
   id        Int      @id @default(autoincrement())
-  majorId   BigInt
-  memerId   BigInt
-  createdAt DateTime @default(dbgenerated("'2022-10-23 16:34:44.393837'::timestamp without time zone")) @db.Timestamp(6)
+  majorId   Int
+  memberId  Int
+  createdAt DateTime @default(dbgenerated("'2022-10-23 16:54:48.817408'::timestamp without time zone")) @db.Timestamp(6)
   Major     Major    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  Member    Member   @relation(fields: [memerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Member    Member   @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  published   Boolean  @default(false)
+  title       String   @db.VarChar(255)
+  authorId    Int?
+  description String?
+  User        User?    @relation(fields: [authorId], references: [id])
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  email     String   @unique
+  name      String?
+  password  String   @db.VarChar(255)
+  role      Int
+  Post      Post[]
 }
