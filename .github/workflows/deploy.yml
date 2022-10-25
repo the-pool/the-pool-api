@@ -1,0 +1,63 @@
+name: deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  dockerBuild:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Build, tag, and push docker image to Amazon ECR
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: api_server_container_repository
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:latest .
+          docker push $REGISTRY/$REPOSITORY:latest
+  deploy:
+    needs: dockerBuild
+    name: Deploy
+    runs-on: [ self-hosted, api-server ]
+    steps:
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Docker stop
+        run: |
+          ids=$(sudo docker ps -a -q)
+          for id in $ids
+          do
+            echo "$id"
+            sudo docker stop $id && docker rm $id
+          done
+      - name: Docker run
+        env:
+          REGISTRY: ${{ secrets.AWS_ECR_NAME }}
+          REPOSITORY: api_server_container_repository
+          IMAGE_TAG: latest
+          IMAGE_NAME: thepool_nestjs
+        run: |
+          docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          sudo docker run -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
+      - name: Discord notification
+        if: success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'Deploy Success {{ EVENT_PAYLOAD.repository.full_name }} - ${{ github.event.head_commit.message }}'
+
+        
