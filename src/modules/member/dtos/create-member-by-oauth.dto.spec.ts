@@ -1,17 +1,17 @@
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { validate } from 'class-validator';
-import { CreateMemberByOAuthDto } from './create-member-by-oauth.dto';
+import { LoginByOAuthDto } from './create-member-by-oauth.dto';
 import {} from '@nestjs/swagger';
 import { getValueByEnum } from '@src/common/common';
 
-describe('CreateMemberByOAuthDto', () => {
-  let createMemberByOAuthDto: { [key in keyof CreateMemberByOAuthDto]: any };
+describe('LoginByOAuthDto', () => {
+  let createMemberByOAuthDto: { [key in keyof LoginByOAuthDto]: any };
   let customValidate = async (property) => {
     return await validate(property, { skipUndefinedProperties: true });
   };
 
   beforeEach(async () => {
-    createMemberByOAuthDto = new CreateMemberByOAuthDto();
+    createMemberByOAuthDto = new LoginByOAuthDto();
   });
 
   it('should be defined', () => {

@@ -29,7 +29,7 @@ export class MemberService {
     });
 
     // accessToken 가져오기
-    const token: string = this.authService.createAccessToken(socialId);
+    const token = this.authService.createAccessToken(socialId);
 
     if (!!memberStatus) {
       return {

@@ -25,6 +25,7 @@ describe('MemberController', () => {
 
   it('should be defined', () => {
     expect(memberController).toBeDefined();
+    expect(memberService).toBeDefined();
   });
 
   describe('loginByOAuth', () => {
@@ -37,7 +38,7 @@ describe('MemberController', () => {
       };
     });
 
-    it('로그인 성공', async () => {
+    it('success', async () => {
       memberService.loginByOAuth.mockReturnValue({
         accessToken: '1234',
         status: 0,
