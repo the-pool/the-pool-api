@@ -2,6 +2,7 @@ import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { validate } from 'class-validator';
 import { CreateMemberByOAuthDto } from './create-member-by-oauth.dto';
 import {} from '@nestjs/swagger';
+import { getValueByEnum } from '@src/common/common';
 
 describe('CreateMemberByOAuthDto', () => {
   let createMemberByOAuthDto: { [key in keyof CreateMemberByOAuthDto]: any };
@@ -42,17 +43,16 @@ describe('CreateMemberByOAuthDto', () => {
   });
 
   describe('oAuthAgency test', () => {
-    const cases = Object.values(OAuthAgency).filter((el) => {
-      return typeof el === 'number';
-    });
+    it.each(getValueByEnum(OAuthAgency, 'number'))(
+      'success - oAuthAgency: %s',
+      async (oAuthAgency) => {
+        createMemberByOAuthDto.oAuthAgency = oAuthAgency;
 
-    it.each(cases)('success - oAuthAgency: %s', async (oAuthAgency) => {
-      createMemberByOAuthDto.oAuthAgency = oAuthAgency;
+        const errors = await customValidate(createMemberByOAuthDto);
 
-      const errors = await customValidate(createMemberByOAuthDto);
-
-      expect(errors).toHaveLength(0);
-    });
+        expect(errors).toHaveLength(0);
+      },
+    );
 
     it('false - oAuthAgency에 숫자가 들어오지 않았을 때', async () => {
       createMemberByOAuthDto.oAuthAgency = '0';

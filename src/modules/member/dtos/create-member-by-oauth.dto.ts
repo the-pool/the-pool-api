@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateMemberByOAuthDto {
+export class LoginByOAuthDto {
   @ApiProperty({
     example: 'B1PQ7e14y69IdyisLn-0Mx_eDlM3H-8MEwBJuVXoCj11WgAAAYQDMBGy',
     description: 'oauth accesstoken',

@@ -7,10 +7,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthService } from '@src/modules/core/auth/services/auth.service';
-import { CreateMemberByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { UpdateMemberDto } from '../dtos/update-member.dto';
 import { MemberService } from '../services/member.service';
+import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
 @ApiTags('멤버')
 @Controller('api/member')
@@ -19,17 +19,17 @@ export class MemberController {
 
   @Post('/social')
   @ApiOperation({ summary: '소셜 로그인' })
-  @ApiCreatedResponse()
-  async logInByOAuth(
+  @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })
+  async loginByOAuth(
     @Body()
-    createMemberByOAuthDto: CreateMemberByOAuthDto,
+    loginByOAuthDto: LoginByOAuthDto,
   ) {
-    return await this.memberService.loginByOAuth(createMemberByOAuthDto);
+    return await this.memberService.loginByOAuth(loginByOAuthDto);
   }
 
   @Put(':memberNo')
   @ApiOperation({ summary: '멤버 정보 수정' })
-  @ApiCreatedResponse()
+  // @ApiCreatedResponse({ type })
   async updateMember(
     @Param('memberNo', ParseIntPipe) memberNo: number,
     @Body() updateMemberDto: UpdateMemberDto,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Member } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateMemberByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { UpdateMemberDto } from '../dtos/update-member.dto';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class MemberService {
   /**
    *  유저 로그인 및 회원가입 로직
    */
-  async loginByOAuth({ accessToken, oAuthAgency }: CreateMemberByOAuthDto) {
+  async loginByOAuth({ accessToken, oAuthAgency }: LoginByOAuthDto) {
     const socialId = await this.authService.validateOAuth(
       accessToken,
       oAuthAgency,

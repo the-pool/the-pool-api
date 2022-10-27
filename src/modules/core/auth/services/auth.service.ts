@@ -1,7 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateMemberByOAuthDto } from '@src/modules/member/dtos/create-member-by-oauth.dto';
 import { lastValueFrom, map } from 'rxjs';
 import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 
