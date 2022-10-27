@@ -9,6 +9,7 @@ export class CreateMemberByOAuthDto {
     required: true,
     type: 'string',
   })
+  @IsNotEmpty()
   @IsString()
   accessToken: string;
 
@@ -22,5 +23,5 @@ export class CreateMemberByOAuthDto {
   @IsNotEmpty()
   @IsNumber()
   @IsEnum(OAuthAgency)
-  oAuthAgency: number;
+  oAuthAgency: OAuthAgency;
 }

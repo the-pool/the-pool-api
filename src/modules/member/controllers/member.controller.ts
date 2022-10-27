@@ -18,7 +18,7 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Post('/social')
-  @ApiOperation({ summary: '멤버 생성' })
+  @ApiOperation({ summary: '소셜 로그인' })
   @ApiCreatedResponse()
   async logInByOAuth(
     @Body()

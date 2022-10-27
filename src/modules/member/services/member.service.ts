@@ -55,12 +55,12 @@ export class MemberService {
    *  유저 정보 받는 부분 > 확장성있게 사용하려면 나중에 프로필 수정에 대한 부분의 api 기능까지도 할 수 있게 만들어야 함
    */
   async updateMember(memberNo: number, updateMemberDto: UpdateMemberDto) {
-    // return this.prismaService.member.update({
-    //   where: {
-    //     id: memberNo,
-    //   },
-    //   data: { ...updateMemberDto },
-    //   // select: userResponse,
-    // });
+    return this.prismaService.member.update({
+      where: {
+        id: memberNo,
+      },
+      data: { ...updateMemberDto },
+      // select: userResponse,
+    });
   }
 }

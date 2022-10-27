@@ -46,7 +46,6 @@ async function codeBaseSeed() {
           description,
           updatedAt: new Date(),
           authorId: user.id,
-          updatedAt: new Date(),
         },
       });
 
