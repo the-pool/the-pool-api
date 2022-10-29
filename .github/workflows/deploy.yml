@@ -32,9 +32,20 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted, api-server ]
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+      - name: Docker login
+        env:
+          REGISTRY: ${{ secrets.AWS_ECR_NAME }}
+        run: |
+          docker login --username AWS --password-stdin $REGISTRY
       - name: Docker stop
         run: |
           ids=$(sudo docker ps -a -q)
@@ -52,12 +63,5 @@ jobs:
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
           sudo docker run -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
-      - name: Discord notification
-        if: success()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'Deploy Success {{ EVENT_PAYLOAD.repository.full_name }} - ${{ github.event.head_commit.message }}'
 
         
