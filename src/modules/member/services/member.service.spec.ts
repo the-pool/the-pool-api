@@ -3,7 +3,6 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MockPrismaService } from '@src/modules/test/mock-prisma';
 import { MockAuthService } from '@src/modules/test/mock-service';
-import { resourceLimits } from 'worker_threads';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { MemberService } from './member.service';
 

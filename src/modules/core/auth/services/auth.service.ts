@@ -32,7 +32,6 @@ export class AuthService {
   ): Promise<string> {
     try {
       // oAuthAgency에 따른 분기처리는 추후에 추가되는 기관의 ajax요청의 형태에 따라 만들어주겠음
-
       const ajaxConfig = {
         headers: { Authorization: 'Bearer' + ' ' + accessToken },
       };
