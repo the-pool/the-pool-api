@@ -97,4 +97,42 @@ describe('MemberService', () => {
       });
     });
   });
+
+  describe('updateMember', () => {
+    let memberId: number;
+    let lastStepLoginDto;
+
+    beforeEach(async () => {
+      memberId = 1;
+      lastStepLoginDto = {
+        nickname: 'the-pool',
+        majorId: 1,
+        memberSkill: [1, 2, 3],
+      };
+    });
+
+    it('success', async () => {
+      const member = {
+        id: 1,
+        majorId: 1,
+        account: 'k123456',
+        nickname: 'the-pool',
+        status: 1,
+        loginType: 1,
+        createdAt: '2022-10-03T09:54:50.563Z',
+        updatedAt: '2022-10-03T09:54:50.563Z',
+        deletedAt: null,
+      };
+      prismaService.memberSkill.deleteMany.mockReturnValue({ count: 0 });
+      prismaService.memberSkill.createMany.mockReturnValue({ count: 3 });
+      prismaService.member.update.mockReturnValue(member);
+
+      const returnValue = await memberService.updateMember(
+        memberId,
+        lastStepLoginDto,
+      );
+
+      expect(returnValue).toStrictEqual(member);
+    });
+  });
 });
