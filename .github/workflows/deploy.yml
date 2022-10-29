@@ -46,19 +46,20 @@ jobs:
             sudo docker stop $id && docker rm $id
           done
           sudo docker system prune -af
+      - name: Create env
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          touch .env
+          echo $ENV_FILE >> .env
+          cat .env
       - name: Docker run
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
           REPOSITORY: api_server_container_repository
           IMAGE_TAG: latest
           IMAGE_NAME: thepool_nestjs
+          ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          
-          touch .env
-          echo DATABASE_URL=${{ secrets.PROJECT_DATABASE_URL }} >> .env
-          echo PORT=${{ secrets.PROJECT_PORT }} >> .env
-          echo SECRET_KEY=${{ secrets.PROJECT_SECRET_KEY }} >> .env
-          cat .env
-
           sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
