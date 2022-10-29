@@ -32,20 +32,11 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted, api-server ]
     steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Docker login
+      - name: Login to Amazon ECR 
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
-        run: |
-          docker login --username AWS --password-stdin $REGISTRY
+        run : |
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REGISTRY
       - name: Docker stop
         run: |
           ids=$(sudo docker ps -a -q)
