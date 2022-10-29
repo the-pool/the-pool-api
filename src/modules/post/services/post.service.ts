@@ -21,7 +21,7 @@ export class PostService {
     private readonly prismaService: PrismaService,
     private readonly postAuthorityHelper: PostAuthorityHelper,
     private readonly queryHelper: QueryHelper,
-  ) {}
+  ) { }
 
   create(userId: number, createPostDto: CreatePostDto): Promise<Post> {
     return this.prismaService.post.create({
@@ -29,6 +29,7 @@ export class PostService {
         title: createPostDto.title,
         description: createPostDto.description,
         authorId: userId,
+        updatedAt: new Date()
       },
     });
   }
