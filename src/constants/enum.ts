@@ -12,3 +12,20 @@ export enum BooleanString {
   True = 'true',
   False = 'false',
 }
+
+export enum MajorId {
+  DevelopMent = 1,
+  Design = 2,
+}
+
+export enum MajorSkillId {
+  Backend = 1,
+  WebFrontend = 2,
+  Ios = 3,
+  Android = 4,
+  EtcDev = 5,
+  WebDesign = 6,
+  UiUx = 7,
+  Bx = 8,
+  EtcDesign = 9,
+}

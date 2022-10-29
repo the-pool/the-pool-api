@@ -1,22 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { MajorId, MajorSkillId } from '@src/constants/enum';
+import { IsRecord } from '@src/decorators/is-record.decorator';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
   IsArray,
+  IsEnum,
+  IsNotEmpty,
   IsNumber,
   IsString,
-  ValidateNested,
 } from 'class-validator';
-import { MemberSkillDto } from './member-skill.dto';
 
-export class UpdateMemberDto {
+export class LastStepLoginDto {
   @ApiProperty({
     example: 'thePool',
     description: '입수전 마지막 단계에서 받는 닉네임',
     required: true,
     type: 'string',
   })
+  @IsRecord({ model: 'member' }, false)
   @IsString()
   nickname: string;
 
@@ -27,7 +29,8 @@ export class UpdateMemberDto {
     type: 'number',
   })
   @IsNumber()
-  //   @IsEnum()
+  @IsNotEmpty()
+  @IsEnum(MajorId)
   majorId: number;
 
   @ApiProperty({
@@ -39,7 +42,6 @@ export class UpdateMemberDto {
   @IsArray()
   @ArrayMaxSize(10)
   @ArrayNotEmpty()
-  @ValidateNested()
-  @Type(() => MemberSkillDto)
-  memberSkill: number[];
+  @IsEnum(MajorSkillId, { each: true })
+  memberSkill: MajorSkillId[];
 }

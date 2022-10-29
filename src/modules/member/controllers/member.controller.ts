@@ -3,12 +3,17 @@ import {
   Controller,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Member } from '@prisma/client';
+import { UserLogin } from '@src/decorators/user-login.decorator';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { UpdateMemberDto } from '../dtos/update-member.dto';
+import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
@@ -27,13 +32,14 @@ export class MemberController {
     return await this.memberService.loginByOAuth(loginByOAuthDto);
   }
 
-  @Put(':memberNo')
-  @ApiOperation({ summary: '멤버 정보 수정' })
+  @Patch()
+  @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
   // @ApiCreatedResponse({ type })
-  async updateMember(
-    @Param('memberNo', ParseIntPipe) memberNo: number,
-    @Body() updateMemberDto: UpdateMemberDto,
+  @UseGuards(AuthGuard('jwt'))
+  async lastStepLogin(
+    @UserLogin('id') memberId: Member,
+    @Body() lastStepLoginDto: LastStepLoginDto,
   ) {
-    return await this.memberService.updateMember(memberNo, updateMemberDto);
+    // return await this.memberService.updateMember(memberNo, lastStepLoginDto);
   }
 }

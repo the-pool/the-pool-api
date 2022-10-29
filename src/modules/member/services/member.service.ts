@@ -3,7 +3,7 @@ import { Member } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { UpdateMemberDto } from '../dtos/update-member.dto';
+import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 
 @Injectable()
 export class MemberService {
@@ -25,13 +25,13 @@ export class MemberService {
       where: {
         account: socialId,
       },
-      select: { status: true },
+      select: { id: true, status: true },
     });
-
     // accessToken 가져오기
-    const token = this.authService.createAccessToken(socialId);
 
     if (!!memberStatus) {
+      const token = this.authService.createAccessToken(memberStatus.id);
+
       return {
         token,
         status: memberStatus.status,
@@ -44,6 +44,7 @@ export class MemberService {
         loginType: oAuthAgency,
       },
     });
+    const token = this.authService.createAccessToken(member.id);
 
     return {
       token,
@@ -54,12 +55,12 @@ export class MemberService {
   /**
    *  유저 정보 받는 부분 > 확장성있게 사용하려면 나중에 프로필 수정에 대한 부분의 api 기능까지도 할 수 있게 만들어야 함
    */
-  async updateMember(memberNo: number, updateMemberDto: UpdateMemberDto) {
+  async updateMember(memberNo: number, lastStepLoginDto: LastStepLoginDto) {
     return this.prismaService.member.update({
       where: {
         id: memberNo,
       },
-      data: { ...updateMemberDto },
+      data: { ...lastStepLoginDto },
       // select: userResponse,
     });
   }
