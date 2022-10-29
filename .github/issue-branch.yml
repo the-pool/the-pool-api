@@ -1,11 +1,7 @@
 branchName: '${issue.number}'
 defaultBranch: 'develop'
 branches: 
-  - label:
-      - Config
-      - DB
-      - Doc
-      - Feature
+  - label: Config
     prefix: feature/
   - label: Bugfix
     name: main
