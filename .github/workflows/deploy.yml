@@ -53,6 +53,7 @@ jobs:
             echo "$id"
             sudo docker stop $id && docker rm $id
           done
+          sudo docker system prune -af
       - name: Docker run
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
