@@ -9,12 +9,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Member } from '@prisma/client';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
+import { MemberModel } from '../types/member.type';
+import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
 @ApiTags('멤버')
@@ -34,7 +40,7 @@ export class MemberController {
 
   @Patch()
   @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
-  // @ApiCreatedResponse({ type })
+  @ApiOkResponse({ type: MemberLastStepLoginResponseType })
   @UseGuards(AuthGuard('jwt'))
   lastStepLogin(
     @UserLogin('id') memberId: number,
