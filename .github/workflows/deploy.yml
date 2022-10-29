@@ -11,14 +11,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: Create env file
-        run: |
-          touch .env
-          echo DATABASE_URL=${{ secrets.PROJECT_DATABASE_URL }} >> .env
-          echo PORT=${{ secrets.PROJECT_PORT }} >> .env
-          echo SECRET_KEY=${{ secrets.PROJECT_SECRET_KEY }} >> .env
-          cat .env
-          cat Dockerfile
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -62,4 +54,11 @@ jobs:
           IMAGE_NAME: thepool_nestjs
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          sudo docker run -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          
+          touch .env
+          echo DATABASE_URL=${{ secrets.PROJECT_DATABASE_URL }} >> .env
+          echo PORT=${{ secrets.PROJECT_PORT }} >> .env
+          echo SECRET_KEY=${{ secrets.PROJECT_SECRET_KEY }} >> .env
+          cat .env
+
+          sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
