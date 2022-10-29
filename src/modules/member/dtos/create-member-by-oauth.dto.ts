@@ -16,7 +16,7 @@ export class LoginByOAuthDto {
   @ApiProperty({
     example: '0',
     description:
-      '소셜 로그인 인증 기관의 고유 번호입니다. {kakao : 0, google : 1, apple : 2}',
+      '소셜 로그인 인증 기관의 고유 번호입니다. {kakao : 1, google : 2, apple : 3}',
     required: true,
     type: 'number',
   })

@@ -55,13 +55,33 @@ export class MemberService {
   /**
    *  유저 정보 받는 부분 > 확장성있게 사용하려면 나중에 프로필 수정에 대한 부분의 api 기능까지도 할 수 있게 만들어야 함
    */
-  async updateMember(memberNo: number, lastStepLoginDto: LastStepLoginDto) {
-    return this.prismaService.member.update({
+  async updateMember(
+    memberId: number,
+    { memberSkill, ...updateColumn }: LastStepLoginDto,
+  ) {
+    await this.prismaService.member.update({
       where: {
-        id: memberNo,
+        id: memberId,
       },
-      data: { ...lastStepLoginDto },
-      // select: userResponse,
+      data: {
+        ...updateColumn,
+      },
     });
+
+    if (memberSkill.length) {
+      const memberSkills = memberSkill.map((mainSkillId) => {
+        return {
+          memberId,
+          mainSkillId,
+        };
+      });
+
+      await this.prismaService.memberSkill.deleteMany({
+        where: { memberId },
+      });
+      await this.prismaService.memberSkill.createMany({
+        data: memberSkills,
+      });
+    }
   }
 }

@@ -25,21 +25,21 @@ export class MemberController {
   @Post('/social')
   @ApiOperation({ summary: '소셜 로그인' })
   @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })
-  async loginByOAuth(
+  loginByOAuth(
     @Body()
     loginByOAuthDto: LoginByOAuthDto,
   ) {
-    return await this.memberService.loginByOAuth(loginByOAuthDto);
+    return this.memberService.loginByOAuth(loginByOAuthDto);
   }
 
   @Patch()
   @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
   // @ApiCreatedResponse({ type })
   @UseGuards(AuthGuard('jwt'))
-  async lastStepLogin(
-    @UserLogin('id') memberId: Member,
+  lastStepLogin(
+    @UserLogin('id') memberId: number,
     @Body() lastStepLoginDto: LastStepLoginDto,
   ) {
-    // return await this.memberService.updateMember(memberNo, lastStepLoginDto);
+    return this.memberService.updateMember(memberId, lastStepLoginDto);
   }
 }

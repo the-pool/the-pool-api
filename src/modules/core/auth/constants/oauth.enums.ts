@@ -1,5 +1,5 @@
 export enum OAuthAgency {
-  Kakao,
-  Google,
-  Apple,
+  Kakao = 1,
+  Google = 2,
+  Apple = 3,
 }

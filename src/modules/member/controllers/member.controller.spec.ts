@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockMemberService } from '@src/modules/test/mock-service';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
 import { MemberController } from './member.controller';
 
@@ -49,6 +50,21 @@ describe('MemberController', () => {
         accessToken: '1234',
         status: 0,
       });
+    });
+  });
+  describe('lastStepLogin', () => {
+    let lastStepLoginDto: LastStepLoginDto;
+
+    beforeEach(async () => {
+      lastStepLoginDto = {
+        nickname: 'the-pool',
+        majorId: 1,
+        memberSkill: [1, 2, 3],
+      };
+    });
+
+    it('success', async () => {
+      memberService.lastStepLogin.mockReturnValue({});
     });
   });
 });

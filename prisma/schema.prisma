@@ -13,6 +13,7 @@ model MainSkill {
   name      String   @unique @db.VarChar(30)
   createdAt DateTime @default(dbgenerated("'2022-10-23 18:59:26.095774'::timestamp without time zone")) @db.Timestamp(6)
   Major     Major    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MemberSkill MemberSkill[]
 }
 
 model Major {
@@ -21,7 +22,6 @@ model Major {
   createdAt   DateTime      @default(dbgenerated("'2022-10-23 18:59:23.716331'::timestamp without time zone")) @db.Timestamp(6)
   MainSkill   MainSkill[]
   Member      Member[]
-  MemberSkill MemberSkill[]
 }
 
 model Member {
@@ -40,10 +40,10 @@ model Member {
 
 model MemberSkill {
   id        Int      @id @default(autoincrement())
-  majorId   Int
+  mainSkillId   Int
   memberId  Int
   createdAt DateTime @default(dbgenerated("'2022-10-23 18:59:27.123211'::timestamp without time zone")) @db.Timestamp(6)
-  Major     Major    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MainSkill MainSkill    @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   Member    Member   @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
