@@ -1,6 +1,6 @@
 branchName: '${issue.number}'
 defaultBranch: 'develop'
-branchees: 
+branches: 
   - label:
       - Config
       - DB
