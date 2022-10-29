@@ -12,10 +12,11 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: Create env file
-        env:
-          ENVFILE: ${{ secrets.ENV_FILE }}
         run: |
-          echo "$ENVFILE" >> .env
+          touch .env
+          echo DATABASE_URL=${{ secrets.PROJECT_DATABASE_URL }} >> .env
+          echo PORT=${{ secrets.PROJECT_PORT }} >> .env
+          echo SECRET_KEY=${{ secrets.PROJECT_SECRET_KEY }} >> .env
           cat .env
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
