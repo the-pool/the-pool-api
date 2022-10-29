@@ -53,6 +53,6 @@ jobs:
           IMAGE_NAME: thepool_nestjs
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          sudo docker run -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          sudo docker run -d -p 443:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
         
