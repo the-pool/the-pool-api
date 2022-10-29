@@ -52,6 +52,7 @@ describe('MemberController', () => {
       });
     });
   });
+
   describe('lastStepLogin', () => {
     let lastStepLoginDto: LastStepLoginDto;
 
@@ -64,7 +65,27 @@ describe('MemberController', () => {
     });
 
     it('success', async () => {
-      memberService.lastStepLogin.mockReturnValue({});
+      const memberId = 1;
+
+      const member = {
+        id: 1,
+        majorId: 1,
+        account: 'k123456',
+        nickname: 'the-pool',
+        status: 1,
+        loginType: 1,
+        createdAt: '2022-10-03T09:54:50.563Z',
+        updatedAt: '2022-10-03T09:54:50.563Z',
+        deletedAt: null,
+      };
+      memberService.updateMember.mockReturnValue(member);
+
+      const returnValue = await memberController.lastStepLogin(
+        memberId,
+        lastStepLoginDto,
+      );
+
+      expect(returnValue).toStrictEqual(member);
     });
   });
 });
