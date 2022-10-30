@@ -1,10 +1,10 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { Member as MemberModel } from '@prisma/client';
 import { getValueByEnum } from '@src/common/common';
 import { MajorId, MemberStatus } from '@src/constants/enum';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
+import { Member as MemberModel } from '@prisma/client';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)

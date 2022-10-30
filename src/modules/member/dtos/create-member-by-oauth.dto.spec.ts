@@ -50,13 +50,6 @@ describe('LoginByOAuthDto', () => {
       },
     );
 
-    it('false - oAuthAgency에 숫자가 들어오지 않았을 때', async () => {
-      createMemberByOAuthDto.oAuthAgency = '0';
-      const errors = await customValidate(createMemberByOAuthDto);
-
-      expect(errors[0].constraints).toHaveProperty('isNumber');
-    });
-
     it('false - oAuthAgency에 아무런 값도 들어오지 않았을 때', async () => {
       createMemberByOAuthDto.oAuthAgency = null;
       const errors = await customValidate(createMemberByOAuthDto);
@@ -65,7 +58,7 @@ describe('LoginByOAuthDto', () => {
     });
 
     it('false - oAuthAgency이 ENUM 이 아닌 값이 들어왔을 때', async () => {
-      createMemberByOAuthDto.oAuthAgency = 3;
+      createMemberByOAuthDto.oAuthAgency = 4;
       const errors = await customValidate(createMemberByOAuthDto);
 
       expect(errors[0].constraints).toHaveProperty('isEnum');

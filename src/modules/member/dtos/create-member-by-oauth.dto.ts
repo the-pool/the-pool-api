@@ -23,7 +23,6 @@ export class LoginByOAuthDto {
     type: 'number',
   })
   @IsNotEmpty()
-  @IsNumber()
   @IsEnum(OAuthAgency)
   oAuthAgency: OAuthAgency;
 }
