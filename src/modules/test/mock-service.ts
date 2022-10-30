@@ -8,3 +8,8 @@ export const MockAuthService = {
   createAccessToken: jest.fn(),
   validateOAuth: jest.fn(),
 };
+
+export const MockHttpService = {
+  get: jest.fn(() => MockAuthService),
+  pipe: jest.fn(),
+};

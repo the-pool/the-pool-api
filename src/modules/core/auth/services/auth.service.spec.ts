@@ -6,11 +6,15 @@ import jwt from 'jsonwebtoken';
 import { faker } from '@faker-js/faker';
 import { HttpConfigModule } from '../../http/http-config.module';
 import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
+import { UnauthorizedException } from '@nestjs/common';
+import { of } from 'rxjs';
+import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import exp from 'constants';
 
 describe('AuthService', () => {
   let authService: AuthService;
   let jwtService: JwtService;
-  let httpService: HttpService;
+  let httpService;
 
   beforeEach(async () => {
     const config = {
@@ -57,24 +61,49 @@ describe('AuthService', () => {
     });
 
     it('signing should use config.secretOrKeyProvider', async () => {
-      expect(await jwtService.sign(testPayload)).toBe(
+      expect(jwtService.sign(testPayload)).toBe(
         `signed_${testPayload}_by_sign_secret`,
       );
     });
   });
 
   describe('validateOAuth', () => {
+    let accessToken = 'validatedToken';
+    let oAuthAgency = 1;
+
     it('success', async () => {
-      const accessToken =
-        'dcK4vlgG2uUXejuockfVbj2dZY24xlOrvf4_bHGqCisNHwAAAYQiGn1R';
-      const oAuthAgency = 0;
+      const result: AxiosResponse = {
+        data: {
+          expiresInMillis: 3295497,
+          id: 123456789,
+          expires_in: 3295,
+          app_id: 811991,
+          appId: 811991,
+        },
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      };
+      jest.spyOn(httpService, 'get').mockImplementationOnce(() => of(result));
+
       const returnValue = await authService.validateOAuth(
         accessToken,
         oAuthAgency,
       );
 
       expect(typeof returnValue === 'string').toBeTruthy();
-      expect(returnValue[0] === OAUTH_AGENCY_COLUMN[oAuthAgency]);
+      expect(returnValue === OAUTH_AGENCY_COLUMN[oAuthAgency] + result.data.id);
+    });
+
+    it('false - 유효하지 않은 토큰을 넘겨 받았을 때', async () => {
+      accessToken = 'notValidToken';
+
+      await expect(async () => {
+        await authService.validateOAuth(accessToken, oAuthAgency);
+      }).rejects.toThrowError(
+        new UnauthorizedException('로셜 로그인에 실패하였습니다.'),
+      );
     });
   });
 });
