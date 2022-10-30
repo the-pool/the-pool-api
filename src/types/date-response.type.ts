@@ -16,4 +16,12 @@ export class DateResponseType {
     type: 'string',
   })
   updatedAt: Date;
+
+  @ApiProperty({
+    example: '2022-10-03T09:54:50.563Z',
+    description: '삭제일자',
+    required: true,
+    type: 'string',
+  })
+  deletedAt: Date | null;
 }

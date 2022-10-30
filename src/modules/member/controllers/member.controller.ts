@@ -19,7 +19,6 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
-import { MemberModel } from '../types/member.type';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 

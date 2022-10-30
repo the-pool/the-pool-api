@@ -1,17 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Member } from '@prisma/client';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { Member as MemberModel } from '@prisma/client';
 import { getValueByEnum } from '@src/common/common';
 import { MajorId, MemberStatus } from '@src/constants/enum';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
+import { DateResponseType } from '@src/types/date-response.type';
+import { IdResponseType } from '@src/types/id-response-type';
 
-export class MemberModel implements Member {
-  @ApiProperty({
-    description: 'member 고유 id',
-    required: true,
-    type: 'number',
-  })
-  id: number;
-
+export class MemberEntity
+  extends IntersectionType(IdResponseType, DateResponseType)
+  implements MemberModel
+{
   @ApiProperty({
     description: 'member의 작업분야',
     required: true,
@@ -49,28 +47,4 @@ export class MemberModel implements Member {
     enum: getValueByEnum(OAuthAgency, 'number'),
   })
   loginType: number;
-
-  @ApiProperty({
-    example: '2022-10-03T09:54:50.563Z',
-    description: 'member 생성일자',
-    required: true,
-    type: 'string',
-  })
-  createdAt: Date;
-
-  @ApiProperty({
-    example: '2022-10-03T09:54:50.563Z',
-    description: 'member 정보 수정일자',
-    required: true,
-    type: 'string',
-  })
-  updatedAt: Date;
-
-  @ApiProperty({
-    example: '2022-10-03T09:54:50.563Z',
-    description: 'member 회원 탈퇴일자',
-    required: true,
-    type: 'string',
-  })
-  deletedAt: Date | null;
 }

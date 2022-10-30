@@ -1,3 +1,3 @@
-import { MemberModel } from '../member.type';
+import { MemberEntity } from '../../entities/member.entity';
 
-export class MemberLastStepLoginResponseType extends MemberModel {}
+export class MemberLastStepLoginResponseType extends MemberEntity {}

@@ -4,7 +4,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
-import { MemberModel } from '../types/member.type';
+import { MemberEntity } from '../entities/member.entity';
 
 @Injectable()
 export class MemberService {
@@ -59,7 +59,7 @@ export class MemberService {
   async updateMember(
     memberId: number,
     { memberSkill, ...updateColumn }: LastStepLoginDto,
-  ): Promise<MemberModel> {
+  ): Promise<MemberEntity> {
     if (memberSkill.length) {
       const memberSkills = memberSkill.map((mainSkillId) => {
         return {

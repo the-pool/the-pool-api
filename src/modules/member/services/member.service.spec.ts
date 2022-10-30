@@ -99,20 +99,15 @@ describe('MemberService', () => {
   });
 
   describe('updateMember', () => {
+    let member;
     let memberId: number;
     let lastStepLoginDto;
+    let memberSkillDeleteManySpy: jest.SpyInstance;
+    let memberSkillCreateManySpy: jest.SpyInstance;
+    let memberUpdateSpy: jest.SpyInstance;
 
     beforeEach(async () => {
-      memberId = 1;
-      lastStepLoginDto = {
-        nickname: 'the-pool',
-        majorId: 1,
-        memberSkill: [1, 2, 3],
-      };
-    });
-
-    it('success', async () => {
-      const member = {
+      member = {
         id: 1,
         majorId: 1,
         account: 'k123456',
@@ -123,6 +118,29 @@ describe('MemberService', () => {
         updatedAt: '2022-10-03T09:54:50.563Z',
         deletedAt: null,
       };
+      memberId = 1;
+      lastStepLoginDto = {
+        nickname: 'the-pool',
+        majorId: 1,
+        memberSkill: [1, 2, 3],
+      };
+
+      memberSkillDeleteManySpy = jest.spyOn(
+        prismaService.memberSkill,
+        'deleteMany',
+      );
+      memberSkillCreateManySpy = jest.spyOn(
+        prismaService.memberSkill,
+        'createMany',
+      );
+      memberUpdateSpy = jest.spyOn(prismaService.member, 'update');
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('success - memberSkill이 있을 때', async () => {
       prismaService.memberSkill.deleteMany.mockReturnValue({ count: 0 });
       prismaService.memberSkill.createMany.mockReturnValue({ count: 3 });
       prismaService.member.update.mockReturnValue(member);
@@ -131,7 +149,23 @@ describe('MemberService', () => {
         memberId,
         lastStepLoginDto,
       );
+      expect(memberSkillDeleteManySpy).toBeCalledTimes(1);
+      expect(memberSkillCreateManySpy).toBeCalledTimes(1);
+      expect(memberUpdateSpy).toBeCalledTimes(1);
+      expect(returnValue).toStrictEqual(member);
+    });
 
+    it('success - memberSkill이 없을 때', async () => {
+      lastStepLoginDto.memberSkill = [];
+      prismaService.member.update.mockReturnValue(member);
+
+      const returnValue = await memberService.updateMember(
+        memberId,
+        lastStepLoginDto,
+      );
+      expect(memberSkillDeleteManySpy).toBeCalledTimes(0);
+      expect(memberSkillCreateManySpy).toBeCalledTimes(0);
+      expect(memberUpdateSpy).toBeCalledTimes(1);
       expect(returnValue).toStrictEqual(member);
     });
   });
