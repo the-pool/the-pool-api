@@ -11,6 +11,9 @@ export const StringBooleanTransform = ({ value }) => {
   return value;
 };
 
+/**
+ * swagger 상에 enum에 들어갈 value를 명시하기 위한 함수
+ */
 export const getValueByEnum = <T extends string | number>(
   Enum: { [key: string]: string | number },
   type: 'number' | 'string',

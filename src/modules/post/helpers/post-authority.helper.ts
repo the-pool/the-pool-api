@@ -6,7 +6,7 @@ import { PostEntity } from '@src/modules/post/entities/post.entity';
 export class PostAuthorityHelper {
   constructor(private readonly prismaService: PrismaService) {}
 
-  checkIdentification(postId, authorId): Promise<PostEntity> {
+  checkIdentification(postId, authorId): Promise<any> {
     return this.prismaService.post.findFirst({
       where: {
         authorId,

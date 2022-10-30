@@ -41,7 +41,7 @@ export class LastStepLoginDto {
     description: '입수전 마지막 단계에서 받는 유저 관심분야',
     required: true,
     enum: getValueByEnum(MajorSkillId, 'number'),
-    type: 'number',
+    type: 'number[]',
   })
   @IsArray()
   @ArrayMaxSize(10)

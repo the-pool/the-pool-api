@@ -55,7 +55,7 @@ export class PostService {
     });
   }
 
-  findOne(id: number): Promise<PostEntity> {
+  findOne(id: number): Promise<any> {
     return this.prismaService.post.findUnique({
       where: {
         id,
@@ -67,7 +67,7 @@ export class PostService {
     id: number,
     authorId: number,
     putUpdatePostDto: PutUpdatePostDto,
-  ): Promise<PostEntity> {
+  ): Promise<any> {
     const postByUser: PostEntity =
       await this.postAuthorityHelper.checkIdentification(id, authorId);
 
@@ -90,7 +90,7 @@ export class PostService {
     id: number,
     authorId: number,
     patchUpdatePostDto: PatchUpdatePostDto,
-  ): Promise<PostEntity> {
+  ): Promise<any> {
     const postByUser: PostEntity =
       await this.postAuthorityHelper.checkIdentification(id, authorId);
 
@@ -108,7 +108,7 @@ export class PostService {
     });
   }
 
-  async remove(id: number, authorId: number): Promise<PostEntity> {
+  async remove(id: number, authorId: number): Promise<any> {
     const postByUser: PostEntity =
       await this.postAuthorityHelper.checkIdentification(id, authorId);
 
