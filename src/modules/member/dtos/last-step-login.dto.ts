@@ -11,6 +11,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  Length,
 } from 'class-validator';
 
 export class LastStepLoginDto {
@@ -21,6 +22,7 @@ export class LastStepLoginDto {
     type: 'string',
   })
   @IsRecord({ model: 'member' }, false)
+  @Length(1, 30)
   @IsString()
   nickname: string;
 

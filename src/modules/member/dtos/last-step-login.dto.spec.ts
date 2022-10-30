@@ -29,71 +29,88 @@ describe('LastStepLoginDto', () => {
       expect(errors[0].constraints).toHaveProperty('isString');
     });
 
-    describe('majorId test', () => {
-      it.each(getValueByEnum(MajorId, 'number'))(
-        'success - MajorId: %s',
-        async (majorId) => {
-          lastStepLoginDto.majorId = majorId;
+    it('false - nickname의 length가 1보다 작을 때', async () => {
+      lastStepLoginDto = new MockLastStepLoginDto();
+      lastStepLoginDto.nickname = '';
+      const errors = await customValidate(lastStepLoginDto);
+      console.log(errors);
 
-          const errors = await customValidate(lastStepLoginDto);
-
-          expect(errors).toHaveLength(0);
-        },
-      );
-
-      it('false - majorId에 숫자가 들어오지 않았을 때', async () => {
-        lastStepLoginDto.majorId = '0';
-        const errors = await customValidate(lastStepLoginDto);
-
-        expect(errors[0].constraints).toHaveProperty('isNumber');
-      });
-
-      it('false - majorId에 아무런 값도 들어오지 않았을 때', async () => {
-        lastStepLoginDto.majorId = null;
-        const errors = await customValidate(lastStepLoginDto);
-
-        expect(errors[0].constraints).toHaveProperty('isNotEmpty');
-      });
-
-      it('false - majorId에 ENUM 이 아닌 값이 들어왔을 때', async () => {
-        lastStepLoginDto.majorId = 3;
-        const errors = await customValidate(lastStepLoginDto);
-
-        expect(errors[0].constraints).toHaveProperty('isEnum');
-      });
+      expect(errors[0].constraints).toHaveProperty('isLength');
     });
 
-    describe('memberSkill test', () => {
-      it.each(getValueByEnum(MajorSkillId, 'number'))(
-        'success - majorSkillId: %s',
-        async (majorSkillId) => {
-          lastStepLoginDto.memberSkill = [majorSkillId];
-          const errors = await customValidate(lastStepLoginDto);
+    it('false - nickname의 length가 30보다 클 때', async () => {
+      lastStepLoginDto = new MockLastStepLoginDto();
+      lastStepLoginDto.nickname = '1234567890123456789012345678901';
+      const errors = await customValidate(lastStepLoginDto);
 
-          expect(errors).toHaveLength(0);
-        },
-      );
+      expect(errors[0].constraints).toHaveProperty('isLength');
+    });
+  });
 
-      it('false - memberSkill에 아무런 값도 들어오지 않았을 때', async () => {
-        lastStepLoginDto.memberSkill = [];
+  describe('majorId test', () => {
+    it.each(getValueByEnum(MajorId, 'number'))(
+      'success - MajorId: %s',
+      async (majorId) => {
+        lastStepLoginDto.majorId = majorId;
+
         const errors = await customValidate(lastStepLoginDto);
 
-        expect(errors[0].constraints).toHaveProperty('arrayNotEmpty');
-      });
+        expect(errors).toHaveLength(0);
+      },
+    );
 
-      it('false - memberSkill에 ENUM 이 아닌 값이 들어왔을 때', async () => {
-        lastStepLoginDto.memberSkill = 100;
+    it('false - majorId에 숫자가 들어오지 않았을 때', async () => {
+      lastStepLoginDto.majorId = '0';
+      const errors = await customValidate(lastStepLoginDto);
+
+      expect(errors[0].constraints).toHaveProperty('isNumber');
+    });
+
+    it('false - majorId에 아무런 값도 들어오지 않았을 때', async () => {
+      lastStepLoginDto.majorId = null;
+      const errors = await customValidate(lastStepLoginDto);
+
+      expect(errors[0].constraints).toHaveProperty('isNotEmpty');
+    });
+
+    it('false - majorId에 ENUM 이 아닌 값이 들어왔을 때', async () => {
+      lastStepLoginDto.majorId = 3;
+      const errors = await customValidate(lastStepLoginDto);
+
+      expect(errors[0].constraints).toHaveProperty('isEnum');
+    });
+  });
+
+  describe('memberSkill test', () => {
+    it.each(getValueByEnum(MajorSkillId, 'number'))(
+      'success - majorSkillId: %s',
+      async (majorSkillId) => {
+        lastStepLoginDto.memberSkill = [majorSkillId];
         const errors = await customValidate(lastStepLoginDto);
 
-        expect(errors[0].constraints).toHaveProperty('isEnum');
-      });
+        expect(errors).toHaveLength(0);
+      },
+    );
 
-      it('false - 한번에 11개 이상의 skill을 등록할 때', async () => {
-        lastStepLoginDto.memberSkill = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-        const errors = await customValidate(lastStepLoginDto);
+    it('false - memberSkill에 아무런 값도 들어오지 않았을 때', async () => {
+      lastStepLoginDto.memberSkill = [];
+      const errors = await customValidate(lastStepLoginDto);
 
-        expect(errors[0].constraints).toHaveProperty('arrayMaxSize');
-      });
+      expect(errors[0].constraints).toHaveProperty('arrayNotEmpty');
+    });
+
+    it('false - memberSkill에 ENUM 이 아닌 값이 들어왔을 때', async () => {
+      lastStepLoginDto.memberSkill = 100;
+      const errors = await customValidate(lastStepLoginDto);
+
+      expect(errors[0].constraints).toHaveProperty('isEnum');
+    });
+
+    it('false - 한번에 11개 이상의 skill을 등록할 때', async () => {
+      lastStepLoginDto.memberSkill = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+      const errors = await customValidate(lastStepLoginDto);
+
+      expect(errors[0].constraints).toHaveProperty('arrayMaxSize');
     });
   });
 });

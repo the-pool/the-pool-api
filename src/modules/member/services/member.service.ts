@@ -82,6 +82,7 @@ export class MemberService {
       },
       data: {
         ...updateColumn,
+        status: 1,
       },
     });
   }
