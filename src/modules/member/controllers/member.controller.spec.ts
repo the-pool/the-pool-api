@@ -26,7 +26,6 @@ describe('MemberController', () => {
 
   it('should be defined', () => {
     expect(memberController).toBeDefined();
-    expect(memberService).toBeDefined();
   });
 
   describe('loginByOAuth', () => {

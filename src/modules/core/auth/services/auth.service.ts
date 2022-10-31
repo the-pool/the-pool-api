@@ -43,7 +43,7 @@ export class AuthService {
 
       return OAUTH_AGENCY_COLUMN[oAuthAgency] + response.id;
     } catch (error) {
-      throw new UnauthorizedException('로셜 로그인에 실패하였습니다.');
+      throw new UnauthorizedException('소셜 로그인에 실패하였습니다.');
     }
   }
 }

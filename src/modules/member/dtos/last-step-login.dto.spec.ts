@@ -33,7 +33,6 @@ describe('LastStepLoginDto', () => {
       lastStepLoginDto = new MockLastStepLoginDto();
       lastStepLoginDto.nickname = '';
       const errors = await customValidate(lastStepLoginDto);
-      console.log(errors);
 
       expect(errors[0].constraints).toHaveProperty('isLength');
     });
@@ -58,13 +57,6 @@ describe('LastStepLoginDto', () => {
         expect(errors).toHaveLength(0);
       },
     );
-
-    it('false - majorId에 숫자가 들어오지 않았을 때', async () => {
-      lastStepLoginDto.majorId = '0';
-      const errors = await customValidate(lastStepLoginDto);
-
-      expect(errors[0].constraints).toHaveProperty('isNumber');
-    });
 
     it('false - majorId에 아무런 값도 들어오지 않았을 때', async () => {
       lastStepLoginDto.majorId = null;

@@ -38,8 +38,6 @@ describe('AuthService', () => {
   });
 
   it('should be defined', () => {
-    expect(authService).toBeDefined();
-    expect(jwtService).toBeDefined();
     expect(httpService).toBeDefined();
   });
 
@@ -97,12 +95,12 @@ describe('AuthService', () => {
     });
 
     it('false - 유효하지 않은 토큰을 넘겨 받았을 때', async () => {
-      accessToken = 'notValidToken';
+      accessToken = 'inValidToken';
 
       await expect(async () => {
         await authService.validateOAuth(accessToken, oAuthAgency);
       }).rejects.toThrowError(
-        new UnauthorizedException('로셜 로그인에 실패하였습니다.'),
+        new UnauthorizedException('소셜 로그인에 실패하였습니다.'),
       );
     });
   });

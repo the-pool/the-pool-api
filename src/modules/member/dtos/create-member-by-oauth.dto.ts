@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { getValueByEnum } from '@src/common/common';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginByOAuthDto {
   @ApiProperty({
@@ -10,8 +10,8 @@ export class LoginByOAuthDto {
     required: true,
     type: 'string',
   })
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   accessToken: string;
 
   @ApiProperty({
@@ -22,7 +22,7 @@ export class LoginByOAuthDto {
     enum: getValueByEnum(OAuthAgency, 'number'),
     type: 'number',
   })
-  @IsNotEmpty()
   @IsEnum(OAuthAgency)
+  @IsNotEmpty()
   oAuthAgency: OAuthAgency;
 }

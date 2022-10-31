@@ -2,14 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { getValueByEnum } from '@src/common/common';
 import { MajorId, MajorSkillId } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
-import { UserLogin } from '@src/decorators/user-login.decorator';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
   IsArray,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsString,
   Length,
 } from 'class-validator';
@@ -33,9 +31,8 @@ export class LastStepLoginDto {
     enum: getValueByEnum(MajorId, 'number'),
     type: 'number',
   })
-  @IsNumber()
-  @IsNotEmpty()
   @IsEnum(MajorId)
+  @IsNotEmpty()
   majorId: number;
 
   @ApiProperty({
@@ -45,9 +42,9 @@ export class LastStepLoginDto {
     enum: getValueByEnum(MajorSkillId, 'number'),
     type: 'number[]',
   })
-  @IsArray()
   @ArrayMaxSize(10)
-  @ArrayNotEmpty()
   @IsEnum(MajorSkillId, { each: true })
+  @ArrayNotEmpty()
+  @IsArray()
   memberSkill: MajorSkillId[];
 }

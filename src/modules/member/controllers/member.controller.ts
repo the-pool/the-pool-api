@@ -1,20 +1,13 @@
-import {
-  Body,
-  Controller,
-  Param,
-  ParseIntPipe,
-  Patch,
-  Post,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { ErrorResponseType } from '@src/common/common';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
@@ -30,6 +23,11 @@ export class MemberController {
   @Post('/social')
   @ApiOperation({ summary: '소셜 로그인' })
   @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })
+  @ApiUnauthorizedResponse(
+    ErrorResponseType('invalid accessToken', 401, [
+      { message: '소셜 로그인에 실패하였습니다.' },
+    ]),
+  )
   loginByOAuth(
     @Body()
     loginByOAuthDto: LoginByOAuthDto,

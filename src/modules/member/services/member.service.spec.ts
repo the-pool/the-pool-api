@@ -33,8 +33,6 @@ describe('MemberService', () => {
 
   it('should be defined', () => {
     expect(memberService).toBeDefined();
-    expect(authService).toBeDefined();
-    expect(prismaService).toBeDefined();
   });
 
   describe('loginByOAuth', () => {
