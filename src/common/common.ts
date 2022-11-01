@@ -1,5 +1,4 @@
 import { BooleanString } from '@src/constants/enum';
-import { ResponseErrorItem, ResponseJson } from '@src/filters/type';
 import { validate, ValidationError } from 'class-validator';
 
 export const pageTransform = ({ value }) => {
@@ -31,26 +30,4 @@ export const customValidate = async <T>(property: {
   [key in keyof T]: any;
 }): Promise<ValidationError[]> => {
   return await validate(property, { skipUndefinedProperties: true });
-};
-
-/**
- * swagger에 에러에 대한 문서를 만들어주기 위해 사용되는 함수
- */
-export const ErrorResponseType = (
-  description: string,
-  status: number,
-  errors: ResponseErrorItem[],
-) => {
-  const exampleObj: ResponseJson = {
-    status,
-    timestamp: new Date().toISOString(),
-    errors,
-  };
-
-  return {
-    description,
-    schema: {
-      example: exampleObj,
-    },
-  };
 };
