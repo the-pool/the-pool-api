@@ -20,7 +20,6 @@ export class LoginByOAuthDto {
       '소셜 로그인 인증 기관의 고유 번호입니다. {kakao : 1, google : 2, apple : 3}',
     required: true,
     enum: getValueByEnum(OAuthAgency, 'number'),
-    type: 'number',
   })
   @IsEnum(OAuthAgency)
   @IsNotEmpty()
