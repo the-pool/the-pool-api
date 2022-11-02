@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
-import { IsNotEmptyString } from '@src/decorators/is-not-empty-string.dto';
+import { IsNotEmptyString } from '@src/decorators/is-not-empty-string.decorator';
 
 export class PutUpdatePostDto {
   @ApiProperty({
