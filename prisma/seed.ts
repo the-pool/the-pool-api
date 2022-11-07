@@ -69,6 +69,12 @@ enum DesignMajorSkillName {
   Etc = '기타 디자인',
 }
 
+enum LessonLevel {
+  Top = '상',
+  Middle = '중',
+  Bottom = '하',
+}
+
 /**
  * the pool seed
  */
@@ -89,6 +95,7 @@ async function thePoolSeed() {
     ],
   });
 
+  // MainSkill Seed
   await prisma.mainSkill.createMany({
     data: [
       {
@@ -127,6 +134,14 @@ async function thePoolSeed() {
         majorId: 2,
         name: DesignMajorSkillName.Etc,
       },
+    ],
+  });
+
+  await prisma.lessonLevel.createMany({
+    data: [
+      { level: LessonLevel.Top },
+      { level: LessonLevel.Middle },
+      { level: LessonLevel.Bottom },
     ],
   });
 }
