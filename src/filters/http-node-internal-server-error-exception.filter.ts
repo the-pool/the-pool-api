@@ -34,7 +34,6 @@ export class HttpNodeInternalServerErrorExceptionFilter
         this.isProduction ? undefined : exception.stack,
       ),
     ];
-
     response.status(status).json(responseJson);
   }
 }

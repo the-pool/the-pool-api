@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Member, User } from '@prisma/client';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -19,18 +19,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user: User = await this.prismaService.user.findFirst({
+    const member: Member = await this.prismaService.member.findFirst({
       where: {
         id: payload.id,
       },
     });
 
-    if (!user) {
+    if (!member) {
       throw new UnauthorizedException();
     }
 
-    delete user.password;
-
-    return user;
+    return member;
   }
 }
