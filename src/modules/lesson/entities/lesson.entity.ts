@@ -41,4 +41,12 @@ export class LessonEntity
     type: 'number',
   })
   hit: number;
+
+  @ApiProperty({
+    example: 1,
+    description: '과제를 생성한 멤버 고유 ID',
+    required: false,
+    type: 'number',
+  })
+  memberId: number;
 }

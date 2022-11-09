@@ -37,30 +37,30 @@ model Major {
 /// 우리 서비스의 회원을 담은 테이블 
 model Member {
   /// 고유 ID
-  id                    Int                     @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   /// 멤버 전공의 대분류 ID
-  majorId               Int?
+  majorId   Int?
   /// 로그인 ID 소셜 로그인이면 고유 ID 이메일 로그인이면 이메일
   /// 소셜 로그인 prefix(kakao: k, apple: a, google: g)
-  account               String                  @unique @db.VarChar(255)
+  account   String    @unique @db.VarChar(255)
   /// 멤버 닉네임
-  nickname              String?                 @unique @db.VarChar(30)
+  nickname  String?   @unique @db.VarChar(30)
   /// 멤버의 상태 (Pending: 0, Active: 1, InActive: 2)
-  status                Int                     @default(0) @db.SmallInt
+  status    Int       @default(0) @db.SmallInt
   /// 로그인 타입
   /// kakao: 1, google: 2, apple: 3
-  loginType             Int                     @db.SmallInt
+  loginType Int       @db.SmallInt
   /// 멤버 썸네일
-  thumbnail             String?                 @unique @db.VarChar(255)
+  thumbnail String?   @unique @db.VarChar(255)
   /// 소개
-  introduce             String?                 @db.VarChar(255)
+  introduce String?   @db.VarChar(255)
   /// 생성일자
-  createdAt             DateTime                @default(now()) @db.Timestamp(6)
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
-  updatedAt             DateTime                @default(now()) @updatedAt @db.Timestamp(6)
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 탈퇴일자
-  deletedAt             DateTime?               @db.Timestamp(6)
-  
+  deletedAt DateTime? @db.Timestamp(6)
+
   Lesson                Lesson[]
   Major                 Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   MemberSkill           MemberSkill[]
@@ -120,7 +120,7 @@ model Lesson {
   /// 과제 설명 
   description String
   /// 과제 조회수        
-  hit         Int       @db.Integer()
+  hit         Int       @default(0)
   /// 생성일자
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
