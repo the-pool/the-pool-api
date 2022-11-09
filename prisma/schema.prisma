@@ -11,13 +11,13 @@ datasource db {
 /// 디자인, 개발의 소분류를 담은 테이블
 model MainSkill {
   /// 고유 ID
-  id        Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   /// 대분류 고유 ID
-  majorId   Int
+  majorId     Int
   /// 소분류의 이름
-  name      String   @unique @db.VarChar(30)
+  name        String        @unique @db.VarChar(30)
   /// 생성일자
-  createdAt DateTime @default(now()) @db.Timestamp(6)
+  createdAt   DateTime      @default(now()) @db.Timestamp(6)
   Major       Major         @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   MemberSkill MemberSkill[]
 }
@@ -25,11 +25,11 @@ model MainSkill {
 /// 디자인, 개발 전공등 대분류를 담은 테이블 
 model Major {
   /// 고유 ID
-  id        Int      @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   /// 대분류의 이름
-  name      String   @unique @db.VarChar(30)
+  name      String      @unique @db.VarChar(30)
   /// 생성일자
-  createdAt DateTime @default(now()) @db.Timestamp(6)
+  createdAt DateTime    @default(now()) @db.Timestamp(6)
   MainSkill MainSkill[]
   Member    Member[]
 }
@@ -37,29 +37,31 @@ model Major {
 /// 우리 서비스의 회원을 담은 테이블 
 model Member {
   /// 고유 ID
-  id        Int       @id @default(autoincrement())
+  id                    Int                     @id @default(autoincrement())
   /// 멤버 전공의 대분류 ID
-  majorId   Int?
+  majorId               Int?
   /// 로그인 ID 소셜 로그인이면 고유 ID 이메일 로그인이면 이메일
   /// 소셜 로그인 prefix(kakao: k, apple: a, google: g)
-  account   String    @unique @db.VarChar(255)
+  account               String                  @unique @db.VarChar(255)
   /// 멤버 닉네임
-  nickname  String?   @unique @db.VarChar(30)
+  nickname              String?                 @unique @db.VarChar(30)
   /// 멤버의 상태 (Pending: 0, Active: 1, InActive: 2)
-  status    Int       @default(0) @db.SmallInt
+  status                Int                     @default(0) @db.SmallInt
   /// 로그인 타입
   /// kakao: 1, google: 2, apple: 3
-  loginType Int       @db.SmallInt
+  loginType             Int                     @db.SmallInt
   /// 멤버 썸네일
-  thumbnail String?   @unique @db.VarChar(255)
+  thumbnail             String?                 @unique @db.VarChar(255)
   /// 소개
-  introduce String?   @db.VarChar(255)
+  introduce             String?                 @db.VarChar(255)
   /// 생성일자
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  createdAt             DateTime                @default(now()) @db.Timestamp(6)
   /// 수정일자
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  updatedAt             DateTime                @default(now()) @updatedAt @db.Timestamp(6)
   /// 탈퇴일자
-  deletedAt DateTime? @db.Timestamp(6)
+  deletedAt             DateTime?               @db.Timestamp(6)
+  
+  Lesson                Lesson[]
   Major                 Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   MemberSkill           MemberSkill[]
   LessonSolution        LessonSolution[]
@@ -74,20 +76,20 @@ model Member {
 /// 멤버 활동 모델
 model MemberReport {
   /// 고유 ID
-  id             Int  @id @default(autoincrement())
+  id             Int    @id @default(autoincrement())
   /// member 고유 ID
-  memberId       Int  @unique
+  memberId       Int    @unique
   /// 과제 제출 개수
-  lessonCount    Int  @default(0)
+  lessonCount    Int    @default(0)
   /// 피드백 한 총 개수
-  feedbackCount  Int  @default(0)
+  feedbackCount  Int    @default(0)
   /// 커뮤니티
-  communityCount Int  @default(0)
+  communityCount Int    @default(0)
   /// 랭킹
   rank           Int?
   /// 포인트
-  point          Int  @default(0)
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  point          Int    @default(0)
+  Member         Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 /// 멤버 팔로우 팔로잉 모델 
@@ -100,8 +102,8 @@ model MemberFollow {
   followingId Int
   /// 생성 일자
   createdAt   DateTime @default(now())
-  follower  Member @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
-  following Member @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  follower    Member   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   Member   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -109,6 +111,8 @@ model MemberFollow {
 model Lesson {
   /// 고유 ID
   id          Int       @id @default(autoincrement())
+  /// 과제 생성한 멤버 고유 ID
+  memberId    Int
   /// 출제자가 평가한 과제 난이도 
   levelId     Int
   /// 과제 제목
@@ -123,6 +127,8 @@ model Lesson {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
+
+  member                Member                  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   LessonLevel           LessonLevel             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   LessonSolution        LessonSolution[]
   LessonHashtag         LessonHashtag[]
@@ -160,8 +166,8 @@ model LessonLevelEvaluation {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt DateTime? @db.Timestamp(6)
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson    Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -181,8 +187,8 @@ model LessonSolution {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버의 과제 북마크에 대한 테이블 
@@ -195,8 +201,8 @@ model LessonBookMark {
   lessonId  Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 과제의 난이도에 대한 테이블 
@@ -207,7 +213,7 @@ model LessonLevel {
   level     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  Lesson Lesson[]
+  Lesson    Lesson[]
 }
 
 /// 과제의 해시 태그
@@ -220,7 +226,7 @@ model LessonHashtag {
   lessonId  Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 과제에 달린 댓글
@@ -239,22 +245,22 @@ model LessonComment {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버가 선택한 소분류 스킬
 model MemberSkill {
   /// 고유 ID
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   /// 소분류 고유 ID
   mainSkillId Int
   /// 멤버 고유 ID
   memberId    Int
   /// 생성일자
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-  MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime  @default(now()) @db.Timestamp(6)
+  MainSkill   MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Post {
