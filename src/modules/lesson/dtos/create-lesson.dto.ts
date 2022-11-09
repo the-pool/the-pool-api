@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { LessonLevelId } from '@src/constants/enum';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
 import { LessonEntity } from '../entities/lesson.entity';
 
 export class CreateLessonDto extends PickType(LessonEntity, [
@@ -16,7 +16,7 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   @IsNotEmpty()
   description: string;
 
+  @Length(1, 50)
   @IsString()
-  @IsNotEmpty()
   title: string;
 }
