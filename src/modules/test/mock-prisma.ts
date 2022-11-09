@@ -11,4 +11,8 @@ export const MockPrismaService = {
     deleteMany: jest.fn(),
     createMany: jest.fn(),
   },
+
+  lesson: {
+    create: jest.fn(),
+  },
 };
