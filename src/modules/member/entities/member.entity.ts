@@ -47,4 +47,18 @@ export class MemberEntity
     enum: getValueByEnum(OAuthAgency, 'number'),
   })
   loginType: number;
+
+  @ApiProperty({
+    description: 'member의 프로필 이미지',
+    required: false,
+    type: 'string',
+  })
+  thumbnail: string;
+
+  @ApiProperty({
+    description: 'member의 소개글',
+    required: false,
+    type: 'string',
+  })
+  introduce: string;
 }
