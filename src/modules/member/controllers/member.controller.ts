@@ -22,7 +22,7 @@ import { MemberLastStepLoginResponseType } from '../types/response/member-last-s
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
 @ApiTags('멤버')
-@Controller('api/member')
+@Controller('api/members')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 

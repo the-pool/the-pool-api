@@ -10,6 +10,7 @@ export class LessonEntity
   implements LessonModel
 {
   @ApiProperty({
+    example: 1,
     description: '출제자가 생각한 과제의 난이도 {상 : 1, 중 : 2, 하 : 3}',
     required: true,
     type: 'number',
@@ -18,6 +19,7 @@ export class LessonEntity
   levelId: number;
 
   @ApiProperty({
+    example: 'title',
     description: '과제의 제목',
     required: true,
     type: 'string',
@@ -25,6 +27,7 @@ export class LessonEntity
   title: string;
 
   @ApiProperty({
+    example: 'description',
     description: '과제의 설명',
     required: true,
     type: 'string',
@@ -32,6 +35,7 @@ export class LessonEntity
   description: string;
 
   @ApiProperty({
+    example: 100,
     description: '과제의 조회수',
     required: false,
     type: 'number',
