@@ -34,3 +34,9 @@ export enum MajorSkillId {
   Bx = 8,
   EtcDesign = 9,
 }
+
+export enum LessonLevelId {
+  Top = 1,
+  Middle = 2,
+  Bottom = 3,
+}
