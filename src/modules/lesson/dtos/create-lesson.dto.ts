@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
 import { LessonLevelId } from '@src/constants/enum';
-import { IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
+import { IsArray, IsEnum, IsNotEmpty, IsString, Length } from 'class-validator';
 import { LessonEntity } from '../entities/lesson.entity';
 
 export class CreateLessonDto extends PickType(LessonEntity, [
@@ -19,4 +19,8 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   @Length(1, 50)
   @IsString()
   title: string;
+
+  @IsString({ each: true })
+  @IsArray()
+  hashtag: string[];
 }

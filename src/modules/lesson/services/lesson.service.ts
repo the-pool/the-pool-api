@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
+import { createManyMapper } from '@src/common/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 
@@ -7,14 +8,19 @@ import { CreateLessonDto } from '../dtos/create-lesson.dto';
 export class LessonService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createLesson(
-    createLessonDto: CreateLessonDto,
+  createLesson(
+    { hashtag, ...lesson }: CreateLessonDto,
     memberId: number,
   ): Promise<Lesson> {
-    return await this.prismaService.lesson.create({
+    return this.prismaService.lesson.create({
       data: {
-        ...createLessonDto,
+        ...lesson,
         memberId,
+        LessonHashtag: {
+          createMany: {
+            data: createManyMapper({ tag: hashtag }),
+          },
+        },
       },
     });
   }

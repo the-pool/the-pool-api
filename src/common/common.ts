@@ -31,3 +31,38 @@ export const customValidate = async <T>(property: {
 }): Promise<ValidationError[]> => {
   return await validate(property, { skipUndefinedProperties: true });
 };
+
+/**
+ *createMany를 편리하게 사용하기 위한 함수
+ * ex { userId : [1,2,3], nickname: ['a','b','c']}
+ * =>[{userId : 1, nickname : 'a'}, {userId : 2, nickname : 'b'}, {userId : 3, nickname : 'c'}]
+ */
+export const createManyMapper = <T>(obj: {
+  [key in keyof T]: T[key][];
+}): { [key in keyof T]: T[key] }[] | [] => {
+  const keys = Object.keys(obj);
+
+  if (keys.length === 0) {
+    return [];
+  }
+
+  const lengths: number[] = [...new Set(keys.map((key) => obj[key].length))];
+
+  if (lengths.length > 1) {
+    throw new Error('길이 안맞아서 에러');
+  }
+
+  const result = [];
+
+  for (let i = 0; i < lengths[0]; i += 1) {
+    const mapped = {};
+
+    for (let j = 0; j < keys.length; j += 1) {
+      mapped[keys[j]] = obj[keys[j]][i];
+    }
+
+    result.push(mapped);
+  }
+
+  return result;
+};
