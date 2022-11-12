@@ -20,4 +20,4 @@ jobs:
         with:
           project: the-pool-backend
           column: Todo
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.PERSONAL_TOKEN }}
