@@ -10,7 +10,9 @@ branches:
   - label: Feature
     prefix: feature/
   - label: Bugfix
-    name: main
     prefix: bugfix/
+  - label: HotFix
+    name: main
+    prefix: hotfix/
 autoCloseIssue: true
 commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
