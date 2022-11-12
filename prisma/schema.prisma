@@ -18,7 +18,6 @@ model MainSkill {
   name      String   @unique @db.VarChar(30)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-
   Major       Major         @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   MemberSkill MemberSkill[]
 }
@@ -31,7 +30,6 @@ model Major {
   name      String   @unique @db.VarChar(30)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-
   MainSkill MainSkill[]
   Member    Member[]
 }
@@ -62,7 +60,6 @@ model Member {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 탈퇴일자
   deletedAt DateTime? @db.Timestamp(6)
-
   Major                 Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   MemberSkill           MemberSkill[]
   LessonSolution        LessonSolution[]
@@ -90,7 +87,6 @@ model MemberReport {
   rank           Int?
   /// 포인트
   point          Int  @default(0)
-
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
@@ -104,7 +100,6 @@ model MemberFollow {
   followingId Int
   /// 생성 일자
   createdAt   DateTime @default(now())
-
   follower  Member @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   following Member @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 }
@@ -128,7 +123,6 @@ model Lesson {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-
   LessonLevel           LessonLevel             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   LessonSolution        LessonSolution[]
   LessonHashtag         LessonHashtag[]
@@ -166,7 +160,6 @@ model LessonLevelEvaluation {
   updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt DateTime? @db.Timestamp(6)
-
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -188,7 +181,6 @@ model LessonSolution {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -203,7 +195,6 @@ model LessonBookMark {
   lessonId  Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -216,7 +207,6 @@ model LessonLevel {
   level     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-
   Lesson Lesson[]
 }
 
@@ -230,7 +220,6 @@ model LessonHashtag {
   lessonId  Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
@@ -250,7 +239,6 @@ model LessonComment {
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
@@ -265,7 +253,6 @@ model MemberSkill {
   memberId    Int
   /// 생성일자
   createdAt   DateTime @default(now()) @db.Timestamp(6)
-
   MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

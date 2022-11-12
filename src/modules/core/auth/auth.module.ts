@@ -5,9 +5,11 @@ import { ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '@src/modules/core/auth/jwt/jwt.strategy';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { HttpConfigModule } from '../http/http-config.module';
 
 @Module({
   imports: [
+    HttpConfigModule,
     PassportModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
