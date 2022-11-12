@@ -41,12 +41,13 @@ export const createManyMapper = <T>(obj: {
   [key in keyof T]: T[key][];
 }): { [key in keyof T]: T[key] }[] | [] => {
   const keys = Object.keys(obj);
+  const values: any[][] = Object.values(obj);
 
   if (keys.length === 0) {
     return [];
   }
 
-  const lengths: number[] = [...new Set(keys.map((key) => obj[key].length))];
+  const lengths: number[] = [...new Set(values.map((value) => value.length))];
 
   if (lengths.length > 1) {
     throw new Error('길이 안맞아서 에러');
@@ -57,10 +58,7 @@ export const createManyMapper = <T>(obj: {
   for (let i = 0; i < lengths[0]; i += 1) {
     const mapped = {};
 
-    for (let j = 0; j < keys.length; j += 1) {
-      mapped[keys[j]] = obj[keys[j]][i];
-    }
-
+    keys.forEach((item, idx) => (mapped[item] = values[idx][i]));
     result.push(mapped);
   }
 
