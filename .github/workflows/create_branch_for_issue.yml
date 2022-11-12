@@ -18,6 +18,6 @@ jobs:
       - name: Moving assigned issues on project boards
         uses: alex-page/github-project-automation-plus@v0.8.1
         with:
-          project: the-pool-backend
+          project: the-pool-api
           column: Todo
           repo-token: ${{ secrets.PERSONAL_TOKEN }}
