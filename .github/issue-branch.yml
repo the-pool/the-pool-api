@@ -1,0 +1,18 @@
+branchName: '${issue.number}'
+defaultBranch: 'develop'
+branches: 
+  - label: Config
+    prefix: feature/
+  - label: DB
+    prefix: feature/
+  - label: Doc
+    prefix: feature/
+  - label: Feature
+    prefix: feature/
+  - label: Bugfix
+    prefix: bugfix/
+  - label: HotFix
+    name: main
+    prefix: hotfix/
+autoCloseIssue: true
+commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
