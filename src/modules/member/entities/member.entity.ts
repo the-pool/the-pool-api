@@ -5,6 +5,7 @@ import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Member } from '@prisma/client';
+import { faker } from '@faker-js/faker';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -49,6 +50,7 @@ export class MemberEntity
   loginType: number;
 
   @ApiProperty({
+    example: faker.image.imageUrl(),
     description: 'member의 프로필 이미지',
     required: false,
     type: 'string',
