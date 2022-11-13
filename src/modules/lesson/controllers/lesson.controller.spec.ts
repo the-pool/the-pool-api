@@ -1,5 +1,7 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockLessonService } from '@src/modules/test/mock-service';
+import { string } from 'joi';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { LessonService } from '../services/lesson.service';
 import { LessonController } from './lesson.controller';
@@ -30,33 +32,32 @@ describe('LessonController', () => {
   describe('createLesson', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
-    let spyCreateLesson: jest.SpyInstance;
 
     beforeEach(async () => {
-      memberId = 1;
+      memberId = faker.datatype.number();
       createLessonDto = {
-        levelId: 1,
-        description: 'description',
-        title: 'title',
-        hashtag: ['a', 'b', 'c'],
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+        hashtag: ['1', '2', '3'],
       };
 
-      spyCreateLesson = jest.spyOn(lessonService, 'createLesson');
+      jest.spyOn(lessonService, 'createLesson');
     });
 
     afterEach(() => {
-      spyCreateLesson.mockRestore();
+      lessonService.createLesson.mockRestore();
     });
 
     it('success', async () => {
       const lesson = {
-        id: 1,
-        levelId: 1,
-        description: 'description',
-        title: 'title',
-        hit: 0,
-        createdAt: '2022-10-03T09:54:50.563Z',
-        updatedAt: '2022-10-03T09:54:50.563Z',
+        id: faker.datatype.number(),
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+        hit: faker.datatype.number(),
+        createdAt: faker.date.soon(),
+        updatedAt: faker.date.soon(),
         deletedAt: null,
       };
 
@@ -68,7 +69,7 @@ describe('LessonController', () => {
       );
 
       expect(returnValue).toStrictEqual(lesson);
-      expect(spyCreateLesson).toBeCalledTimes(1);
+      expect(lessonService.createLesson).toBeCalledTimes(1);
     });
   });
 });

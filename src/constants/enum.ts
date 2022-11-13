@@ -36,7 +36,10 @@ export enum MajorSkillId {
 }
 
 export enum LessonLevelId {
+  // 상
   Top = 1,
+  // 중
   Middle = 2,
+  // 하
   Bottom = 3,
 }

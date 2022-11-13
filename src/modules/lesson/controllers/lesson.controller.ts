@@ -1,7 +1,13 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserLogin } from '@src/decorators/user-login.decorator';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { LessonService } from '../services/lesson.service';
 import { CreateLessonResponseType } from '../types/response/create-lesson-response.type';
@@ -13,8 +19,9 @@ export class LessonController {
 
   @Post()
   @ApiOperation({ summary: '과제 생성' })
-  @UseGuards(AuthGuard('jwt'))
   @ApiCreatedResponse({ type: CreateLessonResponseType })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,

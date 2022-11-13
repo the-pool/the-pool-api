@@ -1,7 +1,7 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MockPrismaService } from '@src/modules/test/mock-prisma';
-import { title } from 'process';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { LessonService } from './lesson.service';
 
@@ -34,23 +34,23 @@ describe('LessonService', () => {
 
     beforeEach(async () => {
       createLessonDto = {
-        description: 'description',
-        title: 'title',
-        levelId: 1,
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+        hashtag: ['1', '2', '3'],
       };
       memberId = 1;
     });
 
     it('success', async () => {
       let lesson = {
-        id: 1,
-        memberId: 1,
-        levelId: 1,
-        title: 'title',
-        description: 'description',
-        hit: 0,
-        createdAt: '2022-11-09T11:16:37.221Z',
-        updatedAt: '2022-11-09T11:16:37.221Z',
+        id: faker.datatype.number(),
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+        hit: faker.datatype.number(),
+        createdAt: faker.date.soon(),
+        updatedAt: faker.date.soon(),
         deletedAt: null,
       };
 
