@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import { BooleanString } from '@src/constants/enum';
 import { validate, ValidationError } from 'class-validator';
 
@@ -47,10 +48,12 @@ export const createManyMapper = <T>(obj: {
     return [];
   }
 
-  const lengths: number[] = [...new Set(values.map((value) => value.length))];
+  const lengths = [...new Set(values.map((value) => value.length))];
 
   if (lengths.length > 1) {
-    throw new Error('길이 안맞아서 에러');
+    throw new InternalServerErrorException(
+      '길이가 맞지 않아 createMany를 실행할 수 없습니다.',
+    );
   }
 
   const result = [];
@@ -58,7 +61,7 @@ export const createManyMapper = <T>(obj: {
   for (let i = 0; i < lengths[0]; i += 1) {
     const mapped = {};
 
-    keys.forEach((item, idx) => (mapped[item] = values[idx][i]));
+    keys.forEach((key, idx) => (mapped[key] = values[idx][i]));
     result.push(mapped);
   }
 

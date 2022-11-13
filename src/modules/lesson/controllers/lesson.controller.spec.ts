@@ -38,6 +38,7 @@ describe('LessonController', () => {
         levelId: 1,
         description: 'description',
         title: 'title',
+        hashtag: ['a', 'b', 'c'],
       };
 
       spyCreateLesson = jest.spyOn(lessonService, 'createLesson');
