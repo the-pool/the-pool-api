@@ -4,11 +4,11 @@ import { MajorId, MemberStatus } from '@src/constants/enum';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { Member as MemberModel } from '@prisma/client';
+import { Member } from '@prisma/client';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)
-  implements MemberModel
+  implements Member
 {
   @ApiProperty({
     description: 'member의 작업분야',

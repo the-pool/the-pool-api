@@ -1,13 +1,14 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PartialType } from '@nestjs/swagger';
 import { getValueByEnum } from '@src/common/common';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { Lesson as LessonModel } from '@prisma/client';
+import { Lesson } from '@prisma/client';
 import { LessonLevelId } from '@src/constants/enum';
+import { LessonHashtagEntity } from './lesson-hashtag.entity';
 
 export class LessonEntity
   extends IntersectionType(IdResponseType, DateResponseType)
-  implements LessonModel
+  implements Lesson
 {
   @ApiProperty({
     example: 1,
@@ -49,4 +50,6 @@ export class LessonEntity
     type: 'number',
   })
   memberId: number;
+
+  tags?: LessonHashtagEntity[];
 }
