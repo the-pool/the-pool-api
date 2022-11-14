@@ -15,7 +15,7 @@ export class PrivateStorageController {
   ) {}
 
   @Post('/signedUrl')
-  async getSignedUrl(@Body() fileSignedUrl: GetSignedUrlDto) {
-    return await this.privateStorageService.getSignedUrl(fileSignedUrl);
+  async getSignedUrl(@Body() getSignedUrlDto: GetSignedUrlDto) {
+    return await this.privateStorageService.getSignedUrl(getSignedUrlDto);
   }
 }

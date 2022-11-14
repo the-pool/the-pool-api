@@ -13,3 +13,7 @@ export const MockHttpService = {
   get: jest.fn(() => MockAuthService),
   pipe: jest.fn(),
 };
+
+export const MockPrivateStorageService = {
+  getSignedUrl: jest.fn(),
+};
