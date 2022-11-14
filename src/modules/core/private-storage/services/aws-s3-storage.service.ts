@@ -17,11 +17,17 @@ export class AwsS3StorageService implements PrivateStorageService {
     this.awsS3Bucket = this.configService.get('AWS_S3_BUCKET_NAME');
   }
 
-  async getSignedUrl({ fileType, fileName }: FileSignedUrl): Promise<{
+  async getSignedUrl({
+    folderName,
+    fileType,
+    fileName,
+  }: FileSignedUrl): Promise<{
     imgName: string;
     s3Url: string;
   }> {
-    const imgName: string = `${Date.now() + fileName}.${fileType}`;
+    const imgName: string = `${
+      folderName + '/' + Date.now() + fileName
+    }.${fileType}`;
     const params = {
       Bucket: this.awsS3Bucket,
       Key: imgName,

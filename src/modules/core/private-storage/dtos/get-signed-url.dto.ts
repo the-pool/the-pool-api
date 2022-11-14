@@ -1,9 +1,20 @@
 import { faker } from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmptyString } from '@src/decorators/is-not-empty-string.decorator';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { FileSignedUrl } from '../interfaces/file-signed-url.interface';
 
 export class GetSignedUrlDto implements FileSignedUrl {
+  @ApiProperty({
+    example: faker.lorem.word(),
+    description: '업로드하려는 파일이 속할 폴더명',
+    required: true,
+    type: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  folderName: string;
+
   @ApiProperty({
     example: faker.lorem.word(),
     description: '업로드하려는 확장명을 제외한 파일의 이름',

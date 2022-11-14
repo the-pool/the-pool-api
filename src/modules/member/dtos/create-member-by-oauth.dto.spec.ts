@@ -1,6 +1,5 @@
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { LoginByOAuthDto } from './create-member-by-oauth.dto';
-import {} from '@nestjs/swagger';
 import { customValidate, getValueByEnum } from '@src/common/common';
 
 describe('LoginByOAuthDto', () => {
