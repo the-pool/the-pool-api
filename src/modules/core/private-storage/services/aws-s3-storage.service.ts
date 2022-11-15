@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { FileSignedUrl } from '../interfaces/file-signed-url.interface';
 import AWS from 'aws-sdk';
 import { PrivateStorageService } from '../interfaces/private-storage-service.interface';
+import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 
 @Injectable()
 export class AwsS3StorageService implements PrivateStorageService {
   private awsS3Bucket: string;
   private awsS3: AWS.S3;
-  constructor(public configService: ConfigService) {
+
+  constructor(private readonly configService: ConfigService) {
     this.awsS3 = new AWS.S3({
       accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
       secretAccessKey: this.configService.get('AWS_S3_SECRET_KEY'),
@@ -21,7 +22,7 @@ export class AwsS3StorageService implements PrivateStorageService {
     folderName,
     fileType,
     fileName,
-  }: FileSignedUrl): Promise<{
+  }: GetSignedUrlDto): Promise<{
     imgName: string;
     s3Url: string;
   }> {
