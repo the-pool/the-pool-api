@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Lesson, LessonHashtag } from '@prisma/client';
-import { createManyMapper } from '@src/common/common';
+import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 
 @Injectable()
 export class LessonService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly prismaHelper: PrismaHelper,
+  ) {}
 
   createLesson(
     { hashtag, ...lesson }: CreateLessonDto,
@@ -18,9 +21,9 @@ export class LessonService {
         memberId,
         LessonHashtag: {
           createMany: {
-            data: createManyMapper<{
-              tag: string;
-            }>({ tag: hashtag }),
+            data: this.prismaHelper.createManyMapper<{ tag: string }>({
+              tag: hashtag,
+            }),
           },
         },
       },
