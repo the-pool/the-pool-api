@@ -1,5 +1,4 @@
 import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,

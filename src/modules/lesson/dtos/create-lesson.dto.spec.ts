@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { customValidate, getValueByEnum } from '@src/common/common';
 import { LessonLevelId } from '@src/constants/enum';
 import { CreateLessonDto } from './create-lesson.dto';
@@ -82,6 +83,21 @@ describe('CreateLessonDto', () => {
       const errors = await customValidate(createLessonDto);
 
       expect(errors[0].constraints).toHaveProperty('isLength');
+    });
+  });
+
+  describe('thumbnail test', () => {
+    it('success - thumbnail', async () => {
+      createLessonDto.thumbnail = faker.image.imageUrl();
+
+      expect(typeof createLessonDto.thumbnail === 'string').toBeTruthy();
+    });
+
+    it('false - thumbnail이 string이 아닐 때', async () => {
+      createLessonDto.thumbnail = faker.datatype.number();
+      const errors = await customValidate(createLessonDto);
+
+      expect(errors[0].constraints).toHaveProperty('isString');
     });
   });
 });

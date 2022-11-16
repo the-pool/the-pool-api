@@ -11,13 +11,13 @@ datasource db {
 /// 디자인, 개발의 소분류를 담은 테이블
 model MainSkill {
   /// 고유 ID
-  id          Int           @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   /// 대분류 고유 ID
-  majorId     Int
+  majorId   Int
   /// 소분류의 이름
-  name        String        @unique @db.VarChar(30)
+  name      String   @unique @db.VarChar(30)
   /// 생성일자
-  createdAt   DateTime      @default(now()) @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 
   Major       Major         @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   MemberSkill MemberSkill[]
@@ -26,11 +26,11 @@ model MainSkill {
 /// 디자인, 개발 전공등 대분류를 담은 테이블 
 model Major {
   /// 고유 ID
-  id        Int         @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   /// 대분류의 이름
-  name      String      @unique @db.VarChar(30)
+  name      String   @unique @db.VarChar(30)
   /// 생성일자
-  createdAt DateTime    @default(now()) @db.Timestamp(6)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
 
   MainSkill MainSkill[]
   Member    Member[]
@@ -78,21 +78,21 @@ model Member {
 /// 멤버 활동 모델
 model MemberReport {
   /// 고유 ID
-  id             Int    @id @default(autoincrement())
+  id             Int  @id @default(autoincrement())
   /// member 고유 ID
-  memberId       Int    @unique
+  memberId       Int  @unique
   /// 과제 제출 개수
-  lessonCount    Int    @default(0)
+  lessonCount    Int  @default(0)
   /// 피드백 한 총 개수
-  feedbackCount  Int    @default(0)
+  feedbackCount  Int  @default(0)
   /// 커뮤니티
-  communityCount Int    @default(0)
+  communityCount Int  @default(0)
   /// 랭킹
   rank           Int?
   /// 포인트
-  point          Int    @default(0)
+  point          Int  @default(0)
 
-  Member         Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 /// 멤버 팔로우 팔로잉 모델 
@@ -106,8 +106,8 @@ model MemberFollow {
   /// 생성 일자
   createdAt   DateTime @default(now())
 
-  follower    Member   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
-  following   Member   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  follower  Member @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following Member @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -125,6 +125,8 @@ model Lesson {
   description String
   /// 과제 조회수        
   hit         Int       @default(0)
+  /// 과제 썸네일
+  thumbnail   String?   @db.VarChar(255)
   /// 생성일자
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
@@ -171,8 +173,8 @@ model LessonLevelEvaluation {
   /// 삭제일자
   deletedAt DateTime? @db.Timestamp(6)
 
-  Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson    Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -193,8 +195,8 @@ model LessonSolution {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
-  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버의 과제 북마크에 대한 테이블 
@@ -208,8 +210,8 @@ model LessonBookMark {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  Member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 과제의 난이도에 대한 테이블 
@@ -234,7 +236,7 @@ model LessonHashtag {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 과제에 달린 댓글
@@ -254,23 +256,23 @@ model LessonComment {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
-  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버가 선택한 소분류 스킬
 model MemberSkill {
   /// 고유 ID
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   /// 소분류 고유 ID
   mainSkillId Int
   /// 멤버 고유 ID
   memberId    Int
   /// 생성일자
-  createdAt   DateTime  @default(now()) @db.Timestamp(6)
-  
-  MainSkill   MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+
+  MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Post {

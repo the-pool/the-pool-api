@@ -37,6 +37,7 @@ describe('LessonService', () => {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
         title: faker.lorem.words(),
+        thumbnail: faker.image.imageUrl(),
         hashtag: ['1', '2', '3'],
       };
       memberId = 1;

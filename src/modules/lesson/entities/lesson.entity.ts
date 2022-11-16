@@ -42,6 +42,12 @@ export class LessonEntity
   })
   hit: number;
 
+  @ApiPropertyOptional({
+    description: '과제의 썸네일',
+    example: 'the-pool.png',
+  })
+  thumbnail: string;
+
   @ApiProperty({
     description: '과제를 생성한 멤버 고유 ID',
     example: 1,
