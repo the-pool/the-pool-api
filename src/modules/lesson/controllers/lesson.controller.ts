@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -6,6 +6,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
@@ -20,6 +21,10 @@ export class LessonController {
   @Post()
   @ApiOperation({ summary: '과제 생성' })
   @ApiCreatedResponse({ type: CreateLessonResponseType })
+  @CustomApiResponse(
+    HttpStatus.INTERNAL_SERVER_ERROR,
+    '길이가 맞지 않아 createMany를 실행할 수 없습니다.',
+  )
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   createLesson(
