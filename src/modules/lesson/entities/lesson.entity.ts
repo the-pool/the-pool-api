@@ -16,47 +16,40 @@ export class LessonEntity
   implements Lesson
 {
   @ApiProperty({
+    description: '출제자가 생각한 과제의 난이도',
     example: LessonLevelId.Top,
-    description: '출제자가 생각한 과제의 난이도 {상 : 1, 중 : 2, 하 : 3}',
-    required: true,
-    type: 'number',
     enum: getValueByEnum(LessonLevelId, 'number'),
   })
   levelId: LessonLevelId;
 
   @ApiProperty({
+    description: '과제의 제목',
     example: 'title',
     minLength: titleLength.MIN,
     maxLength: titleLength.MAX,
-    description: '과제의 제목',
-    required: true,
-    type: 'string',
   })
   title: string;
 
   @ApiProperty({
-    example: 'description',
     description: '과제의 설명',
-    required: true,
-    type: 'string',
+    example: 'description',
   })
   description: string;
 
   @ApiProperty({
-    example: 100,
     description: '과제의 조회수',
-    required: false,
-    type: 'number',
+    example: 100,
   })
   hit: number;
 
   @ApiProperty({
-    example: 1,
     description: '과제를 생성한 멤버 고유 ID',
-    required: false,
-    type: 'number',
+    example: 1,
   })
   memberId: number;
 
+  @ApiPropertyOptional({
+    description: '과제의 hashtag entity',
+  })
   tags?: LessonHashtagEntity[];
 }

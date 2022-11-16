@@ -25,6 +25,23 @@ export const getValueByEnum = <T extends string | number>(
 };
 
 /**
+ * swagger 상에 enum에 들어갈 key,value를 명시하기 위한 함수
+ */
+export const getEntriesByEnum = <T>(Enum: {
+  [key in keyof T]: T[key];
+}): T[] => {
+  const entries = Object.entries(Enum);
+  entries.splice(0, entries.length / 2);
+
+  return [
+    entries.reduce((acc, cur) => {
+      acc[cur[0]] = cur[1];
+      return acc;
+    }, {}) as T,
+  ];
+};
+
+/**
  * dto test 코드를 작성할 때 test하고 싶은 독립된 property를 만들어 낼 때 사용되는 함수
  */
 export const customValidate = async <T>(property: {

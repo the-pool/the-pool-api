@@ -1,11 +1,14 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { getValueByEnum } from '@src/common/common';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  IntersectionType,
+} from '@nestjs/swagger';
+import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
 import { MajorId, MemberStatus } from '@src/constants/enum';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Member } from '@prisma/client';
-import { faker } from '@faker-js/faker';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -13,54 +16,46 @@ export class MemberEntity
 {
   @ApiProperty({
     description: 'member의 작업분야',
-    required: true,
-    type: 'number',
-    enum: getValueByEnum(MajorId, 'number'),
+    example: 1,
+    enum: getEntriesByEnum(MajorId),
   })
-  majorId: number;
+  majorId: MajorId;
 
   @ApiProperty({
-    description: 'member의 소셜(kakao,google,apple) 계정 id',
-    required: true,
-    type: 'string',
+    description: 'member의 소셜 계정 id',
+    example: 'k123456789',
   })
   account: string;
 
   @ApiProperty({
     description: 'member의 닉네임',
-    required: true,
-    type: 'string',
+    example: 'the-pool',
   })
   nickname: string;
 
   @ApiProperty({
     description: 'member의 상태',
-    required: true,
-    type: 'string',
-    enum: getValueByEnum(MemberStatus, 'number'),
+    example: 0,
+    enum: getEntriesByEnum(MemberStatus),
   })
-  status: number;
+  status: MemberStatus;
 
   @ApiProperty({
-    description: 'member의 상태',
-    required: true,
-    type: 'number',
-    enum: getValueByEnum(OAuthAgency, 'number'),
+    description: 'member의 소셜 종류',
+    example: 1,
+    enum: getEntriesByEnum(OAuthAgency),
   })
-  loginType: number;
+  loginType: OAuthAgency;
 
   @ApiProperty({
-    example: faker.image.imageUrl(),
     description: 'member의 프로필 이미지',
-    required: false,
-    type: 'string',
+    example: 'profile.img',
   })
   thumbnail: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'member의 소개글',
-    required: false,
-    type: 'string',
+    example: 'the-pool 화이팅',
   })
   introduce: string;
 }

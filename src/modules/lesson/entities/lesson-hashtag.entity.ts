@@ -10,16 +10,12 @@ export class LessonHashtagEntity
   @ApiProperty({
     example: 1,
     description: 'hashtag에 해당하는 lesson의 고유 ID',
-    required: true,
-    type: 'number',
   })
   lessonId: number;
 
   @ApiProperty({
     example: 'the-pool',
     description: 'hashtag',
-    required: true,
-    type: 'string',
   })
   tag: string;
 }
