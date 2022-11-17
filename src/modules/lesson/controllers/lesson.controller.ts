@@ -1,4 +1,12 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -9,8 +17,11 @@ import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
-import { CreateLessonResponseType } from '../types/response/create-lesson-response.type';
+import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
+import { ModelName } from '@src/constants/enum';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -19,7 +30,7 @@ export class LessonController {
 
   @Post()
   @ApiOperation({ summary: '과제 생성' })
-  @ApiCreatedResponse({ type: CreateLessonResponseType })
+  @ApiCreatedResponse({ type: LessonEntity })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @ApiBearerAuth()
@@ -29,5 +40,24 @@ export class LessonController {
     @UserLogin('id') memberId: number,
   ) {
     return this.lessonService.createLesson(createLessonDto, memberId);
+  }
+
+  @Put(':lessonId')
+  @ApiOperation({ summary: '과제 수정' })
+  @ApiCreatedResponse({ type: LessonEntity })
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  async updateLesson(
+    @Param() @SetModelNameToParam(ModelName.LessonHashTag) lessonId: number,
+    @Body() { hashtag, ...lesson }: UpdateLessonDto,
+    @UserLogin('id') memberId: number,
+  ) {
+    // lesson의 주인이 member인지 확인
+
+    // lesson 테이블 업데이트
+    await this.lessonService.updateLesson(lesson, memberId, lessonId);
+    // hashtag가 있다면 기존 lesson의 hashtag삭제하고, 새로운 hashtag 저장
+    await this.lessonService.updateLessonHashTag(hashtag, lessonId);
   }
 }

@@ -29,4 +29,31 @@ export class LessonService {
       },
     });
   }
+
+  async updateLesson(lesson, memberId: number, lessonId: number) {
+    return this.prismaService.lesson.update({
+      data: { ...lesson },
+      where: { id: lessonId },
+    });
+  }
+
+  async updateLessonHashTag(hashtag: string[], lessonId: number) {
+    await this.prismaService.lessonHashtag.deleteMany({
+      where: {
+        lessonId,
+      },
+    });
+
+    const lessonIdArr = Array.from({ length: hashtag.length }, () => lessonId);
+
+    await this.prismaService.lessonHashtag.createMany({
+      data: this.dataStructureHelper.createManyMapper<{
+        tag: string;
+        lessonId: number;
+      }>({
+        tag: hashtag,
+        lessonId: lessonIdArr,
+      }),
+    });
+  }
 }
