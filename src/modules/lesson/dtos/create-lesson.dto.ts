@@ -19,7 +19,7 @@ export class CreateLessonDto extends PickType(LessonEntity, [
 ]) {
   @IsEnum(LessonLevelId)
   @IsNotEmpty()
-  levelId: number;
+  levelId: LessonLevelId;
 
   @IsString()
   @IsNotEmpty()

@@ -1,9 +1,9 @@
 import {
   Body,
   Controller,
+  HttpCode,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -11,6 +11,8 @@ import {
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -46,20 +48,24 @@ export class LessonController {
 
   @Put(':id')
   @ApiOperation({ summary: '과제 수정' })
-  @ApiCreatedResponse({ type: LessonEntity })
+  @HttpCode(HttpStatus.NO_CONTENT)
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 삭제할 권한이 없습니다.')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in lesson",
+  )
+  @ApiNoContentResponse()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async updateLesson(
     @Param()
-    @SetModelNameToParam(ModelName.LessonHashTag)
+    @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ) {
-    // lesson 테이블 업데이트
     await this.lessonService.updateLesson(lesson, memberId, param.id);
-    // hashtag가 있다면 기존 lesson의 hashtag삭제하고, 새로운 hashtag 저장
     await this.lessonService.updateLessonHashTag(hashtag, param.id);
   }
 }

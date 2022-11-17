@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
@@ -31,15 +31,13 @@ export class LessonService {
   }
 
   async updateLesson(lesson, memberId: number, lessonId: number) {
-    try {
-      return await this.prismaService.lesson.update({
-        where: { id: lessonId, memberId },
-        data: { ...lesson },
-      });
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
+    const updatedCount = await this.prismaService.lesson.updateMany({
+      where: { id: lessonId, memberId },
+      data: { ...lesson },
+    });
+
+    if (!updatedCount.count)
+      throw new ForbiddenException('과제를 삭제할 권한이 없습니다.');
   }
 
   async updateLessonHashTag(hashtag: string[], lessonId: number) {

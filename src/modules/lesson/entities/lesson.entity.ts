@@ -3,7 +3,7 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
-import { getValueByEnum } from '@src/common/common';
+import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Lesson } from '@prisma/client';
@@ -18,7 +18,7 @@ export class LessonEntity
   @ApiProperty({
     description: '출제자가 생각한 과제의 난이도',
     example: LessonLevelId.Top,
-    enum: getValueByEnum(LessonLevelId, 'number'),
+    enum: getEntriesByEnum(LessonLevelId),
   })
   levelId: LessonLevelId;
 
