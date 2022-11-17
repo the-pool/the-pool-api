@@ -20,10 +20,8 @@ export class LessonController {
   @Post()
   @ApiOperation({ summary: '과제 생성' })
   @ApiCreatedResponse({ type: CreateLessonResponseType })
-  @CustomApiResponse(
-    HttpStatus.INTERNAL_SERVER_ERROR,
-    '길이가 맞지 않아 createMany를 실행할 수 없습니다.',
-  )
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   createLesson(
