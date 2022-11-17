@@ -1,21 +1,21 @@
 import { faker } from '@faker-js/faker';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaHelper } from './prisma.helper';
+import { DataStructureHelper } from './data-structure.helper';
 
-describe('PrismaHelper', () => {
-  let prismaHelper: PrismaHelper;
+describe('DataStructureHelper', () => {
+  let dataStructureHelper: DataStructureHelper;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PrismaHelper],
+      providers: [DataStructureHelper],
     }).compile();
 
-    prismaHelper = module.get<PrismaHelper>(PrismaHelper);
+    dataStructureHelper = module.get<DataStructureHelper>(DataStructureHelper);
   });
 
   it('should be defined', () => {
-    expect(prismaHelper).toBeDefined();
+    expect(dataStructureHelper).toBeDefined();
   });
 
   describe('createManyMapper', () => {
@@ -31,7 +31,7 @@ describe('PrismaHelper', () => {
         column2: values2,
       };
 
-      const returnValue = prismaHelper.createManyMapper(obj);
+      const returnValue = dataStructureHelper.createManyMapper(obj);
 
       expect(returnValue[0]['column1']).toStrictEqual(values1[0]);
       expect(returnValue[0]['column2']).toStrictEqual(values2[0]);
@@ -43,11 +43,11 @@ describe('PrismaHelper', () => {
         column1: values1,
         column2: values2,
       };
-      let errorWeExceptFor;
+      let errorExceptFor;
 
       try {
-        prismaHelper.createManyMapper(obj);
-        errorWeExceptFor = null;
+        dataStructureHelper.createManyMapper(obj);
+        errorExceptFor = null;
       } catch (error) {
         expect(error).toStrictEqual(
           new InternalServerErrorException(
@@ -55,7 +55,7 @@ describe('PrismaHelper', () => {
           ),
         );
       }
-      expect(errorWeExceptFor).not.toBeNull();
+      expect(errorExceptFor).not.toBeNull();
     });
   });
 });

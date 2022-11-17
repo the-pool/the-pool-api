@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
-export class PrismaHelper {
+export class DataStructureHelper {
   /**
    *createMany를 편리하게 사용하기 위한 함수
    * ex { userId : [1,2,3], nickname: ['a','b','c']}
