@@ -53,8 +53,6 @@ export class LessonController {
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ) {
-    // lesson의 주인이 member인지 확인
-
     // lesson 테이블 업데이트
     await this.lessonService.updateLesson(lesson, memberId, lessonId);
     // hashtag가 있다면 기존 lesson의 hashtag삭제하고, 새로운 hashtag 저장
