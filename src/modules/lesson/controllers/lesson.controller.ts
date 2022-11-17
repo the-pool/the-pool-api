@@ -3,6 +3,7 @@ import {
   Controller,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   UseGuards,
@@ -22,6 +23,7 @@ import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { ModelName } from '@src/constants/enum';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -42,20 +44,22 @@ export class LessonController {
     return this.lessonService.createLesson(createLessonDto, memberId);
   }
 
-  @Put(':lessonId')
+  @Put(':id')
   @ApiOperation({ summary: '과제 수정' })
   @ApiCreatedResponse({ type: LessonEntity })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async updateLesson(
-    @Param() @SetModelNameToParam(ModelName.LessonHashTag) lessonId: number,
+    @Param()
+    @SetModelNameToParam(ModelName.LessonHashTag)
+    param: IdRequestParamDto,
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ) {
     // lesson 테이블 업데이트
-    await this.lessonService.updateLesson(lesson, memberId, lessonId);
+    await this.lessonService.updateLesson(lesson, memberId, param.id);
     // hashtag가 있다면 기존 lesson의 hashtag삭제하고, 새로운 hashtag 저장
-    await this.lessonService.updateLessonHashTag(hashtag, lessonId);
+    await this.lessonService.updateLessonHashTag(hashtag, param.id);
   }
 }

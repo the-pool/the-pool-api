@@ -31,10 +31,15 @@ export class LessonService {
   }
 
   async updateLesson(lesson, memberId: number, lessonId: number) {
-    return this.prismaService.lesson.update({
-      where: { id: lessonId, memberId },
-      data: { ...lesson },
-    });
+    try {
+      return await this.prismaService.lesson.update({
+        where: { id: lessonId, memberId },
+        data: { ...lesson },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 
   async updateLessonHashTag(hashtag: string[], lessonId: number) {
