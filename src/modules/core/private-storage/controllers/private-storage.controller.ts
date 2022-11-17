@@ -32,7 +32,7 @@ export class PrivateStorageController {
   @Post('/signedUrl')
   @ApiOperation({ summary: 'presignedUrl 발급' })
   @ApiCreatedResponse({ type: GetSignedUrlResponseType })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, '소셜 로그인에 실패하였습니다.')
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async getSignedUrl(@Body() getSignedUrlDto: GetSignedUrlDto) {

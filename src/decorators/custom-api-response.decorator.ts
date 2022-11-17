@@ -18,7 +18,7 @@ export const CustomApiResponse = (status: HttpStatus, errorMessage: string) => {
 
     @ApiProperty({
       description: '에러 메시지',
-      example: { message: errorMessage },
+      example: [{ message: errorMessage }],
     })
     errors: ResponseErrorItem[];
   }
