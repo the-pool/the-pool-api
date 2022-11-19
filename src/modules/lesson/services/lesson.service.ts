@@ -4,7 +4,7 @@ import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @Injectable()
 export class LessonService {
@@ -13,6 +13,9 @@ export class LessonService {
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
+  /**
+   * 과제 생성 메서드
+   */
   createLesson(
     { hashtag, ...lesson }: CreateLessonDto,
     memberId: number,
@@ -23,7 +26,9 @@ export class LessonService {
         memberId,
         LessonHashtag: {
           createMany: {
-            data: this.dataStructureHelper.createManyMapper<{ tag: string }>({
+            data: this.dataStructureHelper.createManyMapper<
+              Pick<LessonHashtagEntity, 'tag'>
+            >({
               tag: hashtag,
             }),
           },
@@ -56,10 +61,9 @@ export class LessonService {
     const lessonIdArr = Array.from({ length: hashtag.length }, () => lessonId);
 
     await this.prismaService.lessonHashtag.createMany({
-      data: this.dataStructureHelper.createManyMapper<{
-        tag: string;
-        lessonId: number;
-      }>({
+      data: this.dataStructureHelper.createManyMapper<
+        Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
+      >({
         tag: hashtag,
         lessonId: lessonIdArr,
       }),

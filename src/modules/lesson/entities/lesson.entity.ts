@@ -3,7 +3,7 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
-import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
+import { getEntriesByEnum } from '@src/common/common';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Lesson } from '@prisma/client';
