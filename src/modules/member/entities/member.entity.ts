@@ -10,6 +10,8 @@ export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)
   implements MemberModel
 {
+  thumbnail: string;
+  introduce: string;
   @ApiProperty({
     description: 'member의 작업분야',
     required: true,
