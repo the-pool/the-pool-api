@@ -14,11 +14,3 @@ jobs:
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      # issue status - Todo
-      - name: Moving assigned issues on project boards
-        if: ${{ github.event == 'issues' }}
-        uses: alex-page/github-project-automation-plus@v0.8.1
-        with:
-          project: the-pool-api
-          column: Todo
-          repo-token: ${{ secrets.PERSONAL_TOKEN }}
