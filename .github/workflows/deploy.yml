@@ -4,6 +4,7 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    
 
 jobs:
   dockerBuild:
@@ -51,6 +52,7 @@ jobs:
         env:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
+          sudo rm .env
           touch .env
           echo $ENV_FILE >> .env
           cat .env
