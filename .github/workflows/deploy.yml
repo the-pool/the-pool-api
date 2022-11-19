@@ -50,11 +50,15 @@ jobs:
           sudo docker system prune -af
       - name: Create env
         env:
-          ENV_FILE: ${{ secrets.ENV_FILE }}
+          PROJECT_DATABASE_URL: ${{ secrets.PROJECT_DATABASE_URL }}
+          PROJECT_PORT: ${{ secrets.PROJECT_PORT }}
+          PROJECT_SECRET_KEY: ${{ secrets.PROJECT_SECRET_KEY }}
         run: |
           sudo rm .env
           touch .env
-          echo $ENV_FILE >> .env
+          echo $PROJECT_DATABASE_URL >> .env
+          echo $PROJECT_PORT >> .env
+          echo $PROJECT_SECRET_KEY >> .env
           cat .env
       - name: Docker run 
         env:
