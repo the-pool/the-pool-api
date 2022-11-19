@@ -56,7 +56,7 @@ jobs:
           touch .env
           echo $ENV_FILE >> .env
           cat .env
-      - name: Docker run
+      - name: Docker run 
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
           REPOSITORY: api_server_container_repository
