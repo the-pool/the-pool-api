@@ -3,12 +3,13 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
-import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
-import { MajorId, MemberStatus } from '@src/constants/enum';
+import { getEntriesByEnum } from '@src/common/common';
+import { MajorId } from '@src/constants/enum';
 import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Member } from '@prisma/client';
+import { MemberStatus } from '../constants/member.enum';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)

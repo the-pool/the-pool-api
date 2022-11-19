@@ -20,11 +20,6 @@ export enum MajorId {
   Design = 2,
 }
 
-export enum MemberStatus {
-  Pending = 0,
-  Active = 1,
-}
-
 export enum MajorSkillId {
   Backend = 1,
   WebFrontend = 2,

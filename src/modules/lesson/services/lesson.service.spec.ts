@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
+import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MockPrismaService } from '@src/modules/test/mock-prisma';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
@@ -13,6 +15,7 @@ describe('LessonService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LessonService,
+        DataStructureHelper,
         {
           provide: PrismaService,
           useValue: MockPrismaService,
@@ -63,6 +66,73 @@ describe('LessonService', () => {
       );
 
       expect(returnValue).toStrictEqual(lesson);
+    });
+  });
+
+  describe('updateLesson', () => {
+    let lesson;
+    let memebrId: number;
+    let lessonId: number;
+
+    beforeEach(async () => {
+      lesson = {
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+      };
+      (memebrId = faker.datatype.number()),
+        (lessonId = faker.datatype.number());
+    });
+
+    afterEach(async () => {
+      jest.clearAllMocks();
+    });
+
+    it('success', async () => {
+      prismaService.lesson.updateMany.mockReturnValue({ count: 1 });
+
+      const returnValue = await lessonService.updateLesson(
+        lesson,
+        memebrId,
+        lessonId,
+      );
+
+      expect(returnValue).toBeUndefined();
+    });
+
+    it('false - 과제 작성자가 아닌 사람이 과제를 수정하려고 할 때', async () => {
+      prismaService.lesson.updateMany.mockReturnValue({ count: 0 });
+
+      await expect(async () => {
+        await lessonService.updateLesson(lesson, memebrId, lessonId);
+      }).rejects.toThrowError(
+        new ForbiddenException('과제를 삭제할 권한이 없습니다.'),
+      );
+    });
+  });
+
+  describe('updateLessonHashTag', () => {
+    let hashtag: string[];
+    let lessonId: number;
+
+    beforeEach(async () => {
+      hashtag = ['1', '2', '3'];
+      lessonId = faker.datatype.number();
+    });
+    afterEach(async () => {
+      jest.clearAllMocks();
+    });
+
+    it('success', async () => {
+      prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
+      prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
+
+      const returnValue = await lessonService.updateLessonHashTag(
+        hashtag,
+        lessonId,
+      );
+
+      expect(returnValue).toBeUndefined();
     });
   });
 });

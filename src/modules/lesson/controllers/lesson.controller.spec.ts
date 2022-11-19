@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
+import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { MockLessonService } from '@src/modules/test/mock-service';
-import { string } from 'joi';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
@@ -116,6 +116,18 @@ describe('LessonController', () => {
       expect(returnValue).toStrictEqual(undefined);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
       expect(lessonService.updateLessonHashTag).toBeCalledTimes(1);
+    });
+
+    it('false - 과제 출제자가 아닌 사람이 수정을 하려고 했을 때', async () => {
+      lessonService.updateLesson.mockImplementation(() => {
+        throw new ForbiddenException('과제를 삭제할 권한이 없습니다.');
+      });
+
+      await expect(async () => {
+        await lessonController.updateLesson(param, updateLessonDto, memberId);
+      }).rejects.toThrowError(
+        new ForbiddenException('과제를 삭제할 권한이 없습니다.'),
+      );
     });
   });
 });
