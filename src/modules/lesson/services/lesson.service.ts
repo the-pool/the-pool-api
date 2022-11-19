@@ -40,7 +40,7 @@ export class LessonService {
       throw new ForbiddenException('과제를 삭제할 권한이 없습니다.');
   }
 
-  async updateLessonHashTag(hashtag: string[], lessonId: number) {
+  async updateLessonHashtag(hashtag: string[], lessonId: number) {
     await this.prismaService.lessonHashtag.deleteMany({
       where: {
         lessonId,

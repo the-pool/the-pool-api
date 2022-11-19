@@ -66,6 +66,6 @@ export class LessonController {
     @UserLogin('id') memberId: number,
   ) {
     await this.lessonService.updateLesson(lesson, memberId, param.id);
-    await this.lessonService.updateLessonHashTag(hashtag, param.id);
+    await this.lessonService.updateLessonHashtag(hashtag, param.id);
   }
 }

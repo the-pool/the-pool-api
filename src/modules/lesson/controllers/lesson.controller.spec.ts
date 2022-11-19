@@ -96,7 +96,7 @@ describe('LessonController', () => {
       };
 
       jest.spyOn(lessonService, 'updateLesson');
-      jest.spyOn(lessonService, 'updateLessonHashTag');
+      jest.spyOn(lessonService, 'updateLessonHashtag');
     });
 
     afterEach(() => {
@@ -105,7 +105,7 @@ describe('LessonController', () => {
 
     it('success', async () => {
       lessonService.updateLesson.mockReturnValue(undefined);
-      lessonService.updateLessonHashTag.mockReturnValue(undefined);
+      lessonService.updateLessonHashtag.mockReturnValue(undefined);
 
       const returnValue = await lessonController.updateLesson(
         param,
@@ -115,7 +115,7 @@ describe('LessonController', () => {
 
       expect(returnValue).toStrictEqual(undefined);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
-      expect(lessonService.updateLessonHashTag).toBeCalledTimes(1);
+      expect(lessonService.updateLessonHashtag).toBeCalledTimes(1);
     });
 
     it('false - 과제 출제자가 아닌 사람이 수정을 하려고 했을 때', async () => {

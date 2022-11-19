@@ -17,5 +17,5 @@ export const MockHttpService = {
 export const MockLessonService = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
-  updateLessonHashTag: jest.fn(),
+  updateLessonHashtag: jest.fn(),
 };

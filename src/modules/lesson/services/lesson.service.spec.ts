@@ -111,7 +111,7 @@ describe('LessonService', () => {
     });
   });
 
-  describe('updateLessonHashTag', () => {
+  describe('updateLessonHashtag', () => {
     let hashtag: string[];
     let lessonId: number;
 
@@ -127,7 +127,7 @@ describe('LessonService', () => {
       prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
       prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
 
-      const returnValue = await lessonService.updateLessonHashTag(
+      const returnValue = await lessonService.updateLessonHashtag(
         hashtag,
         lessonId,
       );
