@@ -13,6 +13,6 @@ branches:
     prefix: bugfix/
   - label: HotFix
     name: main
-    prefix: hotfix/ 
+    prefix: hotfix/
 autoCloseIssue: true
 commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
