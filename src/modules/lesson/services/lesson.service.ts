@@ -3,6 +3,8 @@ import { Lesson } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { LessonEntity } from '../entities/lesson.entity';
 
 @Injectable()
 export class LessonService {
@@ -30,7 +32,11 @@ export class LessonService {
     });
   }
 
-  async updateLesson(lesson, memberId: number, lessonId: number) {
+  async updateLesson(
+    lesson: Omit<UpdateLessonDto, 'hashtag'>,
+    memberId: number,
+    lessonId: number,
+  ) {
     const updatedCount = await this.prismaService.lesson.updateMany({
       where: { id: lessonId, memberId },
       data: { ...lesson },
