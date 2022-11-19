@@ -1,8 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { MockLessonService } from '@src/modules/test/mock-service';
 import { string } from 'joi';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
 import { LessonController } from './lesson.controller';
 
@@ -71,6 +73,49 @@ describe('LessonController', () => {
 
       expect(returnValue).toStrictEqual(lesson);
       expect(lessonService.createLesson).toBeCalledTimes(1);
+    });
+  });
+
+  describe('updateLesson', () => {
+    let updateLessonDto: UpdateLessonDto;
+    let memberId: number;
+    let param: IdRequestParamDto;
+
+    beforeEach(async () => {
+      memberId = faker.datatype.number();
+      updateLessonDto = {
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+        thumbnail: faker.image.imageUrl(),
+        hashtag: ['1', '2', '3'],
+      };
+      param = {
+        id: faker.datatype.number(),
+        model: 'lesson',
+      };
+
+      jest.spyOn(lessonService, 'updateLesson');
+      jest.spyOn(lessonService, 'updateLessonHashTag');
+    });
+
+    afterEach(() => {
+      lessonService.updateLesson.mockRestore();
+    });
+
+    it('success', async () => {
+      lessonService.updateLesson.mockReturnValue(undefined);
+      lessonService.updateLessonHashTag.mockReturnValue(undefined);
+
+      const returnValue = await lessonController.updateLesson(
+        param,
+        updateLessonDto,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual(undefined);
+      expect(lessonService.updateLesson).toBeCalledTimes(1);
+      expect(lessonService.updateLessonHashTag).toBeCalledTimes(1);
     });
   });
 });
