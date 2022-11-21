@@ -2,7 +2,7 @@ export enum ModelName {
   User = 'user',
   Post = 'post',
   Lesson = 'lesson',
-  LessonHashTag = 'lessonHashtag',
+  LessonHashtag = 'lessonHashtag',
 }
 
 export enum OrderBy {
