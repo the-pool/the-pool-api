@@ -42,13 +42,14 @@ export class LessonService {
     memberId: number,
     lessonId: number,
   ) {
-    const updatedCount = await this.prismaService.lesson.updateMany({
+    const updatedLesson = await this.prismaService.lesson.updateMany({
       where: { id: lessonId, memberId },
       data: { ...lesson },
     });
 
-    if (!updatedCount.count)
+    if (!updatedLesson.count) {
       throw new ForbiddenException('과제를 수정할 권한이 없습니다.');
+    }
   }
 
   async updateLessonHashtag(hashtag: string[], lessonId: number) {

@@ -32,12 +32,13 @@ export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 생성' })
+  @ApiBearerAuth()
   @ApiCreatedResponse({ type: LessonEntity })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
@@ -46,17 +47,17 @@ export class LessonController {
   }
 
   @Put(':id')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 수정' })
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiCreatedResponse()
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 수정할 권한이 없습니다.')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
-  @ApiNoContentResponse()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   async updateLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
