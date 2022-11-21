@@ -106,7 +106,7 @@ describe('LessonService', () => {
       await expect(async () => {
         await lessonService.updateLesson(lesson, memebrId, lessonId);
       }).rejects.toThrowError(
-        new ForbiddenException('과제를 삭제할 권한이 없습니다.'),
+        new ForbiddenException('과제를 수정할 권한이 없습니다.'),
       );
     });
   });

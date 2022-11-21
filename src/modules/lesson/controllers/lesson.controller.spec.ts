@@ -120,13 +120,13 @@ describe('LessonController', () => {
 
     it('false - 과제 출제자가 아닌 사람이 수정을 하려고 했을 때', async () => {
       lessonService.updateLesson.mockImplementation(() => {
-        throw new ForbiddenException('과제를 삭제할 권한이 없습니다.');
+        throw new ForbiddenException('과제를 수정할 권한이 없습니다.');
       });
 
       await expect(async () => {
         await lessonController.updateLesson(param, updateLessonDto, memberId);
       }).rejects.toThrowError(
-        new ForbiddenException('과제를 삭제할 권한이 없습니다.'),
+        new ForbiddenException('과제를 수정할 권한이 없습니다.'),
       );
     });
   });

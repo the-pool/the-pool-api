@@ -49,7 +49,7 @@ export class LessonController {
   @ApiOperation({ summary: '과제 수정' })
   @HttpCode(HttpStatus.NO_CONTENT)
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
-  @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 삭제할 권한이 없습니다.')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 수정할 권한이 없습니다.')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",

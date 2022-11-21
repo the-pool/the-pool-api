@@ -48,7 +48,7 @@ export class LessonService {
     });
 
     if (!updatedCount.count)
-      throw new ForbiddenException('과제를 삭제할 권한이 없습니다.');
+      throw new ForbiddenException('과제를 수정할 권한이 없습니다.');
   }
 
   async updateLessonHashtag(hashtag: string[], lessonId: number) {

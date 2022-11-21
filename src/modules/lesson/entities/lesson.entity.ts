@@ -42,7 +42,7 @@ export class LessonEntity
   })
   hit: number;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: '과제의 썸네일',
     example: 'the-pool.png',
   })
