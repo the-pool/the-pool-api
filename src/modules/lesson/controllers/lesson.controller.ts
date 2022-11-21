@@ -65,7 +65,9 @@ export class LessonController {
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ) {
-    await this.lessonService.updateLesson(lesson, memberId, param.id);
-    await this.lessonService.updateLessonHashtag(hashtag, param.id);
+    await Promise.all([
+      this.lessonService.updateLesson(lesson, memberId, param.id),
+      this.lessonService.updateLessonHashtag(hashtag, param.id),
+    ]);
   }
 }
