@@ -13,3 +13,9 @@ export const MockHttpService = {
   get: jest.fn(() => MockAuthService),
   pipe: jest.fn(),
 };
+
+export const MockLessonService = {
+  createLesson: jest.fn(),
+  updateLesson: jest.fn(),
+  updateLessonHashtag: jest.fn(),
+};
