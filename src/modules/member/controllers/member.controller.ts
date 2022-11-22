@@ -20,9 +20,10 @@ import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 
 @ApiTags('멤버')
-@Controller('api/member')
+@Controller('api/members')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
@@ -40,7 +41,8 @@ export class MemberController {
   @Patch()
   @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
   @ApiOkResponse({ type: MemberLastStepLoginResponseType })
-  @UseGuards(AuthGuard('jwt'))
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @UseGuards(JwtAuthGuard)
   lastStepLogin(
     @UserLogin('id') memberId: number,
     @Body() lastStepLoginDto: LastStepLoginDto,
