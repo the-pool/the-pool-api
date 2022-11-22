@@ -18,6 +18,8 @@ import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
         AWS_S3_SECRET_KEY: Joi.string(),
         AWS_S3_REGION: Joi.string(),
         AWS_S3_BUCKET_NAME: Joi.string(),
+        AWS_S3_EXPIRES: Joi.number(),
+        AWS_S3_ACL: Joi.string(),
       }),
       isGlobal: true,
     }),

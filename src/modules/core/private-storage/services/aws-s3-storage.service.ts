@@ -8,14 +8,18 @@ import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 export class AwsS3StorageService implements PrivateStorageService {
   private awsS3Bucket: string;
   private awsS3: AWS.S3;
+  private awsS3ACL: string;
+  private awsS3Expires: number;
 
   constructor(private readonly configService: ConfigService) {
     this.awsS3 = new AWS.S3({
-      accessKeyId: this.configService.get('AWS_S3_ACCESS_KEY'),
-      secretAccessKey: this.configService.get('AWS_S3_SECRET_KEY'),
+      accessKeyId: this.configService.get('AWS_ACCESS_KEY'),
+      secretAccessKey: this.configService.get('AWS_SECRET_KEY'),
       region: this.configService.get('AWS_S3_REGION'),
     });
     this.awsS3Bucket = this.configService.get('AWS_S3_BUCKET_NAME');
+    this.awsS3ACL = this.configService.get('AWS_S3_ACL');
+    this.awsS3Expires = this.configService.get('AWS_S3_EXPIRES');
   }
 
   async getSignedUrl({
@@ -32,7 +36,8 @@ export class AwsS3StorageService implements PrivateStorageService {
     const params = {
       Bucket: this.awsS3Bucket,
       Key: imgName,
-      Expires: 3600,
+      Expires: this.awsS3Expires,
+      ACL: this.awsS3ACL,
     };
     const s3Url = await this.awsS3.getSignedUrlPromise('putObject', params);
 

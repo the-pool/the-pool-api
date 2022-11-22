@@ -8,10 +8,12 @@ describe('AwsS3StorageService', () => {
   let awsS3StorageService: AwsS3StorageService;
   beforeEach(async () => {
     const ConfigKeyMap = {
-      AWS_S3_ACCESS_KEY: 'ACCESS_KEY',
-      AWS_S3_SECRET_KEY: 'SECRET_KEY',
+      AWS_ACCESS_KEY: 'ACCESS_KEY',
+      AWS_SECRET_KEY: 'SECRET_KEY',
       AWS_S3_REGION: 'REGION',
       AWS_S3_BUCKET_NAME: 'BUCKET_NAME',
+      AWS_S3_ACL: 'ACL',
+      AWS_S3_EXPIRES: 3600,
     };
     const module: TestingModule = await Test.createTestingModule({
       providers: [
