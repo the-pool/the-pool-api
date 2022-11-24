@@ -14,6 +14,10 @@ export const MockHttpService = {
   pipe: jest.fn(),
 };
 
+export const MockPrivateStorageService = {
+  getSignedUrl: jest.fn(),
+};
+
 export const MockLessonService = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
