@@ -28,7 +28,7 @@ export class AwsS3StorageService implements PrivateStorageService {
     fileName,
   }: GetSignedUrlDto): Promise<{
     imgName: string;
-    s3Url: string;
+    signedUrl: string;
   }> {
     const imgName: string = `${
       folderName + '/' + Date.now() + fileName
@@ -39,11 +39,11 @@ export class AwsS3StorageService implements PrivateStorageService {
       Expires: this.awsS3Expires,
       ACL: this.awsS3ACL,
     };
-    const s3Url = await this.awsS3.getSignedUrlPromise('putObject', params);
+    const signedUrl = await this.awsS3.getSignedUrlPromise('putObject', params);
 
     return {
       imgName,
-      s3Url,
+      signedUrl,
     };
   }
 }

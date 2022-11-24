@@ -29,13 +29,13 @@ export class PrivateStorageController {
     private privateStorageService: PrivateStorageService,
   ) {}
 
-  @Post('/signedUrl')
+  @Post('/signed-url')
   @ApiOperation({ summary: 'presignedUrl 발급' })
   @ApiCreatedResponse({ type: GetSignedUrlResponseType })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getSignedUrl(@Body() getSignedUrlDto: GetSignedUrlDto) {
-    return await this.privateStorageService.getSignedUrl(getSignedUrlDto);
+  getSignedUrl(@Body() getSignedUrlDto: GetSignedUrlDto) {
+    return this.privateStorageService.getSignedUrl(getSignedUrlDto);
   }
 }
