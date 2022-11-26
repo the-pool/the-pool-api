@@ -1,16 +1,23 @@
 name: Create Branch For Issue
 on:
   issues:
-    types: [ assigned ]
+    types: [assigned]
   pull_request:
-    types: [ closed ]
+    types: [closed]
 
 jobs:
   create_issue_branch_job:
     runs-on: ubuntu-latest
     steps:
       # 브랜치 생성
-      - name: Create Issue Branch 
+      - name: Create Issue Branch
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # issue status - Todo
+      - name: Moving assigned issues on project boards
+        uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: the-pool-api
+          column: Todo
+          repo-token: ${{ secrets.PERSONAL_TOKEN }}
