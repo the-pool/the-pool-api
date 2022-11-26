@@ -9,7 +9,7 @@ import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
+      envFilePath: ['.env.local', '.env'],
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
         SECRET_KEY: Joi.string(),
