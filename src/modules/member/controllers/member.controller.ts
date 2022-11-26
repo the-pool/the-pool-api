@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -39,6 +40,7 @@ export class MemberController {
   }
 
   @Patch()
+  @ApiBearerAuth()
   @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
   @ApiOkResponse({ type: MemberLastStepLoginResponseType })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
