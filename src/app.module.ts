@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import Joi from 'joi';
 import { modules } from '@src/modules';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
+import { MajorModule } from './modules/major/major.module';
 
 @Module({
   imports: [

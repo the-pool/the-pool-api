@@ -6,6 +6,7 @@ import { PostModule } from '@src/modules/post/post.module';
 import { HttpConfigModule } from './core/http/http-config.module';
 import { MemberModule } from './member/member.module';
 import { LessonModule } from './lesson/lesson.module';
+import { MajorModule } from '@src/modules/major/major.module';
 
 export const modules = [
   HealthModule,
@@ -15,4 +16,5 @@ export const modules = [
   PostModule,
   MemberModule,
   LessonModule,
+  MajorModule,
 ];
