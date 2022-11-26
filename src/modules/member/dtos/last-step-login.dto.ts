@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { getValueByEnum } from '@src/common/common';
+import { getEntriesByEnum } from '@src/common/common';
+import { nicknameLength } from '@src/constants/constant';
 import { MajorId, MajorSkillId } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import {
@@ -14,31 +15,27 @@ import {
 
 export class LastStepLoginDto {
   @ApiProperty({
-    example: 'thePool',
     description: '입수전 마지막 단계에서 받는 닉네임',
-    required: true,
-    type: 'string',
+    example: 'thePool',
   })
   @IsRecord({ model: 'member' }, false)
-  @Length(1, 30)
+  @Length(nicknameLength.MIN, nicknameLength.MAX)
   @IsString()
   nickname: string;
 
   @ApiProperty({
+    description: `입수전 마지막 단계에서 받는 유저 작업 분야`,
     example: 1,
-    description: '입수전 마지막 단계에서 받는 유저 작업 분야',
-    required: true,
-    enum: getValueByEnum(MajorId, 'number'),
+    enum: getEntriesByEnum(MajorId),
   })
   @IsEnum(MajorId)
   @IsNotEmpty()
-  majorId: number;
+  majorId: MajorId;
 
   @ApiProperty({
-    example: [1, 2, 3, 4, 5],
-    description: '입수전 마지막 단계에서 받는 유저 관심분야',
-    required: true,
-    enum: getValueByEnum(MajorSkillId, 'number'),
+    description: `입수전 마지막 단계에서 받는 유저 관심분야`,
+    example: [1, 2, 3],
+    enum: getEntriesByEnum(MajorSkillId),
   })
   @ArrayMaxSize(10)
   @IsEnum(MajorSkillId, { each: true })

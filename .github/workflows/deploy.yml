@@ -2,9 +2,8 @@ name: deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
-    
 
 jobs:
   dockerBuild:
@@ -32,12 +31,12 @@ jobs:
   deploy:
     needs: dockerBuild
     name: Deploy
-    runs-on: [ self-hosted, api-server ]
+    runs-on: [self-hosted, api-server]
     steps:
-      - name: Login to Amazon ECR 
+      - name: Login to Amazon ECR
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
-        run : |
+        run: |
           aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $REGISTRY
       - name: Docker stop
         run: |
@@ -53,14 +52,22 @@ jobs:
           PROJECT_DATABASE_URL: ${{ secrets.PROJECT_DATABASE_URL }}
           PROJECT_PORT: ${{ secrets.PROJECT_PORT }}
           PROJECT_SECRET_KEY: ${{ secrets.PROJECT_SECRET_KEY }}
+          PROJECT_AWS_S3_REGION: ${{ secrets.PROJECT_AWS_S3_REGION }}
+          PROJECT_AWS_S3_BUCKET_NAME: ${{ secrets.PROJECT_AWS_S3_BUCKET_NAME }}
+          PROJECT_AWS_S3_ACL: ${{ secrets.PROJECT_AWS_S3_ACL }}
+          PROJECT_AWS_S3_EXPIRES: ${{ secrets.PROJECT_AWS_S3_EXPIRES }}
         run: |
           sudo rm .env
           touch .env
           echo $PROJECT_DATABASE_URL >> .env
           echo $PROJECT_PORT >> .env
           echo $PROJECT_SECRET_KEY >> .env
+          echo $PROJECT_AWS_S3_REGION >> .env
+          echo $PROJECT_AWS_S3_BUCKET_NAME >> .env
+          echo $PROJECT_AWS_S3_ACL >> .env
+          echo $PROJECT_AWS_S3_EXPIRES >> .env
           cat .env
-      - name: Docker run 
+      - name: Docker run
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
           REPOSITORY: api_server_container_repository

@@ -1,5 +1,6 @@
 generator client {
   provider      = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
   binaryTargets = ["native", "linux-musl"]
 }
 
@@ -63,6 +64,7 @@ model Member {
   /// 탈퇴일자
   deletedAt DateTime? @db.Timestamp(6)
 
+  Lesson                Lesson[]
   Major                 Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   MemberSkill           MemberSkill[]
   LessonSolution        LessonSolution[]
@@ -114,6 +116,8 @@ model MemberFollow {
 model Lesson {
   /// 고유 ID
   id          Int       @id @default(autoincrement())
+  /// 과제 생성한 멤버 고유 ID
+  memberId    Int
   /// 출제자가 평가한 과제 난이도 
   levelId     Int
   /// 과제 제목
@@ -121,7 +125,9 @@ model Lesson {
   /// 과제 설명 
   description String
   /// 과제 조회수        
-  hit         Int       @db.Integer()
+  hit         Int       @default(0)
+  /// 과제 썸네일
+  thumbnail   String?   @db.VarChar(255)
   /// 생성일자
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
@@ -129,6 +135,7 @@ model Lesson {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
+  member                Member                  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   LessonLevel           LessonLevel             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   LessonSolution        LessonSolution[]
   LessonHashtag         LessonHashtag[]
@@ -216,7 +223,7 @@ model LessonLevel {
   level     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  Lesson Lesson[]
+  Lesson    Lesson[]
 }
 
 /// 과제의 해시 태그
@@ -264,7 +271,7 @@ model MemberSkill {
   memberId    Int
   /// 생성일자
   createdAt   DateTime @default(now()) @db.Timestamp(6)
-  
+
   MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
