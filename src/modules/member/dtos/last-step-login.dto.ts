@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { getEntriesByEnum } from '@src/common/common';
-import { nicknameLength } from '@src/constants/constant';
+import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { MajorId, MajorSkillId } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import {
@@ -19,7 +19,7 @@ export class LastStepLoginDto {
     example: 'thePool',
   })
   @IsRecord({ model: 'member' }, false)
-  @Length(nicknameLength.MIN, nicknameLength.MAX)
+  @Length(LESSON_TITLE_LENGTH.MIN, LESSON_TITLE_LENGTH.MAX)
   @IsString()
   nickname: string;
 

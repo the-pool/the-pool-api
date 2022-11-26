@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { titleLength } from '@src/constants/constant';
+import { MEMBER_NICKNAME_LENGTH } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import {
   IsArray,
@@ -25,7 +25,7 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   @IsNotEmpty()
   description: string;
 
-  @Length(titleLength.MIN, titleLength.MAX)
+  @Length(MEMBER_NICKNAME_LENGTH.MIN, MEMBER_NICKNAME_LENGTH.MAX)
   @IsString()
   title: string;
 

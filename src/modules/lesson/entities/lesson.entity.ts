@@ -3,13 +3,13 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
+import { Lesson } from '@prisma/client';
 import { getEntriesByEnum } from '@src/common/common';
+import { MEMBER_NICKNAME_LENGTH } from '@src/constants/constant';
+import { LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { Lesson } from '@prisma/client';
-import { LessonLevelId } from '@src/constants/enum';
 import { LessonHashtagEntity } from './lesson-hashtag.entity';
-import { titleLength } from '@src/constants/constant';
 
 export class LessonEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -25,8 +25,8 @@ export class LessonEntity
   @ApiProperty({
     description: '과제의 제목',
     example: 'title',
-    minLength: titleLength.MIN,
-    maxLength: titleLength.MAX,
+    minLength: MEMBER_NICKNAME_LENGTH.MIN,
+    maxLength: MEMBER_NICKNAME_LENGTH.MAX,
   })
   title: string;
 
