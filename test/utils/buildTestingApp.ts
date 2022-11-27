@@ -18,10 +18,10 @@ import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import Joi from 'joi';
 
-export const buildTestingApp = async (module): Promise<INestApplication> => {
+export const buildTestingApp = async (): Promise<INestApplication> => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [
-      module,
+      AppModule,
       ConfigModule.forRoot({
         envFilePath: ['.env.local', '.env'],
         validationSchema: Joi.object({
