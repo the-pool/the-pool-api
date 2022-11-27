@@ -3,7 +3,7 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
+import { mockPrismaService } from '@src/modules/test/mock-prisma';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { LessonService } from './lesson.service';
 
@@ -18,13 +18,13 @@ describe('LessonService', () => {
         DataStructureHelper,
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
-    prismaService = MockPrismaService;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {
@@ -47,7 +47,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      let lesson = {
+      const lesson = {
         id: faker.datatype.number(),
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),

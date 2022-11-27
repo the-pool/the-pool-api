@@ -1,4 +1,4 @@
-export const MockPrismaService = {
+export const mockPrismaService = {
   member: {
     findUnique: jest.fn(),
     create: jest.fn(),
@@ -19,5 +19,9 @@ export const MockPrismaService = {
   lessonHashtag: {
     deleteMany: jest.fn(),
     createMany: jest.fn(),
+  },
+
+  major: {
+    findMany: jest.fn(),
   },
 };
