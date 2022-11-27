@@ -1,42 +1,20 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { MajorsFindResponseBodyDto } from '@src/modules/major/dto/majors-find-response-body.dto';
+import { plainToInstance } from 'class-transformer';
 import { MajorService } from '../services/major.service';
-import { CreateMajorDto } from '../dto/create-major.dto';
-import { UpdateMajorDto } from '../dto/update-major.dto';
 
+@ApiTags('분야')
 @Controller('api/majors')
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
-  @Post()
-  create(@Body() createMajorDto: CreateMajorDto) {
-    return this.majorService.create(createMajorDto);
-  }
-
+  @ApiOperation({ summary: '분야 리스트' })
+  @ApiOkResponse({ type: MajorsFindResponseBodyDto })
   @Get()
-  findAll() {
-    return this.majorService.findAll();
-  }
+  async findAll(): Promise<MajorsFindResponseBodyDto> {
+    const majors = await this.majorService.findAll();
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.majorService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMajorDto: UpdateMajorDto) {
-    return this.majorService.update(+id, updateMajorDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.majorService.remove(+id);
+    return plainToInstance(MajorsFindResponseBodyDto, { majors });
   }
 }
