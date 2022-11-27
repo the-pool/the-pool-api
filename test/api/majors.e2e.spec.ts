@@ -1,13 +1,13 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { buildTestingApp } from '../utils/buildTestingApp';
+import { setTestingApp } from '../utils/setTestingApp';
 
 describe('MajorsController (e2e)', () => {
   const path = '/api/majors';
   let app: INestApplication;
 
   beforeAll(async () => {
-    app = await buildTestingApp();
+    app = await setTestingApp();
 
     await app.init();
   });

@@ -18,7 +18,7 @@ import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import Joi from 'joi';
 
-export const buildTestingApp = async (): Promise<INestApplication> => {
+export const setTestingApp = async (): Promise<INestApplication> => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
     imports: [
       AppModule,
