@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -69,5 +70,20 @@ export class LessonController {
       this.lessonService.updateLesson(lesson, memberId, param.id),
       this.lessonService.updateLessonHashtag(hashtag, param.id),
     ]);
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async readOneLesson(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @UserLogin('id') memberId: number,
+  ) {
+    // 필요한 것들
+    // 과제 테이블에서 과제
+    // 과제를 평가한 인원들의 난이도 가져오기
+    //
+    await this.lessonService.readOneLesson(param.id);
   }
 }

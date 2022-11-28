@@ -70,4 +70,17 @@ export class LessonService {
       }),
     });
   }
+
+  readOneLesson(id: number) {
+    return this.prismaService.lesson.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        description: true,
+        member: true,
+        LessonLevel: true,
+      },
+    });
+  }
 }
