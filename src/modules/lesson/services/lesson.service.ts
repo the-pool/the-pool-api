@@ -5,12 +5,14 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonRepository } from '../repositories/lesson.repository';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly dataStructureHelper: DataStructureHelper,
+    private readonly lessonRepository: LessonRepository,
   ) {}
 
   /**
@@ -24,7 +26,7 @@ export class LessonService {
       data: {
         ...lesson,
         memberId,
-        LessonHashtag: {
+        lessonHashtags: {
           createMany: {
             data: this.dataStructureHelper.createManyMapper<
               Pick<LessonHashtagEntity, 'tag'>
@@ -71,16 +73,13 @@ export class LessonService {
     });
   }
 
-  readOneLesson(id: number) {
-    return this.prismaService.lesson.findUnique({
-      where: {
-        id,
-      },
-      select: {
-        description: true,
-        member: true,
-        LessonLevel: true,
-      },
-    });
+  async readOneLesson(lessonId: number) {
+    const [lesson]: any = await this.lessonRepository.readOneLesson(lessonId);
+    const lessonLevelEvaluation =
+      await this.lessonRepository.lessonLevelEvaluationTest(lessonId);
+    console.log(lessonLevelEvaluation);
+
+    lesson.lessonLevelEvaluation = lessonLevelEvaluation;
+    return lesson;
   }
 }

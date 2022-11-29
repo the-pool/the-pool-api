@@ -13,6 +13,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -26,6 +27,7 @@ import { LessonService } from '../services/lesson.service';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -73,6 +75,7 @@ export class LessonController {
   }
 
   @Get(':id')
+  @ApiOkResponse({ type: ReadOneLessonResponseType })
   @UseGuards(JwtAuthGuard)
   async readOneLesson(
     @Param()
@@ -80,10 +83,6 @@ export class LessonController {
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
   ) {
-    // 필요한 것들
-    // 과제 테이블에서 과제
-    // 과제를 평가한 인원들의 난이도 가져오기
-    //
-    await this.lessonService.readOneLesson(param.id);
+    return await this.lessonService.readOneLesson(param.id);
   }
 }
