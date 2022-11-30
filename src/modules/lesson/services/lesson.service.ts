@@ -1,11 +1,13 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
+import { LessonLevelId } from '@src/constants/enum';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
 @Injectable()
 export class LessonService {
@@ -75,11 +77,11 @@ export class LessonService {
 
   async readOneLesson(lessonId: number) {
     const [lesson]: any = await this.lessonRepository.readOneLesson(lessonId);
-    const lessonLevelEvaluation =
-      await this.lessonRepository.lessonLevelEvaluationTest(lessonId);
-    console.log(lessonLevelEvaluation);
+    const [lessonLevelEvaluation] =
+      await this.lessonRepository.lessonLevelEvaluation(lessonId);
 
     lesson.lessonLevelEvaluation = lessonLevelEvaluation;
+
     return lesson;
   }
 }

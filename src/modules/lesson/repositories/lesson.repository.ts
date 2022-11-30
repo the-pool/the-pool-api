@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { LESSON_LEVEL } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 
@@ -18,31 +17,29 @@ export class LessonRepository {
         "Lesson"."hit" ,
         "Lesson"."updatedAt",
         "Member"."id" AS "memberId",
-        "Member"."nickname" AS "nickname",
-        "LessonLevel"."level" AS "level",
+        "Member"."nickname",
+        "Lesson"."levelId",
         COUNT("LessonSolution"."lessonId") as "solutionCount",
-        ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "tags"
+        ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag"
     FROM "Lesson"   
     LEFT JOIN "LessonHashtag"
         ON "LessonHashtag"."lessonId" = "Lesson"."id"
     LEFT JOIN "Member" 
         ON "Member"."id" = "Lesson"."memberId"
-    LEFT JOIN "LessonLevel"
-        ON "LessonLevel"."id" = "Lesson"."levelId"
     LEFT JOIN "LessonSolution"
         ON "LessonSolution"."lessonId" = "Lesson"."id" 
     WHERE 
         "Lesson"."id" = ${id}
-    GROUP BY "Lesson"."id","Member"."id","LessonLevel"."id"
+    GROUP BY "Lesson"."id","Member"."id"
     `;
   }
 
   async lessonLevelEvaluation(id: number): Promise<any> {
     return await this.prismaService.$queryRaw`
     select 
-    	count(1) filter(where "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) as "상",
-    	count(1) filter(where "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) as  "중",
-    	count(1) filter(where "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Bottom}) as  "하"
+    	count(1) filter(where "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) as "top",
+    	count(1) filter(where "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) as  "middle",
+    	count(1) filter(where "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Bottom}) as  "bottom"
     from "LessonLevelEvaluation" 
     where "LessonLevelEvaluation"."lessonId" = ${id}
     `;
