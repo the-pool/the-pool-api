@@ -12,7 +12,6 @@ import {
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -51,7 +50,7 @@ export class LessonController {
 
   @Put(':id')
   @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 수정' })
   @ApiBearerAuth()
   @ApiCreatedResponse()
@@ -75,14 +74,22 @@ export class LessonController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: ReadOneLessonResponseType })
+  @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: '과제 상세 조회' })
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: ReadOneLessonResponseType })
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in lesson",
+  )
   async readOneLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
   ) {
-    return await this.lessonService.readOneLesson(param.id);
+    return await this.lessonService.readOneLesson(param.id, memberId);
   }
 }

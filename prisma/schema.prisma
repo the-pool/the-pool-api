@@ -64,16 +64,17 @@ model Member {
   /// 탈퇴일자
   deletedAt DateTime? @db.Timestamp(6)
 
-  Lesson                Lesson[]
-  Major                 Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  MemberSkill           MemberSkill[]
-  LessonSolution        LessonSolution[]
-  LessonComment         LessonComment[]
-  LessonLevelEvaluation LessonLevelEvaluation[]
-  LessonBookMark        LessonBookMark[]
-  follower              MemberFollow[]          @relation("follower")
-  following             MemberFollow[]          @relation("following")
-  MemberReport          MemberReport?
+  lessons                Lesson[]
+  Major                  Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  MemberSkill            MemberSkill[]
+  LessonSolution         LessonSolution[]
+  LessonComment          LessonComment[]
+  lessonLevelEvaluations LessonLevelEvaluation[]
+  lessonBookmarks        LessonBookmark[]
+  follower               MemberFollow[]          @relation("follower")
+  following              MemberFollow[]          @relation("following")
+  MemberReport           MemberReport?
+  lessonLikes            LessonLike[]
 }
 
 /// 멤버 활동 모델
@@ -141,7 +142,8 @@ model Lesson {
   lessonHashtags         LessonHashtag[]
   lessonComments         LessonComment[]
   lessonLevelEvaluations LessonLevelEvaluation[]
-  lessonBookMarks        LessonBookMark[]
+  lessonBookMarks        LessonBookmark[]
+  lessonLikes            LessonLike[]
   ///LessonImage LessonImage[]
 }
 
@@ -201,12 +203,27 @@ model LessonSolution {
 }
 
 /// 멤버의 과제 북마크에 대한 테이블 
-model LessonBookMark {
+model LessonBookmark {
   /// 고유 ID
   id        Int      @id @default(autoincrement())
   /// 과제를 북마크한 멤버 고유 ID
   memberId  Int
   /// 북마크 된 과제 고유 ID
+  lessonId  Int
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 과제 좋아요에 대한 테이블
+model LessonLike {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 과제 좋아요를 누른 멤버 고유 ID
+  memberId  Int
+  /// 좋아요 눌린 과제 고유 ID
   lessonId  Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)

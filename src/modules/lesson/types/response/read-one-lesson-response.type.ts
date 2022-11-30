@@ -10,20 +10,6 @@ export class ReadOneLessonResponseType extends PickType(LessonEntity, [
   'memberId',
 ]) {
   @ApiProperty({
-    example: {
-      top: 1,
-      middle: 5,
-      bottom: 10,
-    },
-    description: '과제를 완료한 사람이 평가한 과제의 난이도',
-  })
-  lessonLevelEvaluation: LessonLevelEvaluationType = {
-    top: 0,
-    middle: 0,
-    bottom: 0,
-  };
-
-  @ApiProperty({
     example: 'the-pool',
     description: '멤버 닉네임',
   })
@@ -46,4 +32,26 @@ export class ReadOneLessonResponseType extends PickType(LessonEntity, [
     description: '출제자가 생각한 과제의 난이도',
   })
   levelId: number;
+
+  @ApiProperty({
+    example: {
+      top: 1,
+      middle: 5,
+      bottom: 10,
+    },
+    description: '과제를 완료한 사람이 평가한 과제의 난이도',
+  })
+  lessonLevelEvaluation: LessonLevelEvaluationType;
+
+  @ApiProperty({
+    example: true,
+    description: '멤버의 과제 북마크 여부',
+  })
+  isBookmark: boolean;
+
+  @ApiProperty({
+    example: true,
+    description: '멤버의 과제 좋아요 여부',
+  })
+  isLike: boolean;
 }

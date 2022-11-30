@@ -75,8 +75,12 @@ export class LessonService {
     });
   }
 
-  async readOneLesson(lessonId: number) {
-    const [lesson]: any = await this.lessonRepository.readOneLesson(lessonId);
+  async readOneLesson(lessonId: number, memberId: number = 0) {
+    memberId = undefined;
+    const [lesson]: any = await this.lessonRepository.readOneLesson(
+      lessonId,
+      memberId,
+    );
     const [lessonLevelEvaluation] =
       await this.lessonRepository.lessonLevelEvaluation(lessonId);
 
