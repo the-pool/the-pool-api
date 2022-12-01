@@ -186,7 +186,6 @@ describe('LessonService', () => {
       );
 
       const returnValue = await lessonService.readOneLesson(lessonId, memberId);
-      console.log(returnValue);
 
       expect(returnValue).toStrictEqual(
         Object.assign({}, oneLesson[0], {

@@ -30,9 +30,9 @@ export class OptionalJwtStrategy extends PassportStrategy(
       return { id: 0 };
     }
 
-    const tokenDecode = this.tokenDecode(token);
+    const decodedToken = this.tokenDecode(token);
 
-    return this.validateMember(tokenDecode.id);
+    return this.validateMember(decodedToken.id);
   }
 
   // request 객체로부터 토큰을 가져오는 메서드
@@ -42,14 +42,17 @@ export class OptionalJwtStrategy extends PassportStrategy(
   }
 
   // 토큰의 검증을 위한 메서드
-  tokenDecode(token: string) {
+  tokenDecode(token: string): { id: number } {
     try {
       return this.jwtService.verify(token, {
         secret: this.configService.get('SECRET_KEY'),
       });
     } catch (error) {
       // 토큰의 비밀키가 일치하지 않거나 만료시간이 초과된 경우 401에러 return
-      if (error.name === 'JsonWebTokenError' || 'TokenExpiredError') {
+      if (
+        error.name === 'JsonWebTokenError' ||
+        error.name === 'TokenExpiredError'
+      ) {
         throw new UnauthorizedException();
       }
       throw error;
