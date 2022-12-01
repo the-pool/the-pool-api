@@ -86,12 +86,12 @@ export class LessonController {
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
-  async readOneLesson(
+  readOneLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member,
   ) {
-    return await this.lessonService.readOneLesson(param.id, member.id);
+    return this.lessonService.readOneLesson(param.id, member.id);
   }
 }

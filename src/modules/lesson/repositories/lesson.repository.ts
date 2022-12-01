@@ -6,7 +6,10 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 export class LessonRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  readOneLesson(lessonId: number, memberId: number) {
+  /**
+   * 과제 상세 정보 조회 query
+   */
+  readOneLesson(lessonId: number, memberId: number): Promise<any> {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };
@@ -41,14 +44,17 @@ export class LessonRepository {
     `;
   }
 
-  async lessonLevelEvaluation(id: number): Promise<any> {
+  /**
+   * 과제를 수행한 멤버들의 과제 난이도 평가 정보 조회 query
+   */
+  async lessonLevelEvaluation(lessonId: number): Promise<any> {
     return await this.prismaService.$queryRaw`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Bottom}) AS  "bottom"
     FROM "LessonLevelEvaluation" 
-    WHERE "LessonLevelEvaluation"."lessonId" = ${id}
+    WHERE "LessonLevelEvaluation"."lessonId" = ${lessonId}
     `;
   }
 }
