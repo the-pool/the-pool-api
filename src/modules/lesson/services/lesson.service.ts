@@ -75,8 +75,7 @@ export class LessonService {
     });
   }
 
-  async readOneLesson(lessonId: number, memberId: number = 0) {
-    memberId = undefined;
+  async readOneLesson(lessonId: number, memberId: number) {
     const [lesson]: any = await this.lessonRepository.readOneLesson(
       lessonId,
       memberId,

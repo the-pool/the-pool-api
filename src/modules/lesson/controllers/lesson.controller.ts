@@ -27,6 +27,8 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { Member } from '@prisma/client';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -50,7 +52,7 @@ export class LessonController {
 
   @Put(':id')
   @HttpCode(HttpStatus.CREATED)
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 수정' })
   @ApiBearerAuth()
   @ApiCreatedResponse()
@@ -75,7 +77,7 @@ export class LessonController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiBearerAuth()
   @ApiOkResponse({ type: ReadOneLessonResponseType })
@@ -88,8 +90,8 @@ export class LessonController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @UserLogin('id') memberId: number,
+    @UserLogin() member: Member,
   ) {
-    return await this.lessonService.readOneLesson(param.id, memberId);
+    return await this.lessonService.readOneLesson(param.id, member.id);
   }
 }

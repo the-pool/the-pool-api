@@ -6,6 +6,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '@src/modules/core/auth/jwt/jwt.strategy';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { HttpConfigModule } from '../http/http-config.module';
+import { OptionalJwtStrategy } from './jwt/optional-jwt.strategy';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { HttpConfigModule } from '../http/http-config.module';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, JwtStrategy, PrismaService],
+  providers: [AuthService, JwtStrategy, OptionalJwtStrategy, PrismaService],
   exports: [AuthService],
 })
 export class AuthModule {}
