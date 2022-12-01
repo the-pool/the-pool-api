@@ -3,12 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Member } from '@prisma/client';
-import { Strategy } from 'passport-http-bearer';
+import { Strategy } from 'passport-custom';
+import { ExtractJwt } from 'passport-jwt';
+// import { Strategy } from 'passport-http-bearer';
+
 import { PrismaService } from '../../database/prisma/prisma.service';
 
 /**
  * 회원, 비회원 공통으로 사용되는 api를 위한 가드 (단! 비회원일시 member id를 0으로 할당)
- * 클라이언트 측에서 비회원일시 bearer token에 "nonMember"이라는 string 넣어서 보내주어야 함
  * */
 @Injectable()
 export class OptionalJwtStrategy extends PassportStrategy(
@@ -22,14 +24,22 @@ export class OptionalJwtStrategy extends PassportStrategy(
   ) {
     super();
   }
-  async validate(token: string) {
-    if (token === 'nonMember') {
+  async validate(request: any) {
+    const token = this.getToken(request);
+
+    if (token === null) {
       return { id: 0 };
     }
 
     const tokenDecode = this.tokenDecode(token);
 
     return this.validateMember(tokenDecode.id);
+  }
+
+  // request 객체로부터 토큰을 가져오는 메서드
+  getToken(request: any) {
+    const extractToken = ExtractJwt.fromAuthHeaderAsBearerToken();
+    return extractToken(request);
   }
 
   // 토큰의 검증을 위한 메서드
