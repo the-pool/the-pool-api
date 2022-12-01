@@ -27,7 +27,7 @@ export class LessonRepository {
         ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag",
         EXISTS(SELECT "LessonBookmark"."id" 
                FROM "LessonBookmark" 
-               WHERE "LessonBookmark"."lessonId" = ${lessonId} AND "LessonBookmark"."memberId" = ${memberId}) AS "isBookMark",
+               WHERE "LessonBookmark"."lessonId" = ${lessonId} AND "LessonBookmark"."memberId" = ${memberId}) AS "isBookmark",
         EXISTS(SELECT "LessonLike"."id" 
                FROM "LessonLike" 
                WHERE "LessonLike"."lessonId" = ${lessonId} AND "LessonLike"."memberId" = ${memberId}) AS "isLike"

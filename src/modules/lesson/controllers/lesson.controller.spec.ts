@@ -6,6 +6,7 @@ import { MockLessonService } from '@src/modules/test/mock-service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 import { LessonController } from './lesson.controller';
 
 describe('LessonController', () => {
@@ -128,6 +129,47 @@ describe('LessonController', () => {
       }).rejects.toThrowError(
         new ForbiddenException('과제를 수정할 권한이 없습니다.'),
       );
+    });
+  });
+
+  describe('readOneLesson', () => {
+    let param: IdRequestParamDto;
+    let member: any;
+    let lesson: ReadOneLessonResponseType;
+    beforeEach(async () => {
+      lesson = {
+        title: '제목',
+        description: '본문',
+        hit: 0,
+        updatedAt: new Date(),
+        memberId: 1,
+        nickname: '닉네임',
+        levelId: 1,
+        solutionCount: 0,
+        hashtag: ['1', '2', '3'],
+        isBookmark: false,
+        isLike: false,
+        lessonLevelEvaluation: {
+          top: 1,
+          middle: 2,
+          bottom: 3,
+        },
+      };
+      param = {
+        id: 1,
+        model: 'lesson',
+      };
+      member = {
+        id: 1,
+      };
+    });
+
+    it('success', async () => {
+      lessonService.readOneLesson.mockReturnValue(lesson);
+
+      const returnValue = await lessonController.readOneLesson(param, member);
+
+      expect(returnValue).toStrictEqual(lesson);
     });
   });
 });
