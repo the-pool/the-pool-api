@@ -4,12 +4,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MockPrismaService } from '@src/modules/test/mock-prisma';
+import { MockLessonRepository } from '@src/modules/test/mock-repository';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
+  let lessonRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,10 +23,15 @@ describe('LessonService', () => {
           provide: PrismaService,
           useValue: MockPrismaService,
         },
+        {
+          provide: LessonRepository,
+          useValue: MockLessonRepository,
+        },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
+    lessonRepository = MockLessonRepository;
     prismaService = MockPrismaService;
   });
 
@@ -133,6 +141,58 @@ describe('LessonService', () => {
       );
 
       expect(returnValue).toBeUndefined();
+    });
+  });
+
+  describe('readOneLesson', () => {
+    let memberId: number;
+    let lessonId: number;
+
+    beforeEach(async () => {
+      (memberId = faker.datatype.number()),
+        (lessonId = faker.datatype.number());
+    });
+
+    afterEach(async () => {
+      jest.clearAllMocks();
+    });
+
+    it('success', async () => {
+      const oneLesson = [
+        {
+          title: faker.lorem.words(),
+          description: faker.lorem.text(),
+          hit: faker.datatype.number(),
+          updatedAt: new Date(),
+          memberId: faker.datatype.number(),
+          nickname: faker.lorem.words(),
+          levelId: faker.datatype.number(),
+          solutionCount: faker.datatype.number(),
+          hashtag: ['1', '2', '3'],
+          isBookmark: false,
+          isLike: false,
+        },
+      ];
+      const lessonLevelEvaluation = [
+        {
+          top: faker.datatype.number(),
+          middle: faker.datatype.number(),
+          bottom: faker.datatype.number(),
+        },
+      ];
+      lessonRepository.readOneLesson.mockReturnValue(oneLesson);
+      lessonRepository.lessonLevelEvaluation.mockReturnValue(
+        lessonLevelEvaluation,
+      );
+
+      const returnValue = await lessonService.readOneLesson(lessonId, memberId);
+      console.log(returnValue);
+
+      expect(returnValue).toStrictEqual(
+        Object.assign({}, oneLesson[0], {
+          lessonLevelEvaluation: lessonLevelEvaluation[0],
+        }),
+      );
     });
   });
 });

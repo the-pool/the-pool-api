@@ -138,29 +138,29 @@ describe('LessonController', () => {
     let lesson: ReadOneLessonResponseType;
     beforeEach(async () => {
       lesson = {
-        title: '제목',
-        description: '본문',
-        hit: 0,
+        title: faker.lorem.words(),
+        description: faker.lorem.text(),
+        hit: faker.datatype.number(),
         updatedAt: new Date(),
-        memberId: 1,
-        nickname: '닉네임',
-        levelId: 1,
-        solutionCount: 0,
+        memberId: faker.datatype.number(),
+        nickname: faker.lorem.words(),
+        levelId: faker.datatype.number(),
+        solutionCount: faker.datatype.number(),
         hashtag: ['1', '2', '3'],
         isBookmark: false,
         isLike: false,
         lessonLevelEvaluation: {
-          top: 1,
-          middle: 2,
-          bottom: 3,
+          top: faker.datatype.number(),
+          middle: faker.datatype.number(),
+          bottom: faker.datatype.number(),
         },
       };
       param = {
-        id: 1,
+        id: faker.datatype.number(),
         model: 'lesson',
       };
       member = {
-        id: 1,
+        id: faker.datatype.number(),
       };
     });
 
