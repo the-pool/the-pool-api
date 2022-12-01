@@ -5,7 +5,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Member } from '@prisma/client';
 import { Strategy } from 'passport-custom';
 import { ExtractJwt } from 'passport-jwt';
-// import { Strategy } from 'passport-http-bearer';
 
 import { PrismaService } from '../../database/prisma/prisma.service';
 
