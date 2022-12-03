@@ -1,7 +1,8 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MajorsFindResponseBodyDto } from '@src/modules/major/dto/majors-find-response-body.dto';
 import { plainToInstance } from 'class-transformer';
+import { MajorsFindRequestQueryDto } from '../dto/majors-find-request-query.dto';
 import { MajorService } from '../services/major.service';
 
 @ApiTags('분야')
@@ -12,8 +13,10 @@ export class MajorController {
   @ApiOperation({ summary: '분야 리스트' })
   @ApiOkResponse({ type: MajorsFindResponseBodyDto })
   @Get()
-  async findAll(): Promise<MajorsFindResponseBodyDto> {
-    const majors = await this.majorService.findAll();
+  async findAll(
+    @Query() query: MajorsFindRequestQueryDto,
+  ): Promise<MajorsFindResponseBodyDto> {
+    const majors = await this.majorService.findAll(query);
 
     return plainToInstance(MajorsFindResponseBodyDto, { majors });
   }
