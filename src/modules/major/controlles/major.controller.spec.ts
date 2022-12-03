@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MajorsFindResponseBodyDto } from '@src/modules/major/dto/majors-find-response-body.dto';
+import { MajorsFindResponseBodyDto } from '@src/modules/major/dto/majors.dto';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
 import { mockMajorService } from '../../../../test/mock/services/mockMajorService';

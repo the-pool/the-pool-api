@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { IsRecord } from '@src/decorators/is-record.decorator';
+import { PrismaModelName } from '@src/types/type';
 
 export class IdRequestParamDto {
   @ApiProperty({
@@ -15,5 +16,5 @@ export class IdRequestParamDto {
   id: number;
 
   @IsOptional()
-  model;
+  model: PrismaModelName;
 }
