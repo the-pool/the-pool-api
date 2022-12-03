@@ -6,7 +6,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { Target } from '@src/types/type';
+import { Target, PrismaModel } from '@src/types/type';
 
 @ValidatorConstraint({ async: true })
 export class IsRecordConstraint implements ValidatorConstraintInterface {
@@ -42,8 +42,8 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
   }
 }
 
-export function IsRecord(
-  target: Target,
+export function IsRecord<M extends PrismaModel = PrismaModel>(
+  target: Target<M>,
   isShouldBeExist: boolean,
   validationOptions?: ValidationOptions,
 ) {

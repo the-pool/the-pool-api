@@ -7,7 +7,7 @@ import { MajorsFindRequestQueryDto } from '../dto/majors-find-request-query.dto'
 export class MajorService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  findAll(query: MajorsFindRequestQueryDto): Promise<MajorEntity[]> {
+  findMajors(query: MajorsFindRequestQueryDto): Promise<MajorEntity[]> {
     const { mainSkills } = query;
 
     return this.prismaService.major.findMany({
@@ -16,4 +16,8 @@ export class MajorService {
       },
     });
   }
+
+  findMajor(majorId: number) {}
+  findMainSkills(majorId: number) {}
+  findMainSkill(majorId: number, mainSkillId: number) {}
 }
