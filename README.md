@@ -23,15 +23,15 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Commit convention
-| 아이콘 | 코드                          | 설명                                   |
-|-----|-----------------------------|--------------------------------------|
-| ✨   | :sparkles:                  | 새 기능                                 |
-| ♻   | :recycle:                   | 코드 리펙토링                              |
-| 🔥  | :fire:                      | 코드 / 파일 삭제                           |
-| 🐛  | :bug:                       | 버그 수정                                |
-| 🔀  | :twisted_rightwards_arrows: | 브랜치 합병                               |
-| ✅   | :white_check_mark:          | 테스트 추카 / 수정                          |
-| 📝  | 	:memo:                     | 문서 추가 / 수정 (README, swagger, script) |
+| 아이콘 | 코드                          | 설명                                   | 원문                            |
+|-----|-----------------------------|--------------------------------------|-------------------------------|
+| ✨   | :sparkles:                  | 새 기능                                 | 	Introduce new features.      |
+| ♻   | :recycle:                   | 코드 리펙토링                              | 	Refactor code.               |
+| 🔥  | :fire:                      | 코드 / 파일 삭제                           | Remove code or files.         |
+| 🐛  | :bug:                       | 버그 수정                                | 	Fix a bug.                   |
+| 🔀  | :twisted_rightwards_arrows: | 브랜치 합병                               | 	Merge branches.              |
+| ✅   | :white_check_mark:          | 테스트 추카 / 수정                          | Add or update tests.          |
+| 📝  | 	:memo:                     | 문서 추가 / 수정 (README, swagger, script) | 	Add or update documentation. |
 
 
 ## Description
