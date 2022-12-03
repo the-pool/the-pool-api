@@ -13,11 +13,25 @@ import {
   MemberReport,
   MemberSkill,
   Post,
-  Prisma,
   User,
 } from '@prisma/client';
 
-export type PrismaModelName = Lowercase<Prisma.ModelName>;
+export type PrismaModelName =
+  | 'mainSkill'
+  | 'major'
+  | 'member'
+  | 'memberReport'
+  | 'memberFollow'
+  | 'lesson'
+  | 'lessonLevelEvaluation'
+  | 'lessonSolution'
+  | 'lessonBookMark'
+  | 'lessonLevel'
+  | 'lessonHashtag'
+  | 'lessonComment'
+  | 'memberSkill'
+  | 'post'
+  | 'user';
 
 export type PrismaModel =
   | MainSkill
