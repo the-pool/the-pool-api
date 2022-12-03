@@ -1,6 +1,5 @@
-import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { MainSkill } from '@prisma/client';
-import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
 export class MainSkillEntity extends IdResponseType implements MainSkill {

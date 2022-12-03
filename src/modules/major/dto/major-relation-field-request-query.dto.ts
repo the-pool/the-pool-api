@@ -11,5 +11,5 @@ export class MajorRelationFieldRequestQueryDto {
   @IsOptional()
   @IsBoolean()
   @Transform(StringBooleanTransform)
-  mainSkills: boolean = false;
+  mainSkills = false;
 }

@@ -5,9 +5,9 @@ import { plainToInstance } from 'class-transformer';
 import { MainSkillDto } from '../dto/main-skill.dto';
 import { MainSkillsDto } from '../dto/main-skills.dto';
 import { MajorIdRequestParamDto } from '../dto/major-id-request-param.dto';
+import { MajorRelationFieldRequestQueryDto } from '../dto/major-relation-field-request-query.dto';
 import { MajorRequestParamDto } from '../dto/major-request-param.dto';
 import { MajorDto } from '../dto/major.dto';
-import { MajorRelationFieldRequestQueryDto } from '../dto/major-relation-field-request-query.dto';
 import { MajorService } from '../services/major.service';
 
 @ApiTags('분야')
