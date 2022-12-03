@@ -1,7 +1,7 @@
 generator client {
-  provider      = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["extendedWhereUnique"]
-  binaryTargets = ["native", "linux-musl"]
+  binaryTargets   = ["native", "linux-musl"]
 }
 
 datasource db {
@@ -274,6 +274,96 @@ model MemberSkill {
 
   MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 질문에 대한 테이블
+model Question {
+  /// 고유 ID
+  id         Int       @id @default(autoincrement())
+  /// QnA 생성한 멤버 고유 ID
+  memberId   Int
+  /// QnA 카테고리 고유 ID
+  categoryId Int
+  /// QnA 제목
+  title      String
+  /// QnA 컨텐츠
+  content    String
+  /// QnA 조회수
+  hit        Int       @default(0)
+  /// 생성일자
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  /// 수정일자
+  updatedAt  DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  /// 삭제일자
+  deletedAt  DateTime? @db.Timestamp(6)
+
+  // member
+  // questionLikes
+  // questionCategory
+  // questionHashtags
+  // questionAnswers
+}
+
+/// 질문의 답변에 대한 댓글
+model QuestionAnswer {
+  /// 고유 ID
+  id         Int       @id @default(autoincrement())
+  /// QnA 답변 생성한 멤버 고유 ID
+  memberId   Int
+  /// QnA 고유 ID
+  questionId Int
+  /// QnA 답변
+  answer     String    @db.VarChar(255)
+  /// 생성일자
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  /// 수정일자
+  updatedAt  DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  /// 삭제일자
+  deletedAt  DateTime? @db.Timestamp(6)
+
+  // member 
+  // question
+}
+
+/// 질문의 좋아요에 대한 테이블
+model QuestionLike {
+  /// 고유 ID
+  id         Int      @id @default(autoincrement())
+  /// 질문에 좋아요를 누른 멤버 고유 ID
+  memberId   Int
+  /// 질문 고유 ID
+  questionId Int
+  /// 생성일자
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  // member 
+  // question
+}
+
+/// 질문 해시태그
+model QuestionHashtag {
+  /// 고유 ID
+  id         Int      @id @default(autoincrement())
+  /// 태그 이름
+  tag        String   @db.VarChar(20)
+  /// 질문 고유 ID
+  questionId Int
+  /// 생성일자
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  // question
+}
+
+/// 질문 카테고리
+model QuestionCategory {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 카테고리 이름
+  category  String   @unique @db.VarChar(30)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  // question
 }
 
 model Post {
