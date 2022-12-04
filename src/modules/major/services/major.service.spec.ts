@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dto/major-relation-field-request-query.dto';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { mockPrismaService } from '@src/modules/test/mock-prisma';
 import { MajorService } from './major.service';
@@ -14,7 +15,7 @@ describe('MajorService', () => {
         MajorService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService,
+          useValue: prismaMock,
         },
       ],
     }).compile();
@@ -30,17 +31,23 @@ describe('MajorService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('findAll - 분야 리스트 조회', () => {
-    const mockMajors: object = [JSON.parse(faker.datatype.json())];
+  describe('findMajors - 분야 리스트 조회', () => {
+    let mockMajors: MajorEntity[];
+    let query: MajorRelationFieldRequestQueryDto;
 
     beforeEach(() => {
-      mockPrismaService.major.findMany.mockReturnValue(mockMajors);
+      mockMajors = [new MajorEntity()];
+      query = new MajorRelationFieldRequestQueryDto();
+      query.mainSkills = faker.datatype.boolean();
     });
 
-    it('성공', async () => {
-      const result: MajorEntity[] = await service.findAll();
+    it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
+      const result: MajorEntity[] = await service.findMajors(query);
 
       expect(mockPrismaService.major.findMany).toBeCalledTimes(1);
+      expect(mockPrismaService.major.findMany).toBeCalledWith({
+        include: { mainSkills: query.mainSkills },
+      });
       expect(result).toStrictEqual(mockMajors);
     });
   });

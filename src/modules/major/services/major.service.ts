@@ -26,7 +26,7 @@ export class MajorService {
 
     return this.prismaService.major.findUnique({
       where: {
-        id: +majorId,
+        id: majorId,
       },
       include: {
         mainSkills,
