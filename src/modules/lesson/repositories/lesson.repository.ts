@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonLevelEvaluationType } from '../types/lesson.type';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
 @Injectable()
 export class LessonRepository {
@@ -8,13 +10,17 @@ export class LessonRepository {
 
   /**
    * 과제 상세 정보 조회 query
+   *
    */
-  readOneLesson(lessonId: number, memberId: number): Promise<any> {
+  async readOneLesson(
+    lessonId: number,
+    memberId: number,
+  ): Promise<Omit<ReadOneLessonResponseType, 'lessonLevelEvaluation'>> {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };
 
-    return this.prismaService.$queryRaw`
+    const result = await this.prismaService.$queryRaw`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -42,13 +48,17 @@ export class LessonRepository {
         "Lesson"."id" = ${lessonId}
     GROUP BY "Lesson"."id","Member"."id"
     `;
+
+    return result[0];
   }
 
   /**
    * 과제를 수행한 멤버들의 과제 난이도 평가 정보 조회 query
    */
-  async lessonLevelEvaluation(lessonId: number): Promise<any> {
-    return await this.prismaService.$queryRaw`
+  async lessonLevelEvaluation(
+    lessonId: number,
+  ): Promise<LessonLevelEvaluationType> {
+    const result = await this.prismaService.$queryRaw`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
@@ -56,5 +66,7 @@ export class LessonRepository {
     FROM "LessonLevelEvaluation" 
     WHERE "LessonLevelEvaluation"."lessonId" = ${lessonId}
     `;
+
+    return result[0];
   }
 }

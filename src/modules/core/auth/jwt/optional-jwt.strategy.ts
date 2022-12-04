@@ -27,7 +27,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
     const token = this.getToken(request);
 
     if (token === null) {
-      return { id: 0 };
+      return { id: null };
     }
 
     const decodedToken = this.tokenDecode(token);

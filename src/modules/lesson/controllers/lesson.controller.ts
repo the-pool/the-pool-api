@@ -46,7 +46,7 @@ export class LessonController {
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<LessonEntity> {
     return this.lessonService.createLesson(createLessonDto, memberId);
   }
 
@@ -91,7 +91,7 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member,
-  ) {
+  ): Promise<ReadOneLessonResponseType> {
     return this.lessonService.readOneLesson(param.id, member.id);
   }
 }
