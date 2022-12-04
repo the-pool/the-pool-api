@@ -15,7 +15,7 @@ import { MajorService } from '../services/major.service';
 export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
-  @ApiOperation({ summary: '분야 리스트' })
+  @ApiOperation({ summary: '분야 리스트 조회' })
   @ApiOkResponse({ type: MajorsDto })
   @Get()
   async findMajors(

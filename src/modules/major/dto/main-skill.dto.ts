@@ -8,5 +8,5 @@ export class MainSkillDto {
     type: MainSkillEntity,
   })
   @Type(() => MainSkillEntity)
-  mainSkills: MainSkillEntity;
+  mainSkill: MainSkillEntity;
 }
