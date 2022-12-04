@@ -23,5 +23,11 @@ export const mockPrismaService = {
 
   major: {
     findMany: jest.fn(),
+    findUnique: jest.fn(),
+  },
+
+  mainSkill: {
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
   },
 };
