@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Major } from '@prisma/client';
 import { MajorText } from '@src/constants/enum';
 import { IdResponseType } from '@src/types/id-response-type';
-import { MainSkillEntity } from './main-skill.entoty';
+import { MainSkillEntity } from './main-skill.entity';
 
 export class MajorEntity extends IdResponseType implements Major {
   @ApiProperty({

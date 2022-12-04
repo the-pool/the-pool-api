@@ -7,7 +7,7 @@ import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dto/major-
 import { MajorRequestParamDto } from '@src/modules/major/dto/major-request-param.dto';
 import { MajorDto } from '@src/modules/major/dto/major.dto';
 import { MajorsDto } from '@src/modules/major/dto/majors.dto';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entoty';
+import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
 import { mockMajorService } from '../../../../test/mock/mock-service';

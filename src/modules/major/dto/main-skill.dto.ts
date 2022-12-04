@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { MainSkillEntity } from '../entities/main-skill.entoty';
+import { MainSkillEntity } from '../entities/main-skill.entity';
 
 export class MainSkillDto {
   @ApiProperty({

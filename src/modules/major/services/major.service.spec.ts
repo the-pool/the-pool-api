@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dto/major-relation-field-request-query.dto';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entoty';
+import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { mockPrismaService } from '@src/modules/test/mock-prisma';
 import { MajorService } from './major.service';

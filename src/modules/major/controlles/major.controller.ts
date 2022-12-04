@@ -1,6 +1,8 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MajorsDto } from '@src/modules/major/dto/majors.dto';
+import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
+import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
 import { MainSkillDto } from '../dto/main-skill.dto';
 import { MainSkillsDto } from '../dto/main-skills.dto';
@@ -21,7 +23,7 @@ export class MajorController {
   async findMajors(
     @Query() query: MajorRelationFieldRequestQueryDto,
   ): Promise<MajorsDto> {
-    const majors = await this.majorService.findMajors(query);
+    const majors: MajorEntity[] = await this.majorService.findMajors(query);
 
     return plainToInstance(MajorsDto, { majors });
   }
@@ -33,7 +35,10 @@ export class MajorController {
     @Param() param: MajorIdRequestParamDto,
     @Query() query: MajorRelationFieldRequestQueryDto,
   ): Promise<MajorDto> {
-    const major = await this.majorService.findMajor(param.majorId, query);
+    const major: MajorEntity = await this.majorService.findMajor(
+      param.majorId,
+      query,
+    );
 
     return plainToInstance(MajorDto, { major });
   }
@@ -44,7 +49,8 @@ export class MajorController {
   async findMainSkills(
     @Param() param: MajorIdRequestParamDto,
   ): Promise<MainSkillsDto> {
-    const mainSkills = await this.majorService.findMainSkills(param.majorId);
+    const mainSkills: MainSkillEntity[] =
+      await this.majorService.findMainSkills(param.majorId);
 
     return plainToInstance(MainSkillsDto, { mainSkills });
   }
@@ -55,7 +61,7 @@ export class MajorController {
   async findMainSkill(
     @Param() param: MajorRequestParamDto,
   ): Promise<MainSkillDto> {
-    const mainSkill = await this.majorService.findMainSkill(
+    const mainSkill: MainSkillEntity = await this.majorService.findMainSkill(
       param.majorId,
       param.mainSkillId,
     );
