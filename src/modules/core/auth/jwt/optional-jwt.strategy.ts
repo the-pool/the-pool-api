@@ -5,11 +5,10 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Member } from '@prisma/client';
 import { Strategy } from 'passport-custom';
 import { ExtractJwt } from 'passport-jwt';
-
 import { PrismaService } from '../../database/prisma/prisma.service';
 
 /**
- * 회원, 비회원 공통으로 사용되는 api를 위한 가드 (단! 비회원일시 member id를 0으로 할당)
+ * 회원, 비회원 공통으로 사용되는 api를 위한 가드 (단! 비회원일시 member id를 null로 할당)
  * */
 @Injectable()
 export class OptionalJwtStrategy extends PassportStrategy(
@@ -30,9 +29,9 @@ export class OptionalJwtStrategy extends PassportStrategy(
       return { id: null };
     }
 
-    const decodedToken = this.tokenDecode(token);
+    const validatedToken = this.validateToken(token);
 
-    return this.validateMember(decodedToken.id);
+    return this.validateMember(validatedToken.id);
   }
 
   // request 객체로부터 토큰을 가져오는 메서드
@@ -42,21 +41,10 @@ export class OptionalJwtStrategy extends PassportStrategy(
   }
 
   // 토큰의 검증을 위한 메서드
-  tokenDecode(token: string): { id: number } {
-    try {
-      return this.jwtService.verify(token, {
-        secret: this.configService.get('SECRET_KEY'),
-      });
-    } catch (error) {
-      // 토큰의 비밀키가 일치하지 않거나 만료시간이 초과된 경우 401에러 return
-      if (
-        error.name === 'JsonWebTokenError' ||
-        error.name === 'TokenExpiredError'
-      ) {
-        throw new UnauthorizedException();
-      }
-      throw error;
-    }
+  validateToken(token: string): { id: number } {
+    return this.jwtService.verify(token, {
+      secret: this.configService.get('SECRET_KEY'),
+    });
   }
 
   // 토큰을 디코딩했을 때 나온 멤버 id 검증을 위한 메서드

@@ -12,6 +12,7 @@ import { HttpNodeInternalServerErrorExceptionFilter } from '@src/filters/http-no
 import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
 import { HttpNestInternalServerErrorExceptionFilter } from '@src/filters/http-nest-Internal-server-error-exception.filter';
 import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-exception.filter';
+import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
 
@@ -39,6 +40,7 @@ async function bootstrap() {
     new HttpNestInternalServerErrorExceptionFilter(isProduction),
     new HttpNotFoundExceptionFilter(),
     new HttpBadRequestExceptionFilter(),
+    new JwtExceptionFilter(),
   );
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
