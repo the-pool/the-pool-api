@@ -158,39 +158,20 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      const oneLesson = [
-        {
-          title: faker.lorem.words(),
-          description: faker.lorem.text(),
-          hit: faker.datatype.number(),
-          updatedAt: new Date(),
-          memberId: faker.datatype.number(),
-          nickname: faker.lorem.words(),
-          levelId: faker.datatype.number(),
-          solutionCount: faker.datatype.number(),
-          hashtag: ['1', '2', '3'],
-          isBookmark: false,
-          isLike: false,
-        },
-      ];
-      const lessonLevelEvaluation = [
-        {
-          top: faker.datatype.number(),
-          middle: faker.datatype.number(),
-          bottom: faker.datatype.number(),
-        },
-      ];
-      lessonRepository.readOneLesson.mockReturnValue(oneLesson);
-      lessonRepository.lessonLevelEvaluation.mockReturnValue(
+      const lesson = faker.datatype.string();
+      const lessonLevelEvaluation = faker.datatype.string();
+      const lessonHashtag = faker.datatype.array();
+
+      lessonRepository.readOneLesson.mockReturnValue(lesson);
+      lessonRepository.readLessonLevelEvaluation.mockReturnValue(
         lessonLevelEvaluation,
       );
+      lessonRepository.readLessonHashtag.mockReturnValue(lessonHashtag);
 
       const returnValue = await lessonService.readOneLesson(lessonId, memberId);
 
       expect(returnValue).toStrictEqual(
-        Object.assign({}, oneLesson[0], {
-          lessonLevelEvaluation: lessonLevelEvaluation[0],
-        }),
+        Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation }),
       );
     });
   });

@@ -1,4 +1,5 @@
 export const MockLessonRepository = {
   readOneLesson: jest.fn(),
-  lessonLevelEvaluation: jest.fn(),
+  readLessonLevelEvaluation: jest.fn(),
+  readLessonHashtag: jest.fn(),
 };

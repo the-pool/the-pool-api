@@ -29,6 +29,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { Member } from '@prisma/client';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -91,7 +92,9 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member,
-  ): Promise<ReadOneLessonResponseType> {
-    return this.lessonService.readOneLesson(param.id, member.id);
+  ): ReadOneLessonResponseType {
+    const lesson = this.lessonService.readOneLesson(param.id, member.id);
+
+    return plainToInstance(ReadOneLessonResponseType, lesson);
   }
 }

@@ -30,7 +30,6 @@ export class LessonRepository {
         "Member"."nickname",
         "Lesson"."levelId",
         COUNT("LessonSolution"."lessonId") as "solutionCount",
-        ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag",
         EXISTS(SELECT "LessonBookmark"."id" 
                FROM "LessonBookmark" 
                WHERE "LessonBookmark"."lessonId" = ${lessonId} AND "LessonBookmark"."memberId" = ${memberId}) AS "isBookmark",
@@ -38,8 +37,6 @@ export class LessonRepository {
                FROM "LessonLike" 
                WHERE "LessonLike"."lessonId" = ${lessonId} AND "LessonLike"."memberId" = ${memberId}) AS "isLike"
     FROM "Lesson"   
-    LEFT JOIN "LessonHashtag"
-        ON "LessonHashtag"."lessonId" = "Lesson"."id"
     LEFT JOIN "Member" 
         ON "Member"."id" = "Lesson"."memberId"
     LEFT JOIN "LessonSolution"
@@ -55,7 +52,7 @@ export class LessonRepository {
   /**
    * 과제를 수행한 멤버들의 과제 난이도 평가 정보 조회 query
    */
-  async lessonLevelEvaluation(
+  async readLessonLevelEvaluation(
     lessonId: number,
   ): Promise<LessonLevelEvaluationType> {
     const result = await this.prismaService.$queryRaw`
@@ -66,6 +63,16 @@ export class LessonRepository {
     FROM "LessonLevelEvaluation" 
     WHERE "LessonLevelEvaluation"."lessonId" = ${lessonId}
     `;
+
+    return result[0];
+  }
+
+  async readLessonHashtag(lessonId: number): Promise<string[]> {
+    const result = await this.prismaService.$queryRaw`
+    SELECT 
+      ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 
+    FROM "LessonHashtag" 
+    WHERE "LessonHashtag"."lessonId" = ${lessonId}`;
 
     return result[0];
   }

@@ -135,26 +135,9 @@ describe('LessonController', () => {
   describe('readOneLesson', () => {
     let param: IdRequestParamDto;
     let member: any;
-    let lesson: ReadOneLessonResponseType;
+    let lesson: any;
     beforeEach(async () => {
-      lesson = {
-        title: faker.lorem.words(),
-        description: faker.lorem.text(),
-        hit: faker.datatype.number(),
-        updatedAt: new Date(),
-        memberId: faker.datatype.number(),
-        nickname: faker.lorem.words(),
-        levelId: faker.datatype.number(),
-        solutionCount: faker.datatype.number(),
-        hashtag: ['1', '2', '3'],
-        isBookmark: false,
-        isLike: false,
-        lessonLevelEvaluation: {
-          top: faker.datatype.number(),
-          middle: faker.datatype.number(),
-          bottom: faker.datatype.number(),
-        },
-      };
+      lesson = { id: faker.datatype.number() };
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
@@ -167,9 +150,9 @@ describe('LessonController', () => {
     it('success', async () => {
       lessonService.readOneLesson.mockReturnValue(lesson);
 
-      const returnValue = await lessonController.readOneLesson(param, member);
+      const returnValue = lessonController.readOneLesson(param, member);
 
-      expect(returnValue).toStrictEqual(lesson);
+      expect(returnValue).toBeInstanceOf(ReadOneLessonResponseType);
     });
   });
 });

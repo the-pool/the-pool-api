@@ -2,7 +2,6 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
@@ -88,12 +87,12 @@ export class LessonService {
     lessonId: number,
     memberId: number,
   ): Promise<ReadOneLessonResponseType> {
-    const [lesson, lessonLevelEvaluation] = await Promise.all([
+    const [lesson, lessonLevelEvaluation, lessonHashtag] = await Promise.all([
       this.lessonRepository.readOneLesson(lessonId, memberId),
-      this.lessonRepository.lessonLevelEvaluation(lessonId),
+      this.lessonRepository.readLessonLevelEvaluation(lessonId),
+      this.lessonRepository.readLessonHashtag(lessonId),
     ]);
-    const lessonDetail = Object.assign({}, lesson, { lessonLevelEvaluation });
 
-    return plainToInstance(ReadOneLessonResponseType, lessonDetail);
+    return Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation });
   }
 }
