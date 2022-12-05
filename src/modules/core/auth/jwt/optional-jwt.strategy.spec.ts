@@ -62,7 +62,7 @@ describe('OptionalJwtStrategy', () => {
         },
       };
       getTokenSpy = jest.spyOn(optionalJwtStrategy, 'getToken');
-      tokenDecodeSpy = jest.spyOn(optionalJwtStrategy, 'tokenDecode');
+      tokenDecodeSpy = jest.spyOn(optionalJwtStrategy, 'validateToken');
       validateMemberSpy = jest.spyOn(optionalJwtStrategy, 'validateMember');
     });
 
@@ -87,7 +87,7 @@ describe('OptionalJwtStrategy', () => {
       expect(getTokenSpy).toBeCalledTimes(1);
       expect(tokenDecodeSpy).toBeCalledTimes(0);
       expect(validateMemberSpy).toBeCalledTimes(0);
-      expect(returnValue).toStrictEqual({ id: 0 });
+      expect(returnValue).toStrictEqual({ id: null });
     });
   });
 
@@ -133,7 +133,7 @@ describe('OptionalJwtStrategy', () => {
     });
 
     it('success', async () => {
-      const returnValue = optionalJwtStrategy.tokenDecode(token);
+      const returnValue = optionalJwtStrategy.validateToken(token);
 
       expect(returnValue.id).toStrictEqual(memberId);
     });
@@ -142,8 +142,8 @@ describe('OptionalJwtStrategy', () => {
       token = faker.datatype.uuid();
 
       expect(async () => {
-        await optionalJwtStrategy.tokenDecode(token);
-      }).rejects.toThrowError(new UnauthorizedException());
+        await optionalJwtStrategy.validateToken(token);
+      }).rejects.toThrowError('jwt malformed');
     });
   });
 
