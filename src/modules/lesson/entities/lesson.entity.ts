@@ -9,7 +9,7 @@ import { IdResponseType } from '@src/types/id-response-type';
 import { Lesson } from '@prisma/client';
 import { LessonLevelId } from '@src/constants/enum';
 import { LessonHashtagEntity } from './lesson-hashtag.entity';
-import { titleLength } from '@src/constants/constant';
+import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 
 export class LessonEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -25,8 +25,8 @@ export class LessonEntity
   @ApiProperty({
     description: '과제의 제목',
     example: 'title',
-    minLength: titleLength.MIN,
-    maxLength: titleLength.MAX,
+    minLength: LESSON_TITLE_LENGTH.MIN,
+    maxLength: LESSON_TITLE_LENGTH.MAX,
   })
   title: string;
 

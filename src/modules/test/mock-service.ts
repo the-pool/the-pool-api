@@ -22,4 +22,5 @@ export const MockLessonService = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
   updateLessonHashtag: jest.fn(),
+  readOneLesson: jest.fn(),
 };

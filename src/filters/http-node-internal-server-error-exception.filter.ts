@@ -5,7 +5,6 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
-
 import { HttpExceptionHelper } from '@src/filters/http-exception.helper';
 import { ResponseJson } from '@src/filters/type';
 
@@ -28,7 +27,6 @@ export class HttpNodeInternalServerErrorExceptionFilter
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
 
     const responseJson: ResponseJson = this.buildResponseJson(status);
-
     responseJson.errors = [
       this.preProcessByServerError(
         this.isProduction ? undefined : exception.stack,
