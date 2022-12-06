@@ -14,7 +14,7 @@ import {
 } from 'jsonwebtoken';
 
 /**
- * jwt 코큰을 validate했을 때 나오는 에러를 관리하기 위한 filter
+ * jwt 토큰을 validate했을 때 나오는 에러를 관리하기 위한 filter
  */
 @Catch(JsonWebTokenError, TokenExpiredError, NotBeforeError)
 export class JwtExceptionFilter
