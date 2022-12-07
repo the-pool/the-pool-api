@@ -97,4 +97,26 @@ export class LessonController {
 
     return plainToInstance(ReadOneLessonResponseType, lesson);
   }
+
+  // 해당 유사 과제에 북마크 여부를 보여 주어야 하기 때문에 토큰을 받아야 한다.
+  @Get(':id/similarity')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(OptionalJwtAuthGuard)
+  @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
+  @ApiBearerAuth()
+  // @ApiOkResponse({type:ReadSimilarLessonResponseType})
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
+  readSimilarLesson(
+    @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
+    @UserLogin() member: Member,
+  ) {
+    const similarLesson = this.lessonService.readSimilarLesson(
+      param.id,
+      member.id,
+    );
+  }
 }

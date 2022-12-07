@@ -95,4 +95,11 @@ export class LessonService {
 
     return Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation });
   }
+
+  /**
+   * 유사 과제 조회 메서드
+   */
+  readSimilarLesson(lessonId: number, memberId: number) {
+    return this.lessonRepository.readSimilarLesson(lessonId, memberId);
+  }
 }

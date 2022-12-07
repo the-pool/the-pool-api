@@ -7,7 +7,7 @@ import { getEntriesByEnum } from '@src/common/common';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Lesson } from '@prisma/client';
-import { LessonLevelId } from '@src/constants/enum';
+import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import { LessonHashtagEntity } from './lesson-hashtag.entity';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 
@@ -53,6 +53,13 @@ export class LessonEntity
     example: 1,
   })
   memberId: number;
+
+  @ApiProperty({
+    description: '과제의 카테고리 고유 ID',
+    example: LessonCategoryId.Backend,
+    enum: getEntriesByEnum(LessonCategoryId),
+  })
+  categoryId: LessonCategoryId;
 
   @ApiPropertyOptional({
     description: '과제의 hashtag entity',

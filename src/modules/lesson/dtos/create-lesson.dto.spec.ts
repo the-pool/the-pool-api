@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { customValidate, getValueByEnum } from '@src/common/common';
-import { LessonLevelId } from '@src/constants/enum';
+import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import { CreateLessonDto } from './create-lesson.dto';
 
 describe('CreateLessonDto', () => {
@@ -34,6 +34,32 @@ describe('CreateLessonDto', () => {
 
     it('false - levelId에 ENUM이 아닌 값이 들어왔을 때', async () => {
       createLessonDto.levelId = 4;
+      const errors = await customValidate(createLessonDto);
+
+      expect(errors[0].constraints).toHaveProperty('isEnum');
+    });
+  });
+
+  describe('categoryId test', () => {
+    it.each(getValueByEnum(LessonCategoryId, 'number'))(
+      'success - categoryId: %s',
+      async (categoryId) => {
+        createLessonDto.categoryId = categoryId;
+        const errors = await customValidate(createLessonDto);
+
+        expect(errors).toHaveLength(0);
+      },
+    );
+
+    it('false - categoryId에 아무런 값도 들어오지 않았을 때', async () => {
+      createLessonDto.categoryId = null;
+      const errors = await customValidate(createLessonDto);
+
+      expect(errors[0].constraints).toHaveProperty('isNotEmpty');
+    });
+
+    it('false - categoryId에 ENUM이 아닌 값이 들어왔을 때', async () => {
+      createLessonDto.categoryId = 0;
       const errors = await customValidate(createLessonDto);
 
       expect(errors[0].constraints).toHaveProperty('isEnum');

@@ -44,6 +44,7 @@ describe('LessonController', () => {
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
         hashtag: ['1', '2', '3'],
+        categoryId: faker.datatype.number(),
       };
 
       jest.spyOn(lessonService, 'createLesson');
@@ -90,6 +91,7 @@ describe('LessonController', () => {
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
         hashtag: ['1', '2', '3'],
+        categoryId: faker.datatype.number(),
       };
       param = {
         id: faker.datatype.number(),

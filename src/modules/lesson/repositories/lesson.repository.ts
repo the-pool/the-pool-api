@@ -67,6 +67,9 @@ export class LessonRepository {
     return result[0];
   }
 
+  /**
+   * 과제 해시태그 조회 query
+   */
   async readLessonHashtag(lessonId: number): Promise<string[]> {
     const result = await this.prismaService.$queryRaw`
     SELECT 
@@ -75,5 +78,14 @@ export class LessonRepository {
     WHERE "LessonHashtag"."lessonId" = ${lessonId}`;
 
     return result[0];
+  }
+
+  /**
+   * 유사 과제 조회 query
+   */
+  async readSimilarLesson(lessonId: number, memberId: number) {
+    const result = await this.prismaService.$queryRaw``;
+
+    return result;
   }
 }
