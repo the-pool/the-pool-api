@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { SIMILAR_LESSON } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
@@ -38,11 +39,10 @@ export class LessonRepository {
                WHERE "LessonLike"."lessonId" = ${lessonId} AND "LessonLike"."memberId" = ${memberId}) AS "isLike"
     FROM "Lesson"   
     LEFT JOIN "Member" 
-        ON "Member"."id" = "Lesson"."memberId"
+      ON "Member"."id" = "Lesson"."memberId"
     LEFT JOIN "LessonSolution"
-        ON "LessonSolution"."lessonId" = "Lesson"."id" 
-    WHERE 
-        "Lesson"."id" = ${lessonId}
+      ON "LessonSolution"."lessonId" = "Lesson"."id" 
+    WHERE "Lesson"."id" = ${lessonId}
     GROUP BY "Lesson"."id","Member"."id"
     `;
 
@@ -84,8 +84,31 @@ export class LessonRepository {
    * 유사 과제 조회 query
    */
   async readSimilarLesson(lessonId: number, memberId: number) {
-    const result = await this.prismaService.$queryRaw``;
-
+    (BigInt.prototype as any).toJSON = function () {
+      return Number(this);
+    };
+    const result = await this.prismaService.$queryRaw`
+    SELECT 
+      "Lesson"."id",
+      "Lesson"."title",
+      "Lesson"."hit",
+      "LessonBookmark"."memberId" AS "isBookmark",
+      COUNT("LessonSolution"."lessonId") as "solutionCount" 
+    FROM "Lesson"
+    LEFT JOIN "LessonSolution"
+      ON "LessonSolution"."lessonId" = "Lesson"."id"
+    LEFT JOIN "the-pool-local"."LessonBookmark" 
+      ON "Lesson"."id" = "LessonBookmark"."lessonId" and "LessonBookmark"."memberId" = ${memberId}
+    WHERE "Lesson"."categoryId" 
+      = (SELECT
+          "Lesson"."categoryId"
+          FROM "Lesson"
+          WHERE "Lesson"."id" = ${lessonId}
+        ) AND "Lesson"."id" != ${lessonId}
+    GROUP BY "Lesson"."id","LessonBookmark"."memberId"
+    ORDER BY "Lesson"."id" ASC    
+    LIMIT ${SIMILAR_LESSON.LIMIT}
+    `;
     return result;
   }
 }

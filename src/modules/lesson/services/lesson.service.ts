@@ -99,7 +99,7 @@ export class LessonService {
   /**
    * 유사 과제 조회 메서드
    */
-  readSimilarLesson(lessonId: number, memberId: number) {
+  async readSimilarLesson(lessonId: number, memberId: number) {
     return this.lessonRepository.readSimilarLesson(lessonId, memberId);
   }
 }

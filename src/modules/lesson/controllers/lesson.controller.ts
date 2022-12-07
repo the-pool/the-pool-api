@@ -114,9 +114,11 @@ export class LessonController {
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member,
   ) {
-    const similarLesson = this.lessonService.readSimilarLesson(
+    const similarLessons = this.lessonService.readSimilarLesson(
       param.id,
       member.id,
     );
+
+    return similarLessons;
   }
 }
