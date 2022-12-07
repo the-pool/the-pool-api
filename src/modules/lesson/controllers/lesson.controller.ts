@@ -30,6 +30,7 @@ import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-res
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { Member } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
+import { ReadSimilarLessonResponseType } from '../types/response/read-similar-lesson-response.type';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -98,27 +99,27 @@ export class LessonController {
     return plainToInstance(ReadOneLessonResponseType, lesson);
   }
 
-  // 해당 유사 과제에 북마크 여부를 보여 주어야 하기 때문에 토큰을 받아야 한다.
   @Get(':id/similarity')
   @HttpCode(HttpStatus.OK)
   @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiBearerAuth()
-  // @ApiOkResponse({type:ReadSimilarLessonResponseType})
+  @ApiOkResponse({ type: ReadSimilarLessonResponseType })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
-  readSimilarLesson(
+  async readSimilarLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member,
   ) {
-    const similarLessons = this.lessonService.readSimilarLesson(
+    const lessons = await this.lessonService.readSimilarLesson(
       param.id,
       member.id,
     );
-
-    return similarLessons;
+    return plainToInstance(ReadSimilarLessonResponseType, {
+      lessons,
+    });
   }
 }

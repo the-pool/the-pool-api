@@ -5,6 +5,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
@@ -99,7 +100,10 @@ export class LessonService {
   /**
    * 유사 과제 조회 메서드
    */
-  async readSimilarLesson(lessonId: number, memberId: number) {
+  readSimilarLesson(
+    lessonId: number,
+    memberId: number,
+  ): Promise<SimilarLessonEntity[]> {
     return this.lessonRepository.readSimilarLesson(lessonId, memberId);
   }
 }

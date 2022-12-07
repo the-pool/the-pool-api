@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { SIMILAR_LESSON } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
 import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
@@ -83,11 +84,14 @@ export class LessonRepository {
   /**
    * 유사 과제 조회 query
    */
-  async readSimilarLesson(lessonId: number, memberId: number) {
+  async readSimilarLesson(
+    lessonId: number,
+    memberId: number,
+  ): Promise<SimilarLessonEntity[]> {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };
-    const result = await this.prismaService.$queryRaw`
+    return await this.prismaService.$queryRaw`
     SELECT 
       "Lesson"."id",
       "Lesson"."title",
@@ -109,6 +113,5 @@ export class LessonRepository {
     ORDER BY "Lesson"."id" ASC    
     LIMIT ${SIMILAR_LESSON.LIMIT}
     `;
-    return result;
   }
 }
