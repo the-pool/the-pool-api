@@ -118,6 +118,7 @@ export class LessonController {
       param.id,
       member.id,
     );
+
     return plainToInstance(ReadSimilarLessonResponseType, {
       lessons,
     });

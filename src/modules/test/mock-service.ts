@@ -18,9 +18,10 @@ export const MockPrivateStorageService = {
   getSignedUrl: jest.fn(),
 };
 
-export const MockLessonService = {
+export const mockLessonService = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
   updateLessonHashtag: jest.fn(),
   readOneLesson: jest.fn(),
+  readSimilarLesson: jest.fn(),
 };

@@ -50,6 +50,7 @@ describe('LessonService', () => {
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
         hashtag: ['1', '2', '3'],
+        categoryId: faker.datatype.number({ min: 1, max: 9 }),
       };
       memberId = 1;
     });
