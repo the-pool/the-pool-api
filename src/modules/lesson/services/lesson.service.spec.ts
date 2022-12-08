@@ -3,9 +3,11 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
-import { MockLessonRepository } from '@src/modules/test/mock-repository';
+import { mockPrismaService } from '@src/modules/test/mock-prisma';
+import { mockLessonRepository } from '@src/modules/test/mock-repository';
+import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 
@@ -21,18 +23,18 @@ describe('LessonService', () => {
         DataStructureHelper,
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
         },
         {
           provide: LessonRepository,
-          useValue: MockLessonRepository,
+          useValue: mockLessonRepository,
         },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
-    lessonRepository = MockLessonRepository;
-    prismaService = MockPrismaService;
+    lessonRepository = mockLessonRepository;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {
@@ -174,6 +176,39 @@ describe('LessonService', () => {
       expect(returnValue).toStrictEqual(
         Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation }),
       );
+    });
+  });
+
+  describe('readSimilarLesson', () => {
+    let memberId: number;
+    let lessonId: number;
+    let mockSimilarLessons: SimilarLessonEntity;
+
+    beforeEach(async () => {
+      (memberId = faker.datatype.number()),
+        (lessonId = faker.datatype.number());
+      mockSimilarLessons = plainToInstance(
+        SimilarLessonEntity,
+        JSON.parse(faker.datatype.json()),
+      );
+
+      mockLessonRepository.readSimilarLesson.mockReturnValue(
+        mockSimilarLessons,
+      );
+    });
+
+    it('success', async () => {
+      const reuturnValaue = await lessonService.readSimilarLesson(
+        lessonId,
+        memberId,
+      );
+
+      expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
+        lessonId,
+        memberId,
+      );
+      expect(reuturnValaue).toBeInstanceOf(SimilarLessonEntity);
     });
   });
 });

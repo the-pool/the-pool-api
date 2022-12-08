@@ -1,4 +1,4 @@
-export const MockPrismaService = {
+export const mockPrismaService = {
   member: {
     findFirst: jest.fn(),
     findUnique: jest.fn(),
