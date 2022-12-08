@@ -40,3 +40,10 @@ export enum LessonLevelId {
   // 하
   Bottom = 3,
 }
+
+export enum QuestionCategoryId {
+  DevelopMent = 1,
+  Design = 2,
+  Career = 3,
+  WorkLife = 4,
+}
