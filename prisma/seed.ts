@@ -155,6 +155,28 @@ async function thePoolSeed() {
       { level: LessonLevel.Bottom },
     ],
   });
+
+  await prisma.questionCategory.createMany({
+    data: [
+      {
+        id: 1,
+        category: '개발',
+      },
+      {
+        id: 2,
+        category: '디자인',
+      },
+      {
+        id: 3,
+        category: '커리어',
+      },
+      {
+        id: 4,
+        category: '직장생활',
+      },
+    ],
+  });
+
 }
 
 thePoolSeed()
