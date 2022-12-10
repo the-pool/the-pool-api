@@ -34,7 +34,7 @@ export class QuestionController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({ type: QuestionCategoryListDto })
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  @Get('categoryList')
+  @Get('category-list')
   async getQuestionCategoryList(): Promise<QuestionCategoryListDto> {
     const categoryList = await this.questionService.getQuestionCategoryList();
 
