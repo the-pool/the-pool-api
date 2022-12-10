@@ -3,6 +3,9 @@ import { OrderBy } from '@src/constants/enum';
 
 @Injectable()
 export class QueryHelper {
+  /**
+   * find 시 where field 를 만드는 메서드
+   */
   buildWherePropForFind(
     filter: Record<string, any>,
     likeSearchFields?: string[],
@@ -12,7 +15,7 @@ export class QueryHelper {
     for (const key in filter) {
       if (filter[key] === '') continue;
 
-      if (likeSearchFields.includes(key)) {
+      if (likeSearchFields?.includes(key)) {
         where[key] = { contains: filter[key] };
       } else {
         where[key] = filter[key];
@@ -22,20 +25,21 @@ export class QueryHelper {
     return where;
   }
 
-  buildOrderByPropForFind<K extends string>(
+  /**
+   * find 시 order by field 를 만드는 메서드
+   */
+  buildOrderByPropForFind(
     orderBy: OrderBy[],
-    sortBy: K[],
-  ): { [P in K]: OrderBy }[] {
-    const order = [];
-
-    if (orderBy.length !== sortBy.length) return;
-
-    for (let i = 0; i < orderBy.length; i += 1) {
-      if (orderBy[i] && sortBy[i]) {
-        order.push({ [sortBy[i]]: orderBy[i] });
-      }
+    sortBy: string[],
+  ): { [key: string]: OrderBy }[] {
+    if (orderBy.length !== sortBy.length) {
+      return [{ id: OrderBy.Asc }];
     }
 
-    return order;
+    return orderBy.map((order, idx) => {
+      return {
+        [sortBy[idx]]: order,
+      };
+    });
   }
 }

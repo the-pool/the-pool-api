@@ -2,8 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { mockLessonService } from '@src/modules/test/mock-service';
-import { plainToInstance } from 'class-transformer';
+import { mockLessonService } from '../../../../test/mock/mock-services';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
@@ -11,6 +10,7 @@ import { LessonService } from '../services/lesson.service';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
+import { plainToInstance } from 'class-transformer';
 
 describe('LessonController', () => {
   let lessonController: LessonController;

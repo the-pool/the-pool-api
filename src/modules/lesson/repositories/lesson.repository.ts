@@ -6,6 +6,10 @@ import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 
+/**
+ * 이 클레스의 메서드들이 다 raw 쿼리를 사용하고 있는데 우선 any 로 타입에러 대응
+ * 작업자가 나중에 타입 만들어서 넣어주길 바람
+ */
 @Injectable()
 export class LessonRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -22,7 +26,7 @@ export class LessonRepository {
       return Number(this);
     };
 
-    const result = await this.prismaService.$queryRaw`
+    const result: any = await this.prismaService.$queryRaw`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -56,7 +60,7 @@ export class LessonRepository {
   async readLessonLevelEvaluation(
     lessonId: number,
   ): Promise<LessonLevelEvaluationType> {
-    const result = await this.prismaService.$queryRaw`
+    const result: any = await this.prismaService.$queryRaw`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
@@ -72,7 +76,7 @@ export class LessonRepository {
    * 과제 해시태그 조회 query
    */
   async readLessonHashtag(lessonId: number): Promise<string[]> {
-    const result = await this.prismaService.$queryRaw`
+    const result: any = await this.prismaService.$queryRaw`
     SELECT 
       ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 
     FROM "LessonHashtag" 

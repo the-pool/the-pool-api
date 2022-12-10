@@ -3,9 +3,9 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '@src/modules/test/mock-prisma';
 import { mockLessonRepository } from '@src/modules/test/mock-repository';
 import { plainToInstance } from 'class-transformer';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
@@ -58,7 +58,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      let lesson = {
+      const lesson = {
         id: faker.datatype.number(),
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),

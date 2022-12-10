@@ -1,3 +1,4 @@
+// OAuth provider
 export enum OAuthAgency {
   Kakao = 1,
   Google = 2,
