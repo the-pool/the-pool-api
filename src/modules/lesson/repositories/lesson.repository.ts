@@ -4,7 +4,7 @@ import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
-import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
+import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 
 @Injectable()
 export class LessonRepository {
@@ -17,7 +17,7 @@ export class LessonRepository {
   async readOneLesson(
     lessonId: number,
     memberId: number,
-  ): Promise<Omit<ReadOneLessonResponseType, 'lessonLevelEvaluation'>> {
+  ): Promise<Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>> {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };

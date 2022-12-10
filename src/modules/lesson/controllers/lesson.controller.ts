@@ -26,11 +26,11 @@ import { LessonService } from '../services/lesson.service';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
+import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { Member } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
-import { ReadSimilarLessonResponseType } from '../types/response/read-similar-lesson-response.type';
+import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 
 @ApiTags('과제')
 @Controller('api/lessons')
@@ -82,7 +82,7 @@ export class LessonController {
   @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiBearerAuth()
-  @ApiOkResponse({ type: ReadOneLessonResponseType })
+  @ApiOkResponse({ type: ReadOneLessonDto })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
@@ -93,10 +93,10 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member,
-  ): ReadOneLessonResponseType {
+  ): ReadOneLessonDto {
     const lesson = this.lessonService.readOneLesson(param.id, member.id);
 
-    return plainToInstance(ReadOneLessonResponseType, lesson);
+    return plainToInstance(ReadOneLessonDto, lesson);
   }
 
   @Get(':id/similarity')
@@ -104,7 +104,7 @@ export class LessonController {
   @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiBearerAuth()
-  @ApiOkResponse({ type: ReadSimilarLessonResponseType })
+  @ApiOkResponse({ type: ReadSimilarLessonDto })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
@@ -119,7 +119,7 @@ export class LessonController {
       member.id,
     );
 
-    return plainToInstance(ReadSimilarLessonResponseType, {
+    return plainToInstance(ReadSimilarLessonDto, {
       lessons,
     });
   }

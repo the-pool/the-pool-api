@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { LessonEntity } from '../../entities/lesson.entity';
-import { LessonLevelEvaluationType } from '../lesson.type';
+import { LessonEntity } from '../entities/lesson.entity';
+import { LessonLevelEvaluationType } from '../types/lesson.type';
 
-export class ReadOneLessonResponseType extends PickType(LessonEntity, [
+export class ReadOneLessonDto extends PickType(LessonEntity, [
   'title',
   'description',
   'hit',

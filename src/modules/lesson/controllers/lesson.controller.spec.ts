@@ -8,8 +8,8 @@ import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonService } from '../services/lesson.service';
-import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
-import { ReadSimilarLessonResponseType } from '../types/response/read-similar-lesson-response.type';
+import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
+import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
 
 describe('LessonController', () => {
@@ -157,7 +157,7 @@ describe('LessonController', () => {
 
       const returnValue = lessonController.readOneLesson(param, member);
 
-      expect(returnValue).toBeInstanceOf(ReadOneLessonResponseType);
+      expect(returnValue).toBeInstanceOf(ReadOneLessonDto);
     });
   });
 
@@ -191,7 +191,7 @@ describe('LessonController', () => {
         param.id,
         member.id,
       );
-      expect(returnValue).toBeInstanceOf(ReadSimilarLessonResponseType);
+      expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
       expect(returnValue.lessons).toStrictEqual(mockSimilarLessons);
     });
 

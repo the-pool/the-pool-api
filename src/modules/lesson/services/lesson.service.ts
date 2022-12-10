@@ -7,7 +7,7 @@ import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
-import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
+import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 
 @Injectable()
 export class LessonService {
@@ -87,7 +87,7 @@ export class LessonService {
   async readOneLesson(
     lessonId: number,
     memberId: number,
-  ): Promise<ReadOneLessonResponseType> {
+  ): Promise<ReadOneLessonDto> {
     const [lesson, lessonLevelEvaluation, lessonHashtag] = await Promise.all([
       this.lessonRepository.readOneLesson(lessonId, memberId),
       this.lessonRepository.readLessonLevelEvaluation(lessonId),

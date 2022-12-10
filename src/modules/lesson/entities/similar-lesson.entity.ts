@@ -11,7 +11,7 @@ export class SimilarLessonEntity extends PickType(LessonEntity, [
     example: true,
     description: '멤버의 과제 북마크 여부',
   })
-  @Transform((item) => !!item.obj.isBookmark)
+  @Transform(({ value }) => !!value)
   isBookmark: boolean | number;
 
   @ApiProperty({
