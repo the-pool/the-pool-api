@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { MockLessonService } from '@src/modules/test/mock-service';
+import { mockLessonService } from '../../../../test/mock/mock-services';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
@@ -19,13 +19,13 @@ describe('LessonController', () => {
       providers: [
         {
           provide: LessonService,
-          useValue: MockLessonService,
+          useValue: mockLessonService,
         },
       ],
     }).compile();
 
     lessonController = module.get<LessonController>(LessonController);
-    lessonService = MockLessonService;
+    lessonService = mockLessonService;
   });
 
   it('should be defined', () => {

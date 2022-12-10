@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
-import { MockAuthService } from '@src/modules/test/mock-service';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { MemberService } from './member.service';
 
@@ -17,18 +17,18 @@ describe('MemberService', () => {
         MemberService,
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
         },
         {
           provide: AuthService,
-          useValue: MockAuthService,
+          useValue: mockAuthService,
         },
       ],
     }).compile();
 
     memberService = module.get<MemberService>(MemberService);
-    authService = MockAuthService;
-    prismaService = MockPrismaService;
+    authService = mockAuthService;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {

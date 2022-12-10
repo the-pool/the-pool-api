@@ -1,14 +1,13 @@
+import { faker } from '@faker-js/faker';
+import { UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
-import { string } from 'joi';
+import jwt from 'jsonwebtoken';
+import { mockPrismaService } from '../../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '../../database/prisma/prisma.service';
 import { OptionalJwtStrategy } from './optional-jwt.strategy';
-import jwt from 'jsonwebtoken';
-import { faker } from '@faker-js/faker';
-import { UnauthorizedException } from '@nestjs/common';
 
 describe('OptionalJwtStrategy', () => {
   let configService: ConfigService;
@@ -35,12 +34,12 @@ describe('OptionalJwtStrategy', () => {
         },
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
     optionalJwtStrategy = module.get<OptionalJwtStrategy>(OptionalJwtStrategy);
-    prismaService = MockPrismaService;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {

@@ -3,8 +3,8 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
-import { MockLessonRepository } from '@src/modules/test/mock-repository';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { MockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
@@ -21,7 +21,7 @@ describe('LessonService', () => {
         DataStructureHelper,
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
         },
         {
           provide: LessonRepository,
@@ -32,7 +32,7 @@ describe('LessonService', () => {
 
     lessonService = module.get<LessonService>(LessonService);
     lessonRepository = MockLessonRepository;
-    prismaService = MockPrismaService;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {
@@ -55,7 +55,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      let lesson = {
+      const lesson = {
         id: faker.datatype.number(),
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),

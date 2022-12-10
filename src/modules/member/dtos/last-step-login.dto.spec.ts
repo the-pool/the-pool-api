@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { customValidate, getValueByEnum } from '@src/common/common';
 import { MEMBER_NICKNAME_LENGTH } from '@src/constants/constant';
 import { MajorId, MajorSkillId } from '@src/constants/enum';
-import { MockLastStepLoginDto } from '@src/modules/test/mock-dto';
+import { MockLastStepLoginDto } from '../../../../test/mock/mock-dtos';
 import { LastStepLoginDto } from './last-step-login.dto';
 
 describe('LastStepLoginDto', () => {
