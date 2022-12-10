@@ -71,13 +71,14 @@ model Member {
   LessonSolution        LessonSolution[]
   LessonComment         LessonComment[]
   LessonLevelEvaluation LessonLevelEvaluation[]
-  LessonBookMark        LessonBookMark[]
+  LessonBookMark        LessonBookmark[]
   follower              MemberFollow[]          @relation("follower")
   following             MemberFollow[]          @relation("following")
   MemberReport          MemberReport?
   QuestionAnswer        QuestionAnswer[]
   QuestionLike          QuestionLike[]
   QuestionAnswerLike    QuestionAnswerLike[]
+  LessonLike            LessonLike[]
 }
 
 /// 멤버 활동 모델
