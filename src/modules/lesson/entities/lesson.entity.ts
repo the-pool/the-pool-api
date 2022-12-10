@@ -3,13 +3,13 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
+import { Lesson } from '@prisma/client';
 import { getEntriesByEnum } from '@src/common/common';
+import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
+import { LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { Lesson } from '@prisma/client';
-import { LessonLevelId } from '@src/constants/enum';
 import { LessonHashtagEntity } from './lesson-hashtag.entity';
-import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 
 export class LessonEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -46,7 +46,7 @@ export class LessonEntity
     description: '과제의 썸네일',
     example: 'the-pool.png',
   })
-  thumbnail: string;
+  thumbnail: string | null;
 
   @ApiProperty({
     description: '과제를 생성한 멤버 고유 ID',

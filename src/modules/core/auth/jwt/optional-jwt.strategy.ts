@@ -49,7 +49,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
 
   // 토큰을 디코딩했을 때 나온 멤버 id 검증을 위한 메서드
   async validateMember(memberId: number) {
-    const member: Member = await this.prismaService.member.findFirst({
+    const member: Member | null = await this.prismaService.member.findFirst({
       where: {
         id: memberId,
       },
@@ -58,6 +58,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
     if (!member) {
       throw new UnauthorizedException();
     }
+
     return member;
   }
 }

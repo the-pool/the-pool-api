@@ -26,7 +26,7 @@ export function IsEssential<T>(
           return isExistEssentialFields;
         },
 
-        defaultMessage(validationArguments?: ValidationArguments): string {
+        defaultMessage(validationArguments: ValidationArguments): string {
           return (
             validationArguments.property +
             ' is essential to ' +
