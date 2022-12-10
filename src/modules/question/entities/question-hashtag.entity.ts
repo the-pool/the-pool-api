@@ -10,7 +10,7 @@ export class QuestionHashtagEntity
 
   @ApiProperty({
     example: 1,
-    description: 'hasttag를 가지는 질문 고유 ID'
+    description: 'hashtag를 가지는 질문 고유 ID'
   })
   questionId: number;
 
