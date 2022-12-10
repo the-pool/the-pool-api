@@ -1,5 +1,6 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import path from 'path';
 import request from 'supertest';
@@ -19,16 +20,21 @@ describe('MajorsController (e2e)', () => {
 
     prismaService = app.get<PrismaService>(PrismaService);
 
-    const major = await prismaService.major.findFirst({
-      select: {
-        id: true,
+    const major: Pick<MajorEntity, 'id'> = (await prismaService.major.findFirst(
+      {
+        select: {
+          id: true,
+        },
       },
-    });
-    const mainSkill = await prismaService.mainSkill.findFirst({
-      select: {
-        id: true,
-      },
-    });
+    )) as Pick<MajorEntity, 'id'>;
+
+    const mainSkill: Pick<MainSkillEntity, 'id'> =
+      (await prismaService.mainSkill.findFirst({
+        select: {
+          id: true,
+        },
+      })) as Pick<MainSkillEntity, 'id'>;
+
     majorId = major.id;
     mainSkillId = mainSkill.id;
     stringMajorId = String(majorId);
@@ -91,7 +97,7 @@ describe('MajorsController (e2e)', () => {
             expect(major).toHaveProperty('createdAt');
             expect(typeof major.createdAt).toBe('string');
             expect(major).toHaveProperty('mainSkills');
-            major.mainSkills.forEach((mainSkill) => {
+            major.mainSkills?.forEach((mainSkill) => {
               expect(mainSkill).toHaveProperty('id');
               expect(typeof mainSkill.id).toBe('number');
               expect(mainSkill).toHaveProperty('majorId');

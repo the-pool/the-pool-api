@@ -35,7 +35,7 @@ export class MajorController {
     @Param() param: MajorIdRequestParamDto,
     @Query() query: MajorRelationFieldRequestQueryDto,
   ): Promise<MajorDto> {
-    const major: MajorEntity = await this.majorService.findMajor(
+    const major: MajorEntity | null = await this.majorService.findMajor(
       param.majorId,
       query,
     );
@@ -61,10 +61,8 @@ export class MajorController {
   async findMainSkill(
     @Param() param: MajorRequestParamDto,
   ): Promise<MainSkillDto> {
-    const mainSkill: MainSkillEntity = await this.majorService.findMainSkill(
-      param.majorId,
-      param.mainSkillId,
-    );
+    const mainSkill: MainSkillEntity | null =
+      await this.majorService.findMainSkill(param.majorId, param.mainSkillId);
 
     return plainToInstance(MainSkillDto, { mainSkill });
   }

@@ -39,7 +39,7 @@ export class MajorService {
       include: {
         mainSkills,
       },
-    });
+    }) as Promise<MajorEntity>;
   }
 
   /**
@@ -67,6 +67,6 @@ export class MajorService {
         majorId,
         id: mainSkillId,
       },
-    });
+    }) as Promise<MainSkillEntity>;
   }
 }

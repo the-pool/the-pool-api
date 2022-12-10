@@ -4,7 +4,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
 import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
-import { mockPrismaService } from '@src/modules/test/mock-prisma';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { MajorService } from './major.service';
 
 describe('MajorService', () => {
@@ -40,7 +40,7 @@ describe('MajorService', () => {
       mockMajors = [new MajorEntity()];
       query = new MajorRelationFieldRequestQueryDto();
       query.mainSkills = faker.datatype.boolean();
-      mockPrismaService.major.findMany.mockReturnValue(mockMajors);
+      mockPrismaService.major.findMany.mockResolvedValueOnce(mockMajors);
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
@@ -64,7 +64,7 @@ describe('MajorService', () => {
       majorId = faker.datatype.number();
       query = new MajorRelationFieldRequestQueryDto();
       query.mainSkills = faker.datatype.boolean();
-      mockPrismaService.major.findUnique.mockReturnValue(mockMajor);
+      mockPrismaService.major.findUnique.mockResolvedValueOnce(mockMajor);
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
@@ -90,7 +90,9 @@ describe('MajorService', () => {
     beforeEach(() => {
       mockMainSkills = [new MainSkillEntity()];
       majorId = faker.datatype.number();
-      mockPrismaService.mainSkill.findMany.mockReturnValue(mockMainSkills);
+      mockPrismaService.mainSkill.findMany.mockResolvedValueOnce(
+        mockMainSkills,
+      );
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
@@ -115,7 +117,9 @@ describe('MajorService', () => {
       mockMainSkill = new MainSkillEntity();
       majorId = faker.datatype.number();
       mainSkillId = faker.datatype.number();
-      mockPrismaService.mainSkill.findUnique.mockReturnValue(mockMainSkill);
+      mockPrismaService.mainSkill.findUnique.mockResolvedValueOnce(
+        mockMainSkill,
+      );
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {

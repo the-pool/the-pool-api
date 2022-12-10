@@ -1,3 +1,6 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { PrismaModel, Target } from '@src/types/type';
 import {
   registerDecorator,
   ValidationArguments,
@@ -5,9 +8,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { Target, PrismaModel } from '@src/types/type';
 
+@Injectable()
 @ValidatorConstraint({ async: true })
 export class IsRecordConstraint implements ValidatorConstraintInterface {
   constructor(private readonly prismaService: PrismaService) {}

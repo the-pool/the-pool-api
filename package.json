@@ -41,6 +41,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "helmet": "^6.0.0",
+    "jest-mock-extended": "^3.0.1",
     "joi": "^17.6.2",
     "passport": "^0.6.0",
     "passport-custom": "^1.1.1",
