@@ -29,7 +29,7 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
     return isShouldBeExist === !!uniqueRecord;
   }
 
-  defaultMessage(validationArguments?: ValidationArguments): string {
+  defaultMessage(validationArguments: ValidationArguments): string {
     const { value, property, constraints, object } = validationArguments;
     const { model, field } = constraints[0];
     const modelName = model || object['model'];

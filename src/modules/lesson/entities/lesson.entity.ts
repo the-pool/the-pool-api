@@ -5,7 +5,7 @@ import {
 } from '@nestjs/swagger';
 import { Lesson } from '@prisma/client';
 import { getEntriesByEnum } from '@src/common/common';
-import { MEMBER_NICKNAME_LENGTH } from '@src/constants/constant';
+import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
@@ -25,8 +25,8 @@ export class LessonEntity
   @ApiProperty({
     description: '과제의 제목',
     example: 'title',
-    minLength: MEMBER_NICKNAME_LENGTH.MIN,
-    maxLength: MEMBER_NICKNAME_LENGTH.MAX,
+    minLength: LESSON_TITLE_LENGTH.MIN,
+    maxLength: LESSON_TITLE_LENGTH.MAX,
   })
   title: string;
 
@@ -46,7 +46,7 @@ export class LessonEntity
     description: '과제의 썸네일',
     example: 'the-pool.png',
   })
-  thumbnail: string;
+  thumbnail: string | null;
 
   @ApiProperty({
     description: '과제를 생성한 멤버 고유 ID',

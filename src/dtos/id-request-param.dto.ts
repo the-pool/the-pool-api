@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, Min } from 'class-validator';
-import { Type } from 'class-transformer';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { PrismaModelName } from '@src/types/type';
+import { Type } from 'class-transformer';
+import { IsOptional, Min } from 'class-validator';
 
 export class IdRequestParamDto {
   @ApiProperty({

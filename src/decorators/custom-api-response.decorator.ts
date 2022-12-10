@@ -1,5 +1,5 @@
-import { ApiResponse } from '@nestjs/swagger';
 import { applyDecorators, HttpStatus } from '@nestjs/common';
+import { ApiResponse } from '@nestjs/swagger';
 
 export const CustomApiResponse = (
   status: HttpStatus,

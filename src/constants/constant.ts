@@ -1,4 +1,4 @@
-import { MajorId } from '@src/constants/enum';
+import { LessonLevelId, MajorId } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -22,4 +22,13 @@ export const MAJOR_TEXT = {
   [MajorId.Development]: '개발',
   // 디자인
   [MajorId.Development]: '디자인',
+} as const;
+
+export const LESSON_LEVEL = {
+  // 난이도 상
+  [LessonLevelId.Top]: '상',
+  // 난이도 중
+  [LessonLevelId.Middle]: '중',
+  // 난이도 하
+  [LessonLevelId.Bottom]: '하',
 } as const;

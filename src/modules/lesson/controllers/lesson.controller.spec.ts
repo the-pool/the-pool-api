@@ -2,10 +2,11 @@ import { faker } from '@faker-js/faker';
 import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { MockLessonService } from '@src/modules/test/mock-service';
+import { mockLessonService } from '../../../../test/mock/mock-services';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 import { LessonController } from './lesson.controller';
 
 describe('LessonController', () => {
@@ -18,13 +19,13 @@ describe('LessonController', () => {
       providers: [
         {
           provide: LessonService,
-          useValue: MockLessonService,
+          useValue: mockLessonService,
         },
       ],
     }).compile();
 
     lessonController = module.get<LessonController>(LessonController);
-    lessonService = MockLessonService;
+    lessonService = mockLessonService;
   });
 
   it('should be defined', () => {
@@ -128,6 +129,30 @@ describe('LessonController', () => {
       }).rejects.toThrowError(
         new ForbiddenException('과제를 수정할 권한이 없습니다.'),
       );
+    });
+  });
+
+  describe('readOneLesson', () => {
+    let param: IdRequestParamDto;
+    let member: any;
+    let lesson: any;
+    beforeEach(async () => {
+      lesson = { id: faker.datatype.number() };
+      param = {
+        id: faker.datatype.number(),
+        model: 'lesson',
+      };
+      member = {
+        id: faker.datatype.number(),
+      };
+    });
+
+    it('success', async () => {
+      lessonService.readOneLesson.mockReturnValue(lesson);
+
+      const returnValue = lessonController.readOneLesson(param, member);
+
+      expect(returnValue).toBeInstanceOf(ReadOneLessonResponseType);
     });
   });
 });

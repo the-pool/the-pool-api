@@ -5,12 +5,15 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonRepository } from '../repositories/lesson.repository';
+import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly dataStructureHelper: DataStructureHelper,
+    private readonly lessonRepository: LessonRepository,
   ) {}
 
   /**
@@ -24,7 +27,7 @@ export class LessonService {
       data: {
         ...lesson,
         memberId,
-        LessonHashtag: {
+        lessonHashtags: {
           createMany: {
             data: this.dataStructureHelper.createManyMapper<
               Pick<LessonHashtagEntity, 'tag'>
@@ -37,6 +40,9 @@ export class LessonService {
     });
   }
 
+  /**
+   * 과제 수정 메서드
+   */
   async updateLesson(
     lesson: Omit<UpdateLessonDto, 'hashtag'>,
     memberId: number,
@@ -52,6 +58,9 @@ export class LessonService {
     }
   }
 
+  /**
+   * 과제 해시태그 수정 메서드
+   */
   async updateLessonHashtag(hashtag: string[], lessonId: number) {
     await this.prismaService.lessonHashtag.deleteMany({
       where: {
@@ -69,5 +78,21 @@ export class LessonService {
         lessonId: lessonIdArr,
       }),
     });
+  }
+
+  /**
+   * 과제 상세 조회 메서드
+   */
+  async readOneLesson(
+    lessonId: number,
+    memberId: number,
+  ): Promise<ReadOneLessonResponseType> {
+    const [lesson, lessonLevelEvaluation, lessonHashtag] = await Promise.all([
+      this.lessonRepository.readOneLesson(lessonId, memberId),
+      this.lessonRepository.readLessonLevelEvaluation(lessonId),
+      this.lessonRepository.readLessonHashtag(lessonId),
+    ]);
+
+    return Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation });
   }
 }

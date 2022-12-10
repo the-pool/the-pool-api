@@ -10,7 +10,7 @@ import { MajorModule } from './modules/major/major.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env'],
+      envFilePath: ['.env.local', '.env'],
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
         SECRET_KEY: Joi.string(),

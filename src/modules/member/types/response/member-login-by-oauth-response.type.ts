@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { getEntriesByEnum } from '@src/common/common';
-import { AccessTokenType } from '@src/modules/user/types/access-token.type';
+import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberStatus } from '../../constants/member.enum';
 
 export class MemberLoginByOAuthResponseType extends AccessTokenType {
