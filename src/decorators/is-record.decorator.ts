@@ -1,3 +1,5 @@
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { Target } from '@src/types/type';
 import {
   registerDecorator,
   ValidationArguments,
@@ -5,8 +7,6 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { Target } from '@src/types/type';
 
 @ValidatorConstraint({ async: true })
 export class IsRecordConstraint implements ValidatorConstraintInterface {
@@ -29,7 +29,7 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
     return isShouldBeExist === !!uniqueRecord;
   }
 
-  defaultMessage(validationArguments?: ValidationArguments): string {
+  defaultMessage(validationArguments: ValidationArguments): string {
     const { value, property, constraints, object } = validationArguments;
     const { model, field } = constraints[0];
     const modelName = model || object['model'];
