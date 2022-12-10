@@ -19,8 +19,6 @@ export class QuestionService {
   getQuestionCategoryList(): Promise<QuestionCategory[]> {
     return this.prismaService.questionCategory.findMany();
   }
-
-
   // getQuestionList(): Promise<[Number, Question[]]> {
   //   return Promise.all([
   //     this.prismaService.question.count(),
