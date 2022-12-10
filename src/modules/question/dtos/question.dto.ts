@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { QuestionEntity } from '../entities/question.entity';
 
-export class CreateQuestionDto extends PickType(QuestionEntity, [
+export class QuestionDto extends PickType(QuestionEntity, [
   'categoryId',
   'title',
   'content',
@@ -17,6 +17,7 @@ export class CreateQuestionDto extends PickType(QuestionEntity, [
   categoryId: QuestionCategoryId;
 
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsString()

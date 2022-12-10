@@ -8,6 +8,7 @@ import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { Question } from '@prisma/client';
 import { QuestionCategoryId } from '@src/constants/enum';
+import { QuestionHashtagEntity } from './question-hashtag.entity';
 
 export class QuestionEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -42,4 +43,9 @@ export class QuestionEntity
     example: 3204,
   })
   hit: number;
+
+  @ApiPropertyOptional({
+    description: '질문이 가지는 hashtag entity',
+  })
+  hashtag?: QuestionHashtagEntity[];
 }
