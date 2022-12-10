@@ -20,7 +20,7 @@ export class MemberEntity
     example: 1,
     enum: getEntriesByEnum(MajorId),
   })
-  majorId: MajorId;
+  majorId: MajorId | null;
 
   @ApiProperty({
     description: 'member의 소셜 계정 id',
@@ -32,7 +32,7 @@ export class MemberEntity
     description: 'member의 닉네임',
     example: 'the-pool',
   })
-  nickname: string;
+  nickname: string | null;
 
   @ApiProperty({
     description: 'member의 상태',
@@ -52,11 +52,11 @@ export class MemberEntity
     description: 'member의 프로필 이미지',
     example: 'profile.img',
   })
-  thumbnail: string;
+  thumbnail: string | null;
 
   @ApiPropertyOptional({
     description: 'member의 소개글',
     example: 'the-pool 화이팅',
   })
-  introduce: string;
+  introduce: string | null;
 }

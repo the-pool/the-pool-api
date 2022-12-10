@@ -16,7 +16,7 @@ export enum BooleanString {
 }
 
 export enum MajorId {
-  DevelopMent = 1,
+  Development = 1,
   Design = 2,
 }
 

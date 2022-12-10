@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AwsS3StorageService } from './aws-s3-storage.service';
-import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
+import { AwsS3StorageService } from './aws-s3-storage.service';
 
 describe('AwsS3StorageService', () => {
   let awsS3StorageService: AwsS3StorageService;
@@ -51,7 +51,7 @@ describe('AwsS3StorageService', () => {
       );
 
       expect(returnValue).toHaveProperty('imgName');
-      expect(returnValue).toHaveProperty('s3Url');
+      expect(returnValue).toHaveProperty('signedUrl');
       expect(returnValue.imgName).toMatch(
         `${getSignedUrlDto.folderName + '/'}`,
       );

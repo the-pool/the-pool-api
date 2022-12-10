@@ -1,7 +1,7 @@
-import { IsInt, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
 import { pageTransform } from '@src/common/common';
+import { Transform, Type } from 'class-transformer';
+import { IsInt, IsOptional } from 'class-validator';
 
 export class PageDto {
   @ApiProperty({

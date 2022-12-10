@@ -2,7 +2,7 @@ import { InternalServerErrorException } from '@nestjs/common';
 
 export class DataStructureHelper {
   /**
-   *createMany를 편리하게 사용하기 위한 함수
+   *createMany 를 편리하게 사용하기 위한 함수
    * ex { userId : [1,2,3], nickname: ['a','b','c']}
    * =>[{userId : 1, nickname : 'a'}, {userId : 2, nickname : 'b'}, {userId : 3, nickname : 'c'}]
    */
@@ -24,7 +24,7 @@ export class DataStructureHelper {
       );
     }
 
-    const result = [];
+    const result: any[] = [];
 
     for (let i = 0; i < lengths[0]; i += 1) {
       const mapped = {};

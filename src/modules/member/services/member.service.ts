@@ -76,7 +76,7 @@ export class MemberService {
       });
     }
 
-    return await this.prismaService.member.update({
+    return this.prismaService.member.update({
       where: {
         id: memberId,
       },

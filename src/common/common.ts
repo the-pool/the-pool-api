@@ -1,4 +1,3 @@
-import { InternalServerErrorException } from '@nestjs/common';
 import { BooleanString } from '@src/constants/enum';
 import { validate, ValidationError } from 'class-validator';
 

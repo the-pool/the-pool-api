@@ -16,8 +16,8 @@ import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 import {
-  PrivateStorageService,
   PRIVATE_STORAGE_SERVICE,
+  PrivateStorageService,
 } from '../interfaces/private-storage-service.interface';
 import { GetSignedUrlResponseType } from '../types/response/get-signed-url-response.type';
 
@@ -30,7 +30,7 @@ export class PrivateStorageController {
   ) {}
 
   @Post('/signed-url')
-  @ApiOperation({ summary: 'presignedUrl 발급' })
+  @ApiOperation({ summary: 'preSignedUrl 발급' })
   @ApiCreatedResponse({ type: GetSignedUrlResponseType })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()

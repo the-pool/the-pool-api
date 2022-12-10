@@ -3,13 +3,16 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MockPrismaService } from '@src/modules/test/mock-prisma';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { MockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
+  let lessonRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,13 +21,18 @@ describe('LessonService', () => {
         DataStructureHelper,
         {
           provide: PrismaService,
-          useValue: MockPrismaService,
+          useValue: mockPrismaService,
+        },
+        {
+          provide: LessonRepository,
+          useValue: MockLessonRepository,
         },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
-    prismaService = MockPrismaService;
+    lessonRepository = MockLessonRepository;
+    prismaService = mockPrismaService;
   });
 
   it('should be defined', () => {
@@ -47,7 +55,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      let lesson = {
+      const lesson = {
         id: faker.datatype.number(),
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
@@ -133,6 +141,38 @@ describe('LessonService', () => {
       );
 
       expect(returnValue).toBeUndefined();
+    });
+  });
+
+  describe('readOneLesson', () => {
+    let memberId: number;
+    let lessonId: number;
+
+    beforeEach(async () => {
+      (memberId = faker.datatype.number()),
+        (lessonId = faker.datatype.number());
+    });
+
+    afterEach(async () => {
+      jest.clearAllMocks();
+    });
+
+    it('success', async () => {
+      const lesson = faker.datatype.string();
+      const lessonLevelEvaluation = faker.datatype.string();
+      const lessonHashtag = faker.datatype.array();
+
+      lessonRepository.readOneLesson.mockReturnValue(lesson);
+      lessonRepository.readLessonLevelEvaluation.mockReturnValue(
+        lessonLevelEvaluation,
+      );
+      lessonRepository.readLessonHashtag.mockReturnValue(lessonHashtag);
+
+      const returnValue = await lessonService.readOneLesson(lessonId, memberId);
+
+      expect(returnValue).toStrictEqual(
+        Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation }),
+      );
     });
   });
 });

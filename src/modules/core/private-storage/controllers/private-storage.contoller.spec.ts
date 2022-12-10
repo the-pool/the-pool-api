@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockPrivateStorageService } from '@src/modules/test/mock-service';
+import { mockPrivateStorageService } from '../../../../../test/mock/mock-services';
 import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 import { PRIVATE_STORAGE_SERVICE } from '../interfaces/private-storage-service.interface';
 import { PrivateStorageController } from './private-storage.controller';
@@ -15,7 +15,7 @@ describe('PrivateStorageController', () => {
       providers: [
         {
           provide: PRIVATE_STORAGE_SERVICE,
-          useValue: MockPrivateStorageService,
+          useValue: mockPrivateStorageService,
         },
       ],
     }).compile();
@@ -23,7 +23,7 @@ describe('PrivateStorageController', () => {
     privateStorageController = module.get<PrivateStorageController>(
       PrivateStorageController,
     );
-    privateStorageService = MockPrivateStorageService;
+    privateStorageService = mockPrivateStorageService;
   });
   it('should be defined', () => {
     expect(privateStorageController).toBeDefined();

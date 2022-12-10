@@ -1,17 +1,18 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from '@src/app.module';
-import helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from '@src/app.module';
+import { HttpBadRequestExceptionFilter } from '@src/filters/http-bad-request-exception.filter';
+import { HttpNestInternalServerErrorExceptionFilter } from '@src/filters/http-nest-Internal-server-error-exception.filter';
+import { HttpNodeInternalServerErrorExceptionFilter } from '@src/filters/http-node-internal-server-error-exception.filter';
+import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-exception.filter';
+import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
+import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { useContainer } from 'class-validator';
-import { HttpBadRequestExceptionFilter } from '@src/filters/http-bad-request-exception.filter';
-import { HttpNodeInternalServerErrorExceptionFilter } from '@src/filters/http-node-internal-server-error-exception.filter';
-import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
-import { HttpNestInternalServerErrorExceptionFilter } from '@src/filters/http-nest-Internal-server-error-exception.filter';
-import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-exception.filter';
+import helmet from 'helmet';
+import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
 
@@ -39,6 +40,7 @@ async function bootstrap() {
     new HttpNestInternalServerErrorExceptionFilter(isProduction),
     new HttpNotFoundExceptionFilter(),
     new HttpBadRequestExceptionFilter(),
+    new JwtExceptionFilter(),
   );
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
@@ -64,7 +66,7 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
-  const PORT = configService.get<number>('PORT');
+  const PORT = configService.get<number>('PORT') || 3000;
 
   await app.listen(PORT);
 
