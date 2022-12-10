@@ -1,15 +1,15 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { MajorsDto } from '@src/modules/major/dto/majors.dto';
+import { MajorListDto } from '@src/modules/major/dtos/majorListDto';
 import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
-import { MainSkillDto } from '../dto/main-skill.dto';
-import { MainSkillsDto } from '../dto/main-skills.dto';
-import { MajorIdRequestParamDto } from '../dto/major-id-request-param.dto';
-import { MajorRelationFieldRequestQueryDto } from '../dto/major-relation-field-request-query.dto';
-import { MajorRequestParamDto } from '../dto/major-request-param.dto';
-import { MajorDto } from '../dto/major.dto';
+import { MainSkillListDto } from '../dtos/main-skill-list.dto';
+import { MainSkillDto } from '../dtos/main-skill.dto';
+import { MajorIdRequestParamDto } from '../dtos/major-id-request-param.dto';
+import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
+import { MajorRequestParamDto } from '../dtos/major-request-param.dto';
+import { MajorDto } from '../dtos/major.dto';
 import { MajorService } from '../services/major.service';
 
 @ApiTags('분야')
@@ -18,14 +18,14 @@ export class MajorController {
   constructor(private readonly majorService: MajorService) {}
 
   @ApiOperation({ summary: '분야 리스트 조회' })
-  @ApiOkResponse({ type: MajorsDto })
+  @ApiOkResponse({ type: MajorListDto })
   @Get()
   async findMajors(
     @Query() query: MajorRelationFieldRequestQueryDto,
-  ): Promise<MajorsDto> {
+  ): Promise<MajorListDto> {
     const majors: MajorEntity[] = await this.majorService.findMajors(query);
 
-    return plainToInstance(MajorsDto, { majors });
+    return plainToInstance(MajorListDto, { majors });
   }
 
   @ApiOperation({ summary: '분야 단일 조회' })
@@ -44,15 +44,15 @@ export class MajorController {
   }
 
   @ApiOperation({ summary: '분야의 스킬 리스트 조회' })
-  @ApiOkResponse({ type: MainSkillsDto })
+  @ApiOkResponse({ type: MainSkillListDto })
   @Get(':majorId/mainSkills')
   async findMainSkills(
     @Param() param: MajorIdRequestParamDto,
-  ): Promise<MainSkillsDto> {
+  ): Promise<MainSkillListDto> {
     const mainSkills: MainSkillEntity[] =
       await this.majorService.findMainSkills(param.majorId);
 
-    return plainToInstance(MainSkillsDto, { mainSkills });
+    return plainToInstance(MainSkillListDto, { mainSkills });
   }
 
   @ApiOperation({ summary: '분야의 스킬 단일 조회' })

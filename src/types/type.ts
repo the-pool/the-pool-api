@@ -1,6 +1,6 @@
 import {
   Lesson,
-  LessonBookMark,
+  LessonBookmark,
   LessonComment,
   LessonHashtag,
   LessonLevel,
@@ -13,25 +13,11 @@ import {
   MemberReport,
   MemberSkill,
   Post,
+  Prisma,
   User,
 } from '@prisma/client';
 
-export type PrismaModelName =
-  | 'mainSkill'
-  | 'major'
-  | 'member'
-  | 'memberReport'
-  | 'memberFollow'
-  | 'lesson'
-  | 'lessonLevelEvaluation'
-  | 'lessonSolution'
-  | 'lessonBookMark'
-  | 'lessonLevel'
-  | 'lessonHashtag'
-  | 'lessonComment'
-  | 'memberSkill'
-  | 'post'
-  | 'user';
+export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
 export type PrismaModel =
   | MainSkill
@@ -41,8 +27,8 @@ export type PrismaModel =
   | MemberFollow
   | Lesson
   | LessonLevelEvaluation
+  | LessonBookmark
   | LessonSolution
-  | LessonBookMark
   | LessonLevel
   | LessonHashtag
   | LessonComment

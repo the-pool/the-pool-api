@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MainSkillDto } from '@src/modules/major/dto/main-skill.dto';
-import { MainSkillsDto } from '@src/modules/major/dto/main-skills.dto';
-import { MajorIdRequestParamDto } from '@src/modules/major/dto/major-id-request-param.dto';
-import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dto/major-relation-field-request-query.dto';
-import { MajorRequestParamDto } from '@src/modules/major/dto/major-request-param.dto';
-import { MajorDto } from '@src/modules/major/dto/major.dto';
-import { MajorsDto } from '@src/modules/major/dto/majors.dto';
+import { MainSkillListDto } from '@src/modules/major/dtos/main-skill-list.dto';
+import { MainSkillDto } from '@src/modules/major/dtos/main-skill.dto';
+import { MajorIdRequestParamDto } from '@src/modules/major/dtos/major-id-request-param.dto';
+import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
+import { MajorRequestParamDto } from '@src/modules/major/dtos/major-request-param.dto';
+import { MajorDto } from '@src/modules/major/dtos/major.dto';
+import { MajorListDto } from '@src/modules/major/dtos/majorListDto';
 import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
@@ -52,11 +52,11 @@ describe('MajorController', () => {
     });
 
     it('routing + plain object to class object converting 기능만 한다.', async () => {
-      const result: MajorsDto = await controller.findMajors(query);
+      const result: MajorListDto = await controller.findMajors(query);
 
       expect(mockMajorService.findMajors).toHaveBeenCalledTimes(1);
       expect(mockMajorService.findMajors).toBeCalledWith(query);
-      expect(result).toBeInstanceOf(MajorsDto);
+      expect(result).toBeInstanceOf(MajorListDto);
       expect(result.majors).toStrictEqual(mockMajors);
     });
   });
@@ -104,11 +104,11 @@ describe('MajorController', () => {
     });
 
     it('routing + plain object to class object converting 기능만 한다.', async () => {
-      const result: MainSkillsDto = await controller.findMainSkills(param);
+      const result: MainSkillListDto = await controller.findMainSkills(param);
 
       expect(mockMajorService.findMainSkills).toHaveBeenCalledTimes(1);
       expect(mockMajorService.findMainSkills).toBeCalledWith(param.majorId);
-      expect(result).toBeInstanceOf(MainSkillsDto);
+      expect(result).toBeInstanceOf(MainSkillListDto);
       expect(result.mainSkills).toStrictEqual(mockMainSkills);
     });
   });

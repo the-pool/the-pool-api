@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
-import { MajorRelationFieldRequestQueryDto } from '../dto/major-relation-field-request-query.dto';
+import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
 
 @Injectable()
 export class MajorService {

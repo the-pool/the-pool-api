@@ -6,7 +6,7 @@ export const MEMBER_NICKNAME_LENGTH = {
   MIN: 1,
   // 50
   MAX: 50,
-};
+} as const;
 
 // 레슨 제목 길이 제한
 export const LESSON_TITLE_LENGTH = {
@@ -14,7 +14,7 @@ export const LESSON_TITLE_LENGTH = {
   MIN: 1,
   // 30
   MAX: 30,
-};
+} as const;
 
 // major text
 export const MAJOR_TEXT = {
@@ -22,4 +22,4 @@ export const MAJOR_TEXT = {
   [MajorId.Development]: '개발',
   // 디자인
   [MajorId.Development]: '디자인',
-};
+} as const;
