@@ -1,4 +1,6 @@
+import { faker } from '@faker-js/faker';
 import { customValidate, getValueByEnum } from '@src/common/common';
+import { MEMBER_NICKNAME_LENGTH } from '@src/constants/constant';
 import { MajorId, MajorSkillId } from '@src/constants/enum';
 import { MockLastStepLoginDto } from '@src/modules/test/mock-dto';
 import { LastStepLoginDto } from './last-step-login.dto';
@@ -39,7 +41,9 @@ describe('LastStepLoginDto', () => {
 
     it('false - nickname의 length가 30보다 클 때', async () => {
       lastStepLoginDto = new MockLastStepLoginDto();
-      lastStepLoginDto.nickname = '1234567890123456789012345678901';
+      lastStepLoginDto.nickname = faker.datatype.string(
+        MEMBER_NICKNAME_LENGTH.MAX + 1,
+      );
       const errors = await customValidate(lastStepLoginDto);
 
       expect(errors[0].constraints).toHaveProperty('isLength');
