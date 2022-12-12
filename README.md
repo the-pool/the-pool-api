@@ -22,6 +22,18 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+## Commit convention
+| 아이콘 | 코드                          | 설명                                   | 원문                            |
+|-----|-----------------------------|--------------------------------------|-------------------------------|
+| ✨   | :sparkles:                  | 새 기능                                 | 	Introduce new features.      |
+| ♻   | :recycle:                   | 코드 리펙토링                              | 	Refactor code.               |
+| 🔥  | :fire:                      | 코드 / 파일 삭제                           | Remove code or files.         |
+| 🐛  | :bug:                       | 버그 수정 & 충돌해결                         | 	Fix a bug.                   |
+| 🔀  | :twisted_rightwards_arrows: | 브랜치 합병                               | 	Merge branches.              |
+| ✅   | :white_check_mark:          | 테스트 추카 / 수정                          | Add or update tests.          |
+| 📝  | 	:memo:                     | 문서 추가 / 수정 (README, swagger, script) | 	Add or update documentation. |
+
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.

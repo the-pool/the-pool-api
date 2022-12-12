@@ -1,20 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { MainSkill } from '@prisma/client';
 import { IsRecord } from '@src/decorators/is-record.decorator';
-import { PrismaModelName } from '@src/types/type';
 import { Type } from 'class-transformer';
-import { IsOptional, Min } from 'class-validator';
+import { Min } from 'class-validator';
 
-export class IdRequestParamDto {
+export class MainSkillIdRequestParamDto {
   @ApiProperty({
     description: '고유 ID',
     type: 'number',
     required: true,
   })
   @Min(1)
+  @IsRecord<MainSkill>({ model: 'mainSkill', field: 'id' }, true)
   @Type(() => Number)
-  @IsRecord({}, true)
-  id: number;
-
-  @IsOptional()
-  model: PrismaModelName;
+  mainSkillId: number;
 }
