@@ -63,6 +63,7 @@ export class LessonEntity
 
   @ApiPropertyOptional({
     description: '과제의 hashtag entity',
+    example: ['a', 'b', 'c'],
   })
-  tags?: LessonHashtagEntity[];
+  hashtag?: LessonHashtagEntity[] | string[];
 }

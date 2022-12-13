@@ -11,6 +11,8 @@ import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
+import exp from 'constants';
+import { LessonEntity } from '../entities/lesson.entity';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
@@ -85,9 +87,12 @@ describe('LessonController', () => {
     let updateLessonDto: UpdateLessonDto;
     let memberId: number;
     let param: IdRequestParamDto;
-
+    let lessonEntity;
+    let lessonHashtag;
     beforeEach(async () => {
       memberId = faker.datatype.number();
+      lessonEntity = new LessonEntity();
+      lessonHashtag = [faker.lorem.words()];
       updateLessonDto = {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
@@ -110,8 +115,8 @@ describe('LessonController', () => {
     });
 
     it('success', async () => {
-      lessonService.updateLesson.mockReturnValue(undefined);
-      lessonService.updateLessonHashtag.mockReturnValue(undefined);
+      lessonService.updateLesson.mockReturnValue(lessonEntity);
+      lessonService.updateLessonHashtag.mockReturnValue(lessonHashtag);
 
       const returnValue = await lessonController.updateLesson(
         param,
@@ -119,9 +124,9 @@ describe('LessonController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(undefined);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
       expect(lessonService.updateLessonHashtag).toBeCalledTimes(1);
+      expect(returnValue).toBeInstanceOf(LessonEntity);
     });
 
     it('false - 과제 출제자가 아닌 사람이 수정을 하려고 했을 때', async () => {

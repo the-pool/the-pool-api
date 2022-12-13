@@ -8,6 +8,7 @@ import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
+import { LessonEntity } from '../entities/lesson.entity';
 
 @Injectable()
 export class LessonService {
@@ -48,15 +49,16 @@ export class LessonService {
     lesson: Omit<UpdateLessonDto, 'hashtag'>,
     memberId: number,
     lessonId: number,
-  ) {
-    const updatedLesson = await this.prismaService.lesson.updateMany({
+  ): Promise<LessonEntity> {
+    const updatedLesson = await this.prismaService.lesson.update({
       where: { id: lessonId, memberId },
       data: { ...lesson },
     });
 
-    if (!updatedLesson.count) {
+    if (!updatedLesson) {
       throw new ForbiddenException('과제를 수정할 권한이 없습니다.');
     }
+    return updatedLesson;
   }
 
   /**
@@ -79,6 +81,15 @@ export class LessonService {
         lessonId: lessonIdArr,
       }),
     });
+
+    const updatedHashtag = await this.prismaService.lessonHashtag.findMany({
+      where: {
+        lessonId,
+      },
+      select: { tag: true },
+    });
+    console.log(updatedHashtag);
+    return updatedHashtag.map((item) => item.tag);
   }
 
   /**

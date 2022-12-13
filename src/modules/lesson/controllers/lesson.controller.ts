@@ -15,6 +15,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  OmitType,
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
@@ -37,14 +38,14 @@ import { LessonService } from '../services/lesson.service';
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 생성' })
-  @ApiBearerAuth()
-  @ApiCreatedResponse({ type: LessonEntity })
+  @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtag']) })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
+  @Post()
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
@@ -52,14 +53,14 @@ export class LessonController {
     return this.lessonService.createLesson(createLessonDto, memberId);
   }
 
-  @Put(':id')
-  @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '과제 수정' })
-  @ApiBearerAuth()
-  @ApiCreatedResponse()
+  @ApiCreatedResponse({ type: LessonEntity })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 수정할 권한이 없습니다.')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @Put(':id')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
@@ -70,24 +71,28 @@ export class LessonController {
     param: IdRequestParamDto,
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
-  ) {
-    await Promise.all([
+  ): Promise<LessonEntity> {
+    const [updatedLesson, updatedLessonHashtag] = await Promise.all([
       this.lessonService.updateLesson(lesson, memberId, param.id),
       this.lessonService.updateLessonHashtag(hashtag, param.id),
     ]);
+
+    updatedLesson.hashtag = updatedLessonHashtag;
+
+    return plainToInstance(LessonEntity, updatedLesson);
   }
 
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회' })
-  @ApiBearerAuth()
   @ApiOkResponse({ type: ReadOneLessonDto })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id')
   readOneLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -99,17 +104,17 @@ export class LessonController {
     return plainToInstance(ReadOneLessonDto, lesson);
   }
 
-  @Get(':id/similarity')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(OptionalJwtAuthGuard)
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
-  @ApiBearerAuth()
   @ApiOkResponse({ type: ReadSimilarLessonDto })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(OptionalJwtAuthGuard)
+  @Get(':id/similarity')
   async readSimilarLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member,
