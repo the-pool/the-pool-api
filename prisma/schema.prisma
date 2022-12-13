@@ -33,8 +33,8 @@ model Major {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  MainSkill MainSkill[]
-  Member    Member[]
+  mainSkills MainSkill[]
+  member    Member[]
 }
 
 /// 우리 서비스의 회원을 담은 테이블 

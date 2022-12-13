@@ -20,6 +20,11 @@ export enum MajorId {
   Design = 2,
 }
 
+export enum MajorText {
+  Development = '개발',
+  Design = '디자인',
+}
+
 export enum MajorSkillId {
   Backend = 1,
   WebFrontend = 2,

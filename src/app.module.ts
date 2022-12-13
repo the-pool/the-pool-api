@@ -1,11 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
-import { ConfigModule } from '@nestjs/config';
-import Joi from 'joi';
-import { modules } from '@src/modules';
+import { IsRecordConstraint } from '@src/decorators/is-record.decorator';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
-import { IsRecord, IsRecordConstraint } from './decorators/is-record.decorator';
+import { modules } from '@src/modules';
+import Joi from 'joi';
 
 @Module({
   imports: [
