@@ -13,6 +13,7 @@ import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
 import exp from 'constants';
 import { LessonEntity } from '../entities/lesson.entity';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
@@ -169,6 +170,7 @@ describe('LessonController', () => {
   describe('readSimilarLesson', () => {
     let param: IdRequestParamDto;
     let member: any;
+    let query: SimilarLessonQueryDto;
     let mockSimilarLessons: SimilarLessonEntity;
 
     beforeEach(async () => {
@@ -177,6 +179,7 @@ describe('LessonController', () => {
         id: faker.datatype.number(),
         model: 'lesson',
       };
+      query = new SimilarLessonQueryDto();
       mockSimilarLessons = plainToInstance(
         SimilarLessonEntity,
         JSON.parse(faker.datatype.json()),
@@ -188,6 +191,7 @@ describe('LessonController', () => {
     it('success - routing, plain object to class object converting', async () => {
       const returnValue = await lessonController.readSimilarLesson(
         param,
+        query,
         member,
       );
 
@@ -195,6 +199,7 @@ describe('LessonController', () => {
       expect(mockLessonService.readSimilarLesson).toBeCalledWith(
         param.id,
         member.id,
+        query,
       );
       expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
       expect(returnValue.lessons).toStrictEqual(mockSimilarLessons);
@@ -208,6 +213,7 @@ describe('LessonController', () => {
 
       const returnValue = await lessonController.readSimilarLesson(
         param,
+        query,
         member,
       );
 

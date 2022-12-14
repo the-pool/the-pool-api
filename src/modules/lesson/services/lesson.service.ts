@@ -5,10 +5,11 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
-import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 
 @Injectable()
 export class LessonService {
@@ -88,7 +89,7 @@ export class LessonService {
       },
       select: { tag: true },
     });
-    console.log(updatedHashtag);
+
     return updatedHashtag.map((item) => item.tag);
   }
 
@@ -114,7 +115,8 @@ export class LessonService {
   readSimilarLesson(
     lessonId: number,
     memberId: number,
+    query: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
-    return this.lessonRepository.readSimilarLesson(lessonId, memberId);
+    return this.lessonRepository.readSimilarLesson(lessonId, memberId, query);
   }
 }

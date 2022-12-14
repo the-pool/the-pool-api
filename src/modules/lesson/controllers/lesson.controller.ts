@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -29,6 +30,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
@@ -117,11 +119,13 @@ export class LessonController {
   @Get(':id/similarity')
   async readSimilarLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
+    @Query() query: SimilarLessonQueryDto,
     @UserLogin() member: Member,
-  ) {
+  ): Promise<ReadSimilarLessonDto> {
     const lessons = await this.lessonService.readSimilarLesson(
       param.id,
       member.id,
+      query,
     );
 
     return plainToInstance(ReadSimilarLessonDto, {

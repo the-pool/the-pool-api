@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { SIMILAR_LESSON } from '@src/constants/constant';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { Lesson, Prisma } from '@prisma/client';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonEntity } from '../entities/lesson.entity';
 
 /**
  * 이 클레스의 메서드들이 다 raw 쿼리를 사용하고 있는데 우선 any 로 타입에러 대응
@@ -26,7 +29,9 @@ export class LessonRepository {
       return Number(this);
     };
 
-    const result: any = await this.prismaService.$queryRaw`
+    const result = await this.prismaService.$queryRaw<
+      [Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>]
+    >`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -60,7 +65,9 @@ export class LessonRepository {
   async readLessonLevelEvaluation(
     lessonId: number,
   ): Promise<LessonLevelEvaluationType> {
-    const result: any = await this.prismaService.$queryRaw`
+    const result = await this.prismaService.$queryRaw<
+      [LessonLevelEvaluationType]
+    >`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
@@ -75,8 +82,12 @@ export class LessonRepository {
   /**
    * 과제 해시태그 조회 query
    */
-  async readLessonHashtag(lessonId: number): Promise<string[]> {
-    const result: any = await this.prismaService.$queryRaw`
+  async readLessonHashtag(
+    lessonId: number,
+  ): Promise<Pick<LessonEntity, 'hashtag'>> {
+    const result = await this.prismaService.$queryRaw<
+      [Pick<LessonEntity, 'hashtag'>]
+    >`
     SELECT 
       ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 
     FROM "LessonHashtag" 
@@ -91,11 +102,13 @@ export class LessonRepository {
   async readSimilarLesson(
     lessonId: number,
     memberId: number,
+    { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };
-    return await this.prismaService.$queryRaw`
+
+    return await this.prismaService.$queryRaw<SimilarLessonEntity[]>`
     SELECT 
       "Lesson"."id",
       "Lesson"."title",
@@ -114,8 +127,9 @@ export class LessonRepository {
           WHERE "Lesson"."id" = ${lessonId}
         ) AND "Lesson"."id" != ${lessonId}
     GROUP BY "Lesson"."id","LessonBookmark"."memberId"
-    ORDER BY "Lesson"."id" ASC    
-    LIMIT ${SIMILAR_LESSON.LIMIT}
+    ORDER BY  ${Prisma.raw(sortBy)} ${Prisma.raw(orderBy)}  
+    LIMIT ${pageSize}
+    OFFSET ${page} * ${pageSize}
     `;
   }
 }

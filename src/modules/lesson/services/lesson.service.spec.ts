@@ -4,9 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
-import { mockLessonRepository } from 'test/mock/mock-repositories';
+import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
@@ -182,11 +183,13 @@ describe('LessonService', () => {
   describe('readSimilarLesson', () => {
     let memberId: number;
     let lessonId: number;
+    let query: SimilarLessonQueryDto;
     let mockSimilarLessons: SimilarLessonEntity;
 
     beforeEach(async () => {
-      (memberId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      query = new SimilarLessonQueryDto();
       mockSimilarLessons = plainToInstance(
         SimilarLessonEntity,
         JSON.parse(faker.datatype.json()),
@@ -201,12 +204,14 @@ describe('LessonService', () => {
       const reuturnValaue = await lessonService.readSimilarLesson(
         lessonId,
         memberId,
+        query,
       );
 
       expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
       expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
         lessonId,
         memberId,
+        query,
       );
       expect(reuturnValaue).toBeInstanceOf(SimilarLessonEntity);
     });
