@@ -5,14 +5,9 @@ import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonLevelEvaluationType } from '../types/lesson.type';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { Lesson, Prisma } from '@prisma/client';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { Prisma } from '@prisma/client';
 import { LessonEntity } from '../entities/lesson.entity';
 
-/**
- * 이 클레스의 메서드들이 다 raw 쿼리를 사용하고 있는데 우선 any 로 타입에러 대응
- * 작업자가 나중에 타입 만들어서 넣어주길 바람
- */
 @Injectable()
 export class LessonRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -107,7 +102,6 @@ export class LessonRepository {
     (BigInt.prototype as any).toJSON = function () {
       return Number(this);
     };
-
     return await this.prismaService.$queryRaw<SimilarLessonEntity[]>`
     SELECT 
       "Lesson"."id",
