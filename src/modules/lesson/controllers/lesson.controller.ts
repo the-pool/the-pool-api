@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -28,6 +29,8 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { NewCreateLessonDto } from '../dtos/new-create-lesson.dto';
+import { NewUpdateLessonDto } from '../dtos/new-update-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
@@ -131,5 +134,41 @@ export class LessonController {
     return plainToInstance(ReadSimilarLessonDto, {
       lessons,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('new')
+  newCreateLesson(
+    @Body() newCreateLessonDto: NewCreateLessonDto,
+    @UserLogin('id') memberId: number,
+  ): Promise<LessonEntity> {
+    return this.lessonService.newCreateLesson(newCreateLessonDto, memberId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('new/:id')
+  newUpdateLesson(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @Body() updateLessonDto: NewUpdateLessonDto,
+    @UserLogin('id') memberId: number,
+  ) {
+    return this.lessonService.newUpdateLesson(
+      updateLessonDto,
+      memberId,
+      param.id,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('new/:id')
+  newDeleteLesson(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @UserLogin('id') memberId: number,
+  ) {
+    return this.lessonService.newDeleteLesson(memberId, param.id);
   }
 }
