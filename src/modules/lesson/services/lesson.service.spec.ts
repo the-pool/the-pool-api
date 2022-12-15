@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
@@ -11,10 +10,14 @@ import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
+import { LessonEntity } from '../entities/lesson.entity';
+import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
+  let prismaHelper;
   let lessonRepository;
 
   beforeEach(async () => {
@@ -27,6 +30,10 @@ describe('LessonService', () => {
           useValue: mockPrismaService,
         },
         {
+          provide: PrismaHelper,
+          useValue: mockPrismaHelper,
+        },
+        {
           provide: LessonRepository,
           useValue: mockLessonRepository,
         },
@@ -35,6 +42,7 @@ describe('LessonService', () => {
 
     lessonService = module.get<LessonService>(LessonService);
     lessonRepository = mockLessonRepository;
+    prismaHelper = mockPrismaHelper;
     prismaService = mockPrismaService;
   });
 
@@ -52,7 +60,6 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
         categoryId: faker.datatype.number({ min: 1, max: 9 }),
       };
       memberId = 1;
@@ -85,6 +92,7 @@ describe('LessonService', () => {
     let lesson;
     let memebrId: number;
     let lessonId: number;
+    let mockLesson;
 
     beforeEach(async () => {
       lesson = {
@@ -92,8 +100,13 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
       };
-      (memebrId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
+      memebrId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      mockLesson = plainToInstance(
+        LessonEntity,
+        JSON.parse(faker.datatype.json()),
+      );
+      prismaService.lesson.update.mockReturnValue(mockLesson);
     });
 
     afterEach(async () => {
@@ -101,25 +114,43 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      prismaService.lesson.updateMany.mockReturnValue({ count: 1 });
-
       const returnValue = await lessonService.updateLesson(
         lesson,
         memebrId,
         lessonId,
       );
 
-      expect(returnValue).toBeUndefined();
+      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(mockPrismaService.lesson.update).toBeCalledTimes(1);
+      expect(returnValue).toBeInstanceOf(LessonEntity);
+    });
+  });
+
+  describe('deleteLesson', () => {
+    let memberId: number;
+    let lessonId: number;
+    let mockLesson;
+
+    beforeEach(async () => {
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      mockLesson = plainToInstance(
+        LessonEntity,
+        JSON.parse(faker.datatype.json()),
+      );
+      prismaService.lesson.delete.mockReturnValue(mockLesson);
     });
 
-    it('false - 과제 작성자가 아닌 사람이 과제를 수정하려고 할 때', async () => {
-      prismaService.lesson.updateMany.mockReturnValue({ count: 0 });
+    afterEach(async () => {
+      jest.clearAllMocks();
+    });
 
-      await expect(async () => {
-        await lessonService.updateLesson(lesson, memebrId, lessonId);
-      }).rejects.toThrowError(
-        new ForbiddenException('과제를 수정할 권한이 없습니다.'),
-      );
+    it('success', async () => {
+      const returnValue = await lessonService.deleteLesson(memberId, lessonId);
+
+      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
+      expect(returnValue).toBeInstanceOf(LessonEntity);
     });
   });
 
