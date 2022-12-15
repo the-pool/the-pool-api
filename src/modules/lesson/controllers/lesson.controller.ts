@@ -31,12 +31,10 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
-import { NewCreateLessonDto } from '../dtos/new-create-lesson.dto';
-import { NewUpdateLessonDto } from '../dtos/new-update-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
 
@@ -56,35 +54,47 @@ export class LessonController {
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<LessonEntity> {
+  ): Promise<Omit<LessonEntity, 'hashtag'>> {
     return this.lessonService.createLesson(createLessonDto, memberId);
   }
 
   @ApiOperation({ summary: '과제 수정' })
-  @ApiCreatedResponse({ type: LessonEntity })
+  @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtag']) })
   @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
-  @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 수정할 권한이 없습니다.')
+  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
   @Put(':id')
-  @CustomApiResponse(
-    HttpStatus.NOT_FOUND,
-    "(과제 번호) doesn't exist id in lesson",
-  )
-  async updateLesson(
-    @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
-    @Body() { hashtag, ...lesson }: UpdateLessonDto,
+  updateLesson(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<LessonEntity> {
-    const [updatedLesson, updatedLessonHashtag] = await Promise.all([
-      this.lessonService.updateLesson(lesson, memberId, param.id),
-      this.lessonService.updateLessonHashtag(hashtag, param.id),
-    ]);
+  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+    return this.lessonService.updateLesson(updateLessonDto, memberId, param.id);
+  }
 
-    updatedLesson.hashtag = updatedLessonHashtag;
-
-    return plainToInstance(LessonEntity, updatedLesson);
+  @ApiOperation({ summary: '과제 삭제' })
+  @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtag']) })
+  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
+  @ApiBearerAuth()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
+  @Delete(':id')
+  deleteLesson(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @UserLogin('id') memberId: number,
+  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+    return this.lessonService.deleteLesson(memberId, param.id);
   }
 
   @ApiOperation({ summary: '과제 상세 조회' })
@@ -94,6 +104,7 @@ export class LessonController {
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
+  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @UseGuards(OptionalJwtAuthGuard)
@@ -114,6 +125,7 @@ export class LessonController {
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
+  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @UseGuards(OptionalJwtAuthGuard)
@@ -134,43 +146,5 @@ export class LessonController {
     return plainToInstance(ReadSimilarLessonDto, {
       lessons,
     });
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post('new')
-  newCreateLesson(
-    @Body() newCreateLessonDto: NewCreateLessonDto,
-    @UserLogin('id') memberId: number,
-  ): Promise<LessonEntity> {
-    return this.lessonService.newCreateLesson(newCreateLessonDto, memberId);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
-  @Put('new/:id')
-  newUpdateLesson(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Body() updateLessonDto: NewUpdateLessonDto,
-    @UserLogin('id') memberId: number,
-  ) {
-    return this.lessonService.newUpdateLesson(
-      updateLessonDto,
-      memberId,
-      param.id,
-    );
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
-  @Delete('new/:id')
-  newDeleteLesson(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @UserLogin('id') memberId: number,
-  ) {
-    return this.lessonService.newDeleteLesson(memberId, param.id);
   }
 }

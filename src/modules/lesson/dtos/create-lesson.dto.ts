@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { PickType } from '@nestjs/swagger';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import {
@@ -37,14 +37,4 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   @IsString()
   @IsOptional()
   thumbnail: string;
-
-  @ApiProperty({
-    example: ['the-pool', '백엔드', '화이팅'],
-    description: 'Lesson 생성시 생성한 hashtag',
-    required: true,
-    type: [String],
-  })
-  @IsString({ each: true })
-  @IsArray()
-  hashtag: string[];
 }
