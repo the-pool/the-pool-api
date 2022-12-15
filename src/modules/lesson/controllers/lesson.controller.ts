@@ -9,6 +9,7 @@ import {
   Post,
   Put,
   Query,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -25,6 +26,7 @@ import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { plainToInstance } from 'class-transformer';
@@ -71,9 +73,7 @@ export class LessonController {
     "(과제 번호) doesn't exist id in lesson",
   )
   async updateLesson(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
+    @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @Body() { hashtag, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<LessonEntity> {
@@ -99,9 +99,7 @@ export class LessonController {
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id')
   readOneLesson(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
+    @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member,
   ): ReadOneLessonDto {
     const lesson = this.lessonService.readOneLesson(param.id, member.id);
@@ -121,7 +119,9 @@ export class LessonController {
   @UseGuards(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(
-    @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
     @Query() query: SimilarLessonQueryDto,
     @UserLogin() member: Member,
   ): Promise<ReadSimilarLessonDto> {
@@ -146,6 +146,7 @@ export class LessonController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
   @Put('new/:id')
   newUpdateLesson(
     @Param()
@@ -162,6 +163,7 @@ export class LessonController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
   @Delete('new/:id')
   newDeleteLesson(
     @Param()
