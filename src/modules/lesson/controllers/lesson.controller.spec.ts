@@ -11,7 +11,6 @@ import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
-import exp from 'constants';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 
@@ -49,7 +48,6 @@ describe('LessonController', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
         categoryId: faker.datatype.number(),
       };
 
@@ -89,17 +87,14 @@ describe('LessonController', () => {
     let memberId: number;
     let param: IdRequestParamDto;
     let lessonEntity;
-    let lessonHashtag;
     beforeEach(async () => {
       memberId = faker.datatype.number();
       lessonEntity = new LessonEntity();
-      lessonHashtag = [faker.lorem.words()];
       updateLessonDto = {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
         categoryId: faker.datatype.number(),
       };
       param = {
@@ -108,7 +103,6 @@ describe('LessonController', () => {
       };
 
       jest.spyOn(lessonService, 'updateLesson');
-      jest.spyOn(lessonService, 'updateLessonHashtag');
     });
 
     afterEach(() => {
@@ -117,7 +111,6 @@ describe('LessonController', () => {
 
     it('success', async () => {
       lessonService.updateLesson.mockReturnValue(lessonEntity);
-      lessonService.updateLessonHashtag.mockReturnValue(lessonHashtag);
 
       const returnValue = await lessonController.updateLesson(
         param,
@@ -126,20 +119,29 @@ describe('LessonController', () => {
       );
 
       expect(lessonService.updateLesson).toBeCalledTimes(1);
-      expect(lessonService.updateLessonHashtag).toBeCalledTimes(1);
       expect(returnValue).toBeInstanceOf(LessonEntity);
     });
+  });
 
-    it('false - 과제 출제자가 아닌 사람이 수정을 하려고 했을 때', async () => {
-      lessonService.updateLesson.mockImplementation(() => {
-        throw new ForbiddenException('과제를 수정할 권한이 없습니다.');
-      });
-
-      await expect(async () => {
-        await lessonController.updateLesson(param, updateLessonDto, memberId);
-      }).rejects.toThrowError(
-        new ForbiddenException('과제를 수정할 권한이 없습니다.'),
+  describe('deleteLesson', () => {
+    let param: IdRequestParamDto;
+    let memberId: any;
+    let mockLesson: Omit<LessonEntity, 'hashtag'>;
+    beforeEach(async () => {
+      param = new IdRequestParamDto();
+      memberId = faker.datatype.number();
+      mockLesson = plainToInstance(
+        LessonEntity,
+        JSON.parse(faker.datatype.json()),
       );
+      mockLessonService.deleteLesson.mockReturnValue(mockLesson);
+    });
+
+    it('success', async () => {
+      const result = await lessonController.deleteLesson(param, memberId);
+
+      expect(mockLessonService.deleteLesson).toBeCalledWith(memberId, param.id);
+      expect(result).toBeInstanceOf(LessonEntity);
     });
   });
 

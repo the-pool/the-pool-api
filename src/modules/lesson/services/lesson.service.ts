@@ -41,7 +41,7 @@ export class LessonService {
     lesson: UpdateLessonDto,
     memberId: number,
     lessonId: number,
-  ): Promise<LessonEntity> {
+  ): Promise<Omit<LessonEntity, 'hashtag'>> {
     await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
       id: lessonId,
       memberId,
