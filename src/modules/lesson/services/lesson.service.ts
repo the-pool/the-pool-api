@@ -23,7 +23,7 @@ export class LessonService {
    * 과제 생성 메서드
    */
   createLesson(
-    { hashtag, ...lesson }: CreateLessonDto,
+    { hashtags, ...lesson }: CreateLessonDto,
     memberId: number,
   ): Promise<Lesson> {
     return this.prismaService.lesson.create({
@@ -35,7 +35,7 @@ export class LessonService {
             data: this.dataStructureHelper.createManyMapper<
               Pick<LessonHashtagEntity, 'tag'>
             >({
-              tag: hashtag,
+              tag: hashtags,
             }),
           },
         },
@@ -47,7 +47,7 @@ export class LessonService {
    * 과제 수정 메서드
    */
   async updateLesson(
-    lesson: Omit<UpdateLessonDto, 'hashtag'>,
+    lesson: Omit<UpdateLessonDto, 'hashtags'>,
     memberId: number,
     lessonId: number,
   ): Promise<LessonEntity> {
@@ -65,20 +65,20 @@ export class LessonService {
   /**
    * 과제 해시태그 수정 메서드
    */
-  async updateLessonHashtag(hashtag: string[], lessonId: number) {
+  async updateLessonHashtag(hashtags: string[], lessonId: number) {
     await this.prismaService.lessonHashtag.deleteMany({
       where: {
         lessonId,
       },
     });
 
-    const lessonIdArr = Array.from({ length: hashtag.length }, () => lessonId);
+    const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
 
     await this.prismaService.lessonHashtag.createMany({
       data: this.dataStructureHelper.createManyMapper<
         Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
       >({
-        tag: hashtag,
+        tag: hashtags,
         lessonId: lessonIdArr,
       }),
     });

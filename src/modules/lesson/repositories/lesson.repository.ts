@@ -75,9 +75,9 @@ export class LessonRepository {
    */
   async readLessonHashtag(
     lessonId: number,
-  ): Promise<Pick<LessonEntity, 'hashtag'>> {
+  ): Promise<Pick<LessonEntity, 'hashtags'>> {
     const result = await this.prismaService.$queryRaw<
-      [Pick<LessonEntity, 'hashtag'>]
+      [Pick<LessonEntity, 'hashtags'>]
     >`
     SELECT 
       ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 

@@ -46,5 +46,5 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   })
   @IsString({ each: true })
   @IsArray()
-  hashtag: string[];
+  hashtags: string[];
 }

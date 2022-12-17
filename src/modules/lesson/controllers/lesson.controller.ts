@@ -42,7 +42,7 @@ export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 
   @ApiOperation({ summary: '과제 생성' })
-  @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtag']) })
+  @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtags']) })
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -66,15 +66,15 @@ export class LessonController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { hashtag, ...lesson }: UpdateLessonDto,
+    @Body() { hashtags, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<LessonEntity> {
     const [updatedLesson, updatedLessonHashtag] = await Promise.all([
       this.lessonService.updateLesson(lesson, memberId, param.id),
-      this.lessonService.updateLessonHashtag(hashtag, param.id),
+      this.lessonService.updateLessonHashtag(hashtags, param.id),
     ]);
 
-    updatedLesson.hashtag = updatedLessonHashtag;
+    updatedLesson.hashtags = updatedLessonHashtag;
 
     return plainToInstance(LessonEntity, updatedLesson);
   }

@@ -65,5 +65,5 @@ export class LessonEntity
     description: '과제의 hashtag entity',
     example: ['a', 'b', 'c'],
   })
-  hashtag?: LessonHashtagEntity[] | string[];
+  hashtags?: LessonHashtagEntity[] | string[];
 }
