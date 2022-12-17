@@ -87,14 +87,14 @@ export class LessonController {
   )
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
-  readOneLesson(
+  async readOneLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member,
-  ): ReadOneLessonDto {
-    const lesson = this.lessonService.readOneLesson(param.id, member.id);
-
+  ): Promise<ReadOneLessonDto> {
+    const lesson = await this.lessonService.readOneLesson(param.id, member.id);
+    console.log(lesson);
     return plainToInstance(ReadOneLessonDto, lesson);
   }
 
@@ -116,7 +116,6 @@ export class LessonController {
       member.id,
       query,
     );
-
     return plainToInstance(ReadSimilarLessonDto, {
       lessons,
     });

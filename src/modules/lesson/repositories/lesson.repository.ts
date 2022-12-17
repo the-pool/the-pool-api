@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
-import { LessonLevelEvaluationType } from '../types/lesson.type';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { Prisma } from '@prisma/client';
 import { LessonEntity } from '../entities/lesson.entity';
+import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 
 @Injectable()
 export class LessonRepository {
@@ -20,10 +20,6 @@ export class LessonRepository {
     lessonId: number,
     memberId: number,
   ): Promise<Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>> {
-    (BigInt.prototype as any).toJSON = function () {
-      return Number(this);
-    };
-
     const result = await this.prismaService.$queryRaw<
       [Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>]
     >`
@@ -59,9 +55,9 @@ export class LessonRepository {
    */
   async readLessonLevelEvaluation(
     lessonId: number,
-  ): Promise<LessonLevelEvaluationType> {
+  ): Promise<LessonLevelEvaluationEntity> {
     const result = await this.prismaService.$queryRaw<
-      [LessonLevelEvaluationType]
+      [LessonLevelEvaluationEntity]
     >`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
@@ -99,9 +95,6 @@ export class LessonRepository {
     memberId: number,
     { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
-    (BigInt.prototype as any).toJSON = function () {
-      return Number(this);
-    };
     return await this.prismaService.$queryRaw<SimilarLessonEntity[]>`
     SELECT 
       "Lesson"."id",
