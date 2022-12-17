@@ -16,6 +16,8 @@ import {
   Prisma,
   User,
 } from '@prisma/client';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 
 export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
@@ -42,3 +44,5 @@ export type Target<M extends PrismaModel = PrismaModel> = {
 };
 
 export type MajorText = '개발' | '디자인';
+
+export type JwtGuard = typeof JwtAuthGuard | typeof OptionalJwtAuthGuard;

@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -42,11 +43,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 생성' })
   @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtag']) })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.CREATED)
-  @UseGuards(JwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Post()
   createLesson(
     @Body() createLessonDto: CreateLessonDto,
@@ -57,11 +55,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiCreatedResponse({ type: LessonEntity })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(HttpStatus.FORBIDDEN, '과제를 수정할 권한이 없습니다.')
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Put(':id')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
@@ -86,14 +81,11 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiOkResponse({ type: ReadOneLessonDto })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(OptionalJwtAuthGuard)
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   readOneLesson(
     @Param()
@@ -108,14 +100,11 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
-  @ApiBearerAuth()
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(OptionalJwtAuthGuard)
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
