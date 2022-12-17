@@ -57,7 +57,7 @@ async function codeBaseSeed() {
 enum DevelopMajorSkillName {
   Backend = '백엔드개발',
   WebFrontend = '웹 프론트엔드',
-  Ios = 'iOS',
+  Ios = 'IOS',
   Android = 'Android',
   Etc = '기타 개발',
 }
@@ -72,7 +72,7 @@ enum DesignMajorSkillName {
 enum DevelopCategoryName {
   Backend = '백엔드개발',
   WebFrontend = '웹 프론트엔드',
-  Ios = 'iOS',
+  Ios = 'IOS',
   Android = 'Android',
   Etc = '기타 개발',
 }

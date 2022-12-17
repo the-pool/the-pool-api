@@ -11,7 +11,6 @@ import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
-import exp from 'constants';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 
@@ -49,7 +48,7 @@ describe('LessonController', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
+        hashtags: ['1', '2', '3'],
         categoryId: faker.datatype.number(),
       };
 
@@ -99,7 +98,7 @@ describe('LessonController', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
+        hashtags: ['1', '2', '3'],
         categoryId: faker.datatype.number(),
       };
       param = {

@@ -90,12 +90,12 @@ export class LessonRepository {
   /**
    * 유사 과제 조회 query
    */
-  async readSimilarLesson(
+  readSimilarLesson(
     lessonId: number,
     memberId: number,
     { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
-    return await this.prismaService.$queryRaw<SimilarLessonEntity[]>`
+    return this.prismaService.$queryRaw<SimilarLessonEntity[]>`
     SELECT 
       "Lesson"."id",
       "Lesson"."title",

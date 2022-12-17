@@ -2,16 +2,13 @@ import {
   Body,
   Controller,
   Get,
-  HttpCode,
   HttpStatus,
   Param,
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -116,6 +113,7 @@ export class LessonController {
       member.id,
       query,
     );
+
     return plainToInstance(ReadSimilarLessonDto, {
       lessons,
     });

@@ -32,7 +32,3 @@ export const LESSON_LEVEL = {
   // 난이도 하
   [LessonLevelId.Bottom]: '하',
 } as const;
-
-export const SIMILAR_LESSON = {
-  LIMIT: 4,
-} as const;
