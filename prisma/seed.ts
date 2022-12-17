@@ -110,6 +110,7 @@ async function thePoolSeed() {
         name: design,
       },
     ],
+    skipDuplicates: true,
   });
 
   // MainSkill Seed
@@ -161,6 +162,7 @@ async function thePoolSeed() {
         name: DesignMajorSkillName.Etc,
       },
     ],
+    skipDuplicates: true,
   });
 
   // LessonLevel Seed
@@ -170,6 +172,7 @@ async function thePoolSeed() {
       { level: LessonLevel.Middle },
       { level: LessonLevel.Bottom },
     ],
+    skipDuplicates: true,
   });
 
   // LessonCategory Seed
@@ -212,6 +215,7 @@ async function thePoolSeed() {
         name: DesignCategoryName.Etc,
       },
     ],
+    skipDuplicates: true,
   });
 }
 
@@ -226,12 +230,12 @@ thePoolSeed()
   });
 
 // execute the main function
-codeBaseSeed()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    // close Prisma Client at the end
-    await prisma.$disconnect();
-  });
+// codeBaseSeed()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     // close Prisma Client at the end
+//     await prisma.$disconnect();
+//   });
