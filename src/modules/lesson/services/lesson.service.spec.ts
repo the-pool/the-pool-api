@@ -190,10 +190,7 @@ describe('LessonService', () => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       query = new SimilarLessonQueryDto();
-      mockSimilarLessons = plainToInstance(
-        SimilarLessonEntity,
-        JSON.parse(faker.datatype.json()),
-      );
+      mockSimilarLessons = JSON.parse(faker.datatype.json());
 
       mockLessonRepository.readSimilarLesson.mockReturnValue(
         mockSimilarLessons,
@@ -201,11 +198,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      const reuturnValaue = await lessonService.readSimilarLesson(
-        lessonId,
-        memberId,
-        query,
-      );
+      await lessonService.readSimilarLesson(lessonId, memberId, query);
 
       expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
       expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
@@ -213,7 +206,6 @@ describe('LessonService', () => {
         memberId,
         query,
       );
-      expect(reuturnValaue).toBeInstanceOf(SimilarLessonEntity);
     });
   });
 });
