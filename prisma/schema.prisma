@@ -40,41 +40,105 @@ model Major {
 /// 우리 서비스의 회원을 담은 테이블 
 model Member {
   /// 고유 ID
-  id        Int       @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   /// 멤버 전공의 대분류 ID
-  majorId   Int?
+  majorId    Int?
   /// 로그인 ID 소셜 로그인이면 고유 ID 이메일 로그인이면 이메일
   /// 소셜 로그인 prefix(kakao: k, apple: a, google: g)
-  account   String    @unique @db.VarChar(255)
+  account    String    @unique @db.VarChar(255)
   /// 멤버 닉네임
-  nickname  String?   @unique @db.VarChar(30)
+  nickname   String?   @unique @db.VarChar(30)
+  /// 유저 본명이 아닌 표시 이름
+  memberName String    @default(uuid()) @db.VarChar(30)
+  /// 직업
+  job        String?   @db.VarChar(255)
   /// 멤버의 상태 (Pending: 0, Active: 1, InActive: 2)
-  status    Int       @default(0) @db.SmallInt
+  status     Int       @default(0) @db.SmallInt
   /// 로그인 타입
   /// kakao: 1, google: 2, apple: 3
-  loginType Int       @db.SmallInt
+  loginType  Int       @db.SmallInt
   /// 멤버 썸네일
-  thumbnail String?   @unique @db.VarChar(255)
+  thumbnail  String?   @unique @db.VarChar(255)
   /// 소개
-  introduce String?   @db.VarChar(255)
+  introduce  String?   @db.Text()
   /// 생성일자
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  updatedAt  DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 탈퇴일자
-  deletedAt DateTime? @db.Timestamp(6)
+  deletedAt  DateTime? @db.Timestamp(6)
 
+  major                  Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  memberReport           MemberReport?
+  followers              MemberFollow[]          @relation("follower")
+  followings             MemberFollow[]          @relation("following")
   lessons                Lesson[]
-  Major                  Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  MemberSkill            MemberSkill[]
-  LessonSolution         LessonSolution[]
-  LessonComment          LessonComment[]
+  memberSkills           MemberSkill[]
+  memberSkillLinks       MemberSkillLink[]
+  memberInterestLinks    MemberInterestLink[]
+  lessonSolutions        LessonSolution[]
+  lessonComments         LessonComment[]
   lessonLevelEvaluations LessonLevelEvaluation[]
   lessonBookmarks        LessonBookmark[]
-  follower               MemberFollow[]          @relation("follower")
-  following              MemberFollow[]          @relation("following")
-  MemberReport           MemberReport?
   lessonLikes            LessonLike[]
+}
+
+/// main skill 보다 더 다양한 스킬
+model Skill {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// skill 명
+  name      String   @unique @db.VarChar(50)
+  /// 이모티콘
+  emoji     String   @db.VarChar(10)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  memberSkillLinks MemberSkillLink[]
+}
+
+/// member skill mapping model
+model MemberSkillLink {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// member 고유 ID
+  memberId  Int
+  /// skill 고유 ID
+  skillId   Int
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  skill  Skill  @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+/// 멤버 관심사
+model MemberInterest {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// skill 명
+  name      String   @unique @db.VarChar(50)
+  /// 이모티콘
+  emoji     String   @db.VarChar(10)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  memberInterestLink MemberInterestLink[]
+}
+
+/// member interest mapping model
+model MemberInterestLink {
+  /// 고유 ID
+  id               Int      @id @default(autoincrement())
+  /// member 고유 ID
+  memberId         Int
+  /// skill 고유 ID
+  memberInterestId Int
+  /// 생성일자
+  createdAt        DateTime @default(now()) @db.Timestamp(6)
+
+  memberInterest MemberInterest @relation(fields: [memberInterestId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  member         Member         @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버 활동 모델
@@ -87,8 +151,12 @@ model MemberReport {
   lessonCount    Int  @default(0)
   /// 피드백 한 총 개수
   feedbackCount  Int  @default(0)
-  /// 커뮤니티
-  communityCount Int  @default(0)
+  /// 질문 개수
+  commentCount   Int  @default(0)
+  /// 팔로워 개수
+  followCount    Int  @default(0)
+  /// 팔로윙 개수
+  followingCount Int  @default(0)
   /// 랭킹
   rank           Int?
   /// 포인트
