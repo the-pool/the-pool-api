@@ -31,8 +31,8 @@ describe('LessonService', () => {
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
-    lessonRepository = MockLessonRepository;
     prismaService = mockPrismaService;
+    lessonRepository = MockLessonRepository;
   });
 
   it('should be defined', () => {

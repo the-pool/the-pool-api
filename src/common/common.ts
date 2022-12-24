@@ -41,7 +41,7 @@ export const getEntriesByEnum = <T>(Enum: {
 };
 
 /**
- * dto test 코드를 작성할 때 test하고 싶은 독립된 property를 만들어 낼 때 사용되는 함수
+ * dtos test 코드를 작성할 때 test하고 싶은 독립된 property를 만들어 낼 때 사용되는 함수
  */
 export const customValidate = async <T>(property: {
   [key in keyof T]: any;
