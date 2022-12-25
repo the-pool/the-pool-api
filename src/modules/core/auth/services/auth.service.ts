@@ -1,8 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { lastValueFrom, map } from 'rxjs';
 import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 
@@ -53,23 +53,21 @@ export class AuthService {
   /**
    * 외부에서 받은 access token 검증
    */
-  async validateExternalAccessToken(
+  async validateExternalAccessTokenOrFail(
     accessToken: string,
-    oAuthProvider: OAuthAgency,
-  ): Promise<string | number | undefined> {
+    oAuthProvider: MemberLoginType,
+  ): Promise<string> {
     // 카카오
-    if (oAuthProvider === OAuthAgency.Kakao) {
+    if (oAuthProvider === MemberLoginType.Kakao) {
       return this.authHelper.validateKakaoAccessTokenOrFail(accessToken);
     }
 
     // 구글
-    if (oAuthProvider === OAuthAgency.Google) {
+    if (oAuthProvider === MemberLoginType.Google) {
       return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
     }
 
     // 애플
-    if (oAuthProvider === OAuthAgency.Apple) {
-      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
-    }
+    return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
   }
 }

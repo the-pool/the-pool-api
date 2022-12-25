@@ -30,23 +30,21 @@ export class AuthHelper {
    * 카카오 open api 를 통해 검증
    * https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#get-token-info
    */
-  validateKakaoAccessTokenOrFail(
-    accessToken: string,
-  ): Promise<number | undefined> {
+  validateKakaoAccessTokenOrFail(accessToken: string): Promise<string> {
     const ajaxConfig = {
       headers: {
         Authorization: 'Bearer' + ' ' + accessToken,
       },
     };
 
-    return lastValueFrom<number>(
+    return lastValueFrom<string>(
       this.httpService
         .get<KakaoAccessTokenResponse>(
           'https://kapi.kakao.com/v1/user/access_token_info',
           ajaxConfig,
         )
         .pipe(
-          map((res) => res.data.id),
+          map((res) => String(res.data.id)),
           catchError((e) => {
             const errorCode: KakaoErrorCode = e.response.data.code;
 
@@ -79,9 +77,7 @@ export class AuthHelper {
    * api 문서: https://developers.google.com/identity/sign-in/web/backend-auth
    * github: https://github.com/googleapis/google-auth-library-nodejs
    */
-  async validateGoogleAccessTokenOrFail(
-    accessToken: string,
-  ): Promise<string | undefined> {
+  async validateGoogleAccessTokenOrFail(accessToken: string): Promise<string> {
     try {
       // 구글 내부 axios gAxios 를 통해 토큰 검증
       // 토큰이 유효하지 않으면 라이브러리 내부에서 에러를 throw 함
@@ -99,9 +95,7 @@ export class AuthHelper {
    * 애플은 아래 url 에 설명대로 검증
    * url: https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/verifying_a_user
    */
-  async validateAppleAccessTokenOrFail(
-    accessToken: string,
-  ): Promise<string | undefined> {
+  async validateAppleAccessTokenOrFail(accessToken: string): Promise<string> {
     // 애플에 등록되어있는 clientId
     // 나중에 clientId 발급받으면 환경변수로
     const appleClientIds = ['com.thepool.web'];
