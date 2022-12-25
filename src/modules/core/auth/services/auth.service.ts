@@ -55,13 +55,15 @@ export class AuthService {
     oAuthProvider: OAuthAgency,
   ) {
     if (oAuthProvider === OAuthAgency.Apple) {
+      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
     }
 
     if (oAuthProvider === OAuthAgency.Google) {
+      return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
     }
 
     if (oAuthProvider === OAuthAgency.Kakao) {
-      return this.authHelper.validateKakaoAccessTokenOrFail('asd');
+      return this.authHelper.validateKakaoAccessTokenOrFail(accessToken);
     }
   }
 }
