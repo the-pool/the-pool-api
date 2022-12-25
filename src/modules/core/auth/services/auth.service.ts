@@ -1,6 +1,8 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
+import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
 import { lastValueFrom, map } from 'rxjs';
 import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 
@@ -9,6 +11,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private readonly httpService: HttpService,
+    private readonly authHelper: AuthHelper,
   ) {}
 
   login(id: number) {
@@ -44,6 +47,21 @@ export class AuthService {
       return OAUTH_AGENCY_COLUMN[oAuthAgency] + response.id;
     } catch (error) {
       throw new UnauthorizedException('소셜 로그인에 실패하였습니다.');
+    }
+  }
+
+  async validateExternalAccessToken(
+    accessToken: string,
+    oAuthProvider: OAuthAgency,
+  ) {
+    if (oAuthProvider === OAuthAgency.Apple) {
+    }
+
+    if (oAuthProvider === OAuthAgency.Google) {
+    }
+
+    if (oAuthProvider === OAuthAgency.Kakao) {
+      return this.authHelper.validateKakaoAccessTokenOrFail('asd');
     }
   }
 }
