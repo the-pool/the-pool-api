@@ -50,20 +50,26 @@ export class AuthService {
     }
   }
 
+  /**
+   * 외부에서 받은 access token 검증
+   */
   async validateExternalAccessToken(
     accessToken: string,
     oAuthProvider: OAuthAgency,
-  ) {
-    if (oAuthProvider === OAuthAgency.Apple) {
-      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
+  ): Promise<string | number | undefined> {
+    // 카카오
+    if (oAuthProvider === OAuthAgency.Kakao) {
+      return this.authHelper.validateKakaoAccessTokenOrFail(accessToken);
     }
 
+    // 구글
     if (oAuthProvider === OAuthAgency.Google) {
       return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
     }
 
-    if (oAuthProvider === OAuthAgency.Kakao) {
-      return this.authHelper.validateKakaoAccessTokenOrFail(accessToken);
+    // 애플
+    if (oAuthProvider === OAuthAgency.Apple) {
+      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
     }
   }
 }
