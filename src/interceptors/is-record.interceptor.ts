@@ -23,7 +23,7 @@ export class IsRecordInterceptor implements NestInterceptor {
     const { id } = request.params;
     const { path } = request.route;
 
-    const [a, b, domain] = path.split('/');
+    const [empty, api, domain] = path.split('/');
 
     await validateOrReject(
       plainToInstance(IdRequestParamDto, {
