@@ -1,24 +1,25 @@
 import {
   BadRequestException,
   CallHandler,
+  CanActivate,
   ExecutionContext,
   Injectable,
   InternalServerErrorException,
   NestInterceptor,
+  NotFoundException,
 } from '@nestjs/common';
 import { DOMAIN_TO_MODEL_NAME } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { plainToInstance } from 'class-transformer';
-import { validate, validateOrReject } from 'class-validator';
-import { map, Observable } from 'rxjs';
+import { validateOrReject } from 'class-validator';
 
+/**
+ * domain에 해당하는 리소스의 존재 유무 확인후 없으면 404에러를 뱉음
+ */
 @Injectable()
-export class IsRecordInterceptor implements NestInterceptor {
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+export class IsRecordGuard implements CanActivate {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { id } = request.params;
     const { path } = request.route;
@@ -33,9 +34,8 @@ export class IsRecordInterceptor implements NestInterceptor {
     ).catch((err) => {
       const { constraints } = err[0];
 
-      throw new BadRequestException(constraints.IsRecordConstraint);
+      throw new NotFoundException(constraints.IsRecordConstraint);
     });
-
-    return next.handle().pipe(map((data) => data));
+    return true;
   }
 }

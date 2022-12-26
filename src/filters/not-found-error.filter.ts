@@ -24,7 +24,6 @@ export class NotFoundErrorFilter
     const responseJson: ResponseJson = this.buildResponseJson(status);
 
     responseJson.errors = [this.preProcessByClientError(exception.message)];
-
     response.status(status).json(responseJson);
   }
 }
