@@ -39,7 +39,7 @@ import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
 
 @ApiTags('과제')
-@Controller('api/lessons')
+@Controller()
 export class LessonController {
   constructor(private readonly lessonService: LessonService) {}
 

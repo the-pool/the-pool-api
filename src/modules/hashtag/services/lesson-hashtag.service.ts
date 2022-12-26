@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ModelName } from '@src/constants/enum';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
 import { CreateHashtagDto } from '../dtos/create-hashtag.dto';
