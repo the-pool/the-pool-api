@@ -91,7 +91,7 @@ export class LessonController {
     @UserLogin() member: Member,
   ): Promise<ReadOneLessonDto> {
     const lesson = await this.lessonService.readOneLesson(param.id, member.id);
-    console.log(lesson);
+
     return plainToInstance(ReadOneLessonDto, lesson);
   }
 
