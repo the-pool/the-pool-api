@@ -66,12 +66,12 @@ export class LessonController {
     @Body() { hashtags, ...lesson }: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<LessonEntity> {
-    const [updatedLesson, updatedLessonHashtag] = await Promise.all([
+    const [updatedLesson, updatedLessonHashtags] = await Promise.all([
       this.lessonService.updateLesson(lesson, memberId, param.id),
       this.lessonService.updateLessonHashtag(hashtags, param.id),
     ]);
 
-    updatedLesson.hashtags = updatedLessonHashtag;
+    updatedLesson.hashtags = updatedLessonHashtags;
 
     return plainToInstance(LessonEntity, updatedLesson);
   }

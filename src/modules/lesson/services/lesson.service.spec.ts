@@ -85,6 +85,7 @@ describe('LessonService', () => {
     let lesson;
     let memebrId: number;
     let lessonId: number;
+    let mockUpdatedLesson;
 
     beforeEach(async () => {
       lesson = {
@@ -92,8 +93,9 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
       };
-      (memebrId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
+      memebrId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      mockUpdatedLesson = JSON.parse(faker.datatype.json());
     });
 
     afterEach(async () => {
@@ -101,7 +103,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      prismaService.lesson.updateMany.mockReturnValue({ count: 1 });
+      prismaService.lesson.update.mockReturnValue(mockUpdatedLesson);
 
       const returnValue = await lessonService.updateLesson(
         lesson,
@@ -109,7 +111,7 @@ describe('LessonService', () => {
         lessonId,
       );
 
-      expect(returnValue).toBeUndefined();
+      expect(returnValue).toStrictEqual(mockUpdatedLesson);
     });
 
     it('false - 과제 작성자가 아닌 사람이 과제를 수정하려고 할 때', async () => {
@@ -124,12 +126,14 @@ describe('LessonService', () => {
   });
 
   describe('updateLessonHashtag', () => {
-    let hashtag: string[];
+    let hashtags: string[];
     let lessonId: number;
+    let updatedHashtags;
 
     beforeEach(async () => {
-      hashtag = ['1', '2', '3'];
+      hashtags = ['1', '2', '3'];
       lessonId = faker.datatype.number();
+      updatedHashtags = [{ tag: '1' }, { tag: '2' }, { tag: '3' }];
     });
     afterEach(async () => {
       jest.clearAllMocks();
@@ -138,13 +142,14 @@ describe('LessonService', () => {
     it('success', async () => {
       prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
       prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
+      prismaService.lessonHashtag.findMany.mockReturnValue(updatedHashtags);
 
       const returnValue = await lessonService.updateLessonHashtag(
-        hashtag,
+        hashtags,
         lessonId,
       );
 
-      expect(returnValue).toBeUndefined();
+      expect(returnValue).toEqual(hashtags);
     });
   });
 

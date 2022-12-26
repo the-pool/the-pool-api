@@ -83,14 +83,14 @@ export class LessonService {
       }),
     });
 
-    const updatedHashtag = await this.prismaService.lessonHashtag.findMany({
+    const updatedHashtags = await this.prismaService.lessonHashtag.findMany({
       where: {
         lessonId,
       },
       select: { tag: true },
     });
 
-    return updatedHashtag.map((item) => item.tag);
+    return updatedHashtags.map((item) => item.tag);
   }
 
   /**
