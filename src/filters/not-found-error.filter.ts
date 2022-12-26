@@ -10,7 +10,7 @@ import { ResponseJson } from '@src/filters/type';
 import { Response } from 'express';
 
 /**
- * not found error 객체를 위한 필터 (NotFoundException과 다름에 주의)
+ * prisma에서 뱉어내는 not found error 객체를 위한 필터 (NotFoundException과 다름에 주의)
  */
 @Catch(NotFoundError)
 export class NotFoundErrorFilter

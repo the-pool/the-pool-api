@@ -1,4 +1,4 @@
-import { LessonLevelId, MajorId } from './enum';
+import { LessonLevelId, MajorId, ModelName } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -36,3 +36,7 @@ export const LESSON_LEVEL = {
 export const SIMILAR_LESSON = {
   LIMIT: 4,
 } as const;
+
+export const DOMAIN_TO_MODEL_NAME = {
+  lessons: ModelName.Lesson,
+};
