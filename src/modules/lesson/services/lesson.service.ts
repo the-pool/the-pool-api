@@ -90,10 +90,11 @@ export class LessonService {
       select: { tag: true },
     });
 
-    return updatedHashtags.reduce<{ name: string }[]>((acc, cur) => {
-      acc.push({ name: cur.tag });
-      return acc;
-    }, []);
+    return updatedHashtags.map((item) => {
+      return {
+        name: item.tag,
+      };
+    });
   }
 
   /**
