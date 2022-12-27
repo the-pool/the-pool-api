@@ -163,7 +163,7 @@ describe('LessonController', () => {
     it('success', async () => {
       lessonService.readOneLesson.mockReturnValue(lesson);
 
-      const returnValue = lessonController.readOneLesson(param, member);
+      const returnValue = await lessonController.readOneLesson(param, member);
 
       expect(returnValue).toBeInstanceOf(ReadOneLessonDto);
     });
@@ -173,7 +173,7 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let query: SimilarLessonQueryDto;
-    let mockSimilarLessons: SimilarLessonEntity;
+    let mockSimilarLessons: any;
 
     beforeEach(async () => {
       member = { id: faker.datatype.number() };
@@ -196,7 +196,6 @@ describe('LessonController', () => {
         query,
         member,
       );
-
       expect(mockLessonService.readSimilarLesson).toHaveBeenCalledTimes(1);
       expect(mockLessonService.readSimilarLesson).toBeCalledWith(
         param.id,
@@ -208,9 +207,11 @@ describe('LessonController', () => {
     });
 
     it('success - plainToInstance Transform isBookmark', async () => {
-      mockSimilarLessons = plainToInstance(SimilarLessonEntity, {
-        isBookmark: faker.datatype.number(),
-      });
+      mockSimilarLessons = plainToInstance(SimilarLessonEntity, [
+        {
+          isBookmark: faker.datatype.number(),
+        },
+      ]);
       mockLessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
 
       const returnValue = await lessonController.readSimilarLesson(
@@ -218,10 +219,7 @@ describe('LessonController', () => {
         query,
         member,
       );
-
-      expect(
-        typeof returnValue.lessons['isBookmark'] === 'boolean',
-      ).toBeTruthy();
+      expect(typeof returnValue.lessons[0].isBookmark).toBe('boolean');
     });
   });
 });

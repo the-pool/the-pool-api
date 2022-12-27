@@ -18,5 +18,6 @@ export class SimilarLessonEntity extends PickType(LessonEntity, [
     example: 10,
     description: '제출된 과제물 수',
   })
+  @Type(() => Number)
   solutionCount: number;
 }
