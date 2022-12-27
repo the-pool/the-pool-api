@@ -18,6 +18,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { CreateHashtagDto } from '@src/modules/hashtag/dtos/create-hashtag.dto';
+import { PublicKeyType } from 'aws-sdk/clients/kms';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 
@@ -37,7 +38,7 @@ export class LessonHashtagController {
     param: IdRequestParamDto,
     @Body() { hashtags }: CreateHashtagDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<Pick<LessonEntity, 'hashtags'>> {
     const createdHashtags = await this.lessonHashtagService.createHashtag(
       hashtags,
       param.id,
