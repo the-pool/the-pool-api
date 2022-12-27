@@ -133,34 +133,6 @@ describe('LessonService', () => {
     });
   });
 
-  describe('updateLessonHashtag', () => {
-    let hashtags: string[];
-    let lessonId: number;
-    let updatedHashtags;
-
-    beforeEach(async () => {
-      hashtags = ['1', '2', '3'];
-      lessonId = faker.datatype.number();
-      updatedHashtags = [{ tag: '1' }, { tag: '2' }, { tag: '3' }];
-    });
-    afterEach(async () => {
-      jest.clearAllMocks();
-    });
-
-    it('success', async () => {
-      prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
-      prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
-      prismaService.lessonHashtag.findMany.mockReturnValue(updatedHashtags);
-
-      const returnValue = await lessonService.updateLessonHashtag(
-        hashtags,
-        lessonId,
-      );
-
-      expect(returnValue).toEqual(hashtags);
-    });
-  });
-
   describe('readOneLesson', () => {
     let memberId: number;
     let lessonId: number;

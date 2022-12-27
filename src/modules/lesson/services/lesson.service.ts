@@ -70,41 +70,6 @@ export class LessonService {
   }
 
   /**
-   * 과제 해시태그 수정 메서드
-   */
-  async updateLessonHashtag(hashtags: string[], lessonId: number) {
-    await this.prismaService.lessonHashtag.deleteMany({
-      where: {
-        lessonId,
-      },
-    });
-
-    const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
-
-    await this.prismaService.lessonHashtag.createMany({
-      data: this.dataStructureHelper.createManyMapper<
-        Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
-      >({
-        tag: hashtags,
-        lessonId: lessonIdArr,
-      }),
-    });
-
-    const updatedHashtags = await this.prismaService.lessonHashtag.findMany({
-      where: {
-        lessonId,
-      },
-      select: { tag: true },
-    });
-
-    return updatedHashtags.map((item) => {
-      return {
-        name: item.tag,
-      };
-    });
-  }
-
-  /**
    * 과제 상세 조회 메서드
    */
   async readOneLesson(

@@ -1,22 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { ModelName } from '@src/constants/enum';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
+import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { CreateHashtagDto } from '@src/modules/hashtag/dtos/create-hashtag.dto';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
-import { CreateHashtagDto } from '../dtos/create-hashtag.dto';
-import { HashtagService } from '../interfaces/hashtag-service.interface';
 
 @Injectable()
-export class LessonHashtagService implements HashtagService {
+export class LessonHashtagService {
   constructor(
     private readonly prismaService: PrismaService,
+    private readonly prismaHelper: PrismaHelper,
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
   async createHashtag(
     { hashtags }: CreateHashtagDto,
     lessonId: number,
-    memberId?: number,
+    memberId: number,
   ) {
+    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+      id: lessonId,
+      memberId,
+    });
+
     const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
 
     await this.prismaService.lessonHashtag.createMany({

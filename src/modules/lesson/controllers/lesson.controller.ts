@@ -9,10 +9,8 @@ import {
   Put,
   Query,
   UseFilters,
-  UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
