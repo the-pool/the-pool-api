@@ -77,4 +77,36 @@ describe('LessonHashtagService', () => {
       expect(returnValue).toStrictEqual([{ name: fakeString }]);
     });
   });
+
+  describe('updateManyHashtag', () => {
+    let hashtags: string[];
+    let lessonId: number;
+    let fakeString: string;
+    let createdLessonHashtags;
+    let spyDeleteManyHashtag: jest.SpyInstance;
+    let spyCreateHashtag: jest.SpyInstance;
+
+    beforeEach(async () => {
+      fakeString = faker.datatype.string();
+      hashtags = [fakeString];
+      lessonId = faker.datatype.number();
+      createdLessonHashtags = [{ tag: fakeString }];
+      prismaService.lessonHashtag.findMany.mockReturnValue(
+        createdLessonHashtags,
+      );
+
+      spyDeleteManyHashtag = jest.spyOn(
+        lessonHashtagService,
+        'deleteManyHashtag',
+      );
+      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createHashtag');
+    });
+
+    it('success - ckeck method called', async () => {
+      await lessonHashtagService.updateManyHashtag(hashtags, lessonId);
+
+      expect(spyDeleteManyHashtag).toBeCalledTimes(1);
+      expect(spyCreateHashtag).toBeCalledTimes(1);
+    });
+  });
 });
