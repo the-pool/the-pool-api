@@ -45,13 +45,21 @@ export class LessonHashtagService {
   async updateManyHashtag(hashtags: string[], lessonId: number) {
     await this.deleteManyHashtag(lessonId);
 
-    return await this.createHashtag(hashtags, lessonId);
+    return this.createHashtag(hashtags, lessonId);
   }
 
-  async deleteManyHashtag(lessonId: number) {
-    await this.prismaService.lessonHashtag.deleteMany({
+  deleteManyHashtag(lessonId: number) {
+    return this.prismaService.lessonHashtag.deleteMany({
       where: {
         lessonId,
+      },
+    });
+  }
+
+  deleteHashtag(hashtagId: number) {
+    return this.prismaService.lessonHashtag.delete({
+      where: {
+        id: hashtagId,
       },
     });
   }
