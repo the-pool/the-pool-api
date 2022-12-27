@@ -3,28 +3,19 @@ import { ModelName } from '@src/constants/enum';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateHashtagDto } from '@src/modules/hashtag/dtos/create-hashtag.dto';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
-import { LessonEntity } from '../entities/lesson.entity';
 
 @Injectable()
 export class LessonHashtagService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly prismaHelper: PrismaHelper,
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
   async createHashtag(
     hashtags: string[],
     lessonId: number,
-    memberId: number,
   ): Promise<{ name: string }[]> {
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
-      id: lessonId,
-      memberId,
-    });
-
     const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
 
     await this.prismaService.lessonHashtag.createMany({
@@ -48,6 +39,20 @@ export class LessonHashtagService {
       return {
         name: item.tag,
       };
+    });
+  }
+
+  async updateManyHashtag(hashtags: string[], lessonId: number) {
+    await this.deleteManyHashtag(lessonId);
+
+    return await this.createHashtag(hashtags, lessonId);
+  }
+
+  async deleteManyHashtag(lessonId: number) {
+    await this.prismaService.lessonHashtag.deleteMany({
+      where: {
+        lessonId,
+      },
     });
   }
 }

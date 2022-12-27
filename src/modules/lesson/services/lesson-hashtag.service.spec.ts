@@ -1,19 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import {
-  mockDataStructureHelper,
-  mockPrismaHelper,
-} from '../../../../test/mock/mock-helper';
+import { mockDataStructureHelper } from '../../../../test/mock/mock-helper';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { LessonHashtagService } from './lesson-hashtag.service';
 
 describe('LessonHashtagService', () => {
   let lessonHashtagService: LessonHashtagService;
   let prismaService;
-  let prismaHelper;
   let dataStructureHelper;
 
   beforeEach(async () => {
@@ -29,10 +24,6 @@ describe('LessonHashtagService', () => {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
-        {
-          provide: PrismaHelper,
-          useValue: mockPrismaHelper,
-        },
       ],
     }).compile();
 
@@ -40,7 +31,6 @@ describe('LessonHashtagService', () => {
       module.get<LessonHashtagService>(LessonHashtagService);
     dataStructureHelper = mockDataStructureHelper;
     prismaService = mockPrismaService;
-    prismaHelper = mockPrismaHelper;
   });
 
   it('should be defined', () => {
@@ -71,11 +61,10 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagService.createHashtag(hashtags, lessonId, memberId);
+      await lessonHashtagService.createHashtag(hashtags, lessonId);
 
       expect(prismaService.lessonHashtag.createMany).toBeCalledTimes(1);
       expect(prismaService.lessonHashtag.findMany).toBeCalledTimes(1);
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
       expect(dataStructureHelper.createManyMapper).toBeCalledTimes(1);
     });
 
@@ -83,7 +72,6 @@ describe('LessonHashtagService', () => {
       const returnValue = await lessonHashtagService.createHashtag(
         hashtags,
         lessonId,
-        memberId,
       );
 
       expect(returnValue).toStrictEqual([{ name: fakeString }]);
