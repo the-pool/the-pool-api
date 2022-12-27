@@ -89,7 +89,7 @@ describe('LessonService', () => {
 
   describe('updateLesson', () => {
     let lesson;
-    let memebrId: number;
+    let memberId: number;
     let lessonId: number;
     let mockUpdatedLesson;
 
@@ -99,7 +99,7 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
       };
-      memebrId = faker.datatype.number();
+      memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       mockUpdatedLesson = JSON.parse(faker.datatype.json());
     });
@@ -113,7 +113,7 @@ describe('LessonService', () => {
 
       const returnValue = await lessonService.updateLesson(
         lesson,
-        memebrId,
+        memberId,
         lessonId,
       );
 
