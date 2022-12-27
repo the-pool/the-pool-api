@@ -35,15 +35,15 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() craeteHashtagDto: CreateHashtagDto,
+    @Body() { hashtags }: CreateHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
-    const hashtags = await this.lessonHashtagService.createHashtag(
-      craeteHashtagDto,
+    const createdHashtags = await this.lessonHashtagService.createHashtag(
+      hashtags,
       param.id,
       memberId,
     );
-    return { hashtags };
+    return { hashtags: createdHashtags };
   }
 
   @Put()

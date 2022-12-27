@@ -14,11 +14,7 @@ export class LessonHashtagService {
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
-  async createHashtag(
-    { hashtags }: CreateHashtagDto,
-    lessonId: number,
-    memberId: number,
-  ) {
+  async createHashtag(hashtags: string[], lessonId: number, memberId: number) {
     await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
       id: lessonId,
       memberId,
