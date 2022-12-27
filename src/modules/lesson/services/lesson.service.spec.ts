@@ -3,9 +3,12 @@ import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
+import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { MockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 
@@ -25,14 +28,14 @@ describe('LessonService', () => {
         },
         {
           provide: LessonRepository,
-          useValue: MockLessonRepository,
+          useValue: mockLessonRepository,
         },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
+    lessonRepository = mockLessonRepository;
     prismaService = mockPrismaService;
-    lessonRepository = MockLessonRepository;
   });
 
   it('should be defined', () => {
@@ -49,7 +52,8 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
         thumbnail: faker.image.imageUrl(),
-        hashtag: ['1', '2', '3'],
+        hashtags: ['1', '2', '3'],
+        categoryId: faker.datatype.number({ min: 1, max: 9 }),
       };
       memberId = 1;
     });
@@ -81,6 +85,7 @@ describe('LessonService', () => {
     let lesson;
     let memebrId: number;
     let lessonId: number;
+    let mockUpdatedLesson;
 
     beforeEach(async () => {
       lesson = {
@@ -88,8 +93,9 @@ describe('LessonService', () => {
         description: faker.lorem.text(),
         title: faker.lorem.words(),
       };
-      (memebrId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
+      memebrId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      mockUpdatedLesson = JSON.parse(faker.datatype.json());
     });
 
     afterEach(async () => {
@@ -97,7 +103,7 @@ describe('LessonService', () => {
     });
 
     it('success', async () => {
-      prismaService.lesson.updateMany.mockReturnValue({ count: 1 });
+      prismaService.lesson.update.mockReturnValue(mockUpdatedLesson);
 
       const returnValue = await lessonService.updateLesson(
         lesson,
@@ -105,7 +111,7 @@ describe('LessonService', () => {
         lessonId,
       );
 
-      expect(returnValue).toBeUndefined();
+      expect(returnValue).toStrictEqual(mockUpdatedLesson);
     });
 
     it('false - 과제 작성자가 아닌 사람이 과제를 수정하려고 할 때', async () => {
@@ -120,12 +126,14 @@ describe('LessonService', () => {
   });
 
   describe('updateLessonHashtag', () => {
-    let hashtag: string[];
+    let hashtags: string[];
     let lessonId: number;
+    let updatedHashtags;
 
     beforeEach(async () => {
-      hashtag = ['1', '2', '3'];
+      hashtags = ['1', '2', '3'];
       lessonId = faker.datatype.number();
+      updatedHashtags = [{ tag: '1' }, { tag: '2' }, { tag: '3' }];
     });
     afterEach(async () => {
       jest.clearAllMocks();
@@ -134,13 +142,14 @@ describe('LessonService', () => {
     it('success', async () => {
       prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
       prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
+      prismaService.lessonHashtag.findMany.mockReturnValue(updatedHashtags);
 
       const returnValue = await lessonService.updateLessonHashtag(
-        hashtag,
+        hashtags,
         lessonId,
       );
 
-      expect(returnValue).toBeUndefined();
+      expect(returnValue).toEqual(hashtags);
     });
   });
 
@@ -172,6 +181,35 @@ describe('LessonService', () => {
 
       expect(returnValue).toStrictEqual(
         Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation }),
+      );
+    });
+  });
+
+  describe('readSimilarLesson', () => {
+    let memberId: number;
+    let lessonId: number;
+    let query: SimilarLessonQueryDto;
+    let mockSimilarLessons: SimilarLessonEntity;
+
+    beforeEach(async () => {
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      query = new SimilarLessonQueryDto();
+      mockSimilarLessons = JSON.parse(faker.datatype.json());
+
+      mockLessonRepository.readSimilarLesson.mockReturnValue(
+        mockSimilarLessons,
+      );
+    });
+
+    it('success', async () => {
+      await lessonService.readSimilarLesson(lessonId, memberId, query);
+
+      expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
+        lessonId,
+        memberId,
+        query,
       );
     });
   });

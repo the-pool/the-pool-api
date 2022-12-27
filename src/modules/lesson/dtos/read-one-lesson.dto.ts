@@ -1,8 +1,9 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { LessonEntity } from '../../entities/lesson.entity';
-import { LessonLevelEvaluationType } from '../lesson.type';
+import { Type } from 'class-transformer';
+import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
+import { LessonEntity } from '../entities/lesson.entity';
 
-export class ReadOneLessonResponseType extends PickType(LessonEntity, [
+export class ReadOneLessonDto extends PickType(LessonEntity, [
   'title',
   'description',
   'hit',
@@ -19,13 +20,14 @@ export class ReadOneLessonResponseType extends PickType(LessonEntity, [
     example: 10,
     description: '제출된 과제물 수',
   })
+  @Type(() => Number)
   solutionCount: number;
 
   @ApiProperty({
     example: ['a', 'b', 'c'],
     description: '과제의 해시태그',
   })
-  hashtag: string[];
+  hashtags: string[];
 
   @ApiProperty({
     example: 1,
@@ -34,14 +36,11 @@ export class ReadOneLessonResponseType extends PickType(LessonEntity, [
   levelId: number;
 
   @ApiProperty({
-    example: {
-      top: 1,
-      middle: 5,
-      bottom: 10,
-    },
     description: '과제를 완료한 사람이 평가한 과제의 난이도',
+    type: [LessonLevelEvaluationEntity],
   })
-  lessonLevelEvaluation: LessonLevelEvaluationType;
+  @Type(() => LessonLevelEvaluationEntity)
+  lessonLevelEvaluation: LessonLevelEvaluationEntity;
 
   @ApiProperty({
     example: true,

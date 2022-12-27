@@ -45,3 +45,15 @@ export enum LessonLevelId {
   // 하
   Bottom = 3,
 }
+
+export enum LessonCategoryId {
+  Backend = 1,
+  WebFrontend = 2,
+  Ios = 3,
+  Android = 4,
+  EtcDev = 5,
+  WebDesign = 6,
+  UiUx = 7,
+  Bx = 8,
+  EtcDesign = 9,
+}
