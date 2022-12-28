@@ -43,7 +43,6 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 생성' })
   @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @BearerAuth(JwtAuthGuard)
   @Post()
   createLesson(
@@ -55,8 +54,11 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
-  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Put(':id')
@@ -72,8 +74,11 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 삭제' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
-  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Delete(':id')
@@ -92,7 +97,6 @@ export class LessonController {
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
-  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   readOneLesson(
@@ -110,7 +114,6 @@ export class LessonController {
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
-  @CustomApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, '서버 에러')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(

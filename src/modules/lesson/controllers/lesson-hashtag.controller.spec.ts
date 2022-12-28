@@ -1,10 +1,14 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { CreateHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
+import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
+import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
+import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { HashtagEntity } from '@src/modules/hashtag/entities/hashtag.entity';
 import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
@@ -46,14 +50,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('createHashtag', () => {
-    let createHashtagDto: CreateHashtagDto;
+    let createHashtagDto: CreateManyHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let createdHashtags;
 
     beforeEach(async () => {
       memberId = faker.datatype.number();
-      createHashtagDto = new CreateHashtagDto();
+      createHashtagDto = new CreateManyHashtagDto();
       param = {
         id: faker.datatype.number(),
         model: ModelName.Lesson,
@@ -70,8 +74,8 @@ describe('LessonHashtagController', () => {
         memberId,
       );
       expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
-      expect(mockLessonHashtagService.createHashtag).toHaveBeenCalledTimes(1);
-      expect(mockLessonHashtagService.createHashtag).toBeCalledWith(
+      expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.createHashtag).toBeCalledWith(
         createHashtagDto.hashtags,
         param.id,
       );
@@ -89,14 +93,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('updateManyHashtag', () => {
-    let updateHashtagDto: UpdateHashtagDto;
+    let updateHashtagDto: UpdateManyHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let updatedHashtags;
 
     beforeEach(async () => {
       memberId = faker.datatype.number();
-      updateHashtagDto = new UpdateHashtagDto();
+      updateHashtagDto = new UpdateManyHashtagDto();
       param = {
         id: faker.datatype.number(),
         model: ModelName.Lesson,
@@ -135,6 +139,51 @@ describe('LessonHashtagController', () => {
       );
 
       expect(returnValue.hashtags).toStrictEqual(updatedHashtags);
+    });
+  });
+
+  describe('updateHashtag', () => {
+    let updateHashtagDto: UpdateHashtagDto;
+    let param: LessonHashtagParamDto;
+    let memberId: number;
+    let updatedHashtag;
+
+    beforeEach(async () => {
+      memberId = faker.datatype.number();
+      updateHashtagDto = new UpdateHashtagDto();
+      param = {
+        id: faker.datatype.number(),
+        model: ModelName.Lesson,
+        hashtagId: faker.datatype.number(),
+      };
+      updatedHashtag = new HashtagEntity();
+
+      lessonHashtagService.updateHashtag.mockReturnValue(updatedHashtag);
+    });
+
+    it('success - check method called', async () => {
+      await lessonHashtagController.updateHashtag(
+        param,
+        updateHashtagDto,
+        memberId,
+      );
+
+      expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
+      expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
+        param.hashtagId,
+        updateHashtagDto.hashtag,
+      );
+    });
+
+    it('success - check routing', async () => {
+      const reuturnValue = await lessonHashtagController.updateHashtag(
+        param,
+        updateHashtagDto,
+        memberId,
+      );
+
+      expect(reuturnValue).toStrictEqual(updatedHashtag);
     });
   });
 });

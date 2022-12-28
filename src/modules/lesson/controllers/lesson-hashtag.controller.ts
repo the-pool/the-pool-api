@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   UseFilters,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -40,9 +39,14 @@ export class LessonHashtagController {
     private readonly lessonHashtagService: LessonHashtagService,
     private readonly prismaHelper: PrismaHelper,
   ) {}
+
   @ApiOperation({ summary: '과제 해시태그 생성' })
   @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Post()
@@ -67,7 +71,11 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 대량 수정' })
   @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Put()
@@ -93,7 +101,11 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
   @ApiOkResponse({ type: LessonHashtagEntity })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Put(':hashtagId')
@@ -124,7 +136,11 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
   @ApiOkResponse({ type: LessonHashtagEntity })
-  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
+  )
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
   @Delete(':hashtagId')
