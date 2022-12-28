@@ -1,8 +1,9 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
+import { ErrorHttpStatusCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { ApiResponse } from '@nestjs/swagger';
 
-export const CustomApiResponse = (
-  status: HttpStatus,
+export const CustomApiFailureResponse = (
+  status: ErrorHttpStatusCode,
   errorMessage: string | string[],
 ) => {
   if (typeof errorMessage === 'string') {

@@ -5,7 +5,6 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { mockDataStructureHelper } from '../../../../test/mock/mock-helper';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
-import { LessonEntity } from '../entities/lesson.entity';
 import { LessonHashtagService } from './lesson-hashtag.service';
 
 describe('LessonHashtagService', () => {
@@ -223,6 +222,30 @@ describe('LessonHashtagService', () => {
       const returnValue = lessonHashtagService.readManyHashtag(lessonId);
 
       expect(returnValue).toStrictEqual(hashtags);
+    });
+  });
+
+  describe('readHashtag', () => {
+    let hashtagId: number;
+    let hashtag: LessonHashtagEntity;
+
+    beforeEach(async () => {
+      hashtagId = faker.datatype.number();
+      hashtag = new LessonHashtagEntity();
+
+      prismaService.lessonHashtag.findUnique.mockReturnValue(hashtag);
+    });
+
+    it('success - check method called', () => {
+      lessonHashtagService.readHashtag(hashtagId);
+
+      expect(prismaService.lessonHashtag.findUnique).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonHashtagService.readHashtag(hashtagId);
+
+      expect(returnValue).toStrictEqual(hashtag);
     });
   });
 });

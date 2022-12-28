@@ -20,7 +20,7 @@ import {
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
+import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -54,8 +54,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
-  @CustomApiResponse(
+  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiFailureResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
@@ -74,8 +74,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 삭제' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
-  @CustomApiResponse(
+  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiFailureResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )
@@ -93,7 +93,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiOkResponse({ type: ReadOneLessonDto })
-  @CustomApiResponse(
+  @CustomApiFailureResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in lesson",
   )
@@ -110,7 +110,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @CustomApiResponse(
+  @CustomApiFailureResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
   )

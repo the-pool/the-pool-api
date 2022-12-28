@@ -15,7 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { UserLogin } from '@src/decorators/user-login.decorator';
-import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
+import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-response.decorator';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
@@ -31,7 +31,10 @@ export class MemberController {
   @Post('/social')
   @ApiOperation({ summary: '소셜 로그인' })
   @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, '소셜 로그인에 실패하였습니다.')
+  @CustomApiFailureResponse(
+    HttpStatus.UNAUTHORIZED,
+    '소셜 로그인에 실패하였습니다.',
+  )
   loginByOAuth(
     @Body()
     loginByOAuthDto: LoginByOAuthDto,
@@ -43,7 +46,7 @@ export class MemberController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '입수 마지막 단계에서 받는 추가정보 api' })
   @ApiOkResponse({ type: MemberLastStepLoginResponseType })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @UseGuards(JwtAuthGuard)
   lastStepLogin(
     @UserLogin('id') memberId: number,

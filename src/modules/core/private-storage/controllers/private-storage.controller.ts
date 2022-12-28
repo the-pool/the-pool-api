@@ -12,7 +12,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
+import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-response.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
 import {
@@ -32,7 +32,7 @@ export class PrivateStorageController {
   @Post('/signed-url')
   @ApiOperation({ summary: 'preSignedUrl 발급' })
   @ApiCreatedResponse({ type: GetSignedUrlResponseType })
-  @CustomApiResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @CustomApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   getSignedUrl(@Body() getSignedUrlDto: GetSignedUrlDto) {
