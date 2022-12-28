@@ -50,7 +50,7 @@ describe('LessonHashtagService', () => {
       fakeId = faker.datatype.number();
       hashtags = [fakeString];
       lessonId = faker.datatype.number();
-      createdLessonHashtags = [{ id: fakeId, tag: fakeString }];
+      createdLessonHashtags = [new LessonHashtagEntity()];
 
       prismaService.lessonHashtag.findMany.mockReturnValue(
         createdLessonHashtags,
@@ -75,7 +75,7 @@ describe('LessonHashtagService', () => {
         lessonId,
       );
 
-      expect(returnValue).toStrictEqual([{ id: fakeId, name: fakeString }]);
+      expect(returnValue).toStrictEqual(createdLessonHashtags);
     });
   });
 
@@ -93,7 +93,7 @@ describe('LessonHashtagService', () => {
       fakeString = faker.datatype.string();
       hashtags = [fakeString];
       lessonId = faker.datatype.number();
-      createdLessonHashtags = [{ id: fakeId, tag: fakeString }];
+      createdLessonHashtags = [new LessonHashtagEntity()];
       prismaService.lessonHashtag.findMany.mockReturnValue(
         createdLessonHashtags,
       );
@@ -118,7 +118,7 @@ describe('LessonHashtagService', () => {
         lessonId,
       );
 
-      expect(returnValue).toStrictEqual([{ id: fakeId, name: fakeString }]);
+      expect(returnValue).toStrictEqual(createdLessonHashtags);
     });
   });
 
