@@ -54,6 +54,14 @@ export class LessonHashtagService {
     return this.createHashtag(hashtags, lessonId);
   }
 
+  deleteHashtag(hashtagId: number) {
+    return this.prismaService.lessonHashtag.delete({
+      where: {
+        id: hashtagId,
+      },
+    });
+  }
+
   deleteManyHashtag(lessonId: number) {
     return this.prismaService.lessonHashtag.deleteMany({
       where: {
@@ -62,8 +70,8 @@ export class LessonHashtagService {
     });
   }
 
-  deleteHashtag(hashtagId: number) {
-    return this.prismaService.lessonHashtag.delete({
+  readHashtag(hashtagId: number) {
+    return this.prismaService.lessonHashtag.findUnique({
       where: {
         id: hashtagId,
       },

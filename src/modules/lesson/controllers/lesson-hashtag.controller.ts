@@ -169,7 +169,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 조회' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  @ApiOkResponse({ type: [LessonHashtagEntity] })
   @CustomApiResponse(
     HttpStatus.NOT_FOUND,
     "(과제 번호) doesn't exist id in Lesson",
@@ -184,5 +184,28 @@ export class LessonHashtagController {
     const hashtags = await this.lessonHashtagService.readManyHashtag(param.id);
 
     return { hashtags };
+  }
+
+  @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
+  @ApiOkResponse({ type: LessonHashtagEntity })
+  @CustomApiResponse(HttpStatus.FORBIDDEN, 'No Lesson found')
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
+  )
+  @BearerAuth(OptionalJwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
+  @Get(':hashtagId')
+  async readHashtag(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: LessonHashtagParamDto,
+  ) {
+    await this.prismaHelper.findOneOrFail(ModelName.LessonHashtag, {
+      id: param.hashtagId,
+      lessonId: param.id,
+    });
+
+    return await this.lessonHashtagService.readHashtag(param.hashtagId);
   }
 }
