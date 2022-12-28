@@ -1,7 +1,5 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { prisma } from '@prisma/client';
-import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
@@ -175,7 +173,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(reuturnValue).toStrictEqual(updatedHashtag);
+      expect(reuturnValue).toStrictEqual({ hashtag: updatedHashtag });
     });
   });
 
@@ -207,7 +205,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(deletedHashtag);
+      expect(returnValue).toStrictEqual({ hashtag: deletedHashtag });
     });
   });
 
@@ -258,7 +256,7 @@ describe('LessonHashtagController', () => {
     it('success - check Input & Output', async () => {
       const returnValue = await lessonHashtagController.readHashtag(param);
 
-      expect(returnValue).toStrictEqual(hashtag);
+      expect(returnValue).toStrictEqual({ hashtag });
     });
   });
 });
