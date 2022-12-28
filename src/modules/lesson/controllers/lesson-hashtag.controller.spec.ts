@@ -235,4 +235,30 @@ describe('LessonHashtagController', () => {
       expect(returnValue).toStrictEqual({ hashtags });
     });
   });
+
+  describe('readHashtag', () => {
+    let param: LessonHashtagParamDto;
+    let hashtag: LessonHashtagEntity;
+
+    beforeEach(async () => {
+      param = new LessonHashtagParamDto();
+      hashtag = new LessonHashtagEntity();
+
+      lessonHashtagService.readHashtag.mockReturnValue(hashtag);
+    });
+
+    it('success - check method called', async () => {
+      await lessonHashtagController.readHashtag(param);
+
+      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(lessonHashtagService.readHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.readHashtag).toBeCalledWith(param.hashtagId);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.readHashtag(param);
+
+      expect(returnValue).toStrictEqual(hashtag);
+    });
+  });
 });
