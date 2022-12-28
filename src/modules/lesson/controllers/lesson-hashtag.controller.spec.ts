@@ -73,21 +73,22 @@ describe('LessonHashtagController', () => {
         createHashtagDto,
         memberId,
       );
+
       expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.createHashtag).toBeCalledWith(
-        createHashtagDto.hashtags,
-        param.id,
-      );
     });
 
-    it('success - check routing', async () => {
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonHashtagController.createHashtag(
         param,
         createHashtagDto,
         memberId,
       );
 
+      expect(lessonHashtagService.createHashtag).toBeCalledWith(
+        createHashtagDto.hashtags,
+        param.id,
+      );
       expect(returnValue.hashtags).toStrictEqual(createdHashtags);
     });
   });
@@ -125,19 +126,19 @@ describe('LessonHashtagController', () => {
       expect(mockLessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(
         1,
       );
-      expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
-        updateHashtagDto.hashtags,
-        param.id,
-      );
     });
 
-    it('success - check routing', async () => {
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonHashtagController.updateManyHashtag(
         param,
         updateHashtagDto,
         memberId,
       );
 
+      expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
+        updateHashtagDto.hashtags,
+        param.id,
+      );
       expect(returnValue.hashtags).toStrictEqual(updatedHashtags);
     });
   });
@@ -170,19 +171,19 @@ describe('LessonHashtagController', () => {
 
       expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
-        param.hashtagId,
-        updateHashtagDto.hashtag,
-      );
     });
 
-    it('success - check routing', async () => {
+    it('success - check Input & Output', async () => {
       const reuturnValue = await lessonHashtagController.updateHashtag(
         param,
         updateHashtagDto,
         memberId,
       );
 
+      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
+        param.hashtagId,
+        updateHashtagDto.hashtag,
+      );
       expect(reuturnValue).toStrictEqual(updatedHashtag);
     });
   });
