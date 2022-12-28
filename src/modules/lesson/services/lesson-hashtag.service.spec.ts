@@ -151,4 +151,54 @@ describe('LessonHashtagService', () => {
       expect(returnValue).toStrictEqual(updatedHashtag);
     });
   });
+
+  describe('deleteHashtag', () => {
+    let hashtagId: number;
+    let deletedHashtag: LessonHashtagEntity;
+
+    beforeEach(() => {
+      hashtagId = faker.datatype.number();
+      deletedHashtag = new LessonHashtagEntity();
+
+      prismaService.lessonHashtag.delete.mockReturnValue(deletedHashtag);
+    });
+
+    it('success - check method called', () => {
+      lessonHashtagService.deleteHashtag(hashtagId);
+
+      expect(prismaService.lessonHashtag.delete).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonHashtagService.deleteHashtag(hashtagId);
+
+      expect(returnValue).toStrictEqual(deletedHashtag);
+    });
+  });
+
+  describe('deleteManyHashtag', () => {
+    let lessonId: number;
+    let deletedManyHashtag: { count: number };
+
+    beforeEach(() => {
+      lessonId = faker.datatype.number();
+      deletedManyHashtag = { count: faker.datatype.number() };
+
+      prismaService.lessonHashtag.deleteMany.mockReturnValue(
+        deletedManyHashtag,
+      );
+    });
+
+    it('success - check method called', () => {
+      lessonHashtagService.deleteManyHashtag(lessonId);
+
+      expect(prismaService.lessonHashtag.deleteMany).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonHashtagService.deleteManyHashtag(lessonId);
+
+      expect(returnValue).toStrictEqual(deletedManyHashtag);
+    });
+  });
 });
