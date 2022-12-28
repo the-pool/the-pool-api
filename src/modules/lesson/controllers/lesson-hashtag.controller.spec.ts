@@ -213,13 +213,11 @@ describe('LessonHashtagController', () => {
 
   describe('readManyHashtag', () => {
     let param: IdRequestParamDto;
-    let hashtags: [{ id: number; name: string }];
+    let hashtags: LessonHashtagEntity[];
 
     beforeEach(async () => {
       param = new IdRequestParamDto();
-      hashtags = [
-        { id: faker.datatype.number(), name: faker.datatype.string() },
-      ];
+      hashtags = [new LessonHashtagEntity()];
 
       lessonHashtagService.readManyHashtag.mockReturnValue(hashtags);
     });
