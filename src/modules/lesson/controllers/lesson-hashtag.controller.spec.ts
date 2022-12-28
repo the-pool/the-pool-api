@@ -59,10 +59,7 @@ describe('LessonHashtagController', () => {
     beforeEach(async () => {
       memberId = faker.datatype.number();
       createHashtagDto = new CreateManyHashtagDto();
-      param = {
-        id: faker.datatype.number(),
-        model: ModelName.Lesson,
-      };
+      param = new IdRequestParamDto();
       createdHashtags = [{ name: faker.datatype.string }];
 
       lessonHashtagService.createHashtag.mockReturnValue(createdHashtags);
@@ -103,10 +100,7 @@ describe('LessonHashtagController', () => {
     beforeEach(async () => {
       memberId = faker.datatype.number();
       updateHashtagDto = new UpdateManyHashtagDto();
-      param = {
-        id: faker.datatype.number(),
-        model: ModelName.Lesson,
-      };
+      param = new IdRequestParamDto();
       updatedHashtags = [{ name: faker.datatype.string }];
 
       lessonHashtagService.updateManyHashtag.mockReturnValue(updatedHashtags);
@@ -153,11 +147,7 @@ describe('LessonHashtagController', () => {
     beforeEach(async () => {
       memberId = faker.datatype.number();
       updateHashtagDto = new UpdateHashtagDto();
-      param = {
-        id: faker.datatype.number(),
-        model: ModelName.Lesson,
-        hashtagId: faker.datatype.number(),
-      };
+      param = new LessonHashtagParamDto();
       updatedHashtag = new HashtagEntity();
 
       lessonHashtagService.updateHashtag.mockReturnValue(updatedHashtag);
@@ -196,11 +186,7 @@ describe('LessonHashtagController', () => {
 
     beforeEach(async () => {
       memberId = faker.datatype.number();
-      param = {
-        id: faker.datatype.number(),
-        model: ModelName.Lesson,
-        hashtagId: faker.datatype.number(),
-      };
+      param = new LessonHashtagParamDto();
       deletedHashtag = new LessonHashtagEntity();
       lessonHashtagService.deleteHashtag.mockReturnValue(deletedHashtag);
     });
@@ -222,6 +208,33 @@ describe('LessonHashtagController', () => {
       );
 
       expect(returnValue).toStrictEqual(deletedHashtag);
+    });
+  });
+
+  describe('readManyHashtag', () => {
+    let param: IdRequestParamDto;
+    let hashtags: [{ id: number; name: string }];
+
+    beforeEach(async () => {
+      param = new IdRequestParamDto();
+      hashtags = [
+        { id: faker.datatype.number(), name: faker.datatype.string() },
+      ];
+
+      lessonHashtagService.readManyHashtag.mockReturnValue(hashtags);
+    });
+
+    it('success - check method called', async () => {
+      await lessonHashtagController.readManyHashtag(param);
+
+      expect(lessonHashtagService.readManyHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.readManyHashtag).toBeCalledWith(param.id);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.readManyHashtag(param);
+
+      expect(returnValue).toStrictEqual({ hashtags });
     });
   });
 });

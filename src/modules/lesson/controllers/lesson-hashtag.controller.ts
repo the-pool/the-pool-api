@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpStatus,
   Param,
   Post,
@@ -15,6 +16,7 @@ import {
   ApiTags,
   PickType,
 } from '@nestjs/swagger';
+import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { CustomApiResponse } from '@src/decorators/custom-api-response.decorator';
@@ -23,6 +25,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
@@ -163,5 +166,23 @@ export class LessonHashtagController {
     });
 
     return await this.lessonHashtagService.deleteHashtag(param.hashtagId);
+  }
+
+  @ApiOperation({ summary: '과제의 해시태그 조회' })
+  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  @CustomApiResponse(
+    HttpStatus.NOT_FOUND,
+    "(과제 번호) doesn't exist id in Lesson",
+  )
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get()
+  async readManyHashtag(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+  ) {
+    const hashtags = await this.lessonHashtagService.readManyHashtag(param.id);
+
+    return { hashtags };
   }
 }

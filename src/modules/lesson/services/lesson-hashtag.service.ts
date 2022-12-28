@@ -69,4 +69,12 @@ export class LessonHashtagService {
       },
     });
   }
+
+  readManyHashtag(lessonId: number) {
+    return this.prismaService.lessonHashtag.findMany({
+      where: {
+        lessonId,
+      },
+    });
+  }
 }
