@@ -11,6 +11,7 @@ import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hash
 import { HashtagEntity } from '@src/modules/hashtag/entities/hashtag.entity';
 import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import { LessonHashtagController } from './lesson-hashtag.controller';
 
@@ -76,6 +77,10 @@ describe('LessonHashtagController', () => {
 
       expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.createHashtag).toBeCalledWith(
+        createHashtagDto.hashtags,
+        param.id,
+      );
     });
 
     it('success - check Input & Output', async () => {
@@ -85,10 +90,6 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(lessonHashtagService.createHashtag).toBeCalledWith(
-        createHashtagDto.hashtags,
-        param.id,
-      );
       expect(returnValue.hashtags).toStrictEqual(createdHashtags);
     });
   });
@@ -126,6 +127,10 @@ describe('LessonHashtagController', () => {
       expect(mockLessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(
         1,
       );
+      expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
+        updateHashtagDto.hashtags,
+        param.id,
+      );
     });
 
     it('success - check Input & Output', async () => {
@@ -135,10 +140,6 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
-        updateHashtagDto.hashtags,
-        param.id,
-      );
       expect(returnValue.hashtags).toStrictEqual(updatedHashtags);
     });
   });
@@ -171,6 +172,10 @@ describe('LessonHashtagController', () => {
 
       expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
+        param.hashtagId,
+        updateHashtagDto.hashtag,
+      );
     });
 
     it('success - check Input & Output', async () => {
@@ -180,11 +185,43 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
-        param.hashtagId,
-        updateHashtagDto.hashtag,
-      );
       expect(reuturnValue).toStrictEqual(updatedHashtag);
+    });
+  });
+
+  describe('deleteHashtag', () => {
+    let param: LessonHashtagParamDto;
+    let memberId: number;
+    let deletedHashtag: LessonHashtagEntity;
+
+    beforeEach(async () => {
+      memberId = faker.datatype.number();
+      param = {
+        id: faker.datatype.number(),
+        model: ModelName.Lesson,
+        hashtagId: faker.datatype.number(),
+      };
+      deletedHashtag = new LessonHashtagEntity();
+      lessonHashtagService.deleteHashtag.mockReturnValue(deletedHashtag);
+    });
+
+    it('success - check method called', async () => {
+      await lessonHashtagController.deleteHashtag(param, memberId);
+
+      expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
+      expect(lessonHashtagService.deleteHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.deleteHashtag).toBeCalledWith(
+        param.hashtagId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.deleteHashtag(
+        param,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual(deletedHashtag);
     });
   });
 });
