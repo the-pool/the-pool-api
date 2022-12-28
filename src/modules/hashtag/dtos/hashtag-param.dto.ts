@@ -5,7 +5,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { Type } from 'class-transformer';
 import { Min } from 'class-validator';
 
-export class DeleteLessonHashtagParamDto extends IdRequestParamDto {
+export class LessonHashtagParamDto extends IdRequestParamDto {
   @ApiProperty({
     description: 'hashtag 고유 ID',
     type: 'number',

@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiTags,
   PickType,
@@ -24,9 +25,11 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { CreateHashtagDto } from '@src/modules/hashtag/dtos/create-hashtag.dto';
-import { DeleteLessonHashtagParamDto } from '@src/modules/hashtag/dtos/delete-hashtag.dto';
+import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
+import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
+import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 
@@ -37,7 +40,6 @@ export class LessonHashtagController {
     private readonly lessonHashtagService: LessonHashtagService,
     private readonly prismaHelper: PrismaHelper,
   ) {}
-
   @ApiOperation({ summary: '과제 해시태그 생성' })
   @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
@@ -48,7 +50,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { hashtags }: CreateHashtagDto,
+    @Body() { hashtags }: CreateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ): Promise<Pick<LessonEntity, 'hashtags'>> {
     await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
@@ -73,7 +75,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { hashtags }: UpdateHashtagDto,
+    @Body() { hashtags }: UpdateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
     await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
@@ -89,16 +91,17 @@ export class LessonHashtagController {
     return { hashtags: updatedHashtags };
   }
 
-  @ApiOperation({ summary: '과제 해시태그 대량 삭제' })
-  @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  @ApiOperation({ summary: '과제 해시태그 단일 수정' })
+  @ApiOkResponse({ type: LessonHashtagEntity })
   @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
   @BearerAuth(JwtAuthGuard)
   @UseFilters(NotFoundErrorFilter)
-  @Delete(':hashtagId')
-  async deleteHashtag(
+  @Put(':hashtagId')
+  async updateHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
-    param: DeleteLessonHashtagParamDto,
+    param: LessonHashtagParamDto,
+    @Body() { hashtag }: UpdateHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
     // Lesson 주인이 memberId가 맞는지
@@ -113,10 +116,36 @@ export class LessonHashtagController {
       lessonId: param.id,
     });
 
-    const deletedHashtags = await this.lessonHashtagService.deleteHashtag(
+    return await this.lessonHashtagService.updateHashtag(
       param.hashtagId,
+      hashtag,
     );
+  }
 
-    return { hashtags: deletedHashtags };
+  @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
+  @ApiOkResponse({ type: LessonHashtagEntity })
+  @CustomApiResponse(HttpStatus.NOT_FOUND, 'No Lesson found')
+  @BearerAuth(JwtAuthGuard)
+  @UseFilters(NotFoundErrorFilter)
+  @Delete(':hashtagId')
+  async deleteHashtag(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: LessonHashtagParamDto,
+    @UserLogin('id') memberId: number,
+  ) {
+    // Lesson 주인이 memberId가 맞는지
+    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+      id: param.id,
+      memberId,
+    });
+
+    // hashtag의 과제 번호가 LessonId가 맞는지
+    await this.prismaHelper.findOneOrFail(ModelName.LessonHashtag, {
+      id: param.hashtagId,
+      lessonId: param.id,
+    });
+
+    return await this.lessonHashtagService.deleteHashtag(param.hashtagId);
   }
 }

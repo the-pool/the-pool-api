@@ -15,7 +15,7 @@ export class LessonHashtagService {
   async createHashtag(
     hashtags: string[],
     lessonId: number,
-  ): Promise<{ name: string }[]> {
+  ): Promise<{ id: number; name: string }[]> {
     const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
 
     await this.prismaService.lessonHashtag.createMany({
@@ -32,13 +32,21 @@ export class LessonHashtagService {
         where: {
           lessonId,
         },
-        select: { tag: true },
+        select: { id: true, tag: true },
       });
 
     return createdLessonHashtags.map((item) => {
       return {
+        id: item.id,
         name: item.tag,
       };
+    });
+  }
+
+  updateHashtag(hashtagId: number, hashtag: string) {
+    return this.prismaService.lessonHashtag.update({
+      where: { id: hashtagId },
+      data: { tag: hashtag },
     });
   }
 
