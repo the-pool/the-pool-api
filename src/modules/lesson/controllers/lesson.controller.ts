@@ -34,6 +34,8 @@ import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @ApiTags('과제')
 @Controller()
@@ -44,18 +46,29 @@ export class LessonController {
   ) {}
 
   @ApiOperation({ summary: '과제 생성' })
-  @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtags']) })
   @BearerAuth(JwtAuthGuard)
+  @ApiSuccessResponse(HttpStatus.CREATED, {
+    filed: 'lesson',
+    type: OmitType(LessonEntity, ['hashtags']),
+  })
   @Post()
-  createLesson(
+  async createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    return this.lessonService.createLesson(createLessonDto, memberId);
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtags'> }> {
+    const lesson = await this.lessonService.createLesson(
+      createLessonDto,
+      memberId,
+    );
+
+    return { lesson };
   }
 
   @ApiOperation({ summary: '과제 수정' })
-  @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
+  @ApiSuccessResponse(HttpStatus.OK, {
+    filed: 'lesson',
+    type: OmitType(LessonEntity, ['hashtags']),
+  })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -66,17 +79,25 @@ export class LessonController {
     param: IdRequestParamDto,
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
     await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
-    return this.lessonService.updateLesson(updateLessonDto, param.id);
+    const updatedLesson = await this.lessonService.updateLesson(
+      updateLessonDto,
+      param.id,
+    );
+
+    return { lesson: updatedLesson };
   }
 
   @ApiOperation({ summary: '과제 삭제' })
-  @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
+  @ApiSuccessResponse(HttpStatus.OK, {
+    filed: 'lesson',
+    type: OmitType(LessonEntity, ['hashtags']),
+  })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -86,12 +107,13 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
     await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
-    return this.lessonService.deleteLesson(param.id);
+    const deletedLesson = await this.lessonService.deleteLesson(param.id);
+    return { lesson: deletedLesson };
   }
 
   @ApiOperation({ summary: '과제 상세 조회' })

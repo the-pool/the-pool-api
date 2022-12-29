@@ -42,7 +42,7 @@ export class LessonHashtagController {
   ) {}
 
   @ApiOperation({ summary: '과제 해시태그 생성' })
-  @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -67,7 +67,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 대량 수정' })
-  @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -93,7 +93,10 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiSuccessResponse(HttpStatus.OK, {
+    filed: 'hashtag',
+    type: LessonHashtagEntity,
+  })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -126,7 +129,10 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
-  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiSuccessResponse(HttpStatus.OK, {
+    filed: 'hashtag',
+    type: LessonHashtagEntity,
+  })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -172,7 +178,10 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiSuccessResponse(HttpStatus.OK, {
+    filed: 'hashtag',
+    type: LessonHashtagEntity,
+  })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)

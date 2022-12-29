@@ -19,7 +19,10 @@ export class LessonService {
   /**
    * 과제 생성 메서드
    */
-  createLesson(lesson: CreateLessonDto, memberId: number): Promise<Lesson> {
+  createLesson(
+    lesson: CreateLessonDto,
+    memberId: number,
+  ): Promise<Omit<LessonEntity, 'hashtag'>> {
     return this.prismaService.lesson.create({
       data: {
         ...lesson,
@@ -31,11 +34,11 @@ export class LessonService {
   /**
    * 과제 수정 메서드
    */
-  async updateLesson(
+  updateLesson(
     lesson: UpdateLessonDto,
     lessonId: number,
   ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    return await this.prismaService.lesson.update({
+    return this.prismaService.lesson.update({
       where: { id: lessonId },
       data: { ...lesson },
     });
@@ -44,8 +47,8 @@ export class LessonService {
   /**
    * 과제 삭제 메서드
    */
-  async deleteLesson(lessonId: number) {
-    return await this.prismaService.lesson.delete({
+  deleteLesson(lessonId: number) {
+    return this.prismaService.lesson.delete({
       where: { id: lessonId },
     });
   }
