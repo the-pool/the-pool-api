@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Lesson } from '@prisma/client';
-import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonEntity } from '../entities/lesson.entity';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
@@ -10,15 +8,11 @@ import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { ModelName } from '@src/constants/enum';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly prismaHelper: PrismaHelper,
-    private readonly dataStructureHelper: DataStructureHelper,
     private readonly lessonRepository: LessonRepository,
   ) {}
 
@@ -39,33 +33,20 @@ export class LessonService {
    */
   async updateLesson(
     lesson: UpdateLessonDto,
-    memberId: number,
     lessonId: number,
   ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
-      id: lessonId,
-      memberId,
-    });
-
-    const updatedLesson = await this.prismaService.lesson.update({
-      where: { id: lessonId, memberId },
+    return await this.prismaService.lesson.update({
+      where: { id: lessonId },
       data: { ...lesson },
     });
-
-    return updatedLesson;
   }
 
   /**
    * 과제 삭제 메서드
    */
-  async deleteLesson(memberId: number, lessonId: number) {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
-      id: lessonId,
-      memberId,
-    });
-
+  async deleteLesson(lessonId: number) {
     return await this.prismaService.lesson.delete({
-      where: { id: lessonId, memberId },
+      where: { id: lessonId },
     });
   }
 

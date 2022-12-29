@@ -10,28 +10,21 @@ import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 import { LessonEntity } from '../entities/lesson.entity';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
-  let prismaHelper;
   let lessonRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LessonService,
-        DataStructureHelper,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
-        {
-          provide: PrismaHelper,
-          useValue: mockPrismaHelper,
-        },
+
         {
           provide: LessonRepository,
           useValue: mockLessonRepository,
@@ -42,6 +35,10 @@ describe('LessonService', () => {
     lessonService = module.get<LessonService>(LessonService);
     lessonRepository = mockLessonRepository;
     prismaService = mockPrismaService;
+  });
+
+  afterEach(async () => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -90,7 +87,7 @@ describe('LessonService', () => {
     let lesson;
     let memberId: number;
     let lessonId: number;
-    let mockUpdatedLesson;
+    let updatedLesson;
 
     beforeEach(async () => {
       lesson = {
@@ -100,35 +97,42 @@ describe('LessonService', () => {
       };
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-      mockUpdatedLesson = JSON.parse(faker.datatype.json());
-    });
+      updatedLesson = JSON.parse(faker.datatype.json());
 
-    afterEach(async () => {
-      jest.clearAllMocks();
-    });
-
-    it('success', async () => {
-      prismaService.lesson.update.mockReturnValue(mockUpdatedLesson);
-
-      const returnValue = await lessonService.updateLesson(
-        lesson,
-        memberId,
-        lessonId,
-      );
-
-      expect(returnValue).toStrictEqual(mockUpdatedLesson);
-    });
-
-    afterEach(async () => {
-      jest.clearAllMocks();
+      prismaService.lesson.update.mockReturnValue(updatedLesson);
     });
 
     it('success', async () => {
-      const returnValue = await lessonService.deleteLesson(memberId, lessonId);
+      const returnValue = await lessonService.updateLesson(lesson, lessonId);
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(returnValue).toStrictEqual(updatedLesson);
+    });
+  });
+
+  describe('deleteLesson', () => {
+    let lesson;
+    let memberId: number;
+    let lessonId: number;
+    let deletedLesson;
+
+    beforeEach(async () => {
+      lesson = {
+        levelId: faker.datatype.number(),
+        description: faker.lorem.text(),
+        title: faker.lorem.words(),
+      };
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
+      deletedLesson = JSON.parse(faker.datatype.json());
+
+      prismaService.lesson.delete.mockReturnValue(deletedLesson);
+    });
+
+    it('success', async () => {
+      const returnValue = await lessonService.deleteLesson(lessonId);
+
       expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
-      expect(returnValue).toBeInstanceOf(LessonEntity);
+      expect(returnValue).toStrictEqual(deletedLesson);
     });
   });
 
@@ -137,12 +141,8 @@ describe('LessonService', () => {
     let lessonId: number;
 
     beforeEach(async () => {
-      (memberId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
-    });
-
-    afterEach(async () => {
-      jest.clearAllMocks();
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
     });
 
     it('success', async () => {

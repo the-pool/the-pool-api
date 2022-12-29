@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { mockLessonService } from '../../../../test/mock/mock-services';
@@ -13,11 +12,13 @@ import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
   let lessonService;
-
+  let prismaHelper;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LessonController],
@@ -26,11 +27,20 @@ describe('LessonController', () => {
           provide: LessonService,
           useValue: mockLessonService,
         },
+        {
+          provide: PrismaHelper,
+          useValue: mockPrismaHelper,
+        },
       ],
     }).compile();
 
     lessonController = module.get<LessonController>(LessonController);
     lessonService = mockLessonService;
+    prismaHelper = mockPrismaHelper;
+  });
+
+  afterEach(async () => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -50,8 +60,6 @@ describe('LessonController', () => {
         thumbnail: faker.image.imageUrl(),
         categoryId: faker.datatype.number(),
       };
-
-      jest.spyOn(lessonService, 'createLesson');
     });
 
     afterEach(() => {
@@ -101,8 +109,6 @@ describe('LessonController', () => {
         id: faker.datatype.number(),
         model: 'lesson',
       };
-
-      jest.spyOn(lessonService, 'updateLesson');
     });
 
     afterEach(() => {
@@ -118,6 +124,7 @@ describe('LessonController', () => {
         memberId,
       );
 
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
       expect(returnValue).toBeInstanceOf(LessonEntity);
     });
@@ -134,13 +141,14 @@ describe('LessonController', () => {
         LessonEntity,
         JSON.parse(faker.datatype.json()),
       );
-      mockLessonService.deleteLesson.mockReturnValue(mockLesson);
+      lessonService.deleteLesson.mockReturnValue(mockLesson);
     });
 
     it('success', async () => {
       const result = await lessonController.deleteLesson(param, memberId);
 
-      expect(mockLessonService.deleteLesson).toBeCalledWith(memberId, param.id);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(lessonService.deleteLesson).toBeCalledWith(param.id);
       expect(result).toBeInstanceOf(LessonEntity);
     });
   });
@@ -187,7 +195,7 @@ describe('LessonController', () => {
         JSON.parse(faker.datatype.json()),
       );
 
-      mockLessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
+      lessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
     });
 
     it('success - routing, plain object to class object converting', async () => {
@@ -196,8 +204,8 @@ describe('LessonController', () => {
         query,
         member,
       );
-      expect(mockLessonService.readSimilarLesson).toHaveBeenCalledTimes(1);
-      expect(mockLessonService.readSimilarLesson).toBeCalledWith(
+      expect(lessonService.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(lessonService.readSimilarLesson).toBeCalledWith(
         param.id,
         member.id,
         query,
@@ -212,7 +220,7 @@ describe('LessonController', () => {
           isBookmark: faker.datatype.number(),
         },
       ]);
-      mockLessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
+      lessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
 
       const returnValue = await lessonController.readSimilarLesson(
         param,

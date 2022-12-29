@@ -26,6 +26,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
@@ -38,7 +39,10 @@ import { LessonService } from '../services/lesson.service';
 @ApiTags('과제')
 @Controller()
 export class LessonController {
-  constructor(private readonly lessonService: LessonService) {}
+  constructor(
+    private readonly lessonService: LessonService,
+    private readonly prismaHelper: PrismaHelper,
+  ) {}
 
   @ApiOperation({ summary: '과제 생성' })
   @ApiCreatedResponse({ type: OmitType(LessonEntity, ['hashtags']) })
@@ -60,14 +64,19 @@ export class LessonController {
   )
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
-  updateLesson(
+  async updateLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    return this.lessonService.updateLesson(updateLessonDto, memberId, param.id);
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+      id: param.id,
+      memberId,
+    });
+
+    return this.lessonService.updateLesson(updateLessonDto, param.id);
   }
 
   @ApiOperation({ summary: '과제 삭제' })
@@ -79,13 +88,17 @@ export class LessonController {
   )
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
-  deleteLesson(
+  async deleteLesson(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    return this.lessonService.deleteLesson(memberId, param.id);
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+      id: param.id,
+      memberId,
+    });
+    return this.lessonService.deleteLesson(param.id);
   }
 
   @ApiOperation({ summary: '과제 상세 조회' })
