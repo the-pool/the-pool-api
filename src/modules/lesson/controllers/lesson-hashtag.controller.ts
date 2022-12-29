@@ -94,7 +94,7 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    filed: 'hashtag',
+    field: 'hashtag',
     type: LessonHashtagEntity,
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
@@ -130,7 +130,7 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    filed: 'hashtag',
+    field: 'hashtag',
     type: LessonHashtagEntity,
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
@@ -179,7 +179,7 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    filed: 'hashtag',
+    field: 'hashtag',
     type: LessonHashtagEntity,
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')

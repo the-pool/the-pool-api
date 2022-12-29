@@ -8,7 +8,7 @@ import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
  */
 export const ApiSuccessResponse = (
   status: Exclude<HttpStatus, ErrorHttpStatusCode>,
-  props: { filed: string; type: Type } | { filed: string; type: Type }[],
+  props: { field: string; type: Type } | { field: string; type: Type }[],
 ) => {
   if (!Array.isArray(props)) {
     props = [props];
@@ -17,10 +17,10 @@ export const ApiSuccessResponse = (
   const extraModels: Type[] = [];
 
   const properties = props.reduce((acc, cur) => {
-    const { filed, type } = cur;
+    const { field, type } = cur;
 
     extraModels.push(type);
-    acc[filed] = { $ref: getSchemaPath(type) };
+    acc[field] = { $ref: getSchemaPath(type) };
 
     return acc;
   }, {});

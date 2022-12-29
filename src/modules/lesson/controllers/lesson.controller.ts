@@ -48,7 +48,7 @@ export class LessonController {
   @ApiOperation({ summary: '과제 생성' })
   @BearerAuth(JwtAuthGuard)
   @ApiSuccessResponse(HttpStatus.CREATED, {
-    filed: 'lesson',
+    field: 'lesson',
     type: OmitType(LessonEntity, ['hashtags']),
   })
   @Post()
@@ -66,7 +66,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    filed: 'lesson',
+    field: 'lesson',
     type: OmitType(LessonEntity, ['hashtags']),
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
@@ -95,7 +95,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 삭제' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    filed: 'lesson',
+    field: 'lesson',
     type: OmitType(LessonEntity, ['hashtags']),
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
