@@ -17,8 +17,8 @@ import {
 } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { CustomApiSuccessResponse } from '@src/decorators/custom-api-success-response.decorator';
-import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -43,8 +43,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 생성' })
   @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createHashtag(
@@ -68,8 +68,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 대량 수정' })
   @ApiCreatedResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Put()
   async updateManyHashtag(
@@ -93,9 +93,9 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
-  @CustomApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Put(':hashtagId')
   async updateHashtag(
@@ -126,9 +126,9 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
-  @CustomApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Delete(':hashtagId')
   async deleteHashtag(
@@ -158,7 +158,7 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제의 해시태그 조회' })
   @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyHashtag(
@@ -172,9 +172,9 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
-  @CustomApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiSuccessResponse(HttpStatus.OK, 'hashtag', LessonHashtagEntity)
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':hashtagId')
   async readHashtag(

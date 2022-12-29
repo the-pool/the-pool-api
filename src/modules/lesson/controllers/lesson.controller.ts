@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  UseFilters,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -20,7 +19,7 @@ import {
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-response.decorator';
+import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -57,8 +56,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
   async updateLesson(
@@ -78,8 +77,8 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 삭제' })
   @ApiOkResponse({ type: OmitType(LessonEntity, ['hashtags']) })
-  @CustomApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
   async deleteLesson(
@@ -97,7 +96,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiOkResponse({ type: ReadOneLessonDto })
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   readOneLesson(
@@ -111,7 +110,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @CustomApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(

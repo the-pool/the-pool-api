@@ -2,7 +2,7 @@ import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ErrorHttpStatusCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { ApiResponse } from '@nestjs/swagger';
 
-export const CustomApiFailureResponse = (
+export const ApiFailureResponse = (
   status: ErrorHttpStatusCode,
   errorMessage: string | string[],
 ) => {
