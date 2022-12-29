@@ -24,7 +24,6 @@ import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-res
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { plainToInstance } from 'class-transformer';
@@ -60,7 +59,6 @@ export class LessonController {
     "(과제 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Put(':id')
   updateLesson(
     @Param()
@@ -80,7 +78,6 @@ export class LessonController {
     "(과제 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Delete(':id')
   deleteLesson(
     @Param()

@@ -23,7 +23,6 @@ import { CustomApiFailureResponse } from '@src/decorators/custom-api-failure-res
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { NotFoundErrorFilter } from '@src/filters/not-found-error.filter';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
@@ -51,7 +50,6 @@ export class LessonHashtagController {
     "(과제 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Post()
   async createHashtag(
     @Param()
@@ -60,7 +58,7 @@ export class LessonHashtagController {
     @Body() { hashtags }: CreateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -80,7 +78,6 @@ export class LessonHashtagController {
     "(과제 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Put()
   async updateManyHashtag(
     @Param()
@@ -89,7 +86,7 @@ export class LessonHashtagController {
     @Body() { hashtags }: UpdateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -110,7 +107,6 @@ export class LessonHashtagController {
     "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Put(':hashtagId')
   async updateHashtag(
     @Param()
@@ -120,13 +116,13 @@ export class LessonHashtagController {
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     // Lesson 주인이 memberId가 맞는지
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
     // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaHelper.findOneOrFail(ModelName.LessonHashtag, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });
@@ -147,7 +143,6 @@ export class LessonHashtagController {
     "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(JwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Delete(':hashtagId')
   async deleteHashtag(
     @Param()
@@ -156,13 +151,13 @@ export class LessonHashtagController {
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     // Lesson 주인이 memberId가 맞는지
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
     // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaHelper.findOneOrFail(ModelName.LessonHashtag, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });
@@ -200,14 +195,13 @@ export class LessonHashtagController {
     "(과제 번호 or 해시태그 번호) doesn't exist id in Lesson",
   )
   @BearerAuth(OptionalJwtAuthGuard)
-  @UseFilters(NotFoundErrorFilter)
   @Get(':hashtagId')
   async readHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
   ): Promise<{ hashtag: LessonHashtagEntity | null }> {
-    await this.prismaHelper.findOneOrFail(ModelName.LessonHashtag, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });

@@ -20,7 +20,7 @@ export class NotFoundErrorFilter
   catch(exception: Error, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const status = HttpStatus.FORBIDDEN;
+    const status = HttpStatus.NOT_FOUND;
     const responseJson: ResponseJson = this.buildResponseJson(status);
 
     responseJson.errors = [this.preProcessByClientError(exception.message)];

@@ -126,7 +126,7 @@ describe('LessonService', () => {
     it('success', async () => {
       const returnValue = await lessonService.deleteLesson(memberId, lessonId);
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
       expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
       expect(returnValue).toBeInstanceOf(LessonEntity);
     });

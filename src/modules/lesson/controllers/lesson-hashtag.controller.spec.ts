@@ -70,7 +70,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledWith(
         createHashtagDto.hashtags,
@@ -115,7 +115,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
       expect(mockLessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(
         1,
       );
@@ -158,7 +158,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.updateHashtag).toBeCalledWith(
         param.hashtagId,
@@ -192,7 +192,7 @@ describe('LessonHashtagController', () => {
     it('success - check method called', async () => {
       await lessonHashtagController.deleteHashtag(param, memberId);
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(2);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.deleteHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.deleteHashtag).toBeCalledWith(
         param.hashtagId,
@@ -248,7 +248,7 @@ describe('LessonHashtagController', () => {
     it('success - check method called', async () => {
       await lessonHashtagController.readHashtag(param);
 
-      expect(prismaHelper.findOneOrFail).toBeCalledTimes(1);
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.readHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.readHashtag).toBeCalledWith(param.hashtagId);
     });

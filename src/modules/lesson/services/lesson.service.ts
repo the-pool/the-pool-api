@@ -42,7 +42,7 @@ export class LessonService {
     memberId: number,
     lessonId: number,
   ): Promise<Omit<LessonEntity, 'hashtag'>> {
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: lessonId,
       memberId,
     });
@@ -59,7 +59,7 @@ export class LessonService {
    * 과제 삭제 메서드
    */
   async deleteLesson(memberId: number, lessonId: number) {
-    await this.prismaHelper.findOneOrFail(ModelName.Lesson, {
+    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
       id: lessonId,
       memberId,
     });
