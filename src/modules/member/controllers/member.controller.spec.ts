@@ -1,5 +1,8 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import {
   mockAuthService,
   mockMemberService,
@@ -34,6 +37,76 @@ describe('MemberController', () => {
 
   it('should be defined', () => {
     expect(memberController).toBeDefined();
+  });
+
+  describe('loginOrSignUp', () => {
+    let member: MemberEntity;
+    let body: LoginOrSignUpDto;
+    let accessToken: string;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      body = new LoginOrSignUpDto();
+      accessToken = faker.datatype.string();
+      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+    });
+
+    describe('로그인 하는 경우', () => {
+      beforeEach(() => {
+        member.id = faker.datatype.number();
+      });
+
+      it('로그인 성공', async () => {
+        const result = await memberController.loginOrSignUp(member, body);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member,
+        });
+      });
+
+      afterEach(() => {
+        expect(mockMemberService.canLoginOrFail).toBeCalledTimes(1);
+        expect(mockAuthService.createAccessToken).toBeCalledTimes(1);
+      });
+    });
+
+    describe('회원가입 하는 경우', () => {
+      it('이미 존재하는 유저인 경우', async () => {
+        mockMemberService.findOne.mockReturnValue(new MemberEntity());
+
+        await expect(async () => {
+          await memberController.loginOrSignUp(member, body);
+        }).rejects.toThrowError('이미 존재하는 유저입니다.');
+        expect(mockMemberService.create).toBeCalledTimes(0);
+        expect(mockAuthService.createAccessToken).toBeCalledTimes(0);
+      });
+
+      it('회원가입 성공', async () => {
+        mockMemberService.findOne.mockReturnValue(null);
+        mockMemberService.create.mockReturnValue(member);
+
+        const result = await memberController.loginOrSignUp(member, body);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member,
+        });
+        expect(mockMemberService.create).toBeCalledTimes(1);
+        expect(mockAuthService.createAccessToken).toBeCalledTimes(1);
+      });
+
+      afterEach(() => {
+        expect(mockMemberService.findOne).toBeCalledTimes(1);
+      });
+    });
+
+    afterEach(() => {
+      expect(mockAuthService.validateExternalAccessTokenOrFail).toBeCalledTimes(
+        1,
+      );
+      jest.clearAllMocks();
+    });
   });
 
   describe('loginByOAuth', () => {
