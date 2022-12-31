@@ -28,19 +28,16 @@ export class PrismaHelper {
     modelName: PrismaModelName,
     where: any,
   ): Promise<PrismaModel> {
-    return this.findOneOrFail(modelName, where).then(
-      (resolve) => {
-        return resolve;
-      },
-      (reject) => {
-        if (reject instanceof NotFoundError) {
+    return this.findOneOrFail(modelName, where)
+      .then()
+      .catch((err) => {
+        if (err instanceof NotFoundError) {
           throw new ForbiddenException(
             `You do not have access to ${modelName}`,
           );
         }
 
-        throw new InternalServerErrorException(reject);
-      },
-    );
+        throw new InternalServerErrorException(err);
+      });
   }
 }
