@@ -5,6 +5,10 @@ import { MajorService } from '@src/modules/major/services/major.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { MockClassType } from './mock.type';
 
+export const mockJwtService = {
+  sign: jest.fn(),
+};
+
 export const mockMemberService: MockClassType<MemberService> = {
   canLoginOrFail: jest.fn(),
   findOne: jest.fn(),

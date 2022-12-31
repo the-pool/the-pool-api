@@ -71,7 +71,7 @@ export class AuthService {
 
     // 애플
     if (oAuthProvider === MemberLoginType.Apple) {
-      return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
+      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
     }
 
     // 빌드시에 타입이 깨지면 빌드가 안되지만 만약에 상황에 대비해 처리
