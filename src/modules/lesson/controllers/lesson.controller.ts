@@ -10,7 +10,6 @@ import {
   Query,
 } from '@nestjs/common';
 import {
-  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -18,8 +17,9 @@ import {
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
-import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -32,10 +32,9 @@ import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @ApiTags('과제')
 @Controller()
@@ -48,8 +47,8 @@ export class LessonController {
   @ApiOperation({ summary: '과제 생성' })
   @BearerAuth(JwtAuthGuard)
   @ApiSuccessResponse(HttpStatus.CREATED, {
-    field: 'lesson',
-    type: OmitType(LessonEntity, ['hashtags']),
+    lesson: OmitType(LessonEntity, ['hashtags']),
+    lessonhashtag: LessonHashtagEntity,
   })
   @Post()
   async createLesson(
@@ -66,8 +65,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 수정' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    field: 'lesson',
-    type: OmitType(LessonEntity, ['hashtags']),
+    lesson: OmitType(LessonEntity, ['hashtags']),
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
@@ -95,8 +93,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 삭제' })
   @ApiSuccessResponse(HttpStatus.OK, {
-    field: 'lesson',
-    type: OmitType(LessonEntity, ['hashtags']),
+    lesson: OmitType(LessonEntity, ['hashtags']),
   })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")

@@ -9,16 +9,15 @@ import {
   Put,
 } from '@nestjs/common';
 import {
-  ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
   PickType,
 } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
-import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -93,10 +92,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    field: 'hashtag',
-    type: LessonHashtagEntity,
-  })
+  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -129,10 +125,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    field: 'hashtag',
-    type: LessonHashtagEntity,
-  })
+  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(JwtAuthGuard)
@@ -178,10 +171,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    field: 'hashtag',
-    type: LessonHashtagEntity,
-  })
+  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
