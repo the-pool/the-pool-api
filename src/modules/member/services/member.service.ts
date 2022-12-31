@@ -21,6 +21,9 @@ export class MemberService {
     private readonly authService: AuthService,
   ) {}
 
+  /**
+   * member 가 로그인 할 수 있는 사용자인지 판별
+   */
   canLoginOrFail(
     account: string,
     loginType: MemberLoginType,
@@ -47,6 +50,9 @@ export class MemberService {
     }
   }
 
+  /**
+   * member 단일 조회
+   */
   findOne(
     id: number | undefined,
     account: string,
@@ -63,10 +69,11 @@ export class MemberService {
     });
   }
 
-  async create(
-    account: string,
-    loginType: MemberLoginType,
-  ): Promise<MemberEntity> {
+  /**
+   * member 생성
+   * memberReport 까지 생성해준다.
+   */
+  create(account: string, loginType: MemberLoginType): Promise<MemberEntity> {
     return this.prismaService.member.create({
       data: {
         account,
