@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockMemberService } from '../../../../test/mock/mock-services';
+import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import {
+  mockAuthService,
+  mockMemberService,
+} from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
@@ -16,6 +20,10 @@ describe('MemberController', () => {
         {
           provide: MemberService,
           useValue: mockMemberService,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
         },
       ],
     }).compile();

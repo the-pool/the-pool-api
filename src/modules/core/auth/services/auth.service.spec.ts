@@ -1,15 +1,15 @@
-import { HttpService } from '@nestjs/axios';
-import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import jwt from 'jsonwebtoken';
 import { faker } from '@faker-js/faker';
+import { HttpService } from '@nestjs/axios';
+import { UnauthorizedException } from '@nestjs/common';
+import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
+import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import jwt from 'jsonwebtoken';
+import { of } from 'rxjs';
 import { HttpConfigModule } from '../../http/http-config.module';
 import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
-import { UnauthorizedException } from '@nestjs/common';
-import { of } from 'rxjs';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import exp from 'constants';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -29,7 +29,13 @@ describe('AuthService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [JwtModule.register(config), HttpConfigModule],
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        {
+          provide: AuthHelper,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
@@ -43,7 +49,7 @@ describe('AuthService', () => {
 
   describe('createAccessToken', () => {
     let signSpy: jest.SpyInstance;
-    let testPayload: string = faker.internet.email();
+    const testPayload: string = faker.internet.email();
 
     beforeEach(async () => {
       signSpy = jest
@@ -67,7 +73,7 @@ describe('AuthService', () => {
 
   describe('validateOAuth', () => {
     let accessToken = 'validatedToken';
-    let oAuthAgency = 1;
+    const oAuthAgency = 1;
 
     it('success', async () => {
       const result: AxiosResponse = {

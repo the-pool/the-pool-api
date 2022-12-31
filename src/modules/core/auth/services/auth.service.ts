@@ -13,7 +13,7 @@ import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 @Injectable()
 export class AuthService {
   constructor(
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
     private readonly httpService: HttpService,
     private readonly authHelper: AuthHelper,
   ) {}

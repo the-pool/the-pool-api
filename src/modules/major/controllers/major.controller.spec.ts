@@ -10,7 +10,7 @@ import { MajorListDto } from '@src/modules/major/dtos/majorListDto';
 import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
-import { mockMajorService } from '../../../../test/mock/mock-service';
+import { mockMajorService } from '../../../../test/mock/mock-services';
 import { MajorService } from '../services/major.service';
 import { MajorController } from './major.controller';
 
