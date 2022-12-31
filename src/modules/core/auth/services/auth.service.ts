@@ -18,12 +18,9 @@ export class AuthService {
     private readonly authHelper: AuthHelper,
   ) {}
 
-  login(id: number) {
-    const payload = { id };
-
-    return this.jwtService.sign(payload);
-  }
-
+  /**
+   * the-pool 인증 JWT token 생성 메서드
+   */
   createAccessToken(id: number) {
     const payload = { id };
 
@@ -31,6 +28,7 @@ export class AuthService {
   }
 
   /**
+   * @deprecated 클라이언트에서 POST /api/members/social 걷어내면 제거
    * 각 인증기관에서 넘어온 access token이 맞는지 검증하는 로직
    */
   async validateOAuth(

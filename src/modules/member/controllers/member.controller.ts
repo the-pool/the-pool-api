@@ -128,6 +128,9 @@ export class MemberController {
     };
   }
 
+  /**
+   * @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거
+   */
   @Post('/social')
   @ApiOperation({ summary: '소셜 로그인' })
   @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })

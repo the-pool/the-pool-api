@@ -9,7 +9,6 @@ export const mockMemberService: MockClassType<MemberService> = {
   updateMember: jest.fn(),
 };
 export const mockAuthService: MockClassType<AuthService> = {
-  login: jest.fn(),
   createAccessToken: jest.fn(),
   validateOAuth: jest.fn(),
 };
