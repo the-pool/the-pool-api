@@ -48,7 +48,6 @@ export class LessonController {
   @BearerAuth(JwtAuthGuard)
   @ApiSuccessResponse(HttpStatus.CREATED, {
     lesson: OmitType(LessonEntity, ['hashtags']),
-    lessonhashtag: LessonHashtagEntity,
   })
   @Post()
   async createLesson(
