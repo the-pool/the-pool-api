@@ -71,23 +71,6 @@ export class LessonRepository {
   }
 
   /**
-   * 과제 해시태그 조회 query
-   */
-  async readLessonHashtag(
-    lessonId: number,
-  ): Promise<Pick<LessonEntity, 'hashtags'>> {
-    const result = await this.prismaService.$queryRaw<
-      [Pick<LessonEntity, 'hashtags'>]
-    >`
-    SELECT 
-      ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 
-    FROM "LessonHashtag" 
-    WHERE "LessonHashtag"."lessonId" = ${lessonId}`;
-
-    return result[0];
-  }
-
-  /**
    * 유사 과제 조회 query
    */
   readSimilarLesson(

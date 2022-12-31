@@ -59,13 +59,12 @@ export class LessonService {
     lessonId: number,
     memberId: number,
   ): Promise<ReadOneLessonDto> {
-    const [lesson, lessonLevelEvaluation, lessonHashtag] = await Promise.all([
+    const [lesson, lessonLevelEvaluation] = await Promise.all([
       this.lessonRepository.readOneLesson(lessonId, memberId),
       this.lessonRepository.readLessonLevelEvaluation(lessonId),
-      this.lessonRepository.readLessonHashtag(lessonId),
     ]);
 
-    return Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation });
+    return Object.assign({}, lesson, { lessonLevelEvaluation });
   }
 
   /**

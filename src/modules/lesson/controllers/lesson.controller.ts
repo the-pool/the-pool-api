@@ -32,7 +32,6 @@ import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { UpdateLessonDto } from '../dtos/update-lesson.dto';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
 
@@ -109,21 +108,26 @@ export class LessonController {
       memberId,
     });
     const deletedLesson = await this.lessonService.deleteLesson(param.id);
+
     return { lesson: deletedLesson };
   }
 
   @ApiOperation({ summary: '과제 상세 조회' })
-  @ApiOkResponse({ type: ReadOneLessonDto })
+  @ApiSuccessResponse(HttpStatus.OK, { lesson: ReadOneLessonDto })
   @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
-  readOneLesson(
+  async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member,
-  ): ReadOneLessonDto {
-    const lesson = this.lessonService.readOneLesson(param.id, member.id);
+  ): Promise<{ lesson: ReadOneLessonDto }> {
+    const readOneLesson = await this.lessonService.readOneLesson(
+      param.id,
+      member.id,
+    );
+    const lesson = plainToInstance(ReadOneLessonDto, readOneLesson);
 
-    return plainToInstance(ReadOneLessonDto, lesson);
+    return { lesson };
   }
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
@@ -138,14 +142,15 @@ export class LessonController {
     @Query() query: SimilarLessonQueryDto,
     @UserLogin() member: Member,
   ): Promise<ReadSimilarLessonDto> {
-    const lessons = await this.lessonService.readSimilarLesson(
+    const readSimilarLessons = await this.lessonService.readSimilarLesson(
       param.id,
       member.id,
       query,
     );
-
-    return plainToInstance(ReadSimilarLessonDto, {
-      lessons,
+    const lessons = plainToInstance(ReadSimilarLessonDto, {
+      lessons: readSimilarLessons,
     });
+
+    return lessons;
   }
 }
