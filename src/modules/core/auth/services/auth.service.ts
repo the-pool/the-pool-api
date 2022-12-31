@@ -1,5 +1,9 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
@@ -68,6 +72,13 @@ export class AuthService {
     }
 
     // 애플
-    return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
+    if (oAuthProvider === MemberLoginType.Apple) {
+      return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
+    }
+
+    // 빌드시에 타입이 깨지면 빌드가 안되지만 만약에 상황에 대비해 처리
+    throw new InternalServerErrorException(
+      'validateExternalAccessTokenOrFail 중 유효하지 않은 로그인 타입',
+    );
   }
 }

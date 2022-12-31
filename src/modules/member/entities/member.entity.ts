@@ -41,6 +41,7 @@ export class MemberEntity
 
   @ApiProperty({
     description: 'member 가 지정한 직업',
+    example: '백엔드 개발자',
     nullable: true,
   })
   job: string | null;

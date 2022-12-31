@@ -12,8 +12,8 @@ import {
 import { KakaoErrorCode } from '@src/modules/core/auth/constants/auth.enum';
 import { KakaoAccessTokenResponse } from '@src/modules/core/auth/type/auth.type';
 import { OAuth2Client, TokenInfo } from 'google-auth-library';
-import jwt from 'jsonwebtoken';
-import JwksRsa from 'jwks-rsa';
+import jwt, { Jwt, JwtPayload } from 'jsonwebtoken';
+import JwksRsa, { SigningKey } from 'jwks-rsa';
 import { catchError, lastValueFrom, map } from 'rxjs';
 
 @Injectable()
@@ -48,6 +48,11 @@ export class AuthHelper {
           catchError((e) => {
             const errorCode: KakaoErrorCode = e.response.data.code;
 
+            // 유효하지 않은 토큰일 경우
+            if (errorCode === KakaoErrorCode.Unauthorized) {
+              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            }
+
             // 카카오 서버 장애 경우
             if (errorCode === KakaoErrorCode.InternalServerError) {
               throw new InternalServerErrorException(
@@ -58,11 +63,6 @@ export class AuthHelper {
             // 카카오 open api 스펙에 맞지 않게 보냈을 경우
             if (errorCode === KakaoErrorCode.InvalidRequestForm) {
               throw new InternalServerErrorException(e);
-            }
-
-            // 유효하지 않은 토큰일 경우
-            if (errorCode === KakaoErrorCode.Unauthorized) {
-              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
             }
 
             // 그 외 에러
@@ -98,10 +98,10 @@ export class AuthHelper {
   async validateAppleAccessTokenOrFail(accessToken: string): Promise<string> {
     // 애플에 등록되어있는 clientId
     // 나중에 clientId 발급받으면 환경변수로
-    const appleClientIds = ['com.thepool.web'];
+    const appleClientIds: string[] = ['com.thepool.web'];
 
     // jwt 토큰 decode
-    const decodedJwt = jwt.decode(accessToken, {
+    const decodedJwt: Jwt | null = jwt.decode(accessToken, {
       complete: true,
     });
 
@@ -112,15 +112,15 @@ export class AuthHelper {
     }
 
     // kid 를 이용해 공개키 요청
-    const applePublicKey = await this.jwksClient.getSigningKey(
+    const applePublicKey: SigningKey = await this.jwksClient.getSigningKey(
       decodedJwt.header.kid,
     );
 
     // 애플 토큰을 서명할 수 있는 키
-    const appleSignKey = applePublicKey.getPublicKey();
+    const appleSignKey: string = applePublicKey.getPublicKey();
 
     // 애플 jwt 토큰 decode
-    const { payload }: any = jwt.verify(accessToken, appleSignKey, {
+    const { payload }: JwtPayload = jwt.verify(accessToken, appleSignKey, {
       complete: true,
     });
 

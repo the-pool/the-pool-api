@@ -26,14 +26,14 @@ export class MemberService {
     loginType: MemberLoginType,
     memberStatus: MemberStatus,
     member: MemberEntity,
-  ): boolean {
+  ): void {
     // request 로 들어온 유저가 없는 경우
     if (
       account !== member.account ||
       loginType !== member.loginType ||
       memberStatus !== member.status
     ) {
-      throw new NotFoundException('존재하지 않는 유저입니다.');
+      throw new NotFoundException('존재하지 않는 리소스입니다.');
     }
 
     // pending 상태의 유저인 경우
@@ -45,27 +45,22 @@ export class MemberService {
     if (memberStatus === MemberStatus.Inactive) {
       throw new ForbiddenException('비활성된 유저입니다.');
     }
-
-    return true;
   }
 
-  async isExist(
+  findOne(
     id: number | undefined,
     account: string,
     status: MemberStatus,
     loginType: MemberLoginType,
-  ): Promise<boolean> {
-    const member: MemberEntity | null =
-      await this.prismaService.member.findUnique({
-        where: {
-          id,
-          account,
-          status,
-          loginType,
-        },
-      });
-
-    return !!member;
+  ): Promise<MemberEntity | null> {
+    return this.prismaService.member.findUnique({
+      where: {
+        id,
+        account,
+        status,
+        loginType,
+      },
+    });
   }
 
   async create(
