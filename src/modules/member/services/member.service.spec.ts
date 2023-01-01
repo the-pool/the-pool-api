@@ -1,6 +1,10 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -31,8 +35,78 @@ describe('MemberService', () => {
     prismaService = mockPrismaService;
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(memberService).toBeDefined();
+  });
+
+  describe('signUp', () => {
+    let account: string;
+    let newMember: MemberEntity;
+    let accessToken: string;
+    const loginType = MemberLoginType.Apple;
+
+    beforeEach(() => {
+      account = faker.datatype.string();
+      newMember = new MemberEntity();
+    });
+
+    it('회원가입 성공', async () => {
+      accessToken = faker.datatype.string();
+      mockPrismaService.member.create.mockResolvedValue(newMember as any);
+      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+      const result = await memberService.signUp(account, loginType);
+
+      expect(result).toStrictEqual({
+        accessToken,
+        member: newMember,
+      });
+    });
+  });
+
+  describe('login', () => {
+    let account: string;
+    let member: MemberEntity;
+    let accessToken: string;
+
+    beforeEach(() => {
+      account = faker.datatype.string();
+      member = new MemberEntity();
+    });
+
+    it('로그인 성공', async () => {
+      accessToken = faker.datatype.string();
+      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+      const result = await memberService.login(account, member);
+
+      expect(result).toStrictEqual({
+        accessToken,
+        member,
+      });
+    });
+  });
+
+  describe('updateFromPatch', () => {
+    let id: number;
+    let data: UpdateMemberDto;
+
+    beforeEach(() => {
+      id = faker.datatype.number();
+      data = new UpdateMemberDto();
+    });
+
+    it('업데이트 성공', async () => {
+      mockPrismaService.member.update.mockResolvedValue(data as any);
+
+      const result = await memberService.updateFromPatch(id, data);
+
+      expect(result).toStrictEqual(data);
+    });
   });
 
   describe('loginByOAuth', () => {
