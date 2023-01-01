@@ -3,13 +3,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Member } from '@prisma/client';
+import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import {
   MemberLoginType,
   MemberStatus,
 } from '@src/modules/member/constants/member.enum';
+import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberEntity } from '../entities/member.entity';
@@ -53,18 +54,10 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  findOne(
-    id: number | undefined,
-    account: string,
-    status: MemberStatus,
-    loginType: MemberLoginType,
-  ): Promise<MemberEntity | null> {
+  findOne(member: Prisma.MemberWhereUniqueInput): Promise<MemberEntity | null> {
     return this.prismaService.member.findUnique({
       where: {
-        id,
-        account,
-        status,
-        loginType,
+        ...member,
       },
     });
   }
@@ -81,6 +74,15 @@ export class MemberService {
         memberReport: {
           create: {},
         },
+      },
+    });
+  }
+
+  updateFromPatch(id: number, data: UpdateMemberDto) {
+    return this.prismaService.member.update({
+      data,
+      where: {
+        id,
       },
     });
   }
@@ -129,6 +131,7 @@ export class MemberService {
 
   /**
    *  유저 정보 받는 부분 > 확장성있게 사용하려면 나중에 프로필 수정에 대한 부분의 api 기능까지도 할 수 있게 만들어야 함
+   *  @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거
    */
   async updateMember(
     memberId: number,

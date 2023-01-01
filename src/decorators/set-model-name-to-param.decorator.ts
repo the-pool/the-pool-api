@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { ModelName } from '@src/constants/enum';
+import { PrismaModelName } from '@src/types/type';
 
 export const SetModelNameToParam = createParamDecorator(
-  (data: ModelName, ctx: ExecutionContext) => {
+  (data: PrismaModelName, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     request.params.model = data;
   },
