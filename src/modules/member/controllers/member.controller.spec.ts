@@ -41,6 +41,10 @@ describe('MemberController', () => {
     memberService = mockMemberService;
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(memberController).toBeDefined();
   });
@@ -65,53 +69,24 @@ describe('MemberController', () => {
       it('로그인 성공', async () => {
         const result = await memberController.loginOrSignUp(member, body);
 
-        expect(result).toStrictEqual({
-          accessToken,
-          member,
-        });
+        expect(mockMemberService.login).toBeCalledTimes(1);
       });
 
       afterEach(() => {
         expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
-        expect(mockAuthService.createAccessToken).toBeCalledTimes(1);
       });
     });
 
     describe('회원가입 하는 경우', () => {
-      it('이미 존재하는 유저인 경우', async () => {
-        mockMemberService.findOne.mockReturnValue(new MemberEntity());
-
-        await expect(async () => {
-          await memberController.loginOrSignUp(member, body);
-        }).rejects.toThrowError('이미 존재하는 유저입니다.');
-        expect(mockMemberService.create).toBeCalledTimes(0);
-        expect(mockAuthService.createAccessToken).toBeCalledTimes(0);
-      });
-
       it('회원가입 성공', async () => {
-        mockMemberService.findOne.mockReturnValue(null);
-        mockMemberService.create.mockReturnValue(member);
-
         const result = await memberController.loginOrSignUp(member, body);
 
-        expect(result).toStrictEqual({
-          accessToken,
-          member,
-        });
-        expect(mockMemberService.create).toBeCalledTimes(1);
-        expect(mockAuthService.createAccessToken).toBeCalledTimes(1);
+        expect(mockMemberService.signUp).toBeCalledTimes(1);
       });
 
       afterEach(() => {
-        expect(mockMemberService.findOne).toBeCalledTimes(1);
+        expect(mockMemberValidationService.canCreateOrFail).toBeCalledTimes(1);
       });
-    });
-
-    afterEach(() => {
-      expect(mockAuthService.validateExternalAccessTokenOrFail).toBeCalledTimes(
-        1,
-      );
-      jest.clearAllMocks();
     });
   });
 
