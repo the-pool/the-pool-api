@@ -1,11 +1,7 @@
 import {
-  BadRequestException,
   Body,
-  ConflictException,
   Controller,
-  ForbiddenException,
   HttpStatus,
-  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -33,8 +29,8 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
-import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
 import { MemberLoginOrSignUpForbiddenResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-forbidden-response.type';
@@ -57,6 +53,7 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 export class MemberController {
   constructor(
     private readonly memberService: MemberService,
+    private readonly memberValidationService: MemberValidationService,
     private readonly authService: AuthService,
   ) {}
 
@@ -70,7 +67,6 @@ export class MemberController {
 
   /**
    * 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
-   * 다른 api, method deprecated 처리 해야함
    */
   @ApiOperation({
     summary: '회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)',
@@ -97,52 +93,27 @@ export class MemberController {
       body.loginType,
     );
 
-    // 로그인 하는 경우
-    if (!isNil(member.id)) {
-      // 로그인 가능한 유저인지 확인
-      this.memberService.canLoginOrFail(
-        account,
-        body.loginType,
-        member.status,
-        member,
-      );
-
-      // access token 생성
-      const accessToken = this.authService.createAccessToken(member.id);
-
-      return {
-        accessToken,
-        member,
-      };
-    }
-
     // 회원가입 하려는 경우
-    // 이미 존재하는 member 인지 확인한다.
-    const oldMember = await this.memberService.findOne({
-      id: member.id,
-      account,
-      status: MemberStatus.Active,
-      loginType: body.loginType,
-    });
+    if (isNil(member.id)) {
+      // 먼저 회원가입이 가능한지 확인한다.
+      await this.memberValidationService.canCreateOrFail({
+        account,
+        loginType: body.loginType,
+      });
 
-    // 이미 존재하는 유저인 경우
-    if (oldMember) {
-      throw new BadRequestException('이미 존재하는 유저입니다.');
+      return this.memberService.signUp(account, body.loginType);
     }
 
-    // 새로운 멤버 생성
-    const newMember: MemberEntity = await this.memberService.create(
+    // 로그인 하는 경우
+    // 먼저 로그인 가능한 유저인지 확인
+    this.memberValidationService.canLoginOrFail(
       account,
       body.loginType,
+      member.status,
+      member,
     );
 
-    // access token 생성
-    const accessToken = this.authService.createAccessToken(member.id);
-
-    return {
-      accessToken,
-      member: newMember,
-    };
+    return this.memberService.login(account, member);
   }
 
   /**
@@ -166,52 +137,11 @@ export class MemberController {
     params: IdRequestParamDto,
     @Body() body: UpdateMemberDto,
   ) {
-    // 본인에 대해 업데이트 하는게 아니라면 에러
-    if (params.id !== member.id) {
-      throw new ForbiddenException('본인 정보가 아니면 수정이 불가능합니다.');
-    }
-
-    // 멤버가 활성중이 아니고 활성 상태로 변경하는 경우가 아니면 에러
-    if (
-      member.status !== MemberStatus.Active &&
-      body.status !== MemberStatus.Active
-    ) {
-      throw new BadRequestException(
-        '활성중인 유저거나 활성 상태로 변경하려는 유저만 업데이트 가능합니다.',
-      );
-    }
-
-    // 변경하려는 nickname 과 같은 url 을 가진 멤버가 있는지 조회
-    const duplicateNicknameMember = await this.memberService.findOne({
-      NOT: {
-        id: member.id,
-      },
-      nickname: body.nickname,
-    });
-
-    // 변경하려는 nickname 을 다른 멤버가 사용중이라면 에러
-    if (duplicateNicknameMember) {
-      throw new ConflictException('해당 nickname 은 사용중입니다.');
-    }
-
-    // the-pool storage 에 url 이 겹칠 일은 없지만
-    // 혹시 모를 상황에 디버깅을 위해 예외처리
-    // 변경하려는 thumbnail 과 같은 url 을 가진 멤버가 있는지 조회
-    const duplicateThumbnailMember = await this.memberService.findOne({
-      NOT: {
-        id: member.id,
-      },
-      thumbnail: body.thumbnail,
-    });
-
-    // 변경하려는 thumbnail 을 다른 멤버가 사용중이라면 에러
-    if (duplicateThumbnailMember) {
-      throw new InternalServerErrorException({
-        member,
-        message: '멤버 patch update 중 thumbnail 겹치는 경우',
-        thumbnail: body.thumbnail,
-      });
-    }
+    await this.memberValidationService.canUpdateFromPatchOrFail(
+      params.id,
+      body,
+      member,
+    );
 
     return this.memberService.updateFromPatch(params.id, body);
   }

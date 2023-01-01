@@ -3,9 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
   mockAuthService,
   mockMemberService,
+  mockMemberValidationService,
 } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
@@ -23,6 +25,10 @@ describe('MemberController', () => {
         {
           provide: MemberService,
           useValue: mockMemberService,
+        },
+        {
+          provide: MemberValidationService,
+          useValue: mockMemberValidationService,
         },
         {
           provide: AuthService,
@@ -66,7 +72,7 @@ describe('MemberController', () => {
       });
 
       afterEach(() => {
-        expect(mockMemberService.canLoginOrFail).toBeCalledTimes(1);
+        expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
         expect(mockAuthService.createAccessToken).toBeCalledTimes(1);
       });
     });

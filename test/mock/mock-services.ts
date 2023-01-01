@@ -2,6 +2,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MajorService } from '@src/modules/major/services/major.service';
+import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { MockClassType } from './mock.type';
 
@@ -10,12 +11,18 @@ export const mockJwtService = {
 };
 
 export const mockMemberService: MockClassType<MemberService> = {
-  canLoginOrFail: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
+  updateFromPatch: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
 };
+
+export const mockMemberValidationService: MockClassType<MemberValidationService> =
+  {
+    canLoginOrFail: jest.fn(),
+    canCreateOrFail: jest.fn(),
+  };
 
 export const mockAuthService: MockClassType<AuthService> = {
   createAccessToken: jest.fn(),

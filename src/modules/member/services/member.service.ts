@@ -1,16 +1,10 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { Member, Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { Member } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import {
-  MemberLoginType,
-  MemberStatus,
-} from '@src/modules/member/constants/member.enum';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberEntity } from '../entities/member.entity';
@@ -23,51 +17,14 @@ export class MemberService {
   ) {}
 
   /**
-   * member 가 로그인 할 수 있는 사용자인지 판별
+   * member 회원가입
    */
-  canLoginOrFail(
+  async signUp(
     account: string,
     loginType: MemberLoginType,
-    memberStatus: MemberStatus,
-    member: MemberEntity,
-  ): void {
-    // request 로 들어온 유저가 없는 경우
-    if (
-      account !== member.account ||
-      loginType !== member.loginType ||
-      memberStatus !== member.status
-    ) {
-      throw new NotFoundException('존재하지 않는 리소스입니다.');
-    }
-
-    // pending 상태의 유저인 경우
-    if (memberStatus === MemberStatus.Pending) {
-      throw new ForbiddenException('추가정보 입력이 필요한 유저입니다.');
-    }
-
-    // 비활성 유저인 경우
-    if (memberStatus === MemberStatus.Inactive) {
-      throw new ForbiddenException('비활성된 유저입니다.');
-    }
-  }
-
-  /**
-   * member 단일 조회
-   */
-  findOne(member: Prisma.MemberWhereUniqueInput): Promise<MemberEntity | null> {
-    return this.prismaService.member.findUnique({
-      where: {
-        ...member,
-      },
-    });
-  }
-
-  /**
-   * member 생성
-   * memberReport 까지 생성해준다.
-   */
-  create(account: string, loginType: MemberLoginType): Promise<MemberEntity> {
-    return this.prismaService.member.create({
+  ): Promise<{ member: MemberEntity } & AccessTokenType> {
+    // 새로운 멤버 생성
+    const newMember: MemberEntity = await this.prismaService.member.create({
       data: {
         account,
         loginType,
@@ -76,6 +33,30 @@ export class MemberService {
         },
       },
     });
+
+    // access token 생성
+    const accessToken = this.authService.createAccessToken(newMember.id);
+
+    return {
+      accessToken,
+      member: newMember,
+    };
+  }
+
+  /**
+   * member 로그인
+   */
+  async login(
+    account: string,
+    member: MemberEntity,
+  ): Promise<{ member: MemberEntity } & AccessTokenType> {
+    // access token 생성
+    const accessToken = this.authService.createAccessToken(member.id);
+
+    return {
+      accessToken,
+      member,
+    };
   }
 
   updateFromPatch(id: number, data: UpdateMemberDto) {

@@ -6,7 +6,6 @@ import {
   MemberLoginType,
   MemberStatus,
 } from '@src/modules/member/constants/member.enum';
-import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -41,81 +40,6 @@ describe('MemberService', () => {
     expect(memberService).toBeDefined();
   });
 
-  describe('canLoginOrFail', () => {
-    it('request 로 들어온 유저가 없는 경우', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-      const memberStatus = MemberStatus.Active;
-      const member = new MemberEntity();
-
-      expect(async () => {
-        await memberService.canLoginOrFail(
-          account,
-          loginType,
-          memberStatus,
-          member,
-        );
-      }).rejects.toThrowError('존재하지 않는 리소스입니다.');
-    });
-
-    it('pending 상태의 유저인 경우', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-      const memberStatus = MemberStatus.Pending;
-      const member = new MemberEntity();
-      member.account = account;
-      member.loginType = loginType;
-      member.status = memberStatus;
-
-      expect(async () => {
-        await memberService.canLoginOrFail(
-          account,
-          loginType,
-          memberStatus,
-          member,
-        );
-      }).rejects.toThrowError('추가정보 입력이 필요한 유저입니다.');
-    });
-
-    it('비활성 유저인 경우', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-      const memberStatus = MemberStatus.Inactive;
-      const member = new MemberEntity();
-      member.account = account;
-      member.loginType = loginType;
-      member.status = memberStatus;
-
-      expect(async () => {
-        await memberService.canLoginOrFail(
-          account,
-          loginType,
-          memberStatus,
-          member,
-        );
-      }).rejects.toThrowError('비활성된 유저입니다.');
-    });
-
-    it('로그인 가능한 유저인 경우', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-      const memberStatus = MemberStatus.Active;
-      const member = new MemberEntity();
-      member.account = account;
-      member.loginType = loginType;
-      member.status = memberStatus;
-
-      const result = memberService.canLoginOrFail(
-        account,
-        loginType,
-        memberStatus,
-        member,
-      );
-
-      expect(result).toBeUndefined();
-    });
-  });
-
   describe('findOne', () => {
     let randomValue: any;
 
@@ -130,7 +54,7 @@ describe('MemberService', () => {
       const status = MemberStatus.Inactive;
       const loginType = MemberLoginType.Apple;
 
-      const result = memberService.findOne(id, account, status, loginType);
+      const result = memberService.findOne({ id, account, status, loginType });
 
       expect(result).toBe(randomValue);
     });
