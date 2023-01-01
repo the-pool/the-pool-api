@@ -1,11 +1,6 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import {
-  MemberLoginType,
-  MemberStatus,
-} from '@src/modules/member/constants/member.enum';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -38,44 +33,6 @@ describe('MemberService', () => {
 
   it('should be defined', () => {
     expect(memberService).toBeDefined();
-  });
-
-  describe('findOne', () => {
-    let randomValue: any;
-
-    beforeEach(() => {
-      randomValue = faker.random.words();
-      mockPrismaService.member.findUnique.mockReturnValue(randomValue);
-    });
-
-    it('가져오기 성공', () => {
-      const id = faker.datatype.number();
-      const account = faker.datatype.string();
-      const status = MemberStatus.Inactive;
-      const loginType = MemberLoginType.Apple;
-
-      const result = memberService.findOne({ id, account, status, loginType });
-
-      expect(result).toBe(randomValue);
-    });
-  });
-
-  describe('create', () => {
-    let randomValue: any;
-
-    beforeEach(() => {
-      randomValue = faker.random.words();
-      mockPrismaService.member.create.mockReturnValue(randomValue);
-    });
-
-    it('생성 성공', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-
-      const result = memberService.create(account, loginType);
-
-      expect(result).toBe(randomValue);
-    });
   });
 
   describe('loginByOAuth', () => {

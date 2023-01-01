@@ -6,6 +6,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { isNil } from '@nestjs/common/utils/shared.utils';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import {
@@ -92,7 +93,7 @@ export class MemberValidationService {
     // 멤버가 활성중이 아니고 활성 상태로 변경하는 경우가 아니면 에러
     if (
       oldMember.status !== MemberStatus.Active &&
-      updateInfo.status !== MemberStatus.Active
+      (updateInfo.status !== MemberStatus.Active || isNil(updateInfo.status))
     ) {
       throw new BadRequestException(
         '활성중인 유저거나 활성 상태로 변경하려는 유저만 업데이트 가능합니다.',

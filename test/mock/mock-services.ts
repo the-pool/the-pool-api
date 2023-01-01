@@ -11,8 +11,8 @@ export const mockJwtService = {
 };
 
 export const mockMemberService: MockClassType<MemberService> = {
-  findOne: jest.fn(),
-  create: jest.fn(),
+  signUp: jest.fn(),
+  login: jest.fn(),
   updateFromPatch: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
@@ -22,6 +22,7 @@ export const mockMemberValidationService: MockClassType<MemberValidationService>
   {
     canLoginOrFail: jest.fn(),
     canCreateOrFail: jest.fn(),
+    canUpdateFromPatchOrFail: jest.fn(),
   };
 
 export const mockAuthService: MockClassType<AuthService> = {
