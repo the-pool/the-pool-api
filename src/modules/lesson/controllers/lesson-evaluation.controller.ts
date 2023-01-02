@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
+import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -8,6 +18,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateEvaluationDto } from '../dtos/create-evaluation.dto';
+import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 
 @ApiTags('남들이 평가하는 과제 난이도')
@@ -18,20 +29,20 @@ export class LessonEvaluationController {
     private readonly prismaHelper: PrismaHelper,
   ) {}
 
-  /**
-   * member가 LessonId에 해당하는 과제물을 제출하였는지 확인
-   * true : 과재 평가 생성할 수 있도록,
-   * false : 403 과재 평가할 수있는 권한 없다고 알림
-   */
-
   @ApiOperation({ summary: '과제 평가 생성' })
+  @ApiSuccessResponse(HttpStatus.CREATED, {
+    evaluation: LessonEvaluationEntity,
+  })
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.CONFLICT, '~ is duplicatd')
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createEvaluation(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @Body() { levelId }: CreateEvaluationDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<{ evaluation: LessonEvaluationEntity }> {
     // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
     await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
       memberId,
@@ -63,5 +74,8 @@ export class LessonEvaluationController {
 
   @ApiOperation({ summary: '과제 평가 조회' })
   @Get()
-  readEvaluation() {}
+  readEvaluation() {
+    // 해당 과제의 상,중,하 갯수 > readLessonLevelEvaluation 재활용
+    // 들어온 유저가 과제를 평가했는지에 대한 객체 있으면 객체 넘겨주고 없으면 빈객체
+  }
 }
