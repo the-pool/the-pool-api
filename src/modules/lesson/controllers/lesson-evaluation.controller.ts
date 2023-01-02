@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -18,6 +19,8 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateEvaluationDto } from '../dtos/create-evaluation.dto';
+import { LessonEvaluationParamDto } from '../dtos/lesson-evaluation-param.dto';
+import { UpdateEvaluationDto } from '../dtos/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 
@@ -69,8 +72,35 @@ export class LessonEvaluationController {
   }
 
   @ApiOperation({ summary: '과제 평가 수정' })
-  @Put(':evaluationId')
-  updateEvaluation() {}
+  @ApiSuccessResponse(HttpStatus.OK, {
+    evaluation: LessonEvaluationEntity,
+  })
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @BearerAuth(JwtAuthGuard)
+  @Put()
+  async updateEvaluation(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @Body() { levelId }: UpdateEvaluationDto,
+    @UserLogin('id') memberId: number,
+  ): Promise<{ evaluation: LessonEvaluationEntity | {} }> {
+    // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
+    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
+      memberId,
+      lessonId: param.id,
+    });
+
+    const updatedEvaluation =
+      await this.lessonEvaluationService.updateEvaluation(
+        param.id,
+        levelId,
+        memberId,
+      );
+
+    return { evaluation: updatedEvaluation };
+  }
 
   @ApiOperation({ summary: '과제 평가 조회' })
   @Get()
