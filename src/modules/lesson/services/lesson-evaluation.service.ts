@@ -19,7 +19,7 @@ export class LessonEvaluationService {
 
   async updateEvaluation(
     lessonId: number,
-    levelId: number,
+    levelId: number | null,
     memberId: number,
   ): Promise<LessonEvaluationEntity | {}> {
     await this.prismaService.lessonLevelEvaluation.deleteMany({

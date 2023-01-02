@@ -63,4 +63,79 @@ describe('LessonEvaluationService', () => {
       expect(returnValue).toStrictEqual(createdEvaluation);
     });
   });
+
+  describe('updateEvaluation', () => {
+    let lessonId: number;
+    let levelId: number | null;
+    let memberId: number;
+    let createdEvaluation: LessonEvaluationEntity;
+    let spyCreateEvaluation: jest.SpyInstance;
+
+    beforeEach(async () => {
+      lessonId = faker.datatype.number();
+      levelId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      createdEvaluation = new LessonEvaluationEntity();
+
+      prismaService.lessonLevelEvaluation.create.mockReturnValue(
+        createdEvaluation,
+      );
+      spyCreateEvaluation = jest.spyOn(
+        lessonEvaluationService,
+        'createEvaluation',
+      );
+    });
+
+    describe('levelId !== null', () => {
+      it('success - check method called', async () => {
+        await lessonEvaluationService.updateEvaluation(
+          lessonId,
+          levelId,
+          memberId,
+        );
+
+        expect(prismaService.lessonLevelEvaluation.deleteMany).toBeCalledTimes(
+          1,
+        );
+        expect(lessonEvaluationService.createEvaluation).toBeCalledTimes(1);
+      });
+
+      it('success - check Input & Output', async () => {
+        const returnValue = await lessonEvaluationService.updateEvaluation(
+          lessonId,
+          levelId,
+          memberId,
+        );
+
+        expect(returnValue).toStrictEqual(createdEvaluation);
+      });
+    });
+
+    describe('levelId === null', () => {
+      it('success - check method called', async () => {
+        levelId = null;
+
+        await lessonEvaluationService.updateEvaluation(
+          lessonId,
+          levelId,
+          memberId,
+        );
+
+        expect(prismaService.lessonLevelEvaluation.deleteMany).toBeCalledTimes(
+          1,
+        );
+        expect(lessonEvaluationService.createEvaluation).toBeCalledTimes(0);
+      });
+
+      it('success - check Input & Output', async () => {
+        const returnValue = await lessonEvaluationService.updateEvaluation(
+          lessonId,
+          levelId,
+          memberId,
+        );
+
+        expect(returnValue).toEqual({});
+      });
+    });
+  });
 });
