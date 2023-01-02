@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpStatus,
   Param,
@@ -19,7 +18,6 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateEvaluationDto } from '../dtos/create-evaluation.dto';
-import { LessonEvaluationParamDto } from '../dtos/lesson-evaluation-param.dto';
 import { UpdateEvaluationDto } from '../dtos/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';

@@ -5,6 +5,7 @@ import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
 import { CreateEvaluationDto } from '../dtos/create-evaluation.dto';
+import { UpdateEvaluationDto } from '../dtos/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import { LessonEvaluationController } from './lesson-evaluation.controller';
@@ -85,6 +86,49 @@ describe('LessonEvaluationController', () => {
       );
 
       expect(returnValue.evaluation).toStrictEqual(createdEvaluation);
+    });
+  });
+
+  describe('updateEvaluation', () => {
+    let param: IdRequestParamDto;
+    let updateEvaluationDto: UpdateEvaluationDto;
+    let memberId: number;
+    let updatedEvaluation: LessonEvaluationEntity;
+
+    beforeEach(async () => {
+      param = new IdRequestParamDto();
+      updateEvaluationDto = new UpdateEvaluationDto();
+      memberId = faker.datatype.number();
+      updatedEvaluation = new LessonEvaluationEntity();
+
+      lessonEvaluationService.updateEvaluation.mockReturnValue(
+        updatedEvaluation,
+      );
+    });
+
+    it('success - check method called', async () => {
+      await lessonEvaluationController.updateEvaluation(
+        param,
+        updateEvaluationDto,
+        memberId,
+      );
+
+      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(lessonEvaluationService.updateEvaluation).toBeCalledWith(
+        param.id,
+        updateEvaluationDto.levelId,
+        memberId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonEvaluationController.updateEvaluation(
+        param,
+        updateEvaluationDto,
+        memberId,
+      );
+
+      expect(returnValue.evaluation).toStrictEqual(updatedEvaluation);
     });
   });
 });

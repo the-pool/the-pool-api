@@ -45,4 +45,5 @@ export const mockLessonHashtagService: MockClassType<LessonHashtagService> = {
 export const mockLessonEvaluationService: MockClassType<LessonEvaluationService> =
   {
     createEvaluation: jest.fn(),
+    updateEvaluation: jest.fn(),
   };
