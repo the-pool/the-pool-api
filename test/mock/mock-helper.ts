@@ -5,6 +5,7 @@ import { MockClassType } from './mock.type';
 export const mockPrismaHelper: MockClassType<PrismaHelper> = {
   findOneOrFail: jest.fn(),
   validateOwnerOrFail: jest.fn(),
+  validateDuplicateAndFail: jest.fn(),
 };
 
 export const mockDataStructureHelper: MockClassType<DataStructureHelper> = {
