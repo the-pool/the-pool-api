@@ -2,7 +2,6 @@ import { PickType } from '@nestjs/swagger';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import {
-  IsArray,
   IsEnum,
   IsNotEmpty,
   IsOptional,
