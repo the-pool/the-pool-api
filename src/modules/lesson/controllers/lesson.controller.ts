@@ -27,11 +27,11 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { plainToInstance } from 'class-transformer';
-import { CreateLessonDto } from '../dtos/create-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
-import { ReadSimilarLessonDto } from '../dtos/read-similar-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
+import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
+import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
-import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()

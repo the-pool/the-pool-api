@@ -8,7 +8,7 @@ import {
   IsString,
   Length,
 } from 'class-validator';
-import { LessonEntity } from '../entities/lesson.entity';
+import { LessonEntity } from '../../entities/lesson.entity';
 
 export class CreateLessonDto extends PickType(LessonEntity, [
   'levelId',
