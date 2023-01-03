@@ -109,7 +109,7 @@ export class LessonEvaluationController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @UserLogin() member: Member,
+    @UserLogin() member: Member | { id: null },
   ) {
     const lessonEvluations = await this.lessonEvaluationService.readEvaluation(
       param.id,

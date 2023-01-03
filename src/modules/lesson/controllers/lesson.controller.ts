@@ -119,7 +119,7 @@ export class LessonController {
   @Get(':id')
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
-    @UserLogin() member: Member,
+    @UserLogin() member: Member | { id: null },
   ): Promise<{ lesson: ReadOneLessonDto }> {
     const readOneLesson = await this.lessonService.readOneLesson(
       param.id,
@@ -140,7 +140,7 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Query() query: SimilarLessonQueryDto,
-    @UserLogin() member: Member,
+    @UserLogin() member: Member | { id: null },
   ): Promise<ReadSimilarLessonDto> {
     const readSimilarLessons = await this.lessonService.readSimilarLesson(
       param.id,

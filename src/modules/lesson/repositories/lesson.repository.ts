@@ -15,7 +15,7 @@ export class LessonRepository {
    */
   async readOneLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
   ): Promise<ReadOneLessonDto> {
     const result = await this.prismaService.$queryRaw<[ReadOneLessonDto]>`
     SELECT 
@@ -50,7 +50,7 @@ export class LessonRepository {
    */
   readSimilarLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
     { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     return this.prismaService.$queryRaw<SimilarLessonEntity[]>`

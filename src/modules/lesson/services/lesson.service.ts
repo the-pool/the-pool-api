@@ -55,7 +55,10 @@ export class LessonService {
   /**
    * 과제 상세 조회 메서드
    */
-  readOneLesson(lessonId: number, memberId: number): Promise<ReadOneLessonDto> {
+  readOneLesson(
+    lessonId: number,
+    memberId: number | null,
+  ): Promise<ReadOneLessonDto> {
     return this.lessonRepository.readOneLesson(lessonId, memberId);
   }
 
@@ -64,7 +67,7 @@ export class LessonService {
    */
   readSimilarLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
     query: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     return this.lessonRepository.readSimilarLesson(lessonId, memberId, query);
