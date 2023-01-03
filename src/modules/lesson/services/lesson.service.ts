@@ -55,16 +55,8 @@ export class LessonService {
   /**
    * 과제 상세 조회 메서드
    */
-  async readOneLesson(
-    lessonId: number,
-    memberId: number,
-  ): Promise<ReadOneLessonDto> {
-    const [lesson, lessonLevelEvaluation] = await Promise.all([
-      this.lessonRepository.readOneLesson(lessonId, memberId),
-      this.lessonRepository.readLessonLevelEvaluation(lessonId),
-    ]);
-
-    return Object.assign({}, lesson, { lessonLevelEvaluation });
+  readOneLesson(lessonId: number, memberId: number): Promise<ReadOneLessonDto> {
+    return this.lessonRepository.readOneLesson(lessonId, memberId);
   }
 
   /**

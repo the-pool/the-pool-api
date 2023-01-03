@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { Prisma } from '@prisma/client';
-import { LessonEntity } from '../entities/lesson.entity';
-import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 
 @Injectable()
 export class LessonRepository {
@@ -19,10 +16,8 @@ export class LessonRepository {
   async readOneLesson(
     lessonId: number,
     memberId: number,
-  ): Promise<Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>> {
-    const result = await this.prismaService.$queryRaw<
-      [Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>]
-    >`
+  ): Promise<ReadOneLessonDto> {
+    const result = await this.prismaService.$queryRaw<[ReadOneLessonDto]>`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -45,26 +40,6 @@ export class LessonRepository {
       ON "LessonSolution"."lessonId" = "Lesson"."id" 
     WHERE "Lesson"."id" = ${lessonId}
     GROUP BY "Lesson"."id","Member"."id"
-    `;
-
-    return result[0];
-  }
-
-  /**
-   * 과제를 수행한 멤버들의 과제 난이도 평가 정보 조회 query
-   */
-  async readLessonLevelEvaluation(
-    lessonId: number,
-  ): Promise<LessonLevelEvaluationEntity> {
-    const result = await this.prismaService.$queryRaw<
-      [LessonLevelEvaluationEntity]
-    >`
-    SELECT 
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Bottom}) AS  "bottom"
-    FROM "LessonLevelEvaluation" 
-    WHERE "LessonLevelEvaluation"."lessonId" = ${lessonId}
     `;
 
     return result[0];

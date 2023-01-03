@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
@@ -16,6 +17,7 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
 import { CreateEvaluationDto } from '../dtos/create-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/update-evaluation.dto';
@@ -101,9 +103,21 @@ export class LessonEvaluationController {
   }
 
   @ApiOperation({ summary: '과제 평가 조회' })
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get()
-  readEvaluation() {
-    // 해당 과제의 상,중,하 갯수 > readLessonLevelEvaluation 재활용
-    // 들어온 유저가 과제를 평가했는지에 대한 객체 있으면 객체 넘겨주고 없으면 빈객체
+  async readEvaluation(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @UserLogin() member: Member,
+  ) {
+    const lessonEvluations = await this.lessonEvaluationService.readEvaluation(
+      param.id,
+    );
+    const isEvaluated = await this.lessonEvaluationService.readMemberEvaluation(
+      param.id,
+      member.id,
+    );
+    return { lessonEvluations, isEvaluated };
   }
 }
