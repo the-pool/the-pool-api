@@ -46,4 +46,6 @@ export const mockLessonEvaluationService: MockClassType<LessonEvaluationService>
   {
     createEvaluation: jest.fn(),
     updateEvaluation: jest.fn(),
+    readEvaluation: jest.fn(),
+    readMemberEvaluation: jest.fn(),
   };

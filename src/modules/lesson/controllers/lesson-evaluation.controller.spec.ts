@@ -1,12 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Member } from '@prisma/client';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
+import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import { LessonEvaluationController } from './lesson-evaluation.controller';
 
@@ -129,6 +132,46 @@ describe('LessonEvaluationController', () => {
       );
 
       expect(returnValue.evaluation).toStrictEqual(updatedEvaluation);
+    });
+  });
+
+  describe('readEvaluation', () => {
+    let param: IdRequestParamDto;
+    let member: MemberEntity | { id: null };
+    let lessonEvaluations: LessonLevelEvaluationEntity[];
+    let memberEvaluate: LessonEvaluationEntity | null;
+
+    beforeEach(async () => {
+      param = new IdRequestParamDto();
+      member = new MemberEntity();
+      lessonEvaluations = [new LessonLevelEvaluationEntity()];
+      memberEvaluate = new LessonEvaluationEntity();
+
+      lessonEvaluationService.readEvaluation.mockReturnValue(lessonEvaluations);
+      lessonEvaluationService.readMemberEvaluation.mockReturnValue(
+        memberEvaluate,
+      );
+    });
+
+    it('success - check method called', async () => {
+      await lessonEvaluationController.readEvaluation(param, member);
+
+      expect(lessonEvaluationService.readEvaluation).toBeCalledTimes(1);
+      expect(lessonEvaluationService.readEvaluation).toBeCalledWith(param.id);
+      expect(lessonEvaluationService.readMemberEvaluation).toBeCalledTimes(1);
+      expect(lessonEvaluationService.readMemberEvaluation).toBeCalledWith(
+        param.id,
+        member.id,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonEvaluationController.readEvaluation(
+        param,
+        member,
+      );
+
+      expect(returnValue).toStrictEqual({ lessonEvaluations, memberEvaluate });
     });
   });
 });

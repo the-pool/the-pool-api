@@ -8,6 +8,9 @@ import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 export class LessonEvaluationService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  /**
+   * lesson의 체감 난이도 생성
+   */
   createEvaluation(lessonId: number, memberId: number, levelId: number) {
     return this.prismaService.lessonLevelEvaluation.create({
       data: {
@@ -18,6 +21,9 @@ export class LessonEvaluationService {
     });
   }
 
+  /**
+   * lesson의 체감 난이도 변경
+   */
   async updateEvaluation(
     lessonId: number,
     levelId: number | null,
@@ -35,6 +41,9 @@ export class LessonEvaluationService {
       : this.createEvaluation(lessonId, memberId, levelId);
   }
 
+  /**
+   * lesson의 체감 난이도 조회
+   */
   async readEvaluation(
     lessonId: number,
   ): Promise<LessonLevelEvaluationEntity[]> {
@@ -63,6 +72,9 @@ export class LessonEvaluationService {
     return lessonEvaluations;
   }
 
+  /**
+   * lesson의 체감 난이도를 생성한 유저의 체감난이도 조회
+   */
   readMemberEvaluation(
     lessonId: number,
     memberId: number | null,

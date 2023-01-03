@@ -19,11 +19,10 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
+import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
-import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 
 @ApiTags('남들이 평가하는 과제 난이도')
@@ -115,13 +114,14 @@ export class LessonEvaluationController {
     param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<ReadEvaluationDto> {
-    const lessonEvluations = await this.lessonEvaluationService.readEvaluation(
+    const lessonEvaluations = await this.lessonEvaluationService.readEvaluation(
       param.id,
     );
-    const isEvaluated = await this.lessonEvaluationService.readMemberEvaluation(
-      param.id,
-      member.id,
-    );
-    return { lessonEvluations, isEvaluated };
+    const memberEvaluate =
+      await this.lessonEvaluationService.readMemberEvaluation(
+        param.id,
+        member.id,
+      );
+    return { lessonEvaluations, memberEvaluate };
   }
 }
