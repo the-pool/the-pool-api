@@ -138,4 +138,93 @@ describe('LessonEvaluationService', () => {
       });
     });
   });
+
+  describe('readEvaluation', () => {
+    let lessonId: number;
+    let countedEvaluations;
+
+    beforeEach(async () => {
+      lessonId = faker.datatype.number();
+      countedEvaluations = [
+        {
+          _count: { lessonId: faker.datatype.number() },
+          levelId: faker.datatype.number(),
+        },
+      ];
+
+      prismaService.lessonLevelEvaluation.groupBy.mockReturnValue(
+        countedEvaluations,
+      );
+    });
+
+    it('success - check method called', async () => {
+      await lessonEvaluationService.readEvaluation(lessonId);
+
+      expect(prismaService.lessonLevelEvaluation.groupBy).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonEvaluationService.readEvaluation(
+        lessonId,
+      );
+
+      expect(returnValue[0]).toHaveProperty('count');
+      expect(returnValue[0]).toHaveProperty('levelId');
+    });
+  });
+
+  describe('readMemberEvaluation', () => {
+    let lessonId: number;
+    let memberId: number | null;
+    let memberEvaluation: LessonEvaluationEntity | null;
+
+    beforeEach(async () => {
+      lessonId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      memberEvaluation = new LessonEvaluationEntity();
+
+      prismaService.lessonLevelEvaluation.findFirst.mockReturnValue(
+        memberEvaluation,
+      );
+    });
+
+    describe('memberId !== null', () => {
+      it('success - check method called', () => {
+        lessonEvaluationService.readMemberEvaluation(lessonId, memberId);
+
+        expect(prismaService.lessonLevelEvaluation.findFirst).toBeCalledTimes(
+          1,
+        );
+      });
+      it('success - check Input & Output', () => {
+        const returnValue = lessonEvaluationService.readMemberEvaluation(
+          lessonId,
+          memberId,
+        );
+
+        expect(returnValue).toStrictEqual(memberEvaluation);
+      });
+    });
+
+    describe('memberId === null', () => {
+      beforeEach(() => {
+        memberId = null;
+      });
+      it('success - check method called', () => {
+        lessonEvaluationService.readMemberEvaluation(lessonId, memberId);
+
+        expect(prismaService.lessonLevelEvaluation.findFirst).toBeCalledTimes(
+          0,
+        );
+      });
+      it('success - check Input & Output', () => {
+        const returnValue = lessonEvaluationService.readMemberEvaluation(
+          lessonId,
+          memberId,
+        );
+
+        expect(returnValue).toBeNull();
+      });
+    });
+  });
 });
