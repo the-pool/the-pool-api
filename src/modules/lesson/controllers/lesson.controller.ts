@@ -25,7 +25,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
@@ -40,7 +40,7 @@ import { LessonService } from '../services/lesson.service';
 export class LessonController {
   constructor(
     private readonly lessonService: LessonService,
-    private readonly prismaHelper: PrismaHelper,
+    private readonly prismaService: PrismaService,
   ) {}
 
   @ApiOperation({ summary: '과제 생성' })
@@ -76,7 +76,7 @@ export class LessonController {
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -103,7 +103,7 @@ export class LessonController {
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });

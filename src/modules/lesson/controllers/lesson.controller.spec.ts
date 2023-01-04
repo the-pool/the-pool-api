@@ -12,13 +12,13 @@ import { LessonController } from './lesson.controller';
 import { plainToInstance } from 'class-transformer';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
-import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
   let lessonService;
-  let prismaHelper;
+  let prismaService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LessonController],
@@ -28,15 +28,15 @@ describe('LessonController', () => {
           useValue: mockLessonService,
         },
         {
-          provide: PrismaHelper,
-          useValue: mockPrismaHelper,
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
 
     lessonController = module.get<LessonController>(LessonController);
     lessonService = mockLessonService;
-    prismaHelper = mockPrismaHelper;
+    prismaService = mockPrismaService;
   });
 
   afterEach(async () => {
@@ -124,7 +124,7 @@ describe('LessonController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
       expect(returnValue).toBeInstanceOf(LessonEntity);
     });
@@ -147,7 +147,7 @@ describe('LessonController', () => {
     it('success', async () => {
       const result = await lessonController.deleteLesson(param, memberId);
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.deleteLesson).toBeCalledWith(param.id);
       expect(result).toBeInstanceOf(LessonEntity);
     });

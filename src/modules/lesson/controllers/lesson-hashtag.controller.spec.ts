@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
-import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
+import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
@@ -15,7 +15,7 @@ import { LessonHashtagController } from './lesson-hashtag.controller';
 describe('LessonHashtagController', () => {
   let lessonHashtagController: LessonHashtagController;
   let lessonHashtagService;
-  let prismaHelper;
+  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,8 +26,8 @@ describe('LessonHashtagController', () => {
           useValue: mockLessonHashtagService,
         },
         {
-          provide: PrismaHelper,
-          useValue: mockPrismaHelper,
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -36,7 +36,7 @@ describe('LessonHashtagController', () => {
       LessonHashtagController,
     );
     lessonHashtagService = mockLessonHashtagService;
-    prismaHelper = mockPrismaHelper;
+    prismaService = mockPrismaService;
   });
 
   afterEach(async () => {
@@ -69,7 +69,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.createHashtag).toBeCalledWith(
         createHashtagDto.hashtags,
@@ -114,7 +114,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(mockLessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(
         1,
       );
@@ -157,7 +157,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(2);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.updateHashtag).toBeCalledWith(
         param.hashtagId,
@@ -191,7 +191,7 @@ describe('LessonHashtagController', () => {
     it('success - check method called', async () => {
       await lessonHashtagController.deleteHashtag(param, memberId);
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(2);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.deleteHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.deleteHashtag).toBeCalledWith(
         param.hashtagId,
@@ -247,7 +247,7 @@ describe('LessonHashtagController', () => {
     it('success - check method called', async () => {
       await lessonHashtagController.readHashtag(param);
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.readHashtag).toBeCalledTimes(1);
       expect(lessonHashtagService.readHashtag).toBeCalledWith(param.hashtagId);
     });

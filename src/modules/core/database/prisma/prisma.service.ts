@@ -1,10 +1,14 @@
 import {
+  ForbiddenException,
   INestApplication,
   Injectable,
+  InternalServerErrorException,
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { NotFoundError } from '@prisma/client/runtime';
+import { PrismaModel, PrismaModelName } from '@src/types/type';
 
 @Injectable()
 export class PrismaService
@@ -53,5 +57,34 @@ export class PrismaService
     this.$on('beforeExit', async () => {
       await app.close();
     });
+  }
+  findOneOrFail(modelName: PrismaModelName, where: any): Promise<PrismaModel> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return this[modelName].findFirstOrThrow({
+      where,
+    });
+  }
+
+  /**
+   * A라는 id를 가진 자식요소가 B라는 부모 요소의 자식 요소가 맞는지 확인할 때 사용하려고 만든 메서드
+   * 성공 : Model의 id에 해당하는 리소스 return
+   * 실패 : status - 403, message - You do not have access to ${modelName}
+   */
+  validateOwnerOrFail(
+    modelName: PrismaModelName,
+    where: any,
+  ): Promise<PrismaModel> {
+    return this.findOneOrFail(modelName, where)
+      .then()
+      .catch((err) => {
+        if (err instanceof NotFoundError) {
+          throw new ForbiddenException(
+            `You do not have access to ${modelName}`,
+          );
+        }
+
+        throw new InternalServerErrorException(err);
+      });
   }
 }

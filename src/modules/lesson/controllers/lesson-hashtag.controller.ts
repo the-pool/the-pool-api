@@ -23,7 +23,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
@@ -37,7 +37,7 @@ import { LessonHashtagService } from '../services/lesson-hashtag.service';
 export class LessonHashtagController {
   constructor(
     private readonly lessonHashtagService: LessonHashtagService,
-    private readonly prismaHelper: PrismaHelper,
+    private readonly prismaService: PrismaService,
   ) {}
 
   @ApiOperation({ summary: '과제 해시태그 생성' })
@@ -53,7 +53,7 @@ export class LessonHashtagController {
     @Body() { hashtags }: CreateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -78,7 +78,7 @@ export class LessonHashtagController {
     @Body() { hashtags }: UpdateManyHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -105,13 +105,13 @@ export class LessonHashtagController {
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     // Lesson 주인이 memberId가 맞는지
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
     // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });
@@ -137,13 +137,13 @@ export class LessonHashtagController {
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     // Lesson 주인이 memberId가 맞는지
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
     // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });
@@ -181,7 +181,7 @@ export class LessonHashtagController {
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
   ): Promise<{ hashtag: LessonHashtagEntity | null }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonHashtag, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
       id: param.hashtagId,
       lessonId: param.id,
     });
