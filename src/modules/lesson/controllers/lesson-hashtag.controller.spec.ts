@@ -6,7 +6,6 @@ import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hash
 import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
-import { HashtagEntity } from '@src/modules/hashtag/entities/hashtag.entity';
 import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
@@ -146,7 +145,7 @@ describe('LessonHashtagController', () => {
       memberId = faker.datatype.number();
       updateHashtagDto = new UpdateHashtagDto();
       param = new LessonHashtagParamDto();
-      updatedHashtag = new HashtagEntity();
+      updatedHashtag = new LessonHashtagEntity();
 
       lessonHashtagService.updateHashtag.mockReturnValue(updatedHashtag);
     });
