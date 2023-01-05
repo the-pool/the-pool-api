@@ -14,6 +14,7 @@ import {
   ApiTags,
   PickType,
 } from '@nestjs/swagger';
+import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
@@ -42,8 +43,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 생성' })
   @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createHashtag(
@@ -67,8 +68,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 대량 수정' })
   @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put()
   async updateManyHashtag(
@@ -93,8 +94,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
   @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put(':hashtagId')
   async updateHashtag(
@@ -126,8 +127,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
   @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Delete(':hashtagId')
   async deleteHashtag(
@@ -157,7 +158,7 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제의 해시태그 조회' })
   @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyHashtag(
@@ -172,8 +173,8 @@ export class LessonHashtagController {
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
   @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':hashtagId')
   async readHashtag(

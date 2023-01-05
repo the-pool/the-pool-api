@@ -16,6 +16,7 @@ import {
   OmitType,
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
+import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
@@ -65,8 +66,8 @@ export class LessonController {
   @ApiSuccessResponse(HttpStatus.OK, {
     lesson: OmitType(LessonEntity, ['hashtags']),
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
   async updateLesson(
@@ -93,8 +94,8 @@ export class LessonController {
   @ApiSuccessResponse(HttpStatus.OK, {
     lesson: OmitType(LessonEntity, ['hashtags']),
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
   async deleteLesson(
@@ -114,7 +115,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiSuccessResponse(HttpStatus.OK, { lesson: ReadOneLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   async readOneLesson(
@@ -132,7 +133,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(
