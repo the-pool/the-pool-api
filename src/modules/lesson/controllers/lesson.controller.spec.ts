@@ -67,14 +67,23 @@ describe('LessonController', () => {
       lessonService.createLesson.mockReturnValue(lesson);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
+      await lessonController.createLesson(createLessonDto, memberId);
+
+      expect(lessonService.createLesson).toBeCalledTimes(1);
+      expect(lessonService.createLesson).toBeCalledWith(
+        createLessonDto,
+        memberId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonController.createLesson(
         createLessonDto,
         memberId,
       );
 
       expect(returnValue).toStrictEqual({ lesson });
-      expect(lessonService.createLesson).toBeCalledTimes(1);
     });
   });
 
@@ -96,15 +105,24 @@ describe('LessonController', () => {
       lessonService.updateLesson.mockReturnValue(updatedLesson);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
+      await lessonController.updateLesson(param, updateLessonDto, memberId);
+
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(lessonService.updateLesson).toBeCalledTimes(1);
+      expect(lessonService.updateLesson).toBeCalledWith(
+        updateLessonDto,
+        param.id,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonController.updateLesson(
         param,
         updateLessonDto,
         memberId,
       );
 
-      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
-      expect(lessonService.updateLesson).toBeCalledTimes(1);
       expect(returnValue).toStrictEqual({ lesson: updatedLesson });
     });
   });
@@ -122,11 +140,17 @@ describe('LessonController', () => {
       lessonService.deleteLesson.mockReturnValue(deletedLesson);
     });
 
-    it('success', async () => {
-      const result = await lessonController.deleteLesson(param, memberId);
+    it('success - check method called', async () => {
+      await lessonController.deleteLesson(param, memberId);
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(lessonService.deleteLesson).toBeCalledTimes(1);
       expect(lessonService.deleteLesson).toBeCalledWith(param.id);
+    });
+
+    it('success - check Input & Output', async () => {
+      const result = await lessonController.deleteLesson(param, memberId);
+
       expect(result).toStrictEqual({ lesson: deletedLesson });
     });
   });
@@ -149,7 +173,14 @@ describe('LessonController', () => {
       lessonService.readOneLesson.mockReturnValue(readOneLesson);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
+      await lessonController.readOneLesson(param, member);
+
+      expect(lessonService.readOneLesson).toBeCalledTimes(1);
+      expect(lessonService.readOneLesson).toBeCalledWith(param.id, member.id);
+    });
+
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonController.readOneLesson(param, member);
 
       expect(returnValue).toStrictEqual({ lesson: readOneLesson });
@@ -174,23 +205,18 @@ describe('LessonController', () => {
       lessonService.readSimilarLesson.mockReturnValue(readSimilarLessons);
     });
 
-    it('success - routing, plain object to class object converting', async () => {
-      const returnValue = await lessonController.readSimilarLesson(
-        param,
-        query,
-        member,
-      );
+    it('success - check method called', async () => {
+      await lessonController.readSimilarLesson(param, query, member);
 
-      expect(lessonService.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(lessonService.readSimilarLesson).toBeCalledTimes(1);
       expect(lessonService.readSimilarLesson).toBeCalledWith(
         param.id,
         member.id,
         query,
       );
-      expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
     });
 
-    it('success - plainToInstance Transform isBookmark', async () => {
+    it('success - Input & Output', async () => {
       readSimilarLessons = plainToInstance(SimilarLessonEntity, [
         {
           isBookmark: faker.datatype.number(),
@@ -205,6 +231,7 @@ describe('LessonController', () => {
       );
 
       expect(typeof returnValue.lessons[0].isBookmark).toBe('boolean');
+      expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
     });
   });
 });
