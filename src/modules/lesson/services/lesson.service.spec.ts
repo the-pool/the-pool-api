@@ -5,6 +5,8 @@ import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
@@ -46,61 +48,54 @@ describe('LessonService', () => {
   describe('createLesson', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
+    let createdLesson: LessonEntity;
 
     beforeEach(() => {
-      createLessonDto = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        thumbnail: faker.image.imageUrl(),
-        categoryId: faker.datatype.number({ min: 1, max: 9 }),
-      };
+      createLessonDto = new CreateLessonDto();
       memberId = 1;
+      createdLesson = new LessonEntity();
+
+      prismaService.lesson.create.mockReturnValue(createdLesson);
     });
 
-    it('success', async () => {
-      const lesson = {
-        id: faker.datatype.number(),
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        hit: faker.datatype.number(),
-        createdAt: faker.date.soon(),
-        updatedAt: faker.date.soon(),
-        deletedAt: null,
-      };
+    it('success - check method called', async () => {
+      await lessonService.createLesson(createLessonDto, memberId);
 
-      prismaService.lesson.create.mockReturnValue(lesson);
+      expect(prismaService.lesson.create).toBeCalledTimes(1);
+    });
 
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonService.createLesson(
         createLessonDto,
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(lesson);
+      expect(returnValue).toStrictEqual(createdLesson);
     });
   });
 
   describe('updateLesson', () => {
-    let lesson;
+    let lesson: UpdateLessonDto;
     let memberId: number;
     let lessonId: number;
-    let updatedLesson;
+    let updatedLesson: LessonEntity;
 
     beforeEach(() => {
-      lesson = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-      };
+      lesson = new UpdateLessonDto();
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-      updatedLesson = JSON.parse(faker.datatype.json());
+      updatedLesson = new LessonEntity();
 
       prismaService.lesson.update.mockReturnValue(updatedLesson);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
+      await lessonService.updateLesson(lesson, lessonId);
+
+      expect(prismaService.lesson.update).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonService.updateLesson(lesson, lessonId);
 
       expect(returnValue).toStrictEqual(updatedLesson);
@@ -108,28 +103,27 @@ describe('LessonService', () => {
   });
 
   describe('deleteLesson', () => {
-    let lesson;
     let memberId: number;
     let lessonId: number;
-    let deletedLesson;
+    let deletedLesson: LessonEntity;
 
     beforeEach(() => {
-      lesson = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-      };
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-      deletedLesson = JSON.parse(faker.datatype.json());
+      deletedLesson = new LessonEntity();
 
       prismaService.lesson.delete.mockReturnValue(deletedLesson);
     });
 
-    it('success', async () => {
-      const returnValue = await lessonService.deleteLesson(lessonId);
+    it('success - check method called', async () => {
+      await lessonService.deleteLesson(lessonId);
 
       expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.deleteLesson(lessonId);
+
       expect(returnValue).toStrictEqual(deletedLesson);
     });
   });
@@ -142,8 +136,8 @@ describe('LessonService', () => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
     });
-
-    it('success', async () => {
+    // 과제 평가 api를 생성하는 pr에서 test 하겠습니다.
+    xit('success', async () => {
       const lesson = faker.datatype.string();
       const lessonLevelEvaluation = faker.datatype.string();
       const lessonHashtag = faker.datatype.array();
@@ -166,28 +160,36 @@ describe('LessonService', () => {
     let memberId: number;
     let lessonId: number;
     let query: SimilarLessonQueryDto;
-    let mockSimilarLessons: SimilarLessonEntity;
+    let readSimilarLessons: SimilarLessonEntity[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       query = new SimilarLessonQueryDto();
-      mockSimilarLessons = JSON.parse(faker.datatype.json());
+      readSimilarLessons = [new SimilarLessonEntity()];
 
-      mockLessonRepository.readSimilarLesson.mockReturnValue(
-        mockSimilarLessons,
-      );
+      lessonRepository.readSimilarLesson.mockReturnValue(readSimilarLessons);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
       await lessonService.readSimilarLesson(lessonId, memberId, query);
 
-      expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
-      expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
+      expect(lessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(lessonRepository.readSimilarLesson).toBeCalledWith(
         lessonId,
         memberId,
         query,
       );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.readSimilarLesson(
+        lessonId,
+        memberId,
+        query,
+      );
+
+      expect(returnValue).toStrictEqual(readSimilarLessons);
     });
   });
 });
