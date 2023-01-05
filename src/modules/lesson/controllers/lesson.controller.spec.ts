@@ -51,6 +51,7 @@ describe('LessonController', () => {
   describe('createLesson', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
+    let lesson: LessonEntity;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
@@ -61,32 +62,18 @@ describe('LessonController', () => {
         thumbnail: faker.image.imageUrl(),
         categoryId: faker.datatype.number(),
       };
-    });
+      lesson = new LessonEntity();
 
-    afterEach(() => {
-      lessonService.createLesson.mockRestore();
+      lessonService.createLesson.mockReturnValue(lesson);
     });
 
     it('success', async () => {
-      const lesson = {
-        id: faker.datatype.number(),
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        hit: faker.datatype.number(),
-        createdAt: faker.date.soon(),
-        updatedAt: faker.date.soon(),
-        deletedAt: null,
-      };
-
-      lessonService.createLesson.mockReturnValue(lesson);
-
       const returnValue = await lessonController.createLesson(
         createLessonDto,
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(lesson);
+      expect(returnValue).toStrictEqual({ lesson });
       expect(lessonService.createLesson).toBeCalledTimes(1);
     });
   });
@@ -95,31 +82,21 @@ describe('LessonController', () => {
     let updateLessonDto: UpdateLessonDto;
     let memberId: number;
     let param: IdRequestParamDto;
-    let lessonEntity;
+    let updatedLesson: LessonEntity;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      lessonEntity = new LessonEntity();
-      updateLessonDto = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        thumbnail: faker.image.imageUrl(),
-        categoryId: faker.datatype.number(),
-      };
+      updatedLesson = new LessonEntity();
+      updateLessonDto = new UpdateLessonDto();
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
       };
-    });
 
-    afterEach(() => {
-      lessonService.updateLesson.mockRestore();
+      lessonService.updateLesson.mockReturnValue(updatedLesson);
     });
 
     it('success', async () => {
-      lessonService.updateLesson.mockReturnValue(lessonEntity);
-
       const returnValue = await lessonController.updateLesson(
         param,
         updateLessonDto,
@@ -128,24 +105,21 @@ describe('LessonController', () => {
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.updateLesson).toBeCalledTimes(1);
-      expect(returnValue).toBeInstanceOf(LessonEntity);
+      expect(returnValue).toStrictEqual({ lesson: updatedLesson });
     });
   });
 
   describe('deleteLesson', () => {
     let param: IdRequestParamDto;
     let memberId: any;
-    let mockLesson: Omit<LessonEntity, 'hashtag'>;
+    let deletedLesson: Omit<LessonEntity, 'hashtag'>;
 
     beforeEach(() => {
       param = new IdRequestParamDto();
       memberId = faker.datatype.number();
-      mockLesson = plainToInstance(
-        LessonEntity,
-        JSON.parse(faker.datatype.json()),
-      );
+      deletedLesson = new LessonEntity();
 
-      lessonService.deleteLesson.mockReturnValue(mockLesson);
+      lessonService.deleteLesson.mockReturnValue(deletedLesson);
     });
 
     it('success', async () => {
@@ -153,17 +127,17 @@ describe('LessonController', () => {
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.deleteLesson).toBeCalledWith(param.id);
-      expect(result).toBeInstanceOf(LessonEntity);
+      expect(result).toStrictEqual({ lesson: deletedLesson });
     });
   });
 
   describe('readOneLesson', () => {
     let param: IdRequestParamDto;
     let member: any;
-    let lesson: any;
+    let readOneLesson: ReadOneLessonDto;
 
     beforeEach(() => {
-      lesson = { id: faker.datatype.number() };
+      readOneLesson = new ReadOneLessonDto();
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
@@ -171,14 +145,14 @@ describe('LessonController', () => {
       member = {
         id: faker.datatype.number(),
       };
+
+      lessonService.readOneLesson.mockReturnValue(readOneLesson);
     });
 
     it('success', async () => {
-      lessonService.readOneLesson.mockReturnValue(lesson);
-
       const returnValue = await lessonController.readOneLesson(param, member);
 
-      expect(returnValue).toBeInstanceOf(ReadOneLessonDto);
+      expect(returnValue).toStrictEqual({ lesson: readOneLesson });
     });
   });
 
@@ -186,7 +160,7 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let query: SimilarLessonQueryDto;
-    let mockSimilarLessons: any;
+    let readSimilarLessons: SimilarLessonEntity[];
 
     beforeEach(() => {
       member = { id: faker.datatype.number() };
@@ -195,12 +169,9 @@ describe('LessonController', () => {
         model: 'lesson',
       };
       query = new SimilarLessonQueryDto();
-      mockSimilarLessons = plainToInstance(
-        SimilarLessonEntity,
-        JSON.parse(faker.datatype.json()),
-      );
+      readSimilarLessons = [new SimilarLessonEntity()];
 
-      lessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
+      lessonService.readSimilarLesson.mockReturnValue(readSimilarLessons);
     });
 
     it('success - routing, plain object to class object converting', async () => {
@@ -217,16 +188,15 @@ describe('LessonController', () => {
         query,
       );
       expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
-      expect(returnValue.lessons).toStrictEqual(mockSimilarLessons);
     });
 
     it('success - plainToInstance Transform isBookmark', async () => {
-      mockSimilarLessons = plainToInstance(SimilarLessonEntity, [
+      readSimilarLessons = plainToInstance(SimilarLessonEntity, [
         {
           isBookmark: faker.datatype.number(),
         },
       ]);
-      lessonService.readSimilarLesson.mockReturnValue(mockSimilarLessons);
+      lessonService.readSimilarLesson.mockReturnValue(readSimilarLessons);
 
       const returnValue = await lessonController.readSimilarLesson(
         param,

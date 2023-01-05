@@ -1,15 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
-import { LessonEntity } from '../entities/lesson.entity';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
@@ -37,7 +35,7 @@ describe('LessonService', () => {
     prismaService = mockPrismaService;
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -49,7 +47,7 @@ describe('LessonService', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       createLessonDto = {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
@@ -89,7 +87,7 @@ describe('LessonService', () => {
     let lessonId: number;
     let updatedLesson;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       lesson = {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
@@ -115,7 +113,7 @@ describe('LessonService', () => {
     let lessonId: number;
     let deletedLesson;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       lesson = {
         levelId: faker.datatype.number(),
         description: faker.lorem.text(),
@@ -140,7 +138,7 @@ describe('LessonService', () => {
     let memberId: number;
     let lessonId: number;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
     });
@@ -170,7 +168,7 @@ describe('LessonService', () => {
     let query: SimilarLessonQueryDto;
     let mockSimilarLessons: SimilarLessonEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       query = new SimilarLessonQueryDto();
