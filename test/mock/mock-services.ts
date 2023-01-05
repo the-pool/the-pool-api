@@ -32,11 +32,11 @@ export const mockLessonService: MockClassType<LessonService> = {
 };
 
 export const mockLessonHashtagService: MockClassType<LessonHashtagService> = {
-  createHashtag: jest.fn(),
+  createManyHashtag: jest.fn(),
   updateManyHashtag: jest.fn(),
-  updateHashtag: jest.fn(),
+  updateOneHashtag: jest.fn(),
   deleteManyHashtag: jest.fn(),
-  deleteHashtag: jest.fn(),
-  readHashtag: jest.fn(),
+  deleteOneHashtag: jest.fn(),
+  readOneHashtag: jest.fn(),
   readManyHashtag: jest.fn(),
 };

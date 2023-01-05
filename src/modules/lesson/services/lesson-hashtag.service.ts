@@ -11,10 +11,7 @@ export class LessonHashtagService {
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
-  /**
-   * lesson의 hashtag 단일 생성,
-   */
-  async createHashtag(
+  async createManyHashtag(
     hashtags: string[],
     lessonId: number,
   ): Promise<LessonHashtagEntity[]> {
@@ -32,7 +29,7 @@ export class LessonHashtagService {
     return this.readManyHashtag(lessonId);
   }
 
-  updateHashtag(hashtagId: number, hashtag: string) {
+  updateOneHashtag(hashtagId: number, hashtag: string) {
     return this.prismaService.lessonHashtag.update({
       where: { id: hashtagId },
       data: { tag: hashtag },
@@ -45,10 +42,10 @@ export class LessonHashtagService {
   ): Promise<LessonHashtagEntity[]> {
     await this.deleteManyHashtag(lessonId);
 
-    return this.createHashtag(hashtags, lessonId);
+    return this.createManyHashtag(hashtags, lessonId);
   }
 
-  deleteHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
+  deleteOneHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
     return this.prismaService.lessonHashtag.delete({
       where: {
         id: hashtagId,
@@ -64,7 +61,7 @@ export class LessonHashtagService {
     });
   }
 
-  readHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
+  readOneHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
     return this.prismaService.lessonHashtag.findUnique({
       where: {
         id: hashtagId,

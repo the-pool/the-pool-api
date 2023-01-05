@@ -63,7 +63,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.createHashtag(
+      await lessonHashtagController.createManyHashtag(
         param,
         createHashtagDto,
         memberId,
@@ -78,7 +78,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagController.createHashtag(
+      const returnValue = await lessonHashtagController.createManyHashtag(
         param,
         createHashtagDto,
         memberId,
@@ -151,7 +151,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.updateHashtag(
+      await lessonHashtagController.updateOneHashtag(
         param,
         updateHashtagDto,
         memberId,
@@ -166,7 +166,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const reuturnValue = await lessonHashtagController.updateHashtag(
+      const reuturnValue = await lessonHashtagController.updateOneHashtag(
         param,
         updateHashtagDto,
         memberId,
@@ -190,7 +190,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.deleteHashtag(param, memberId);
+      await lessonHashtagController.deleteOneHashtag(param, memberId);
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
       expect(lessonHashtagService.deleteHashtag).toBeCalledTimes(1);
@@ -200,7 +200,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagController.deleteHashtag(
+      const returnValue = await lessonHashtagController.deleteOneHashtag(
         param,
         memberId,
       );
@@ -246,7 +246,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.readHashtag(param);
+      await lessonHashtagController.readOneHashtag(param);
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonHashtagService.readHashtag).toBeCalledTimes(1);
@@ -254,7 +254,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagController.readHashtag(param);
+      const returnValue = await lessonHashtagController.readOneHashtag(param);
 
       expect(returnValue).toStrictEqual({ hashtag });
     });

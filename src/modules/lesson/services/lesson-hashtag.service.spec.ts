@@ -62,7 +62,7 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagService.createHashtag(hashtags, lessonId);
+      await lessonHashtagService.createManyHashtag(hashtags, lessonId);
 
       expect(prismaService.lessonHashtag.createMany).toBeCalledTimes(1);
       expect(prismaService.lessonHashtag.findMany).toBeCalledTimes(1);
@@ -70,7 +70,7 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagService.createHashtag(
+      const returnValue = await lessonHashtagService.createManyHashtag(
         hashtags,
         lessonId,
       );
@@ -102,7 +102,7 @@ describe('LessonHashtagService', () => {
         lessonHashtagService,
         'deleteManyHashtag',
       );
-      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createHashtag');
+      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createManyHashtag');
     });
 
     it('success - check method called', async () => {
@@ -136,13 +136,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagService.updateHashtag(hashtagId, hashtag);
+      await lessonHashtagService.updateOneHashtag(hashtagId, hashtag);
 
       expect(prismaService.lessonHashtag.update).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagService.updateHashtag(
+      const returnValue = await lessonHashtagService.updateOneHashtag(
         hashtagId,
         hashtag,
       );
@@ -163,13 +163,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', () => {
-      lessonHashtagService.deleteHashtag(hashtagId);
+      lessonHashtagService.deleteOneHashtag(hashtagId);
 
       expect(prismaService.lessonHashtag.delete).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonHashtagService.deleteHashtag(hashtagId);
+      const returnValue = lessonHashtagService.deleteOneHashtag(hashtagId);
 
       expect(returnValue).toStrictEqual(deletedHashtag);
     });
@@ -237,13 +237,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', () => {
-      lessonHashtagService.readHashtag(hashtagId);
+      lessonHashtagService.readOneHashtag(hashtagId);
 
       expect(prismaService.lessonHashtag.findUnique).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonHashtagService.readHashtag(hashtagId);
+      const returnValue = lessonHashtagService.readOneHashtag(hashtagId);
 
       expect(returnValue).toStrictEqual(hashtag);
     });

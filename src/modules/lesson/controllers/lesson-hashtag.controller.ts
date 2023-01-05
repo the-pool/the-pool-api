@@ -47,7 +47,7 @@ export class LessonHashtagController {
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Post()
-  async createHashtag(
+  async createManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
@@ -59,7 +59,7 @@ export class LessonHashtagController {
       memberId,
     });
 
-    const createdHashtags = await this.lessonHashtagService.createHashtag(
+    const createdHashtags = await this.lessonHashtagService.createManyHashtag(
       hashtags,
       param.id,
     );
@@ -99,7 +99,7 @@ export class LessonHashtagController {
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put(':hashtagId')
-  async updateHashtag(
+  async updateOneHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
@@ -118,7 +118,7 @@ export class LessonHashtagController {
       lessonId: param.id,
     });
 
-    const updatedHashtag = await this.lessonHashtagService.updateHashtag(
+    const updatedHashtag = await this.lessonHashtagService.updateOneHashtag(
       param.hashtagId,
       hashtag,
     );
@@ -132,7 +132,7 @@ export class LessonHashtagController {
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Delete(':hashtagId')
-  async deleteHashtag(
+  async deleteOneHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
@@ -150,7 +150,7 @@ export class LessonHashtagController {
       lessonId: param.id,
     });
 
-    const deletedHashtag = await this.lessonHashtagService.deleteHashtag(
+    const deletedHashtag = await this.lessonHashtagService.deleteOneHashtag(
       param.hashtagId,
     );
 
@@ -178,7 +178,7 @@ export class LessonHashtagController {
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':hashtagId')
-  async readHashtag(
+  async readOneHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
@@ -188,7 +188,7 @@ export class LessonHashtagController {
       lessonId: param.id,
     });
 
-    const hashtag = await this.lessonHashtagService.readHashtag(
+    const hashtag = await this.lessonHashtagService.readOneHashtag(
       param.hashtagId,
     );
 
