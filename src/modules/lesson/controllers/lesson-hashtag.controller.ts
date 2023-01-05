@@ -106,17 +106,16 @@ export class LessonHashtagController {
     @Body() { hashtag }: UpdateHashtagDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
-    // Lesson 주인이 memberId가 맞는지
-    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-      id: param.id,
-      memberId,
-    });
-
-    // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-      id: param.hashtagId,
-      lessonId: param.id,
-    });
+    await Promise.all([
+      this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
+        id: param.id,
+        memberId,
+      }),
+      this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
+        id: param.hashtagId,
+        lessonId: param.id,
+      }),
+    ]);
 
     const updatedHashtag = await this.lessonHashtagService.updateOneHashtag(
       param.hashtagId,
@@ -138,17 +137,16 @@ export class LessonHashtagController {
     param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
-    // Lesson 주인이 memberId가 맞는지
-    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-      id: param.id,
-      memberId,
-    });
-
-    // hashtag의 과제 번호가 LessonId가 맞는지
-    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-      id: param.hashtagId,
-      lessonId: param.id,
-    });
+    await Promise.all([
+      this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
+        id: param.id,
+        memberId,
+      }),
+      this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
+        id: param.hashtagId,
+        lessonId: param.id,
+      }),
+    ]);
 
     const deletedHashtag = await this.lessonHashtagService.deleteOneHashtag(
       param.hashtagId,
