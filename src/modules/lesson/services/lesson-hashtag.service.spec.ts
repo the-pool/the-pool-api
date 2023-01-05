@@ -45,7 +45,7 @@ describe('LessonHashtagService', () => {
     let fakeId: number;
     let createdLessonHashtags;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       fakeString = faker.datatype.string();
       fakeId = faker.datatype.number();
       hashtags = [fakeString];
@@ -57,7 +57,7 @@ describe('LessonHashtagService', () => {
       );
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       jest.clearAllMocks();
     });
 
@@ -88,16 +88,16 @@ describe('LessonHashtagService', () => {
     let spyDeleteManyHashtag: jest.SpyInstance;
     let spyCreateHashtag: jest.SpyInstance;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       fakeId = faker.datatype.number();
       fakeString = faker.datatype.string();
       hashtags = [fakeString];
       lessonId = faker.datatype.number();
       createdLessonHashtags = [new LessonHashtagEntity()];
+
       prismaService.lessonHashtag.findMany.mockReturnValue(
         createdLessonHashtags,
       );
-
       spyDeleteManyHashtag = jest.spyOn(
         lessonHashtagService,
         'deleteManyHashtag',
@@ -127,7 +127,7 @@ describe('LessonHashtagService', () => {
     let hashtag: string;
     let updatedHashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       hashtagId = faker.datatype.number();
       hashtag = faker.datatype.string();
       updatedHashtag = new LessonHashtagEntity();
@@ -205,7 +205,7 @@ describe('LessonHashtagService', () => {
     let lessonId: number;
     let hashtags: LessonHashtagEntity[];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       lessonId = faker.datatype.number();
       hashtags = [new LessonHashtagEntity()];
 
@@ -229,7 +229,7 @@ describe('LessonHashtagService', () => {
     let hashtagId: number;
     let hashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       hashtagId = faker.datatype.number();
       hashtag = new LessonHashtagEntity();
 
