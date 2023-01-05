@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
@@ -53,7 +52,7 @@ export class LessonHashtagService {
     });
   }
 
-  deleteManyHashtag(lessonId: number): PrismaPromise<{ count: number }> {
+  deleteManyHashtag(lessonId: number): Promise<{ count: number }> {
     return this.prismaService.lessonHashtag.deleteMany({
       where: {
         lessonId,

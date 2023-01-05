@@ -149,10 +149,9 @@ export class LessonController {
       member.id,
       query,
     );
-    const lessons = plainToInstance(ReadSimilarLessonDto, {
+
+    return plainToInstance(ReadSimilarLessonDto, {
       lessons: readSimilarLessons,
     });
-
-    return lessons;
   }
 }
