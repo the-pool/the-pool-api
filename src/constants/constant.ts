@@ -24,7 +24,7 @@ export const MAJOR_TEXT = {
   [MajorId.Development]: '디자인',
 } as const;
 
-// Error Message
+// HTTP ERROR MESSAGE
 export const HTTP_ERROR_MESSAGE = {
   FORBIDDEN: 'You do not have access to {modelName}',
   NOT_FOUND: "{modelId} doesn't exist id in {modelName}",

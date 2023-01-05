@@ -39,7 +39,7 @@ describe('LessonHashtagController', () => {
     prismaService = mockPrismaService;
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -53,7 +53,7 @@ describe('LessonHashtagController', () => {
     let memberId: number;
     let createdHashtags;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       createHashtagDto = new CreateManyHashtagDto();
       param = new IdRequestParamDto();
@@ -94,7 +94,7 @@ describe('LessonHashtagController', () => {
     let memberId: number;
     let updatedHashtags;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       updateHashtagDto = new UpdateManyHashtagDto();
       param = new IdRequestParamDto();
@@ -141,7 +141,7 @@ describe('LessonHashtagController', () => {
     let memberId: number;
     let updatedHashtag;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       updateHashtagDto = new UpdateHashtagDto();
       param = new LessonHashtagParamDto();
@@ -181,10 +181,11 @@ describe('LessonHashtagController', () => {
     let memberId: number;
     let deletedHashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       param = new LessonHashtagParamDto();
       deletedHashtag = new LessonHashtagEntity();
+
       lessonHashtagService.deleteHashtag.mockReturnValue(deletedHashtag);
     });
 
@@ -212,7 +213,7 @@ describe('LessonHashtagController', () => {
     let param: IdRequestParamDto;
     let hashtags: LessonHashtagEntity[];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       param = new IdRequestParamDto();
       hashtags = [new LessonHashtagEntity()];
 
@@ -237,7 +238,7 @@ describe('LessonHashtagController', () => {
     let param: LessonHashtagParamDto;
     let hashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       param = new LessonHashtagParamDto();
       hashtag = new LessonHashtagEntity();
 

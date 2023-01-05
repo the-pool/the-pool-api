@@ -63,6 +63,7 @@ export class LessonHashtagController {
       hashtags,
       param.id,
     );
+
     return { hashtags: createdHashtags };
   }
 
