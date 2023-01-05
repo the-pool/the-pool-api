@@ -19,6 +19,7 @@ describe('LessonController', () => {
   let lessonController: LessonController;
   let lessonService;
   let prismaService;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LessonController],
@@ -39,7 +40,7 @@ describe('LessonController', () => {
     prismaService = mockPrismaService;
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
@@ -51,7 +52,7 @@ describe('LessonController', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       createLessonDto = {
         levelId: faker.datatype.number(),
@@ -95,7 +96,8 @@ describe('LessonController', () => {
     let memberId: number;
     let param: IdRequestParamDto;
     let lessonEntity;
-    beforeEach(async () => {
+
+    beforeEach(() => {
       memberId = faker.datatype.number();
       lessonEntity = new LessonEntity();
       updateLessonDto = {
@@ -134,13 +136,15 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let memberId: any;
     let mockLesson: Omit<LessonEntity, 'hashtag'>;
-    beforeEach(async () => {
+
+    beforeEach(() => {
       param = new IdRequestParamDto();
       memberId = faker.datatype.number();
       mockLesson = plainToInstance(
         LessonEntity,
         JSON.parse(faker.datatype.json()),
       );
+
       lessonService.deleteLesson.mockReturnValue(mockLesson);
     });
 
@@ -157,7 +161,8 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let lesson: any;
-    beforeEach(async () => {
+
+    beforeEach(() => {
       lesson = { id: faker.datatype.number() };
       param = {
         id: faker.datatype.number(),
@@ -183,7 +188,7 @@ describe('LessonController', () => {
     let query: SimilarLessonQueryDto;
     let mockSimilarLessons: any;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       member = { id: faker.datatype.number() };
       param = {
         id: faker.datatype.number(),
@@ -204,6 +209,7 @@ describe('LessonController', () => {
         query,
         member,
       );
+
       expect(lessonService.readSimilarLesson).toHaveBeenCalledTimes(1);
       expect(lessonService.readSimilarLesson).toBeCalledWith(
         param.id,
@@ -227,6 +233,7 @@ describe('LessonController', () => {
         query,
         member,
       );
+
       expect(typeof returnValue.lessons[0].isBookmark).toBe('boolean');
     });
   });

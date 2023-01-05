@@ -108,6 +108,7 @@ export class LessonController {
       id: param.id,
       memberId,
     });
+
     const deletedLesson = await this.lessonService.deleteLesson(param.id);
 
     return { lesson: deletedLesson };
