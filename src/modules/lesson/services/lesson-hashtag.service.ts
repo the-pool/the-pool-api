@@ -14,15 +14,16 @@ export class LessonHashtagService {
     hashtags: string[],
     lessonId: number,
   ): Promise<LessonHashtagEntity[]> {
-    const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
+    const lessonIds = Array.from({ length: hashtags.length }, () => lessonId);
+    const lessonHashtags = this.dataStructureHelper.createManyMapper<
+      Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
+    >({
+      tag: hashtags,
+      lessonId: lessonIds,
+    });
 
     await this.prismaService.lessonHashtag.createMany({
-      data: this.dataStructureHelper.createManyMapper<
-        Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
-      >({
-        tag: hashtags,
-        lessonId: lessonIdArr,
-      }),
+      data: lessonHashtags,
     });
 
     return this.readManyHashtag(lessonId);
