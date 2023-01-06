@@ -8,11 +8,7 @@ import {
 } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
-import {
-  PrismaModel,
-  PrismaModelName,
-  PrismaWhereInput,
-} from '@src/types/type';
+import { PrismaModel, PrismaModelName } from '@src/types/type';
 
 @Injectable()
 export class PrismaService
@@ -63,10 +59,10 @@ export class PrismaService
     });
   }
 
-  findOneOrFail(
-    modelName: PrismaModelName,
-    where: PrismaWhereInput,
-  ): Promise<PrismaModel> {
+  /**
+   * @todo where 타입 개선해야 함 우선 type.ts에 PrismaWhereInput 타입 정의해 놓았음
+   */
+  findOneOrFail(modelName: PrismaModelName, where: any): Promise<PrismaModel> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this[modelName].findFirstOrThrow({
@@ -81,7 +77,7 @@ export class PrismaService
    */
   validateOwnerOrFail(
     modelName: PrismaModelName,
-    where: PrismaWhereInput,
+    where: any,
   ): Promise<PrismaModel> {
     return this.findOneOrFail(modelName, where)
       .then()
