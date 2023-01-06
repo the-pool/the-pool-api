@@ -45,7 +45,7 @@ describe('LessonHashtagService', () => {
     let fakeId: number;
     let createdLessonHashtags;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       fakeString = faker.datatype.string();
       fakeId = faker.datatype.number();
       hashtags = [fakeString];
@@ -57,12 +57,12 @@ describe('LessonHashtagService', () => {
       );
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       jest.clearAllMocks();
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagService.createHashtag(hashtags, lessonId);
+      await lessonHashtagService.createManyHashtag(hashtags, lessonId);
 
       expect(prismaService.lessonHashtag.createMany).toBeCalledTimes(1);
       expect(prismaService.lessonHashtag.findMany).toBeCalledTimes(1);
@@ -70,7 +70,7 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagService.createHashtag(
+      const returnValue = await lessonHashtagService.createManyHashtag(
         hashtags,
         lessonId,
       );
@@ -88,21 +88,21 @@ describe('LessonHashtagService', () => {
     let spyDeleteManyHashtag: jest.SpyInstance;
     let spyCreateHashtag: jest.SpyInstance;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       fakeId = faker.datatype.number();
       fakeString = faker.datatype.string();
       hashtags = [fakeString];
       lessonId = faker.datatype.number();
       createdLessonHashtags = [new LessonHashtagEntity()];
+
       prismaService.lessonHashtag.findMany.mockReturnValue(
         createdLessonHashtags,
       );
-
       spyDeleteManyHashtag = jest.spyOn(
         lessonHashtagService,
         'deleteManyHashtag',
       );
-      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createHashtag');
+      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createManyHashtag');
     });
 
     it('success - check method called', async () => {
@@ -127,7 +127,7 @@ describe('LessonHashtagService', () => {
     let hashtag: string;
     let updatedHashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       hashtagId = faker.datatype.number();
       hashtag = faker.datatype.string();
       updatedHashtag = new LessonHashtagEntity();
@@ -136,13 +136,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagService.updateHashtag(hashtagId, hashtag);
+      await lessonHashtagService.updateOneHashtag(hashtagId, hashtag);
 
       expect(prismaService.lessonHashtag.update).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagService.updateHashtag(
+      const returnValue = await lessonHashtagService.updateOneHashtag(
         hashtagId,
         hashtag,
       );
@@ -163,13 +163,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', () => {
-      lessonHashtagService.deleteHashtag(hashtagId);
+      lessonHashtagService.deleteOneHashtag(hashtagId);
 
       expect(prismaService.lessonHashtag.delete).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonHashtagService.deleteHashtag(hashtagId);
+      const returnValue = lessonHashtagService.deleteOneHashtag(hashtagId);
 
       expect(returnValue).toStrictEqual(deletedHashtag);
     });
@@ -205,7 +205,7 @@ describe('LessonHashtagService', () => {
     let lessonId: number;
     let hashtags: LessonHashtagEntity[];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       lessonId = faker.datatype.number();
       hashtags = [new LessonHashtagEntity()];
 
@@ -229,7 +229,7 @@ describe('LessonHashtagService', () => {
     let hashtagId: number;
     let hashtag: LessonHashtagEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       hashtagId = faker.datatype.number();
       hashtag = new LessonHashtagEntity();
 
@@ -237,13 +237,13 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', () => {
-      lessonHashtagService.readHashtag(hashtagId);
+      lessonHashtagService.readOneHashtag(hashtagId);
 
       expect(prismaService.lessonHashtag.findUnique).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonHashtagService.readHashtag(hashtagId);
+      const returnValue = lessonHashtagService.readOneHashtag(hashtagId);
 
       expect(returnValue).toStrictEqual(hashtag);
     });

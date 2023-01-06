@@ -2,9 +2,9 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Member } from '@prisma/client';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { mockPrismaHelper } from '../../../../test/mock/mock-helper';
+import { mockPrismaService } from 'test/mock/mock-prisma-service';
 import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
@@ -16,7 +16,7 @@ import { LessonEvaluationController } from './lesson-evaluation.controller';
 describe('LessonEvaluationController', () => {
   let lessonEvaluationController: LessonEvaluationController;
   let lessonEvaluationService;
-  let prismaHelper;
+  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,8 +27,8 @@ describe('LessonEvaluationController', () => {
           useValue: mockLessonEvaluationService,
         },
         {
-          provide: PrismaHelper,
-          useValue: mockPrismaHelper,
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();
@@ -37,7 +37,7 @@ describe('LessonEvaluationController', () => {
       LessonEvaluationController,
     );
     lessonEvaluationService = mockLessonEvaluationService;
-    prismaHelper = mockPrismaHelper;
+    prismaService = mockPrismaService;
   });
 
   afterEach(async () => {
@@ -72,8 +72,8 @@ describe('LessonEvaluationController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
-      expect(prismaHelper.validateDuplicateAndFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateDuplicateAndFail).toBeCalledTimes(1);
       expect(lessonEvaluationService.createEvaluation).toBeCalledWith(
         param.id,
         memberId,
@@ -116,7 +116,7 @@ describe('LessonEvaluationController', () => {
         memberId,
       );
 
-      expect(prismaHelper.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonEvaluationService.updateEvaluation).toBeCalledWith(
         param.id,
         updateEvaluationDto.levelId,

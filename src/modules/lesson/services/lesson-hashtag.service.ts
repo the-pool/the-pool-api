@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
@@ -11,28 +10,26 @@ export class LessonHashtagService {
     private readonly dataStructureHelper: DataStructureHelper,
   ) {}
 
-  /**
-   * lesson의 hashtag 단일 생성,
-   */
-  async createHashtag(
+  async createManyHashtag(
     hashtags: string[],
     lessonId: number,
   ): Promise<LessonHashtagEntity[]> {
-    const lessonIdArr = Array.from({ length: hashtags.length }, () => lessonId);
+    const lessonIds = Array.from({ length: hashtags.length }, () => lessonId);
+    const lessonHashtags = this.dataStructureHelper.createManyMapper<
+      Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
+    >({
+      tag: hashtags,
+      lessonId: lessonIds,
+    });
 
     await this.prismaService.lessonHashtag.createMany({
-      data: this.dataStructureHelper.createManyMapper<
-        Pick<LessonHashtagEntity, 'lessonId' | 'tag'>
-      >({
-        tag: hashtags,
-        lessonId: lessonIdArr,
-      }),
+      data: lessonHashtags,
     });
 
     return this.readManyHashtag(lessonId);
   }
 
-  updateHashtag(hashtagId: number, hashtag: string) {
+  updateOneHashtag(hashtagId: number, hashtag: string) {
     return this.prismaService.lessonHashtag.update({
       where: { id: hashtagId },
       data: { tag: hashtag },
@@ -45,10 +42,10 @@ export class LessonHashtagService {
   ): Promise<LessonHashtagEntity[]> {
     await this.deleteManyHashtag(lessonId);
 
-    return this.createHashtag(hashtags, lessonId);
+    return this.createManyHashtag(hashtags, lessonId);
   }
 
-  deleteHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
+  deleteOneHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
     return this.prismaService.lessonHashtag.delete({
       where: {
         id: hashtagId,
@@ -56,7 +53,7 @@ export class LessonHashtagService {
     });
   }
 
-  deleteManyHashtag(lessonId: number): PrismaPromise<{ count: number }> {
+  deleteManyHashtag(lessonId: number): Promise<{ count: number }> {
     return this.prismaService.lessonHashtag.deleteMany({
       where: {
         lessonId,
@@ -64,7 +61,7 @@ export class LessonHashtagService {
     });
   }
 
-  readHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
+  readOneHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
     return this.prismaService.lessonHashtag.findUnique({
       where: {
         id: hashtagId,

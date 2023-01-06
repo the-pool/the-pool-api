@@ -258,6 +258,7 @@ async function thePoolSeed() {
         name: DesignCategoryName.Etc,
       },
     ],
+    skipDuplicates: true,
   });
 }
 

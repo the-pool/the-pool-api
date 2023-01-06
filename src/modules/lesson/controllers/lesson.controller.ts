@@ -16,6 +16,7 @@ import {
   OmitType,
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
+import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
@@ -25,7 +26,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
@@ -40,7 +41,7 @@ import { LessonService } from '../services/lesson.service';
 export class LessonController {
   constructor(
     private readonly lessonService: LessonService,
-    private readonly prismaHelper: PrismaHelper,
+    private readonly prismaService: PrismaService,
   ) {}
 
   @ApiOperation({ summary: '과제 생성' })
@@ -65,8 +66,8 @@ export class LessonController {
   @ApiSuccessResponse(HttpStatus.OK, {
     lesson: OmitType(LessonEntity, ['hashtags']),
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
   async updateLesson(
@@ -76,7 +77,7 @@ export class LessonController {
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
@@ -93,8 +94,8 @@ export class LessonController {
   @ApiSuccessResponse(HttpStatus.OK, {
     lesson: OmitType(LessonEntity, ['hashtags']),
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
   async deleteLesson(
@@ -103,10 +104,11 @@ export class LessonController {
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.Lesson, {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
+
     const deletedLesson = await this.lessonService.deleteLesson(param.id);
 
     return { lesson: deletedLesson };
@@ -114,7 +116,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회' })
   @ApiSuccessResponse(HttpStatus.OK, { lesson: ReadOneLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   async readOneLesson(
@@ -132,7 +134,7 @@ export class LessonController {
 
   @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
   @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(
@@ -147,10 +149,9 @@ export class LessonController {
       member.id,
       query,
     );
-    const lessons = plainToInstance(ReadSimilarLessonDto, {
+
+    return plainToInstance(ReadSimilarLessonDto, {
       lessons: readSimilarLessons,
     });
-
-    return lessons;
   }
 }

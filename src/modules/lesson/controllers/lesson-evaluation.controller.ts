@@ -18,7 +18,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { PrismaHelper } from '@src/modules/core/database/prisma/prisma.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
@@ -30,7 +30,7 @@ import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 export class LessonEvaluationController {
   constructor(
     private readonly lessonEvaluationService: LessonEvaluationService,
-    private readonly prismaHelper: PrismaHelper,
+    private readonly prismaHelper: PrismaService,
   ) {}
 
   @ApiOperation({ summary: '과제 평가 생성' })
