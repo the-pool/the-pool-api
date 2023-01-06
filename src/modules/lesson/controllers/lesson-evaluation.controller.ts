@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
+import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
@@ -37,9 +38,9 @@ export class LessonEvaluationController {
   @ApiSuccessResponse(HttpStatus.CREATED, {
     evaluation: LessonEvaluationEntity,
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
-  @ApiFailureResponse(HttpStatus.CONFLICT, '~ is duplicatd')
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiFailureResponse(HttpStatus.CONFLICT, HTTP_ERROR_MESSAGE.CONFLICT)
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createEvaluation(
@@ -76,8 +77,8 @@ export class LessonEvaluationController {
   @ApiSuccessResponse(HttpStatus.OK, {
     evaluation: LessonEvaluationEntity,
   })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, 'You do not have access to ~')
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
   @Put()
   async updateEvaluation(
@@ -105,7 +106,7 @@ export class LessonEvaluationController {
 
   @ApiOperation({ summary: '과제 평가 조회' })
   @ApiOkResponse({ type: ReadEvaluationDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, "~ doesn't exist id in ~")
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readEvaluation(
