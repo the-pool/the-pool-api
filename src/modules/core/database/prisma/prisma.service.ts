@@ -8,7 +8,11 @@ import {
 } from '@nestjs/common';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
-import { PrismaModel, PrismaModelName } from '@src/types/type';
+import {
+  PrismaModel,
+  PrismaModelName,
+  PrismaWhereInput,
+} from '@src/types/type';
 
 @Injectable()
 export class PrismaService
@@ -59,7 +63,10 @@ export class PrismaService
     });
   }
 
-  findOneOrFail(modelName: PrismaModelName, where: any): Promise<PrismaModel> {
+  findOneOrFail(
+    modelName: PrismaModelName,
+    where: PrismaWhereInput,
+  ): Promise<PrismaModel> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this[modelName].findFirstOrThrow({
@@ -74,7 +81,7 @@ export class PrismaService
    */
   validateOwnerOrFail(
     modelName: PrismaModelName,
-    where: any,
+    where: PrismaWhereInput,
   ): Promise<PrismaModel> {
     return this.findOneOrFail(modelName, where)
       .then()
