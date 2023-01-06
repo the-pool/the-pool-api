@@ -71,7 +71,7 @@ jobs:
           echo $PROJECT_AWS_ACCESS_KEY >> .env
           echo $PROJECT_AWS_SECRET_KEY >> .env
           cat .env
-      - name: Docker run
+      - name: Docker run 
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
           REPOSITORY: api_server_container_repository
