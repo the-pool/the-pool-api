@@ -59,7 +59,7 @@ jobs:
           PROJECT_AWS_S3_ACL: ${{ secrets.PROJECT_AWS_S3_ACL }}
           PROJECT_AWS_S3_EXPIRES: ${{ secrets.PROJECT_AWS_S3_EXPIRES }}
         run: |
-          sudo rm .env
+          (ls .env && sudo rm .env) || echo "create .env"
           touch .env
           echo $PROJECT_DATABASE_URL >> .env
           echo $PROJECT_PORT >> .env
