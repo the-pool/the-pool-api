@@ -6,6 +6,7 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import {
@@ -28,6 +29,7 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -57,6 +59,7 @@ export class MemberController {
     private readonly authService: AuthService,
   ) {}
 
+  @UseInterceptors(UseDevelopmentInterceptor)
   @ApiOperation({
     summary: 'accessToken 발급 받기 (개발용)',
   })
@@ -66,7 +69,7 @@ export class MemberController {
   }
 
   /**
-   * 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
+   * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
   @ApiOperation({
     summary: '회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)',
@@ -116,11 +119,6 @@ export class MemberController {
     return this.memberService.login(account, member);
   }
 
-  /**
-   * swagger 작업
-   * validation service class 로 이동할거 이동
-   * loginOrSignUp 도 검토
-   */
   @ApiOperation({
     summary:
       '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
