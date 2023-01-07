@@ -1,6 +1,6 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import path from 'path';
 import request from 'supertest';
@@ -28,12 +28,12 @@ describe('MajorsController (e2e)', () => {
       },
     )) as Pick<MajorEntity, 'id'>;
 
-    const mainSkill: Pick<MainSkillEntity, 'id'> =
+    const mainSkill: Pick<MajorSkillEntity, 'id'> =
       (await prismaService.mainSkill.findFirst({
         select: {
           id: true,
         },
-      })) as Pick<MainSkillEntity, 'id'>;
+      })) as Pick<MajorSkillEntity, 'id'>;
 
     majorId = major.id;
     mainSkillId = mainSkill.id;
@@ -97,7 +97,7 @@ describe('MajorsController (e2e)', () => {
             expect(major).toHaveProperty('createdAt');
             expect(typeof major.createdAt).toBe('string');
             expect(major).toHaveProperty('mainSkills');
-            major.mainSkills?.forEach((mainSkill) => {
+            major.majorSkills?.forEach((mainSkill) => {
               expect(mainSkill).toHaveProperty('id');
               expect(typeof mainSkill.id).toBe('number');
               expect(mainSkill).toHaveProperty('majorId');

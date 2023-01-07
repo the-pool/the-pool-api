@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { MajorService } from './major.service';
@@ -84,11 +84,11 @@ describe('MajorService', () => {
   });
 
   describe('findMainSkills - 메인 스킬 리스트 조회', () => {
-    let mockMainSkills: MainSkillEntity[];
+    let mockMainSkills: MajorSkillEntity[];
     let majorId: number;
 
     beforeEach(() => {
-      mockMainSkills = [new MainSkillEntity()];
+      mockMainSkills = [new MajorSkillEntity()];
       majorId = faker.datatype.number();
       mockPrismaService.mainSkill.findMany.mockResolvedValueOnce(
         mockMainSkills,
@@ -96,7 +96,7 @@ describe('MajorService', () => {
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
-      const result: MainSkillEntity[] = await service.findMainSkills(majorId);
+      const result: MajorSkillEntity[] = await service.findMainSkills(majorId);
 
       expect(mockPrismaService.mainSkill.findMany).toBeCalledTimes(1);
       expect(mockPrismaService.mainSkill.findMany).toBeCalledWith({
@@ -109,12 +109,12 @@ describe('MajorService', () => {
   });
 
   describe('findMainSkill - 메인 스킬 단일 조회', () => {
-    let mockMainSkill: MainSkillEntity;
+    let mockMainSkill: MajorSkillEntity;
     let majorId: number;
     let mainSkillId: number;
 
     beforeEach(() => {
-      mockMainSkill = new MainSkillEntity();
+      mockMainSkill = new MajorSkillEntity();
       majorId = faker.datatype.number();
       mainSkillId = faker.datatype.number();
       mockPrismaService.mainSkill.findUnique.mockResolvedValueOnce(
@@ -123,7 +123,7 @@ describe('MajorService', () => {
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
-      const result: MainSkillEntity = await service.findMainSkill(
+      const result: MajorSkillEntity = await service.findMainSkill(
         majorId,
         mainSkillId,
       );

@@ -6,21 +6,19 @@ import {
   LessonLevel,
   LessonLevelEvaluation,
   LessonSolution,
-  MainSkill,
   Major,
+  MajorSkill,
   Member,
   MemberFollow,
   MemberReport,
   MemberSkill,
-  Post,
   Prisma,
-  User,
 } from '@prisma/client';
 
 export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
 export type PrismaModel =
-  | MainSkill
+  | MajorSkill
   | Major
   | Member
   | MemberReport
@@ -32,9 +30,7 @@ export type PrismaModel =
   | LessonLevel
   | LessonHashtag
   | LessonComment
-  | MemberSkill
-  | Post
-  | User;
+  | MemberSkill;
 
 export type Target<M extends PrismaModel = PrismaModel> = {
   model?: PrismaModelName;

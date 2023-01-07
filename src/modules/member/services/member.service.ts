@@ -26,6 +26,15 @@ export class MemberService {
   }
 
   /**
+   * member 의 스킬 조회
+   */
+  // findAllSkillsByMemberId(where: Prisma.MemberSkillWhereInput) {
+  //   return this.prismaService.memberSkill.findMany({
+  //     where,
+  //   });
+  // }
+
+  /**
    * member 회원가입
    */
   async signUp(
@@ -131,14 +140,14 @@ export class MemberService {
       const memberSkills = memberSkill.map((mainSkillId) => {
         return {
           memberId,
-          mainSkillId,
+          majorSkillId: mainSkillId,
         };
       });
 
-      await this.prismaService.memberSkill.deleteMany({
+      await this.prismaService.memberMajorSkillMapping.deleteMany({
         where: { memberId },
       });
-      await this.prismaService.memberSkill.createMany({
+      await this.prismaService.memberMajorSkillMapping.createMany({
         data: memberSkills,
       });
     }

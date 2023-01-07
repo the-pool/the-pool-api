@@ -82,6 +82,18 @@ export class MemberController {
     });
   }
 
+  // @ApiOperation({ summary: 'member 의 skill 조회' })
+  // @Get(':id/skills')
+  // findAllSkills(
+  //   @SetModelNameToParam('member')
+  //   @Param()
+  //   params: IdRequestParamDto,
+  // ) {
+  //   return this.memberService.findAllSkillsByMemberId({
+  //     memberId: params.id,
+  //   });
+  // }
+
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */

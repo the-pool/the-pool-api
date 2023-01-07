@@ -1,14 +1,14 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MajorListDto } from '@src/modules/major/dtos/majorListDto';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { plainToInstance } from 'class-transformer';
-import { MainSkillListDto } from '../dtos/main-skill-list.dto';
-import { MainSkillDto } from '../dtos/main-skill.dto';
 import { MajorIdRequestParamDto } from '../dtos/major-id-request-param.dto';
 import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
 import { MajorRequestParamDto } from '../dtos/major-request-param.dto';
+import { MajorSkillListDto } from '../dtos/major-skill-list.dto';
+import { MajorSkillDto } from '../dtos/major-skill.dto';
 import { MajorDto } from '../dtos/major.dto';
 import { MajorService } from '../services/major.service';
 
@@ -44,26 +44,26 @@ export class MajorController {
   }
 
   @ApiOperation({ summary: '분야의 스킬 리스트 조회' })
-  @ApiOkResponse({ type: MainSkillListDto })
-  @Get(':majorId/mainSkills')
+  @ApiOkResponse({ type: MajorSkillListDto })
+  @Get(':majorId/majorSkills')
   async findMainSkills(
     @Param() param: MajorIdRequestParamDto,
-  ): Promise<MainSkillListDto> {
-    const mainSkills: MainSkillEntity[] =
+  ): Promise<MajorSkillListDto> {
+    const majorSkills: MajorSkillEntity[] =
       await this.majorService.findMainSkills(param.majorId);
 
-    return plainToInstance(MainSkillListDto, { mainSkills });
+    return plainToInstance(MajorSkillListDto, { majorSkills });
   }
 
   @ApiOperation({ summary: '분야의 스킬 단일 조회' })
-  @ApiOkResponse({ type: MainSkillDto })
-  @Get(':majorId/mainSkills/:mainSkillId')
+  @ApiOkResponse({ type: MajorSkillDto })
+  @Get(':majorId/majorSkills/:majorSkillId')
   async findMainSkill(
     @Param() param: MajorRequestParamDto,
-  ): Promise<MainSkillDto> {
-    const mainSkill: MainSkillEntity | null =
-      await this.majorService.findMainSkill(param.majorId, param.mainSkillId);
+  ): Promise<MajorSkillDto> {
+    const majorSkill: MajorSkillEntity | null =
+      await this.majorService.findMainSkill(param.majorId, param.majorSkillId);
 
-    return plainToInstance(MainSkillDto, { mainSkill });
+    return plainToInstance(MajorSkillDto, { majorSkill });
   }
 }
