@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
+import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';

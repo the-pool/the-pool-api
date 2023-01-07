@@ -26,7 +26,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
+import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
