@@ -198,8 +198,8 @@ describe('MemberService', () => {
     let member;
     let memberId: number;
     let lastStepLoginDto;
-    let memberSkillDeleteManySpy: jest.SpyInstance;
-    let memberSkillCreateManySpy: jest.SpyInstance;
+    let memberMajorSkillMappingDeleteManySpy: jest.SpyInstance;
+    let memberMajorSkillMappingCreateManySpy: jest.SpyInstance;
     let memberUpdateSpy: jest.SpyInstance;
 
     beforeEach(async () => {
@@ -221,12 +221,12 @@ describe('MemberService', () => {
         memberSkill: [1, 2, 3],
       };
 
-      memberSkillDeleteManySpy = jest.spyOn(
-        prismaService.memberSkill,
+      memberMajorSkillMappingDeleteManySpy = jest.spyOn(
+        prismaService.memberMajorSkillMapping,
         'deleteMany',
       );
-      memberSkillCreateManySpy = jest.spyOn(
-        prismaService.memberSkill,
+      memberMajorSkillMappingCreateManySpy = jest.spyOn(
+        prismaService.memberMajorSkillMapping,
         'createMany',
       );
       memberUpdateSpy = jest.spyOn(prismaService.member, 'update');
@@ -236,22 +236,26 @@ describe('MemberService', () => {
       jest.clearAllMocks();
     });
 
-    it('success - memberSkill이 있을 때', async () => {
-      prismaService.memberSkill.deleteMany.mockReturnValue({ count: 0 });
-      prismaService.memberSkill.createMany.mockReturnValue({ count: 3 });
+    it('success - memberMajorSkillMapping이 있을 때', async () => {
+      prismaService.memberMajorSkillMapping.deleteMany.mockReturnValue({
+        count: 0,
+      });
+      prismaService.memberMajorSkillMapping.createMany.mockReturnValue({
+        count: 3,
+      });
       prismaService.member.update.mockReturnValue(member);
 
       const returnValue = await memberService.updateMember(
         memberId,
         lastStepLoginDto,
       );
-      expect(memberSkillDeleteManySpy).toBeCalledTimes(1);
-      expect(memberSkillCreateManySpy).toBeCalledTimes(1);
+      expect(memberMajorSkillMappingDeleteManySpy).toBeCalledTimes(1);
+      expect(memberMajorSkillMappingCreateManySpy).toBeCalledTimes(1);
       expect(memberUpdateSpy).toBeCalledTimes(1);
       expect(returnValue).toStrictEqual(member);
     });
 
-    it('success - memberSkill이 없을 때', async () => {
+    it('success - memberMajorSkillMapping이 없을 때', async () => {
       lastStepLoginDto.memberSkill = [];
       prismaService.member.update.mockReturnValue(member);
 
@@ -259,8 +263,8 @@ describe('MemberService', () => {
         memberId,
         lastStepLoginDto,
       );
-      expect(memberSkillDeleteManySpy).toBeCalledTimes(0);
-      expect(memberSkillCreateManySpy).toBeCalledTimes(0);
+      expect(memberMajorSkillMappingDeleteManySpy).toBeCalledTimes(0);
+      expect(memberMajorSkillMappingCreateManySpy).toBeCalledTimes(0);
       expect(memberUpdateSpy).toBeCalledTimes(1);
       expect(returnValue).toStrictEqual(member);
     });

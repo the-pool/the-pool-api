@@ -10,7 +10,7 @@ describe('MajorsController (e2e)', () => {
   const basicPath = '/api/majors';
   let majorId: number;
   let stringMajorId: string;
-  let mainSkillId: number;
+  let majorSkillId: number;
   let stringMainSkillId: string;
   let app: INestApplication;
   let prismaService: PrismaService;
@@ -28,17 +28,17 @@ describe('MajorsController (e2e)', () => {
       },
     )) as Pick<MajorEntity, 'id'>;
 
-    const mainSkill: Pick<MajorSkillEntity, 'id'> =
-      (await prismaService.mainSkill.findFirst({
+    const majorSkill: Pick<MajorSkillEntity, 'id'> =
+      (await prismaService.majorSkill.findFirst({
         select: {
           id: true,
         },
       })) as Pick<MajorSkillEntity, 'id'>;
 
     majorId = major.id;
-    mainSkillId = mainSkill.id;
+    majorSkillId = majorSkill.id;
     stringMajorId = String(majorId);
-    stringMainSkillId = String(mainSkillId);
+    stringMainSkillId = String(majorSkillId);
 
     await app.init();
   });
@@ -48,7 +48,7 @@ describe('MajorsController (e2e)', () => {
   });
 
   describe('GET - /api/majors', () => {
-    it('mainSkill 이 없을 때', () => {
+    it('majorSkill 이 없을 때', () => {
       return request(app.getHttpServer())
         .get(basicPath)
         .then((res) => {
@@ -60,15 +60,15 @@ describe('MajorsController (e2e)', () => {
             expect(typeof major.name).toBe('string');
             expect(major).toHaveProperty('createdAt');
             expect(typeof major.createdAt).toBe('string');
-            expect(major).not.toHaveProperty('mainSkills');
+            expect(major).not.toHaveProperty('majorSkills');
           });
         });
     });
 
-    it('mainSkill 이 false', () => {
+    it('majorSkill 이 false', () => {
       return request(app.getHttpServer())
         .get(basicPath)
-        .query({ mainSkills: false })
+        .query({ majorSkills: false })
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
           res.body.majors.forEach((major) => {
@@ -78,15 +78,15 @@ describe('MajorsController (e2e)', () => {
             expect(typeof major.name).toBe('string');
             expect(major).toHaveProperty('createdAt');
             expect(typeof major.createdAt).toBe('string');
-            expect(major).not.toHaveProperty('mainSkills');
+            expect(major).not.toHaveProperty('majorSkills');
           });
         });
     });
 
-    it('mainSkill 이 true', () => {
+    it('majorSkill 이 true', () => {
       return request(app.getHttpServer())
         .get(basicPath)
-        .query({ mainSkills: true })
+        .query({ majorSkills: true })
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
           res.body.majors.forEach((major: MajorEntity) => {
@@ -96,18 +96,18 @@ describe('MajorsController (e2e)', () => {
             expect(typeof major.name).toBe('string');
             expect(major).toHaveProperty('createdAt');
             expect(typeof major.createdAt).toBe('string');
-            expect(major).toHaveProperty('mainSkills');
-            major.majorSkills?.forEach((mainSkill) => {
-              expect(mainSkill).toHaveProperty('id');
-              expect(typeof mainSkill.id).toBe('number');
-              expect(mainSkill).toHaveProperty('majorId');
-              expect(typeof mainSkill.majorId).toBe('number');
-              expect(mainSkill.majorId).toBe(major.id);
-              expect(mainSkill).toHaveProperty('name');
-              expect(typeof mainSkill.name).toBe('string');
-              expect(mainSkill).toHaveProperty('createdAt');
-              expect(typeof mainSkill.createdAt).toBe('string');
-              expect(mainSkill).not.toHaveProperty('mainSkills');
+            expect(major).toHaveProperty('majorSkills');
+            major.majorSkills?.forEach((majorSkill) => {
+              expect(majorSkill).toHaveProperty('id');
+              expect(typeof majorSkill.id).toBe('number');
+              expect(majorSkill).toHaveProperty('majorId');
+              expect(typeof majorSkill.majorId).toBe('number');
+              expect(majorSkill.majorId).toBe(major.id);
+              expect(majorSkill).toHaveProperty('name');
+              expect(typeof majorSkill.name).toBe('string');
+              expect(majorSkill).toHaveProperty('createdAt');
+              expect(typeof majorSkill.createdAt).toBe('string');
+              expect(majorSkill).not.toHaveProperty('majorSkills');
             });
           });
         });
@@ -115,7 +115,7 @@ describe('MajorsController (e2e)', () => {
   });
 
   describe('GET - /api/majors/:majorId', () => {
-    it('mainSkill 이 없을 때', () => {
+    it('majorSkill 이 없을 때', () => {
       return request(app.getHttpServer())
         .get(path.join(basicPath, stringMajorId))
         .then((res) => {
@@ -130,10 +130,10 @@ describe('MajorsController (e2e)', () => {
         });
     });
 
-    it('mainSkill 이 false 일 때', () => {
+    it('majorSkill 이 false 일 때', () => {
       return request(app.getHttpServer())
         .get(path.join(basicPath, stringMajorId))
-        .query({ mainSkills: false })
+        .query({ majorSkills: false })
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
           const major = res.body.major;
@@ -146,10 +146,10 @@ describe('MajorsController (e2e)', () => {
         });
     });
 
-    it('mainSkill 이 true 일 때', () => {
+    it('majorSkill 이 true 일 때', () => {
       return request(app.getHttpServer())
         .get(path.join(basicPath, stringMajorId))
-        .query({ mainSkills: true })
+        .query({ majorSkills: true })
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
           const major = res.body.major;
@@ -159,64 +159,64 @@ describe('MajorsController (e2e)', () => {
           expect(typeof major.name).toBe('string');
           expect(major).toHaveProperty('createdAt');
           expect(typeof major.createdAt).toBe('string');
-          expect(major).toHaveProperty('mainSkills');
-          major.mainSkills.forEach((mainSkill) => {
-            expect(mainSkill).toHaveProperty('id');
-            expect(typeof mainSkill.id).toBe('number');
-            expect(mainSkill).toHaveProperty('majorId');
-            expect(typeof mainSkill.majorId).toBe('number');
-            expect(mainSkill.majorId).toBe(major.id);
-            expect(mainSkill).toHaveProperty('name');
-            expect(typeof mainSkill.name).toBe('string');
-            expect(mainSkill).toHaveProperty('createdAt');
-            expect(typeof mainSkill.createdAt).toBe('string');
-            expect(mainSkill).not.toHaveProperty('mainSkills');
+          expect(major).toHaveProperty('majorSkills');
+          major.majorSkills.forEach((majorSkill) => {
+            expect(majorSkill).toHaveProperty('id');
+            expect(typeof majorSkill.id).toBe('number');
+            expect(majorSkill).toHaveProperty('majorId');
+            expect(typeof majorSkill.majorId).toBe('number');
+            expect(majorSkill.majorId).toBe(major.id);
+            expect(majorSkill).toHaveProperty('name');
+            expect(typeof majorSkill.name).toBe('string');
+            expect(majorSkill).toHaveProperty('createdAt');
+            expect(typeof majorSkill.createdAt).toBe('string');
+            expect(majorSkill).not.toHaveProperty('majorSkills');
           });
         });
     });
   });
 
-  describe('GET - /api/majors/:majorId/mainSkills', () => {
+  describe('GET - /api/majors/:majorId/majorSkills', () => {
     it('majors 조회', () => {
       return request(app.getHttpServer())
-        .get(path.join(basicPath, stringMajorId, 'mainSkills'))
+        .get(path.join(basicPath, stringMajorId, 'majorSkills'))
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
-          res.body.mainSkills.forEach((mainSkill) => {
-            expect(mainSkill).toHaveProperty('id');
-            expect(typeof mainSkill.id).toBe('number');
-            expect(mainSkill).toHaveProperty('majorId');
-            expect(typeof mainSkill.majorId).toBe('number');
-            expect(mainSkill.majorId).toBe(majorId);
-            expect(mainSkill).toHaveProperty('name');
-            expect(typeof mainSkill.name).toBe('string');
-            expect(mainSkill).toHaveProperty('createdAt');
-            expect(typeof mainSkill.createdAt).toBe('string');
-            expect(mainSkill).not.toHaveProperty('mainSkills');
+          res.body.majorSkills.forEach((majorSkill) => {
+            expect(majorSkill).toHaveProperty('id');
+            expect(typeof majorSkill.id).toBe('number');
+            expect(majorSkill).toHaveProperty('majorId');
+            expect(typeof majorSkill.majorId).toBe('number');
+            expect(majorSkill.majorId).toBe(majorId);
+            expect(majorSkill).toHaveProperty('name');
+            expect(typeof majorSkill.name).toBe('string');
+            expect(majorSkill).toHaveProperty('createdAt');
+            expect(typeof majorSkill.createdAt).toBe('string');
+            expect(majorSkill).not.toHaveProperty('majorSkills');
           });
         });
     });
   });
 
-  describe('GET - /api/majors/:majorId/mainSkills/:mainSkillId', () => {
+  describe('GET - /api/majors/:majorId/majorSkills/:majorSkillId', () => {
     it('major 조회', () => {
       return request(app.getHttpServer())
         .get(
-          path.join(basicPath, stringMajorId, 'mainSkills', stringMainSkillId),
+          path.join(basicPath, stringMajorId, 'majorSkills', stringMainSkillId),
         )
         .then((res) => {
           expect(res.status).toBe(HttpStatus.OK);
-          const mainSkill = res.body.mainSkill;
-          expect(mainSkill).toHaveProperty('id');
-          expect(typeof mainSkill.id).toBe('number');
-          expect(mainSkill).toHaveProperty('majorId');
-          expect(typeof mainSkill.majorId).toBe('number');
-          expect(mainSkill.majorId).toBe(majorId);
-          expect(mainSkill).toHaveProperty('name');
-          expect(typeof mainSkill.name).toBe('string');
-          expect(mainSkill).toHaveProperty('createdAt');
-          expect(typeof mainSkill.createdAt).toBe('string');
-          expect(mainSkill).not.toHaveProperty('mainSkills');
+          const majorSkill = res.body.majorSkill;
+          expect(majorSkill).toHaveProperty('id');
+          expect(typeof majorSkill.id).toBe('number');
+          expect(majorSkill).toHaveProperty('majorId');
+          expect(typeof majorSkill.majorId).toBe('number');
+          expect(majorSkill.majorId).toBe(majorId);
+          expect(majorSkill).toHaveProperty('name');
+          expect(typeof majorSkill.name).toBe('string');
+          expect(majorSkill).toHaveProperty('createdAt');
+          expect(typeof majorSkill.createdAt).toBe('string');
+          expect(majorSkill).not.toHaveProperty('majorSkills');
         });
     });
   });

@@ -55,6 +55,6 @@ export const mockLessonService: MockClassType<LessonService> = {
 export const mockMajorService: MockClassType<MajorService> = {
   findMajors: jest.fn(),
   findMajor: jest.fn(),
-  findMainSkills: jest.fn(),
-  findMainSkill: jest.fn(),
+  findMajorSkills: jest.fn(),
+  findMajorSkill: jest.fn(),
 };

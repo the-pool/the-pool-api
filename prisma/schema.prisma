@@ -50,6 +50,7 @@ model MemberMajorSkillMapping {
 
   MajorSkill MajorSkill @relation(fields: [majorSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   Member     Member     @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  
 }
 
 /// 우리 서비스의 회원을 담은 테이블 

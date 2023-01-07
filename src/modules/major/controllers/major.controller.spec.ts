@@ -47,7 +47,7 @@ describe('MajorController', () => {
 
     beforeEach(() => {
       query = new MajorRelationFieldRequestQueryDto();
-      query.mainSkills = faker.datatype.boolean();
+      query.majorSkills = faker.datatype.boolean();
       mockMajorService.findMajors.mockReturnValue(mockMajors);
     });
 
@@ -69,7 +69,7 @@ describe('MajorController', () => {
     beforeEach(() => {
       query = new MajorRelationFieldRequestQueryDto();
       param = new MajorIdRequestParamDto();
-      query.mainSkills = faker.datatype.boolean();
+      query.majorSkills = faker.datatype.boolean();
       param.majorId = faker.datatype.number();
       mockMajor = plainToInstance(
         MajorEntity,
@@ -89,56 +89,56 @@ describe('MajorController', () => {
     });
   });
 
-  describe('findMainSkills - 분야의 스킬 리스트 조회', () => {
+  describe('findMajorSkills - 분야의 스킬 리스트 조회', () => {
     let param: MajorIdRequestParamDto;
-    let mockMainSkills: MajorSkillEntity[];
+    let mockMajorSkills: MajorSkillEntity[];
 
     beforeEach(() => {
       param = new MajorIdRequestParamDto();
       param.majorId = faker.datatype.number();
-      mockMainSkills = [
+      mockMajorSkills = [
         plainToInstance(MajorSkillEntity, JSON.parse(faker.datatype.json())),
       ];
 
-      mockMajorService.findMainSkills.mockReturnValue(mockMainSkills);
+      mockMajorService.findMajorSkills.mockReturnValue(mockMajorSkills);
     });
 
     it('routing + plain object to class object converting 기능만 한다.', async () => {
-      const result: MajorSkillListDto = await controller.findMainSkills(param);
+      const result: MajorSkillListDto = await controller.findMajorSkills(param);
 
-      expect(mockMajorService.findMainSkills).toHaveBeenCalledTimes(1);
-      expect(mockMajorService.findMainSkills).toBeCalledWith(param.majorId);
+      expect(mockMajorService.findMajorSkills).toHaveBeenCalledTimes(1);
+      expect(mockMajorService.findMajorSkills).toBeCalledWith(param.majorId);
       expect(result).toBeInstanceOf(MajorSkillListDto);
-      expect(result.majorSkills).toStrictEqual(mockMainSkills);
+      expect(result.majorSkills).toStrictEqual(mockMajorSkills);
     });
   });
 
-  describe('findMainSkill - 분야의 스킬 단일 조회', () => {
+  describe('findMajorSkill - 분야의 스킬 단일 조회', () => {
     let param: MajorRequestParamDto;
-    let mockMainSkill: MajorSkillEntity;
+    let mockMajorSkill: MajorSkillEntity;
 
     beforeEach(() => {
       param = new MajorRequestParamDto();
       param.majorId = faker.datatype.number();
-      param.mainSkillId = faker.datatype.number();
-      mockMainSkill = plainToInstance(
+      param.majorSkillId = faker.datatype.number();
+      mockMajorSkill = plainToInstance(
         MajorSkillEntity,
         JSON.parse(faker.datatype.json()),
       );
 
-      mockMajorService.findMainSkill.mockReturnValue(mockMainSkill);
+      mockMajorService.findMajorSkill.mockReturnValue(mockMajorSkill);
     });
 
     it('routing + plain object to class object converting 기능만 한다.', async () => {
-      const result: MajorSkillDto = await controller.findMainSkill(param);
+      const result: MajorSkillDto = await controller.findMajorSkill(param);
 
-      expect(mockMajorService.findMainSkill).toHaveBeenCalledTimes(1);
-      expect(mockMajorService.findMainSkill).toBeCalledWith(
+      expect(mockMajorService.findMajorSkill).toHaveBeenCalledTimes(1);
+      expect(mockMajorService.findMajorSkill).toBeCalledWith(
         param.majorId,
-        param.mainSkillId,
+        param.majorSkillId,
       );
       expect(result).toBeInstanceOf(MajorSkillDto);
-      expect(result.mainSkill).toStrictEqual(mockMainSkill);
+      expect(result.majorSkill).toStrictEqual(mockMajorSkill);
     });
   });
 });

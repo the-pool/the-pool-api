@@ -46,11 +46,11 @@ export class MajorController {
   @ApiOperation({ summary: '분야의 스킬 리스트 조회' })
   @ApiOkResponse({ type: MajorSkillListDto })
   @Get(':majorId/majorSkills')
-  async findMainSkills(
+  async findMajorSkills(
     @Param() param: MajorIdRequestParamDto,
   ): Promise<MajorSkillListDto> {
     const majorSkills: MajorSkillEntity[] =
-      await this.majorService.findMainSkills(param.majorId);
+      await this.majorService.findMajorSkills(param.majorId);
 
     return plainToInstance(MajorSkillListDto, { majorSkills });
   }
@@ -58,11 +58,11 @@ export class MajorController {
   @ApiOperation({ summary: '분야의 스킬 단일 조회' })
   @ApiOkResponse({ type: MajorSkillDto })
   @Get(':majorId/majorSkills/:majorSkillId')
-  async findMainSkill(
+  async findMajorSkill(
     @Param() param: MajorRequestParamDto,
   ): Promise<MajorSkillDto> {
     const majorSkill: MajorSkillEntity | null =
-      await this.majorService.findMainSkill(param.majorId, param.majorSkillId);
+      await this.majorService.findMajorSkill(param.majorId, param.majorSkillId);
 
     return plainToInstance(MajorSkillDto, { majorSkill });
   }
