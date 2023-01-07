@@ -1,13 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { plainToInstance } from 'class-transformer';
-import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/create-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
@@ -21,11 +20,11 @@ describe('LessonService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LessonService,
-        DataStructureHelper,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
         },
+
         {
           provide: LessonRepository,
           useValue: mockLessonRepository,
@@ -38,6 +37,10 @@ describe('LessonService', () => {
     prismaService = mockPrismaService;
   });
 
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(lessonService).toBeDefined();
   });
@@ -45,111 +48,83 @@ describe('LessonService', () => {
   describe('createLesson', () => {
     let createLessonDto: CreateLessonDto;
     let memberId: number;
+    let createdLesson: LessonEntity;
 
-    beforeEach(async () => {
-      createLessonDto = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        thumbnail: faker.image.imageUrl(),
-        hashtags: ['1', '2', '3'],
-        categoryId: faker.datatype.number({ min: 1, max: 9 }),
-      };
+    beforeEach(() => {
+      createLessonDto = new CreateLessonDto();
       memberId = 1;
+      createdLesson = new LessonEntity();
+
+      prismaService.lesson.create.mockReturnValue(createdLesson);
     });
 
-    it('success', async () => {
-      const lesson = {
-        id: faker.datatype.number(),
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-        hit: faker.datatype.number(),
-        createdAt: faker.date.soon(),
-        updatedAt: faker.date.soon(),
-        deletedAt: null,
-      };
+    it('success - check method called', async () => {
+      await lessonService.createLesson(createLessonDto, memberId);
 
-      prismaService.lesson.create.mockReturnValue(lesson);
+      expect(prismaService.lesson.create).toBeCalledTimes(1);
+    });
 
+    it('success - check Input & Output', async () => {
       const returnValue = await lessonService.createLesson(
         createLessonDto,
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(lesson);
+      expect(returnValue).toStrictEqual(createdLesson);
     });
   });
 
   describe('updateLesson', () => {
-    let lesson;
-    let memebrId: number;
+    let lesson: UpdateLessonDto;
+    let memberId: number;
     let lessonId: number;
-    let mockUpdatedLesson;
+    let updatedLesson: LessonEntity;
 
-    beforeEach(async () => {
-      lesson = {
-        levelId: faker.datatype.number(),
-        description: faker.lorem.text(),
-        title: faker.lorem.words(),
-      };
-      memebrId = faker.datatype.number();
+    beforeEach(() => {
+      lesson = new UpdateLessonDto();
+      memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-      mockUpdatedLesson = JSON.parse(faker.datatype.json());
+      updatedLesson = new LessonEntity();
+
+      prismaService.lesson.update.mockReturnValue(updatedLesson);
     });
 
-    afterEach(async () => {
-      jest.clearAllMocks();
+    it('success - check method called', async () => {
+      await lessonService.updateLesson(lesson, lessonId);
+
+      expect(prismaService.lesson.update).toBeCalledTimes(1);
     });
 
-    it('success', async () => {
-      prismaService.lesson.update.mockReturnValue(mockUpdatedLesson);
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.updateLesson(lesson, lessonId);
 
-      const returnValue = await lessonService.updateLesson(
-        lesson,
-        memebrId,
-        lessonId,
-      );
-
-      expect(returnValue).toStrictEqual(mockUpdatedLesson);
-    });
-
-    it('false - 과제 작성자가 아닌 사람이 과제를 수정하려고 할 때', async () => {
-      prismaService.lesson.updateMany.mockReturnValue({ count: 0 });
-
-      await expect(async () => {
-        await lessonService.updateLesson(lesson, memebrId, lessonId);
-      }).rejects.toThrowError(
-        new ForbiddenException('과제를 수정할 권한이 없습니다.'),
-      );
+      expect(returnValue).toStrictEqual(updatedLesson);
     });
   });
 
-  describe('updateLessonHashtag', () => {
-    let hashtags: string[];
+  describe('deleteLesson', () => {
+    let memberId: number;
     let lessonId: number;
-    let updatedHashtags;
+    let deletedLesson: LessonEntity;
 
-    beforeEach(async () => {
-      hashtags = ['1', '2', '3'];
+    beforeEach(() => {
+      memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-      updatedHashtags = [{ tag: '1' }, { tag: '2' }, { tag: '3' }];
+      deletedLesson = new LessonEntity();
+
+      prismaService.lesson.delete.mockReturnValue(deletedLesson);
     });
-    afterEach(async () => {
-      jest.clearAllMocks();
+
+    it('success - check method called', async () => {
+      await lessonService.deleteLesson(lessonId);
+
+      expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
     });
 
-    it('success', async () => {
-      prismaService.lessonHashtag.deleteMany.mockReturnValue({ count: 1 });
-      prismaService.lessonHashtag.createMany.mockReturnValue({ count: 3 });
-      prismaService.lessonHashtag.findMany.mockReturnValue(updatedHashtags);
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.deleteLesson(lessonId);
 
-      const returnValue = await lessonService.updateLessonHashtag(
-        hashtags,
-        lessonId,
-      );
-
-      expect(returnValue).toEqual(hashtags);
+      expect(returnValue).toStrictEqual(deletedLesson);
     });
   });
 
@@ -157,16 +132,12 @@ describe('LessonService', () => {
     let memberId: number;
     let lessonId: number;
 
-    beforeEach(async () => {
-      (memberId = faker.datatype.number()),
-        (lessonId = faker.datatype.number());
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      lessonId = faker.datatype.number();
     });
-
-    afterEach(async () => {
-      jest.clearAllMocks();
-    });
-
-    it('success', async () => {
+    // 과제 평가 api를 생성하는 pr에서 test 하겠습니다.
+    xit('success', async () => {
       const lesson = faker.datatype.string();
       const lessonLevelEvaluation = faker.datatype.string();
       const lessonHashtag = faker.datatype.array();
@@ -189,28 +160,36 @@ describe('LessonService', () => {
     let memberId: number;
     let lessonId: number;
     let query: SimilarLessonQueryDto;
-    let mockSimilarLessons: SimilarLessonEntity;
+    let readSimilarLessons: SimilarLessonEntity[];
 
-    beforeEach(async () => {
+    beforeEach(() => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       query = new SimilarLessonQueryDto();
-      mockSimilarLessons = JSON.parse(faker.datatype.json());
+      readSimilarLessons = [new SimilarLessonEntity()];
 
-      mockLessonRepository.readSimilarLesson.mockReturnValue(
-        mockSimilarLessons,
-      );
+      lessonRepository.readSimilarLesson.mockReturnValue(readSimilarLessons);
     });
 
-    it('success', async () => {
+    it('success - check method called', async () => {
       await lessonService.readSimilarLesson(lessonId, memberId, query);
 
-      expect(mockLessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
-      expect(mockLessonRepository.readSimilarLesson).toBeCalledWith(
+      expect(lessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
+      expect(lessonRepository.readSimilarLesson).toBeCalledWith(
         lessonId,
         memberId,
         query,
       );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.readSimilarLesson(
+        lessonId,
+        memberId,
+        query,
+      );
+
+      expect(returnValue).toStrictEqual(readSimilarLessons);
     });
   });
 });

@@ -24,12 +24,6 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
   solutionCount: number;
 
   @ApiProperty({
-    example: ['a', 'b', 'c'],
-    description: '과제의 해시태그',
-  })
-  hashtags: string[];
-
-  @ApiProperty({
     example: 1,
     description: '출제자가 생각한 과제의 난이도',
   })

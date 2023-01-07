@@ -1,18 +1,15 @@
-import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { LessonHashtag } from '@prisma/client';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
 export class LessonHashtagEntity
-  extends IntersectionType(
-    IdResponseType,
-    PickType(DateResponseType, ['createdAt']),
-  )
+  extends IntersectionType(IdResponseType, DateResponseType)
   implements LessonHashtag
 {
   @ApiProperty({
     example: 1,
-    description: 'hashtag에 해당하는 lesson의 고유 ID',
+    description: '과제의 고유 ID',
   })
   lessonId: number;
 
