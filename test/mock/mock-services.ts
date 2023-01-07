@@ -6,11 +6,16 @@ import { MemberValidationService } from '@src/modules/member/services/member-val
 import { MemberService } from '@src/modules/member/services/member.service';
 import { MockClassType } from './mock.type';
 
+export const mockConfigService = {
+  get: jest.fn(),
+};
+
 export const mockJwtService = {
   sign: jest.fn(),
 };
 
 export const mockMemberService: MockClassType<MemberService> = {
+  findOne: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),

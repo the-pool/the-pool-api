@@ -1,11 +1,14 @@
 import { faker } from '@faker-js/faker';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
   mockAuthService,
+  mockConfigService,
   mockMemberService,
   mockMemberValidationService,
 } from '../../../../test/mock/mock-services';
@@ -22,6 +25,10 @@ describe('MemberController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MemberController],
       providers: [
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
         {
           provide: MemberService,
           useValue: mockMemberService,
@@ -47,6 +54,27 @@ describe('MemberController', () => {
 
   it('should be defined', () => {
     expect(memberController).toBeDefined();
+  });
+
+  describe('findOne', () => {
+    let member: MemberEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', async () => {
+      mockMemberService.findOne.mockReturnValue(member);
+
+      const result = memberController.findOne(params);
+
+      expect(mockMemberService.findOne).toBeCalledWith({
+        id: params.id,
+      });
+      expect(result).toStrictEqual(member);
+    });
   });
 
   describe('loginOrSignUp', () => {

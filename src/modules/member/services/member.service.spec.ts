@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
@@ -41,6 +42,29 @@ describe('MemberService', () => {
 
   it('should be defined', () => {
     expect(memberService).toBeDefined();
+  });
+
+  describe('findOne', () => {
+    let member: MemberEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', async () => {
+      mockPrismaService.member.findFirst.mockReturnValue(member as any);
+
+      const result = memberService.findOne(params);
+
+      expect(mockPrismaService.member.findFirst).toBeCalledWith({
+        where: {
+          id: params.id,
+        },
+      });
+      expect(result).toStrictEqual(member);
+    });
   });
 
   describe('signUp', () => {

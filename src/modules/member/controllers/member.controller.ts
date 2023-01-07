@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Param,
   Patch,
@@ -66,6 +67,19 @@ export class MemberController {
   @Post('access-token')
   getAccessTokenForDevelop(@Param() params: IdResponseType) {
     return this.authService.createAccessToken(params.id);
+  }
+
+  @ApiOperation({ summary: 'member 단일 조회' })
+  @ApiSuccessResponse(HttpStatus.OK, { member: MemberEntity })
+  @Get(':id')
+  findOne(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ) {
+    return this.memberService.findOne({
+      id: params.id,
+    });
   }
 
   /**

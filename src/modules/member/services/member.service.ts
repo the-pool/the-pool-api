@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Member } from '@prisma/client';
+import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
@@ -15,6 +15,15 @@ export class MemberService {
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
   ) {}
+
+  /**
+   * member 단일 조회
+   */
+  findOne(where: Prisma.MemberWhereInput) {
+    return this.prismaService.member.findFirst({
+      where,
+    });
+  }
 
   /**
    * member 회원가입
