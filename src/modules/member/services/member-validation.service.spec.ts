@@ -192,9 +192,25 @@ describe('MemberValidationService', () => {
       );
     });
 
+    it('nickname 을 변경하지 않는 경우', async () => {
+      oldMember.id = updateId;
+      oldMember.status = MemberStatus.Active;
+
+      mockPrismaService.member.findUnique.mockResolvedValue(null);
+
+      const result = await memberValidationService.canUpdateFromPatchOrFail(
+        updateId,
+        updateInfo,
+        oldMember,
+      );
+
+      await expect(result).toBeUndefined();
+    });
+
     it('변경하려는 nickname 을 다른 멤버가 사용중인 경우', async () => {
       oldMember.id = updateId;
       oldMember.status = MemberStatus.Active;
+      updateInfo.nickname = faker.datatype.string();
 
       mockPrismaService.member.findUnique.mockResolvedValue({} as any);
 
@@ -207,9 +223,26 @@ describe('MemberValidationService', () => {
       }).rejects.toThrowError('해당 nickname 은 사용중입니다.');
     });
 
+    it('thumbnail 을 변경하지 않는 경우', async () => {
+      oldMember.id = updateId;
+      oldMember.status = MemberStatus.Active;
+
+      mockPrismaService.member.findUnique.mockResolvedValue(null);
+      mockPrismaService.member.findUnique.mockResolvedValue(null);
+
+      const result = await memberValidationService.canUpdateFromPatchOrFail(
+        updateId,
+        updateInfo,
+        oldMember,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
     it('변경하려는 thumbnail 을 다른 멤버가 사용중인 경우', async () => {
       oldMember.id = updateId;
       oldMember.status = MemberStatus.Active;
+      updateInfo.thumbnail = faker.datatype.string();
 
       mockPrismaService.member.findUnique.mockResolvedValue(null);
       mockPrismaService.member.findUnique.mockResolvedValue({} as any);

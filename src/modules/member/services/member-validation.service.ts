@@ -100,42 +100,48 @@ export class MemberValidationService {
       );
     }
 
-    // 변경하려는 nickname 과 같은 url 을 가진 멤버가 있는지 조회
-    const duplicateNicknameMember = await this.prismaService.member.findUnique({
-      where: {
-        NOT: {
-          id: oldMember.id,
-        },
-        nickname: updateInfo.nickname,
-      },
-    });
+    // nickname 을 업데이트 한다면 유효성 체크를 진행
+    if (!isNil(updateInfo.nickname)) {
+      // 변경하려는 nickname 과 같은 url 을 가진 멤버가 있는지 조회
+      const duplicateNicknameMember =
+        await this.prismaService.member.findUnique({
+          where: {
+            NOT: {
+              id: oldMember.id,
+            },
+            nickname: updateInfo.nickname,
+          },
+        });
 
-    // 변경하려는 nickname 을 다른 멤버가 사용중이라면 에러
-    if (duplicateNicknameMember) {
-      throw new ConflictException('해당 nickname 은 사용중입니다.');
+      // 변경하려는 nickname 을 다른 멤버가 사용중이라면 에러
+      if (duplicateNicknameMember) {
+        throw new ConflictException('해당 nickname 은 사용중입니다.');
+      }
     }
 
-    // the-pool storage 에 url 이 겹칠 일은 없지만
-    // 혹시 모를 상황에 디버깅을 위해 예외처리
-    // 변경하려는 thumbnail 과 같은 url 을 가진 멤버가 있는지 조회
-    const duplicateThumbnailMember = await this.prismaService.member.findUnique(
-      {
-        where: {
-          NOT: {
-            id: oldMember.id,
+    // thumbnail 을 업데이트 한다면 유효성 체크를 진행
+    if (!isNil(updateInfo.thumbnail)) {
+      // the-pool storage 에 url 이 겹칠 일은 없지만
+      // 혹시 모를 상황에 디버깅을 위해 예외처리
+      // 변경하려는 thumbnail 과 같은 url 을 가진 멤버가 있는지 조회
+      const duplicateThumbnailMember =
+        await this.prismaService.member.findUnique({
+          where: {
+            NOT: {
+              id: oldMember.id,
+            },
+            thumbnail: updateInfo.thumbnail,
           },
-          thumbnail: updateInfo.thumbnail,
-        },
-      },
-    );
+        });
 
-    // 변경하려는 thumbnail 을 다른 멤버가 사용중이라면 에러
-    if (duplicateThumbnailMember) {
-      throw new InternalServerErrorException({
-        member: oldMember,
-        message: '멤버 patch update 중 thumbnail 겹치는 경우',
-        thumbnail: updateInfo.thumbnail,
-      });
+      // 변경하려는 thumbnail 을 다른 멤버가 사용중이라면 에러
+      if (duplicateThumbnailMember) {
+        throw new InternalServerErrorException({
+          member: oldMember,
+          message: '멤버 patch update 중 thumbnail 겹치는 경우',
+          thumbnail: updateInfo.thumbnail,
+        });
+      }
     }
   }
 }
