@@ -7,53 +7,6 @@ import bcrypt from 'bcrypt';
 // initialize Prisma Client
 const prisma = new PrismaClient();
 
-/**
- * example code seed
- */
-async function codeBaseSeed() {
-  const SALT = 10;
-
-  for (let i = 0; i < 500; i += 1) {
-    const email = faker.internet.email();
-    const name = faker.name.fullName();
-    const role = Number(faker.datatype.boolean());
-    const password = await bcrypt.hash(faker.internet.password(), SALT);
-
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: {},
-      create: {
-        email,
-        name,
-        role,
-        password,
-      },
-    });
-
-    console.log(user);
-
-    const randomNumber = +faker.random.numeric(1);
-
-    for (let j = 0; j < randomNumber; j += 1) {
-      const published = faker.datatype.boolean();
-      const title = faker.random.words(3);
-      const description = faker.random.words(10);
-
-      const post = await prisma.post.create({
-        data: {
-          title,
-          published,
-          description,
-          authorId: user.id,
-          updatedAt: new Date(),
-        },
-      });
-
-      console.log(post);
-    }
-  }
-}
-
 enum DevelopMajorSkillName {
   Backend = '백엔드개발',
   WebFrontend = '웹 프론트엔드',
@@ -95,10 +48,11 @@ async function thePoolSeed() {
         name: design,
       },
     ],
+    skipDuplicates: true,
   });
 
-  // MainSkill Seed
-  await prisma.mainSkill.createMany({
+  // MajorSkill Seed
+  await prisma.majorSkill.createMany({
     data: [
       {
         id: 1,
@@ -146,6 +100,7 @@ async function thePoolSeed() {
         name: DesignMajorSkillName.Etc,
       },
     ],
+    skipDuplicates: true,
   });
 
   await prisma.lessonLevel.createMany({
@@ -154,21 +109,11 @@ async function thePoolSeed() {
       { level: LessonLevel.Middle },
       { level: LessonLevel.Bottom },
     ],
+    skipDuplicates: true,
   });
 }
 
 thePoolSeed()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    // close Prisma Client at the end
-    await prisma.$disconnect();
-  });
-
-// execute the main function
-codeBaseSeed()
   .catch((e) => {
     console.error(e);
     process.exit(1);

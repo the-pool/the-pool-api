@@ -9,21 +9,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// 디자인, 개발의 소분류를 담은 테이블
-model MainSkill {
-  /// 고유 ID
-  id        Int      @id @default(autoincrement())
-  /// 대분류 고유 ID
-  majorId   Int
-  /// 소분류의 이름
-  name      String   @unique @db.VarChar(30)
-  /// 생성일자
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-
-  Major       Major         @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  MemberSkill MemberSkill[]
-}
-
 /// 디자인, 개발 전공등 대분류를 담은 테이블 
 model Major {
   /// 고유 ID
@@ -33,8 +18,38 @@ model Major {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  mainSkills MainSkill[]
-  member    Member[]
+  majorSkills MajorSkill[]
+  members     Member[]
+}
+
+/// 디자인, 개발의 소분류를 담은 테이블
+model MajorSkill {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 대분류 고유 ID
+  majorId   Int
+  /// 소분류의 이름
+  name      String   @unique @db.VarChar(30)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  major                    Major                     @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  memberMajorSkillMappings MemberMajorSkillMapping[]
+}
+
+/// 멤버가 선택한 소분류 스킬
+model MemberMajorSkillMapping {
+  /// 고유 ID
+  id           Int      @id @default(autoincrement())
+  /// 소분류 고유 ID
+  majorSkillId Int
+  /// 멤버 고유 ID
+  memberId     Int
+  /// 생성일자
+  createdAt    DateTime @default(now()) @db.Timestamp(6)
+
+  MajorSkill MajorSkill @relation(fields: [majorSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  Member     Member     @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 우리 서비스의 회원을 담은 테이블 
@@ -68,23 +83,23 @@ model Member {
   /// 탈퇴일자
   deletedAt  DateTime? @db.Timestamp(6)
 
-  major                  Major?                  @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  memberReport           MemberReport?
-  followers              MemberFollow[]          @relation("follower")
-  followings             MemberFollow[]          @relation("following")
-  lessons                Lesson[]
-  memberSkills           MemberSkill[]
-  memberSkillLinks       MemberSkillLink[]
-  memberInterestLinks    MemberInterestLink[]
-  lessonSolutions        LessonSolution[]
-  lessonComments         LessonComment[]
-  lessonLevelEvaluations LessonLevelEvaluation[]
-  lessonBookmarks        LessonBookmark[]
-  lessonLikes            LessonLike[]
+  major                    Major?                    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  memberReport             MemberReport?
+  followers                MemberFollow[]            @relation("follower")
+  followings               MemberFollow[]            @relation("following")
+  lessons                  Lesson[]
+  memberMajorSkillMappings MemberMajorSkillMapping[]
+  memberSkillMappings      MemberSkillMapping[]
+  memberInterestMappings      MemberInterestMapping[]
+  lessonSolutions          LessonSolution[]
+  lessonComments           LessonComment[]
+  lessonLevelEvaluations   LessonLevelEvaluation[]
+  lessonBookmarks          LessonBookmark[]
+  lessonLikes              LessonLike[]
 }
 
-/// main skill 보다 더 다양한 스킬
-model Skill {
+/// member 의 스킬
+model MemberSkill {
   /// 고유 ID
   id        Int      @id @default(autoincrement())
   /// skill 명
@@ -94,11 +109,11 @@ model Skill {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  memberSkillLinks MemberSkillLink[]
+  memberSkillMappings MemberSkillMapping[]
 }
 
 /// member skill mapping model
-model MemberSkillLink {
+model MemberSkillMapping {
   /// 고유 ID
   id        Int      @id @default(autoincrement())
   /// member 고유 ID
@@ -108,8 +123,8 @@ model MemberSkillLink {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  skill  Skill  @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  memberSkill MemberSkill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  member      Member      @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버 관심사
@@ -123,11 +138,11 @@ model MemberInterest {
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  memberInterestLink MemberInterestLink[]
+  memberInteresMappings MemberInterestMapping[]
 }
 
 /// member interest mapping model
-model MemberInterestLink {
+model MemberInterestMapping {
   /// 고유 ID
   id               Int      @id @default(autoincrement())
   /// member 고유 ID
@@ -331,40 +346,4 @@ model LessonComment {
 
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-/// 멤버가 선택한 소분류 스킬
-model MemberSkill {
-  /// 고유 ID
-  id          Int      @id @default(autoincrement())
-  /// 소분류 고유 ID
-  mainSkillId Int
-  /// 멤버 고유 ID
-  memberId    Int
-  /// 생성일자
-  createdAt   DateTime @default(now()) @db.Timestamp(6)
-
-  MainSkill MainSkill @relation(fields: [mainSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  Member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-}
-
-model Post {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime
-  published   Boolean  @default(false)
-  title       String   @db.VarChar(255)
-  authorId    Int?
-  description String?
-  User        User?    @relation(fields: [authorId], references: [id])
-}
-
-model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  name      String?
-  password  String   @db.VarChar(255)
-  role      Int
-  Post      Post[]
 }
