@@ -5,6 +5,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
+import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -126,6 +127,27 @@ describe('MemberController', () => {
         },
       });
       expect(result).toStrictEqual(memberInterests);
+    });
+  });
+
+  describe('findOneReport', () => {
+    let memberReport: MemberReportEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      memberReport = new MemberReportEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', () => {
+      mockMemberService.findOneReport.mockReturnValue(memberReport);
+
+      const result = memberController.findOneReport(params);
+
+      expect(mockMemberService.findOneReport).toBeCalledWith({
+        memberId: params.id,
+      });
+      expect(result).toStrictEqual(memberReport);
     });
   });
 

@@ -20,6 +20,7 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
   getSchemaPath,
@@ -36,6 +37,7 @@ import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.int
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
+import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
@@ -64,6 +66,10 @@ export class MemberController {
   ) {}
 
   @UseInterceptors(UseDevelopmentInterceptor)
+  @ApiParam({
+    name: 'id',
+    type: 'string',
+  })
   @ApiOperation({
     summary: 'accessToken 발급 받기 (개발용)',
   })
@@ -140,6 +146,19 @@ export class MemberController {
           memberId: params.id,
         },
       },
+    });
+  }
+
+  @ApiOperation({ summary: 'member report 조회' })
+  @ApiSuccessResponse(HttpStatus.OK, { memberReport: MemberReportEntity })
+  @Get(':id/report')
+  findOneReport(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<{ memberReport: MemberReportEntity }> {
+    return this.memberService.findOneReport({
+      memberId: params.id,
     });
   }
 

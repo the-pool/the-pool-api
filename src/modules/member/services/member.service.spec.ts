@@ -6,6 +6,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
+import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
@@ -116,6 +117,33 @@ describe('MemberService', () => {
       });
       expect(result).toStrictEqual({
         memberInterests,
+      });
+    });
+  });
+
+  describe('findOneReport', () => {
+    let memberReport: MemberReportEntity;
+    let where: Prisma.MemberSkillWhereInput;
+
+    beforeEach(() => {
+      memberReport = new MemberReportEntity();
+    });
+
+    it('member interests 조회 성공', async () => {
+      mockPrismaService.memberReport.findFirst.mockReturnValue(
+        memberReport as any,
+      );
+
+      const result = await memberService.findOneReport(where);
+
+      expect(mockPrismaService.memberReport.findFirst).toBeCalledWith({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+      expect(result).toStrictEqual({
+        memberReport,
       });
     });
   });

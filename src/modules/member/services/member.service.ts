@@ -4,6 +4,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
@@ -67,6 +68,22 @@ export class MemberService {
       });
 
     return { memberInterests };
+  }
+
+  /**
+   * member 의 report 조회
+   */
+  async findOneReport(
+    where: Prisma.MemberReportWhereInput,
+  ): Promise<{ memberReport: MemberReportEntity }> {
+    const memberReport = await this.prismaService.memberReport.findFirst({
+      where,
+      orderBy: {
+        id: 'asc',
+      },
+    });
+
+    return { memberReport } as { memberReport: MemberReportEntity };
   }
 
   /**
