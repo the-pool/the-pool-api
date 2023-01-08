@@ -17,6 +17,7 @@ export const mockJwtService = {
 export const mockMemberService: MockClassType<MemberService> = {
   findOne: jest.fn(),
   findAllSkills: jest.fn(),
+  findAlliInterests: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),

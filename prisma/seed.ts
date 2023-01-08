@@ -155,6 +155,43 @@ async function thePoolSeed() {
     ],
     skipDuplicates: true,
   });
+
+  /**
+   * 우선 mock data 넣고 정해지면 수정
+   */
+  await prisma.memberInterest.createMany({
+    data: [
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+    ],
+    skipDuplicates: true,
+  });
 }
 
 thePoolSeed()

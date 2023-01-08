@@ -5,6 +5,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
@@ -65,7 +66,7 @@ describe('MemberService', () => {
     });
   });
 
-  describe('findAllSkillsByMemberId', () => {
+  describe('findAllSkills', () => {
     let memberSkills: MemberSkillEntity;
     let where: Prisma.MemberSkillWhereInput;
 
@@ -88,6 +89,33 @@ describe('MemberService', () => {
       });
       expect(result).toStrictEqual({
         memberSkills,
+      });
+    });
+  });
+
+  describe('findAlliInterests', () => {
+    let memberInterests: MemberInterestEntity;
+    let where: Prisma.MemberSkillWhereInput;
+
+    beforeEach(() => {
+      memberInterests = new MemberInterestEntity();
+    });
+
+    it('member interests 조회 성공', async () => {
+      mockPrismaService.memberInterest.findMany.mockReturnValue(
+        memberInterests as any,
+      );
+
+      const result = await memberService.findAlliInterests(where);
+
+      expect(mockPrismaService.memberInterest.findMany).toBeCalledWith({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+      expect(result).toStrictEqual({
+        memberInterests,
       });
     });
   });

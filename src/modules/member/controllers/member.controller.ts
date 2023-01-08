@@ -35,6 +35,7 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
@@ -84,7 +85,7 @@ export class MemberController {
     });
   }
 
-  @ApiOperation({ summary: 'member 의 skill 조회' })
+  @ApiOperation({ summary: 'member 의 스킬 리스트 조회' })
   @ApiExtraModels(MemberSkillEntity)
   @ApiOkResponse({
     schema: {
@@ -106,6 +107,35 @@ export class MemberController {
   ): Promise<{ memberSkills: MemberSkillEntity[] }> {
     return this.memberService.findAllSkills({
       memberSkillMappings: {
+        some: {
+          memberId: params.id,
+        },
+      },
+    });
+  }
+
+  @ApiOperation({ summary: 'member 관심사 리스트 조회' })
+  @ApiExtraModels(MemberInterestEntity)
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        memberSkills: {
+          type: 'array',
+          items: {
+            $ref: getSchemaPath(MemberInterestEntity),
+          },
+        },
+      },
+    },
+  })
+  @Get(':id/interest')
+  findAlliInterests(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
+    return this.memberService.findAlliInterests({
+      memberInterestMappings: {
         some: {
           memberId: params.id,
         },

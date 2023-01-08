@@ -7,6 +7,7 @@ import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
+import { MemberInterestEntity } from '../entities/member-interest.entity';
 import { MemberSkillEntity } from '../entities/member-skill.entity';
 import { MemberEntity } from '../entities/member.entity';
 
@@ -33,7 +34,7 @@ export class MemberService {
   /**
    * @todo 우선 orderBy 고정해놨지만 추후에 orderBy 도 클라이언트에서 받아서 처리하는것도 고려
    *
-   * member 의 스킬 조회
+   * member 의 스킬 리스트 조회
    */
   async findAllSkills(
     where: Prisma.MemberSkillWhereInput,
@@ -47,6 +48,25 @@ export class MemberService {
       });
 
     return { memberSkills };
+  }
+
+  /**
+   * @todo 우선 orderBy 고정해놨지만 추후에 orderBy 도 클라이언트에서 받아서 처리하는것도 고려
+   *
+   * member 의 관심사 리스트 조회
+   */
+  async findAlliInterests(
+    where: Prisma.MemberInterestWhereInput,
+  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
+    const memberInterests: MemberSkillEntity[] =
+      await this.prismaService.memberInterest.findMany({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+    return { memberInterests };
   }
 
   /**
