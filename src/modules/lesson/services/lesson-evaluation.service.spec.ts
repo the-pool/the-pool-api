@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from './lesson-evaluation.service';
 
@@ -139,13 +140,13 @@ describe('LessonEvaluationService', () => {
     });
   });
 
-  describe('readEvaluation', () => {
+  describe('readCountedEvaluation', () => {
     let lessonId: number;
-    let countedEvaluations;
+    let countedEvaluation;
 
     beforeEach(async () => {
       lessonId = faker.datatype.number();
-      countedEvaluations = [
+      countedEvaluation = [
         {
           _count: { lessonId: faker.datatype.number() },
           levelId: faker.datatype.number(),
@@ -153,7 +154,7 @@ describe('LessonEvaluationService', () => {
       ];
 
       prismaService.lessonLevelEvaluation.groupBy.mockReturnValue(
-        countedEvaluations,
+        countedEvaluation,
       );
     });
 
@@ -225,6 +226,35 @@ describe('LessonEvaluationService', () => {
 
         expect(returnValue).toBeNull();
       });
+    });
+  });
+
+  describe('readMenyEvaluation', () => {
+    let lessonId: number;
+    let query: LessonEvaluationQueryDto;
+    let evaluations: LessonEvaluationEntity[];
+
+    beforeEach(() => {
+      lessonId = faker.datatype.number();
+      query = new LessonEvaluationQueryDto();
+      evaluations = [new LessonEvaluationEntity()];
+
+      prismaService.lessonLevelEvaluation.findMany.mockReturnValue(evaluations);
+    });
+
+    it('success - check method called', () => {
+      lessonEvaluationService.readManyEvaluation(lessonId, query);
+
+      expect(prismaService.lessonLevelEvaluation.findMany).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonEvaluationService.readManyEvaluation(
+        lessonId,
+        query,
+      );
+
+      expect(returnValue).toStrictEqual(evaluations);
     });
   });
 });
