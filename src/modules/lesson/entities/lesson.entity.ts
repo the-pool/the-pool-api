@@ -72,5 +72,5 @@ export class LessonEntity
     description: '과제의 evaluation entity',
     type: [LessonEvaluationEntity],
   })
-  evaluations: LessonEvaluationEntity[];
+  evaluations?: LessonEvaluationEntity[];
 }
