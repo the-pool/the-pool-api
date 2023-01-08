@@ -129,7 +129,7 @@ describe('MemberService', () => {
       memberReport = new MemberReportEntity();
     });
 
-    it('member interests 조회 성공', async () => {
+    it('member report 조회 성공', async () => {
       mockPrismaService.memberReport.findFirst.mockReturnValue(
         memberReport as any,
       );
@@ -145,6 +145,62 @@ describe('MemberService', () => {
       expect(result).toStrictEqual({
         memberReport,
       });
+    });
+  });
+
+  describe('findAllFollowers', () => {
+    let memberFollows: { follower: MemberEntity }[];
+    let memberId: number;
+
+    beforeEach(() => {
+      memberFollows = [{ follower: new MemberEntity() }];
+      memberId = faker.datatype.number();
+    });
+
+    it('member followers 조회 성공', async () => {
+      mockPrismaService.memberFollow.findMany.mockReturnValue(
+        memberFollows as any,
+      );
+
+      const result = await memberService.findAllFollowers(memberId);
+
+      expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
+        select: {
+          follower: true,
+        },
+        where: {
+          followingId: memberId,
+        },
+      });
+      expect(result).toStrictEqual({ followers: [new MemberEntity()] });
+    });
+  });
+
+  describe('findAllFollowings', () => {
+    let memberFollows: { following: MemberEntity }[];
+    let memberId: number;
+
+    beforeEach(() => {
+      memberFollows = [{ following: new MemberEntity() }];
+      memberId = faker.datatype.number();
+    });
+
+    it('member followings 조회 성공', async () => {
+      mockPrismaService.memberFollow.findMany.mockReturnValue(
+        memberFollows as any,
+      );
+
+      const result = await memberService.findAllFollowings(memberId);
+
+      expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
+        select: {
+          following: true,
+        },
+        where: {
+          followerId: memberId,
+        },
+      });
+      expect(result).toStrictEqual({ followings: [new MemberEntity()] });
     });
   });
 

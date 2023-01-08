@@ -194,7 +194,26 @@ async function thePoolSeed() {
   });
 }
 
-thePoolSeed()
+async function developmentMockDataSeed() {
+  await prisma.memberFollow.createMany({
+    data: [
+      {
+        followerId: 2,
+        followingId: 3,
+      },
+      {
+        followerId: 2,
+        followingId: 3,
+      },
+      {
+        followerId: 2,
+        followingId: 5,
+      },
+    ],
+  });
+}
+
+developmentMockDataSeed()
   .catch((e) => {
     console.error(e);
     process.exit(1);
@@ -203,3 +222,13 @@ thePoolSeed()
     // close Prisma Client at the end
     await prisma.$disconnect();
   });
+
+// thePoolSeed()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     // close Prisma Client at the end
+//     await prisma.$disconnect();
+//   });

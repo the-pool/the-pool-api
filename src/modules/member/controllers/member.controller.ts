@@ -125,7 +125,7 @@ export class MemberController {
   @ApiOkResponse({
     schema: {
       properties: {
-        memberSkills: {
+        memberInterests: {
           type: 'array',
           items: {
             $ref: getSchemaPath(MemberInterestEntity),
@@ -134,7 +134,7 @@ export class MemberController {
       },
     },
   })
-  @Get(':id/interest')
+  @Get(':id/interests')
   findAlliInterests(
     @SetModelNameToParam('member')
     @Param()
@@ -161,6 +161,60 @@ export class MemberController {
       memberId: params.id,
     });
   }
+
+  @ApiOperation({
+    summary: 'member 팔로워 리스트 조회 (해당 member 를 구독하는 사람)',
+  })
+  @ApiExtraModels(MemberEntity)
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        followers: {
+          type: 'array',
+          items: {
+            $ref: getSchemaPath(MemberEntity),
+          },
+        },
+      },
+    },
+  })
+  @Get(':id/followers')
+  findAllFollowers(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<{ followers: MemberEntity[] }> {
+    return this.memberService.findAllFollowers(params.id);
+  }
+
+  @ApiOperation({
+    summary: 'member 팔로잉 리스트 조회 (해당 member 가 구독하는 사람)',
+  })
+  @ApiExtraModels(MemberEntity)
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        followings: {
+          type: 'array',
+          items: {
+            $ref: getSchemaPath(MemberEntity),
+          },
+        },
+      },
+    },
+  })
+  @Get(':id/followings')
+  findAllFollowings(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<{ followings: MemberEntity[] }> {
+    return this.memberService.findAllFollowings(params.id);
+  }
+
+  /**
+   * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
+   */
 
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요

@@ -87,6 +87,52 @@ export class MemberService {
   }
 
   /**
+   * member 의 follower 리스트 조회
+   * 해당 member 를 구독하는 사람
+   */
+  async findAllFollowers(
+    memberId: number,
+  ): Promise<{ followers: MemberEntity[] }> {
+    const memberFollows = await this.prismaService.memberFollow.findMany({
+      select: {
+        follower: true,
+      },
+      where: {
+        followingId: memberId,
+      },
+    });
+
+    return {
+      followers: memberFollows.map((memberFollow) => {
+        return memberFollow.follower;
+      }),
+    };
+  }
+
+  /**
+   * member 의 following 리스트 조회
+   * 해당 member 가 구독하는 사람
+   */
+  async findAllFollowings(
+    memberId: number,
+  ): Promise<{ followings: MemberEntity[] }> {
+    const memberFollows = await this.prismaService.memberFollow.findMany({
+      select: {
+        following: true,
+      },
+      where: {
+        followerId: memberId,
+      },
+    });
+
+    return {
+      followings: memberFollows.map((memberFollow) => {
+        return memberFollow.following;
+      }),
+    };
+  }
+
+  /**
    * member 회원가입
    */
   async signUp(

@@ -151,6 +151,44 @@ describe('MemberController', () => {
     });
   });
 
+  describe('findAllFollowers', () => {
+    let memberFollowers: MemberEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      memberFollowers = new MemberEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', () => {
+      mockMemberService.findAllFollowers.mockReturnValue(memberFollowers);
+
+      const result = memberController.findAllFollowers(params);
+
+      expect(mockMemberService.findAllFollowers).toBeCalledWith(params.id);
+      expect(result).toStrictEqual(memberFollowers);
+    });
+  });
+
+  describe('findAllFollowings', () => {
+    let memberFollowings: MemberEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      memberFollowings = new MemberEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', () => {
+      mockMemberService.findAllFollowings.mockReturnValue(memberFollowings);
+
+      const result = memberController.findAllFollowings(params);
+
+      expect(mockMemberService.findAllFollowings).toBeCalledWith(params.id);
+      expect(result).toStrictEqual(memberFollowings);
+    });
+  });
+
   describe('loginOrSignUp', () => {
     let member: MemberEntity;
     let body: LoginOrSignUpDto;
