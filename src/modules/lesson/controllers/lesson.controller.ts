@@ -31,7 +31,7 @@ import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';

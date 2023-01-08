@@ -3,6 +3,7 @@ import { isNil } from '@nestjs/common/utils/shared.utils';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
+import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 
 @Injectable()
 export class LessonEvaluationService {
@@ -85,6 +86,15 @@ export class LessonEvaluationService {
 
     return this.prismaService.lessonLevelEvaluation.findFirst({
       where: { lessonId, memberId },
+    });
+  }
+
+  readManyEvaluation(
+    lessonId: number,
+    { memberId, levelId }: LessonEvaluationQueryDto,
+  ) {
+    return this.prismaService.lessonLevelEvaluation.findMany({
+      where: { lessonId, memberId, levelId },
     });
   }
 }

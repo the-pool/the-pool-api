@@ -1,14 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { getEntriesByEnum } from '@src/common/common';
+import { PickType } from '@nestjs/swagger';
 import { LessonLevelId } from '@src/constants/enum';
 import { IsEnum, IsNotEmpty } from 'class-validator';
+import { LessonEvaluationEntity } from '../../entities/lesson-evaluation.entity';
 
-export class CreateEvaluationDto {
-  @ApiProperty({
-    description: '과제를 풀이한 사람이 느끼는 난이도',
-    example: LessonLevelId.Top,
-    enum: getEntriesByEnum(LessonLevelId),
-  })
+export class CreateEvaluationDto extends PickType(LessonEvaluationEntity, [
+  'levelId',
+]) {
   @IsEnum(LessonLevelId)
   @IsNotEmpty()
   levelId: LessonLevelId;

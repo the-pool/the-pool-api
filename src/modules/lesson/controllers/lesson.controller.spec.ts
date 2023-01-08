@@ -13,7 +13,7 @@ import { plainToInstance } from 'class-transformer';
 import { LessonEntity } from '../entities/lesson.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 
 describe('LessonController', () => {
   let lessonController: LessonController;

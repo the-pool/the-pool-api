@@ -158,13 +158,13 @@ describe('LessonEvaluationService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonEvaluationService.readEvaluation(lessonId);
+      await lessonEvaluationService.readCountedEvaluation(lessonId);
 
       expect(prismaService.lessonLevelEvaluation.groupBy).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonEvaluationService.readEvaluation(
+      const returnValue = await lessonEvaluationService.readCountedEvaluation(
         lessonId,
       );
 

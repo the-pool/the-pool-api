@@ -4,7 +4,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';

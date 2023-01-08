@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
@@ -22,9 +23,11 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
+import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
+import { query } from 'express';
 
 @ApiTags('남들이 평가하는 과제 난이도')
 @Controller(':id/evaluations')
@@ -48,20 +51,21 @@ export class LessonEvaluationController {
     @Body() { levelId }: CreateEvaluationDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity }> {
-    // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
-      memberId,
-      lessonId: param.id,
-    });
-
-    // 이전에 평가가 있는지 확인
-    await this.prismaHelper.validateDuplicateAndFail(
-      ModelName.LessonLevelEvaluation,
-      {
+    await Promise.all([
+      // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
+      this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
         memberId,
         lessonId: param.id,
-      },
-    );
+      }),
+      // 이전에 해당 과제에 평가 존재하는지 있는지 확인
+      this.prismaHelper.validateDuplicateAndFail(
+        ModelName.LessonLevelEvaluation,
+        {
+          memberId,
+          lessonId: param.id,
+        },
+      ),
+    ]);
 
     const createdEvaluation =
       await this.lessonEvaluationService.createEvaluation(
@@ -108,7 +112,7 @@ export class LessonEvaluationController {
   @ApiOkResponse({ type: ReadEvaluationDto })
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
-  @Get()
+  @Get('total-count')
   async readEvaluation(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -124,5 +128,21 @@ export class LessonEvaluationController {
         member.id,
       );
     return { lessonEvaluations, memberEvaluate };
+  }
+
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get()
+  async readManyEvaluation(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @Query() query: LessonEvaluationQueryDto,
+  ) {
+    const evaluations = await this.lessonEvaluationService.readManyEvaluation(
+      param.id,
+      query,
+    );
+
+    return { evaluations };
   }
 }

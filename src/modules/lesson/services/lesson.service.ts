@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
