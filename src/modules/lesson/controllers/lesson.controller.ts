@@ -53,7 +53,7 @@ export class LessonController {
   async createLesson(
     @Body() createLessonDto: CreateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lesson: Omit<LessonEntity, 'hashtags'> }> {
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtags' | 'evaluations'> }> {
     const lesson = await this.lessonService.createLesson(
       createLessonDto,
       memberId,
@@ -76,7 +76,7 @@ export class LessonController {
     param: IdRequestParamDto,
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag' | 'evaluations'> }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
@@ -103,7 +103,7 @@ export class LessonController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag'> }> {
+  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag' | 'evaluations'> }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,

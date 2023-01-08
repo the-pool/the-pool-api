@@ -8,7 +8,12 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+  PickType,
+} from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
@@ -28,6 +33,7 @@ import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import { query } from 'express';
+import { LessonEntity } from '../entities/lesson.entity';
 
 @ApiTags('남들이 평가하는 과제 난이도')
 @Controller(':id/evaluations')
@@ -108,7 +114,9 @@ export class LessonEvaluationController {
     return { evaluation: updatedEvaluation };
   }
 
-  @ApiOperation({ summary: '과제 평가 조회' })
+  @ApiOperation({
+    summary: '과제 평가 난이도별 평가 갯수 & 상세 조회한 유저의 평가 조회',
+  })
   @ApiOkResponse({ type: ReadEvaluationDto })
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
@@ -129,6 +137,9 @@ export class LessonEvaluationController {
     return { countedEvaluation, memberEvaluate };
   }
 
+  @ApiOperation({ summary: '과제 평가 대량 조회' })
+  @ApiOkResponse({ type: PickType(LessonEntity, ['evaluations']) })
+  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyEvaluation(
@@ -136,8 +147,7 @@ export class LessonEvaluationController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Query() query: LessonEvaluationQueryDto,
-  ) {
-    console.log(query);
+  ): Promise<Pick<LessonEntity, 'evaluations'>> {
     const evaluations = await this.lessonEvaluationService.readManyEvaluation(
       param.id,
       query,

@@ -9,6 +9,7 @@ import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
+import { LessonEvaluationEntity } from './lesson-evaluation.entity';
 import { LessonHashtagEntity } from './lesson-hashtag.entity';
 
 export class LessonEntity
@@ -66,4 +67,10 @@ export class LessonEntity
     type: [LessonHashtagEntity],
   })
   hashtags?: LessonHashtagEntity[];
+
+  @ApiPropertyOptional({
+    description: '과제의 evaluation entity',
+    type: [LessonEvaluationEntity],
+  })
+  evaluations: LessonEvaluationEntity[];
 }
