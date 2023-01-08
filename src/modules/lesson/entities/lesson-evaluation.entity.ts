@@ -1,7 +1,5 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { LessonLevelEvaluation } from '@prisma/client';
-import { getEntriesByEnum } from '@src/common/common';
-import { LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
@@ -22,9 +20,8 @@ export class LessonEvaluationEntity
   lessonId: number;
 
   @ApiProperty({
-    description: '과제를 풀이한 사람이 느끼는 난이도',
-    example: LessonLevelId.Top,
-    enum: getEntriesByEnum(LessonLevelId),
+    example: 1,
+    description: '과제를 수행한 member가 느끼는 과제의 난이도',
   })
   levelId: number;
 }

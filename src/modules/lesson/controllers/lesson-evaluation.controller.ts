@@ -113,21 +113,20 @@ export class LessonEvaluationController {
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get('total-count')
-  async readEvaluation(
+  async readCountedEvaluation(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<ReadEvaluationDto> {
-    const lessonEvaluations = await this.lessonEvaluationService.readEvaluation(
-      param.id,
-    );
+    const countedEvaluation =
+      await this.lessonEvaluationService.readCountedEvaluation(param.id);
     const memberEvaluate =
       await this.lessonEvaluationService.readMemberEvaluation(
         param.id,
         member.id,
       );
-    return { lessonEvaluations, memberEvaluate };
+    return { countedEvaluation, memberEvaluate };
   }
 
   @BearerAuth(OptionalJwtAuthGuard)
@@ -138,6 +137,7 @@ export class LessonEvaluationController {
     param: IdRequestParamDto,
     @Query() query: LessonEvaluationQueryDto,
   ) {
+    console.log(query);
     const evaluations = await this.lessonEvaluationService.readManyEvaluation(
       param.id,
       query,

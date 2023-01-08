@@ -154,7 +154,7 @@ describe('LessonEvaluationController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonEvaluationController.readEvaluation(param, member);
+      await lessonEvaluationController.readCountedEvaluation(param, member);
 
       expect(lessonEvaluationService.readEvaluation).toBeCalledTimes(1);
       expect(lessonEvaluationService.readEvaluation).toBeCalledWith(param.id);
@@ -166,10 +166,8 @@ describe('LessonEvaluationController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonEvaluationController.readEvaluation(
-        param,
-        member,
-      );
+      const returnValue =
+        await lessonEvaluationController.readCountedEvaluation(param, member);
 
       expect(returnValue).toStrictEqual({ lessonEvaluations, memberEvaluate });
     });

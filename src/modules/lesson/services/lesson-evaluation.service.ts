@@ -45,10 +45,10 @@ export class LessonEvaluationService {
   /**
    * lesson의 체감 난이도 조회
    */
-  async readEvaluation(
+  async readCountedEvaluation(
     lessonId: number,
   ): Promise<LessonLevelEvaluationEntity[]> {
-    const countedEvaluations =
+    const lessonEvaluations =
       await this.prismaService.lessonLevelEvaluation.groupBy({
         by: ['levelId'],
         _count: {
@@ -59,18 +59,18 @@ export class LessonEvaluationService {
         },
       });
 
-    const lessonEvaluations: LessonLevelEvaluationEntity[] = [];
+    const countedEvaluation: LessonLevelEvaluationEntity[] = [];
 
-    countedEvaluations.forEach((countedEvaluation) => {
+    lessonEvaluations.forEach((lessonEvaluation) => {
       const obj = <LessonLevelEvaluationEntity>{};
 
-      obj['count'] = countedEvaluation._count.lessonId;
-      obj['levelId'] = countedEvaluation.levelId;
+      obj['levelId'] = lessonEvaluation.levelId;
+      obj['count'] = lessonEvaluation._count.lessonId;
 
-      lessonEvaluations.push(obj);
+      countedEvaluation.push(obj);
     });
 
-    return lessonEvaluations;
+    return countedEvaluation;
   }
 
   /**

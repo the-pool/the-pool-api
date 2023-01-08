@@ -7,7 +7,7 @@ export class ReadEvaluationDto {
     description: '과제의 난이도 별 count 갯수',
     type: [LessonLevelEvaluationEntity],
   })
-  lessonEvaluations: LessonLevelEvaluationEntity[];
+  countedEvaluation: LessonLevelEvaluationEntity[];
 
   @ApiProperty({
     description:
