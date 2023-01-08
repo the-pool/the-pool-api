@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
@@ -154,18 +155,23 @@ describe('MemberController', () => {
   describe('findAllFollowers', () => {
     let memberFollowers: MemberEntity;
     let params: IdRequestParamDto;
+    let query: FindAllFollowListRequestQueryDto;
 
     beforeEach(() => {
       memberFollowers = new MemberEntity();
       params = new IdRequestParamDto();
+      query = new FindAllFollowListRequestQueryDto();
     });
 
     it('조회 성공', () => {
       mockMemberService.findAllFollowers.mockReturnValue(memberFollowers);
 
-      const result = memberController.findAllFollowers(params);
+      const result = memberController.findAllFollowers(query, params);
 
-      expect(mockMemberService.findAllFollowers).toBeCalledWith(params.id);
+      expect(mockMemberService.findAllFollowers).toBeCalledWith(
+        params.id,
+        query,
+      );
       expect(result).toStrictEqual(memberFollowers);
     });
   });
@@ -173,18 +179,23 @@ describe('MemberController', () => {
   describe('findAllFollowings', () => {
     let memberFollowings: MemberEntity;
     let params: IdRequestParamDto;
+    let query: FindAllFollowListRequestQueryDto;
 
     beforeEach(() => {
       memberFollowings = new MemberEntity();
       params = new IdRequestParamDto();
+      query = new FindAllFollowListRequestQueryDto();
     });
 
     it('조회 성공', () => {
       mockMemberService.findAllFollowings.mockReturnValue(memberFollowings);
 
-      const result = memberController.findAllFollowings(params);
+      const result = memberController.findAllFollowings(query, params);
 
-      expect(mockMemberService.findAllFollowings).toBeCalledWith(params.id);
+      expect(mockMemberService.findAllFollowings).toBeCalledWith(
+        params.id,
+        query,
+      );
       expect(result).toStrictEqual(memberFollowings);
     });
   });

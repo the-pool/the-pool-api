@@ -1,14 +1,17 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -30,6 +33,10 @@ describe('MemberService', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: QueryHelper,
+          useValue: mockQueryHelper,
         },
       ],
     }).compile();
@@ -151,56 +158,62 @@ describe('MemberService', () => {
   describe('findAllFollowers', () => {
     let memberFollows: { follower: MemberEntity }[];
     let memberId: number;
+    let query: FindAllFollowListRequestQueryDto;
+    let totalCount: number;
 
     beforeEach(() => {
       memberFollows = [{ follower: new MemberEntity() }];
       memberId = faker.datatype.number();
+      query = new FindAllFollowListRequestQueryDto();
+      totalCount = faker.datatype.number();
     });
 
     it('member followers 조회 성공', async () => {
-      mockPrismaService.memberFollow.findMany.mockReturnValue(
-        memberFollows as any,
-      );
+      mockPrismaService.$transaction.mockResolvedValue([
+        memberFollows,
+        totalCount,
+      ]);
 
-      const result = await memberService.findAllFollowers(memberId);
+      const result = await memberService.findAllFollowers(memberId, query);
 
-      expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
-        select: {
-          follower: true,
-        },
-        where: {
-          followingId: memberId,
-        },
+      expect(mockPrismaService.memberFollow.findMany).toBeCalledTimes(1);
+      expect(mockPrismaService.memberFollow.count).toBeCalledTimes(1);
+      expect(mockPrismaService.$transaction).toBeCalledTimes(1);
+      expect(result).toStrictEqual({
+        followers: [new MemberEntity()],
+        totalCount,
       });
-      expect(result).toStrictEqual({ followers: [new MemberEntity()] });
     });
   });
 
   describe('findAllFollowings', () => {
     let memberFollows: { following: MemberEntity }[];
     let memberId: number;
+    let query: FindAllFollowListRequestQueryDto;
+    let totalCount: number;
 
     beforeEach(() => {
       memberFollows = [{ following: new MemberEntity() }];
       memberId = faker.datatype.number();
+      query = new FindAllFollowListRequestQueryDto();
+      totalCount = faker.datatype.number();
     });
 
     it('member followings 조회 성공', async () => {
-      mockPrismaService.memberFollow.findMany.mockReturnValue(
-        memberFollows as any,
-      );
+      mockPrismaService.$transaction.mockResolvedValue([
+        memberFollows,
+        totalCount,
+      ]);
 
-      const result = await memberService.findAllFollowings(memberId);
+      const result = await memberService.findAllFollowings(memberId, query);
 
-      expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
-        select: {
-          following: true,
-        },
-        where: {
-          followerId: memberId,
-        },
+      expect(mockPrismaService.memberFollow.findMany).toBeCalledTimes(1);
+      expect(mockPrismaService.memberFollow.count).toBeCalledTimes(1);
+      expect(mockPrismaService.$transaction).toBeCalledTimes(1);
+      expect(result).toStrictEqual({
+        followings: [new MemberEntity()],
+        totalCount,
       });
-      expect(result).toStrictEqual({ followings: [new MemberEntity()] });
     });
   });
 

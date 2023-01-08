@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -28,6 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -35,6 +37,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
@@ -54,6 +57,9 @@ import { MemberService } from '../services/member.service';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
 import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
+/**
+ * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
+ */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
 @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseType })
@@ -175,16 +181,22 @@ export class MemberController {
             $ref: getSchemaPath(MemberEntity),
           },
         },
+        totalCount: {
+          type: 'number',
+        },
       },
     },
   })
   @Get(':id/followers')
   findAllFollowers(
+    @Query()
+    @SetDefaultPageSize(20)
+    query: FindAllFollowListRequestQueryDto,
     @SetModelNameToParam('member')
     @Param()
     params: IdRequestParamDto,
   ): Promise<{ followers: MemberEntity[] }> {
-    return this.memberService.findAllFollowers(params.id);
+    return this.memberService.findAllFollowers(params.id, query);
   }
 
   @ApiOperation({
@@ -200,21 +212,23 @@ export class MemberController {
             $ref: getSchemaPath(MemberEntity),
           },
         },
+        totalCount: {
+          type: 'number',
+        },
       },
     },
   })
   @Get(':id/followings')
   findAllFollowings(
+    @Query()
+    @SetDefaultPageSize(20)
+    query: FindAllFollowListRequestQueryDto,
     @SetModelNameToParam('member')
     @Param()
     params: IdRequestParamDto,
   ): Promise<{ followings: MemberEntity[] }> {
-    return this.memberService.findAllFollowings(params.id);
+    return this.memberService.findAllFollowings(params.id, query);
   }
-
-  /**
-   * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
-   */
 
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
