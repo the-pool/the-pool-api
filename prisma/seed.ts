@@ -1,8 +1,7 @@
 // prisma/seed.ts
 
-import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-import bcrypt from 'bcrypt';
+import { PrismaClient } from '@prisma/client';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
@@ -108,6 +107,51 @@ async function thePoolSeed() {
       { level: LessonLevel.Top },
       { level: LessonLevel.Middle },
       { level: LessonLevel.Bottom },
+    ],
+    skipDuplicates: true,
+  });
+
+  /**
+   * 우선 mock data 넣고 정해지면 수정
+   */
+  await prisma.memberSkill.createMany({
+    data: [
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
+      {
+        emoji: String(faker.datatype.number({ max: 5 })),
+        name: faker.datatype.string(),
+      },
     ],
     skipDuplicates: true,
   });

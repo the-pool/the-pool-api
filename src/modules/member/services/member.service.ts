@@ -7,6 +7,7 @@ import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
+import { MemberSkillEntity } from '../entities/member-skill.entity';
 import { MemberEntity } from '../entities/member.entity';
 
 @Injectable()
@@ -19,20 +20,34 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  findOne(where: Prisma.MemberWhereInput) {
-    return this.prismaService.member.findFirst({
+  async findOne(
+    where: Prisma.MemberWhereInput,
+  ): Promise<{ member: MemberEntity }> {
+    const member = await this.prismaService.member.findFirst({
       where,
     });
+
+    return { member } as { member: MemberEntity };
   }
 
   /**
+   * @todo 우선 orderBy 고정해놨지만 추후에 orderBy 도 클라이언트에서 받아서 처리하는것도 고려
+   *
    * member 의 스킬 조회
    */
-  // findAllSkillsByMemberId(where: Prisma.MemberSkillWhereInput) {
-  //   return this.prismaService.memberSkill.findMany({
-  //     where,
-  //   });
-  // }
+  async findAllSkills(
+    where: Prisma.MemberSkillWhereInput,
+  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
+    const memberSkills: MemberSkillEntity[] =
+      await this.prismaService.memberSkill.findMany({
+        where,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+
+    return { memberSkills };
+  }
 
   /**
    * member 회원가입
@@ -53,7 +68,9 @@ export class MemberService {
     });
 
     // access token 생성
-    const accessToken = this.authService.createAccessToken(newMember.id);
+    const accessToken: string = this.authService.createAccessToken(
+      newMember.id,
+    );
 
     return {
       accessToken,
@@ -64,12 +81,9 @@ export class MemberService {
   /**
    * member 로그인
    */
-  async login(
-    account: string,
-    member: MemberEntity,
-  ): Promise<{ member: MemberEntity } & AccessTokenType> {
+  login(member: MemberEntity): { member: MemberEntity } & AccessTokenType {
     // access token 생성
-    const accessToken = this.authService.createAccessToken(member.id);
+    const accessToken: string = this.authService.createAccessToken(member.id);
 
     return {
       accessToken,
@@ -77,13 +91,20 @@ export class MemberService {
     };
   }
 
-  updateFromPatch(id: number, data: UpdateMemberDto) {
-    return this.prismaService.member.update({
+  async updateFromPatch(
+    id: number,
+    data: UpdateMemberDto,
+  ): Promise<{ member: MemberEntity }> {
+    const updatedMember: MemberEntity = await this.prismaService.member.update({
       data,
       where: {
         id,
       },
     });
+
+    return {
+      member: updatedMember,
+    };
   }
 
   /**

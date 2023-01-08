@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
+import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
@@ -74,6 +75,31 @@ describe('MemberController', () => {
         id: params.id,
       });
       expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('findAllSkills', () => {
+    let memberSkills: MemberSkillEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      memberSkills = new MemberSkillEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', () => {
+      mockMemberService.findAllSkills.mockReturnValue(memberSkills);
+
+      const result = memberController.findAllSkills(params);
+
+      expect(mockMemberService.findAllSkills).toBeCalledWith({
+        memberSkillMappings: {
+          some: {
+            memberId: params.id,
+          },
+        },
+      });
+      expect(result).toStrictEqual(memberSkills);
     });
   });
 

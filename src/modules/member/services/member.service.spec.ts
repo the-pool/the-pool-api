@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
@@ -46,71 +47,97 @@ describe('MemberService', () => {
 
   describe('findOne', () => {
     let member: MemberEntity;
-    let params: IdRequestParamDto;
+    let where: Prisma.MemberWhereInput;
 
     beforeEach(() => {
       member = new MemberEntity();
-      params = new IdRequestParamDto();
     });
 
     it('조회 성공', async () => {
       mockPrismaService.member.findFirst.mockReturnValue(member as any);
 
-      const result = memberService.findOne(params);
+      const result = await memberService.findOne(where);
 
       expect(mockPrismaService.member.findFirst).toBeCalledWith({
-        where: {
-          id: params.id,
+        where,
+      });
+      expect(result).toStrictEqual({ member });
+    });
+  });
+
+  describe('findAllSkillsByMemberId', () => {
+    let memberSkills: MemberSkillEntity;
+    let where: Prisma.MemberSkillWhereInput;
+
+    beforeEach(() => {
+      memberSkills = new MemberSkillEntity();
+    });
+
+    it('member skills 조회 성공', async () => {
+      mockPrismaService.memberSkill.findMany.mockReturnValue(
+        memberSkills as any,
+      );
+
+      const result = await memberService.findAllSkills(where);
+
+      expect(mockPrismaService.memberSkill.findMany).toBeCalledWith({
+        where,
+        orderBy: {
+          id: 'asc',
         },
       });
-      expect(result).toStrictEqual(member);
-    });
-  });
-
-  describe('signUp', () => {
-    let account: string;
-    let newMember: MemberEntity;
-    let accessToken: string;
-    const loginType = MemberLoginType.Apple;
-
-    beforeEach(() => {
-      account = faker.datatype.string();
-      newMember = new MemberEntity();
-    });
-
-    it('회원가입 성공', async () => {
-      accessToken = faker.datatype.string();
-      mockPrismaService.member.create.mockResolvedValue(newMember as any);
-      mockAuthService.createAccessToken.mockReturnValue(accessToken);
-
-      const result = await memberService.signUp(account, loginType);
-
       expect(result).toStrictEqual({
-        accessToken,
-        member: newMember,
+        memberSkills,
       });
     });
   });
 
-  describe('login', () => {
-    let account: string;
-    let member: MemberEntity;
-    let accessToken: string;
+  describe('loginOrSignUp', () => {
+    describe('signUp', () => {
+      let account: string;
+      let newMember: MemberEntity;
+      let accessToken: string;
+      const loginType = MemberLoginType.Apple;
 
-    beforeEach(() => {
-      account = faker.datatype.string();
-      member = new MemberEntity();
+      beforeEach(() => {
+        account = faker.datatype.string();
+        newMember = new MemberEntity();
+      });
+
+      it('회원가입 성공', async () => {
+        accessToken = faker.datatype.string();
+        mockPrismaService.member.create.mockResolvedValue(newMember as any);
+        mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+        const result = await memberService.signUp(account, loginType);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member: newMember,
+        });
+      });
     });
 
-    it('로그인 성공', async () => {
-      accessToken = faker.datatype.string();
-      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+    describe('login', () => {
+      let account: string;
+      let member: MemberEntity;
+      let accessToken: string;
 
-      const result = await memberService.login(account, member);
+      beforeEach(() => {
+        account = faker.datatype.string();
+        member = new MemberEntity();
+      });
 
-      expect(result).toStrictEqual({
-        accessToken,
-        member,
+      it('로그인 성공', async () => {
+        accessToken = faker.datatype.string();
+        mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+        const result = await memberService.login(member);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member,
+        });
       });
     });
   });
@@ -129,7 +156,7 @@ describe('MemberService', () => {
 
       const result = await memberService.updateFromPatch(id, data);
 
-      expect(result).toStrictEqual(data);
+      expect(result).toStrictEqual({ member: data });
     });
   });
 

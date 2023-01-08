@@ -14,6 +14,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -21,6 +22,7 @@ import {
   ApiOperation,
   ApiTags,
   ApiUnauthorizedResponse,
+  getSchemaPath,
   IntersectionType,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
@@ -38,12 +40,12 @@ import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
 import { MemberLoginOrSignUpForbiddenResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-forbidden-response.type';
 import { MemberLoginOrSignUpUnauthorizedResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-unauthorized-response.type';
-import { IdResponseType } from '@src/types/id-response-type';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { LoginOrSignUpDto } from '../dtos/login-or-sign-up.dto';
+import { MemberSkillEntity } from '../entities/member-skill.entity';
 import { MemberEntity } from '../entities/member.entity';
 import { MemberService } from '../services/member.service';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
@@ -64,9 +66,9 @@ export class MemberController {
   @ApiOperation({
     summary: 'accessToken 발급 받기 (개발용)',
   })
-  @Post('access-token')
-  getAccessTokenForDevelop(@Param() params: IdResponseType) {
-    return this.authService.createAccessToken(params.id);
+  @Post('access-token/:id')
+  getAccessTokenForDevelop(@Param() params: { id: string }): string {
+    return this.authService.createAccessToken(+params.id);
   }
 
   @ApiOperation({ summary: 'member 단일 조회' })
@@ -76,23 +78,40 @@ export class MemberController {
     @SetModelNameToParam('member')
     @Param()
     params: IdRequestParamDto,
-  ) {
+  ): Promise<{ member: MemberEntity }> {
     return this.memberService.findOne({
       id: params.id,
     });
   }
 
-  // @ApiOperation({ summary: 'member 의 skill 조회' })
-  // @Get(':id/skills')
-  // findAllSkills(
-  //   @SetModelNameToParam('member')
-  //   @Param()
-  //   params: IdRequestParamDto,
-  // ) {
-  //   return this.memberService.findAllSkillsByMemberId({
-  //     memberId: params.id,
-  //   });
-  // }
+  @ApiOperation({ summary: 'member 의 skill 조회' })
+  @ApiExtraModels(MemberSkillEntity)
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        memberSkills: {
+          type: 'array',
+          items: {
+            $ref: getSchemaPath(MemberSkillEntity),
+          },
+        },
+      },
+    },
+  })
+  @Get(':id/skills')
+  findAllSkills(
+    @SetModelNameToParam('member')
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
+    return this.memberService.findAllSkills({
+      memberSkillMappings: {
+        some: {
+          memberId: params.id,
+        },
+      },
+    });
+  }
 
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
@@ -142,14 +161,16 @@ export class MemberController {
       member,
     );
 
-    return this.memberService.login(account, member);
+    return this.memberService.login(member);
   }
 
   @ApiOperation({
     summary:
       '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   })
-  @ApiOkResponse({ type: MemberLastStepLoginResponseType })
+  @ApiSuccessResponse(HttpStatus.OK, {
+    member: MemberLastStepLoginResponseType,
+  })
   @ApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
@@ -160,7 +181,7 @@ export class MemberController {
     @Param()
     params: IdRequestParamDto,
     @Body() body: UpdateMemberDto,
-  ) {
+  ): Promise<{ member: MemberEntity }> {
     await this.memberValidationService.canUpdateFromPatchOrFail(
       params.id,
       body,

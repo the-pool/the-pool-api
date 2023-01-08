@@ -50,7 +50,6 @@ model MemberMajorSkillMapping {
 
   MajorSkill MajorSkill @relation(fields: [majorSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   Member     Member     @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  
 }
 
 /// 우리 서비스의 회원을 담은 테이블 
@@ -91,7 +90,7 @@ model Member {
   lessons                  Lesson[]
   memberMajorSkillMappings MemberMajorSkillMapping[]
   memberSkillMappings      MemberSkillMapping[]
-  memberInterestMappings      MemberInterestMapping[]
+  memberInterestMappings   MemberInterestMapping[]
   lessonSolutions          LessonSolution[]
   lessonComments           LessonComment[]
   lessonLevelEvaluations   LessonLevelEvaluation[]
@@ -120,24 +119,26 @@ model MemberSkillMapping {
   /// member 고유 ID
   memberId  Int
   /// skill 고유 ID
-  skillId   Int
+  memberSkillId   Int
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  memberSkill MemberSkill @relation(fields: [skillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  memberSkill MemberSkill @relation(fields: [memberSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   member      Member      @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버 관심사
 model MemberInterest {
   /// 고유 ID
-  id        Int      @id @default(autoincrement())
+  id                     Int      @id @default(autoincrement())
+  /// MemberInterestMapping 고유 Id
+  memberInteresMappingId Int
   /// skill 명
-  name      String   @unique @db.VarChar(50)
+  name                   String   @unique @db.VarChar(50)
   /// 이모티콘
-  emoji     String   @db.VarChar(10)
+  emoji                  String   @db.VarChar(10)
   /// 생성일자
-  createdAt DateTime @default(now()) @db.Timestamp(6)
+  createdAt              DateTime @default(now()) @db.Timestamp(6)
 
   memberInteresMappings MemberInterestMapping[]
 }
