@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonLevelEvaluationType } from '../types/lesson.type';
-import { ReadOneLessonResponseType } from '../types/response/read-one-lesson-response.type';
+import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
+import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { Prisma } from '@prisma/client';
+import { LessonEntity } from '../entities/lesson.entity';
+import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 
-/**
- * 이 클레스의 메서드들이 다 raw 쿼리를 사용하고 있는데 우선 any 로 타입에러 대응
- * 작업자가 나중에 타입 만들어서 넣어주길 바람
- */
 @Injectable()
 export class LessonRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -19,12 +19,10 @@ export class LessonRepository {
   async readOneLesson(
     lessonId: number,
     memberId: number,
-  ): Promise<Omit<ReadOneLessonResponseType, 'lessonLevelEvaluation'>> {
-    (BigInt.prototype as any).toJSON = function () {
-      return Number(this);
-    };
-
-    const result: any = await this.prismaService.$queryRaw`
+  ): Promise<Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>> {
+    const result = await this.prismaService.$queryRaw<
+      [Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>]
+    >`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -42,11 +40,10 @@ export class LessonRepository {
                WHERE "LessonLike"."lessonId" = ${lessonId} AND "LessonLike"."memberId" = ${memberId}) AS "isLike"
     FROM "Lesson"   
     LEFT JOIN "Member" 
-        ON "Member"."id" = "Lesson"."memberId"
+      ON "Member"."id" = "Lesson"."memberId"
     LEFT JOIN "LessonSolution"
-        ON "LessonSolution"."lessonId" = "Lesson"."id" 
-    WHERE 
-        "Lesson"."id" = ${lessonId}
+      ON "LessonSolution"."lessonId" = "Lesson"."id" 
+    WHERE "Lesson"."id" = ${lessonId}
     GROUP BY "Lesson"."id","Member"."id"
     `;
 
@@ -58,8 +55,10 @@ export class LessonRepository {
    */
   async readLessonLevelEvaluation(
     lessonId: number,
-  ): Promise<LessonLevelEvaluationType> {
-    const result: any = await this.prismaService.$queryRaw`
+  ): Promise<LessonLevelEvaluationEntity> {
+    const result = await this.prismaService.$queryRaw<
+      [LessonLevelEvaluationEntity]
+    >`
     SELECT 
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
     	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
@@ -71,13 +70,36 @@ export class LessonRepository {
     return result[0];
   }
 
-  async readLessonHashtag(lessonId: number): Promise<string[]> {
-    const result: any = await this.prismaService.$queryRaw`
+  /**
+   * 유사 과제 조회 query
+   */
+  readSimilarLesson(
+    lessonId: number,
+    memberId: number,
+    { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
+  ): Promise<SimilarLessonEntity[]> {
+    return this.prismaService.$queryRaw<SimilarLessonEntity[]>`
     SELECT 
-      ARRAY_AGG(DISTINCT "LessonHashtag"."tag") AS "hashtag" 
-    FROM "LessonHashtag" 
-    WHERE "LessonHashtag"."lessonId" = ${lessonId}`;
-
-    return result[0];
+      "Lesson"."id",
+      "Lesson"."title",
+      "Lesson"."hit",
+      "LessonBookmark"."memberId" AS "isBookmark",
+      COUNT("LessonSolution"."lessonId") as "solutionCount" 
+    FROM "Lesson"
+    LEFT JOIN "LessonSolution"
+      ON "LessonSolution"."lessonId" = "Lesson"."id"
+    LEFT JOIN "the-pool-local"."LessonBookmark" 
+      ON "Lesson"."id" = "LessonBookmark"."lessonId" and "LessonBookmark"."memberId" = ${memberId}
+    WHERE "Lesson"."categoryId" 
+      = (SELECT
+          "Lesson"."categoryId"
+          FROM "Lesson"
+          WHERE "Lesson"."id" = ${lessonId}
+        ) AND "Lesson"."id" != ${lessonId}
+    GROUP BY "Lesson"."id","LessonBookmark"."memberId"
+    ORDER BY  ${Prisma.raw(sortBy)} ${Prisma.raw(orderBy)}  
+    LIMIT ${pageSize}
+    OFFSET ${page} * ${pageSize}
+    `;
   }
 }

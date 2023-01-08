@@ -1,4 +1,4 @@
-import { LessonLevelId, MajorId } from './enum';
+import { MajorId } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -24,11 +24,8 @@ export const MAJOR_TEXT = {
   [MajorId.Development]: '디자인',
 } as const;
 
-export const LESSON_LEVEL = {
-  // 난이도 상
-  [LessonLevelId.Top]: '상',
-  // 난이도 중
-  [LessonLevelId.Middle]: '중',
-  // 난이도 하
-  [LessonLevelId.Bottom]: '하',
-} as const;
+// HTTP ERROR MESSAGE
+export const HTTP_ERROR_MESSAGE = {
+  FORBIDDEN: 'You do not have access to {modelName}',
+  NOT_FOUND: "{modelId} doesn't exist id in {modelName}",
+};

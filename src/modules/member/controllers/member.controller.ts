@@ -325,6 +325,7 @@ export class MemberController {
   })
   @ApiOkResponse({ type: MemberLastStepLoginResponseType })
   @ApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
+  @UseGuards(JwtAuthGuard)
   lastStepLogin(
     @UserLogin('id') memberId: number,
     @Body() lastStepLoginDto: LastStepLoginDto,

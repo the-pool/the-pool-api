@@ -1,6 +1,6 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { PickType } from '@nestjs/swagger';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
-import { LessonLevelId } from '@src/constants/enum';
+import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import {
   IsArray,
   IsEnum,
@@ -16,10 +16,15 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   'description',
   'title',
   'thumbnail',
+  'categoryId',
 ]) {
   @IsEnum(LessonLevelId)
   @IsNotEmpty()
   levelId: LessonLevelId;
+
+  @IsEnum(LessonCategoryId)
+  @IsNotEmpty()
+  categoryId: LessonCategoryId;
 
   @IsString()
   @IsNotEmpty()
@@ -32,14 +37,4 @@ export class CreateLessonDto extends PickType(LessonEntity, [
   @IsString()
   @IsOptional()
   thumbnail: string;
-
-  @ApiProperty({
-    example: ['the-pool', '백엔드', '화이팅'],
-    description: 'Lesson 생성시 생성한 hashtag',
-    required: true,
-    type: [String],
-  })
-  @IsString({ each: true })
-  @IsArray()
-  hashtag: string[];
 }

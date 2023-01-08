@@ -9,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// 디자인, 개발 전공등 대분류를 담은 테이블 
+/// 디자인, 개발 전공등 대분류를 담은 테이블
 model Major {
   /// 고유 ID
   id        Int      @id @default(autoincrement())
@@ -204,6 +204,8 @@ model Lesson {
   memberId    Int
   /// 출제자가 평가한 과제 난이도 
   levelId     Int
+  /// 과제의 카테고리
+  categoryId  Int
   /// 과제 제목
   title       String    @db.VarChar(255)
   /// 과제 설명 
@@ -221,6 +223,7 @@ model Lesson {
 
   member                 Member                  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lessonLevel            LessonLevel             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  lessonCategory         LessonCategory          @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   lessonSolutions        LessonSolution[]
   lessonHashtags         LessonHashtag[]
   lessonComments         LessonComment[]
@@ -346,4 +349,15 @@ model LessonComment {
 
   Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model LessonCategory {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 카테고리 이름
+  name      String   @unique @db.VarChar(30)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  lessons Lesson[]
 }
