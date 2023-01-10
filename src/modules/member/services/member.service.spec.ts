@@ -1,17 +1,11 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
-import { QueryHelper } from '@src/helpers/query.helper';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
-import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -33,10 +27,6 @@ describe('MemberService', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
-        },
-        {
-          provide: QueryHelper,
-          useValue: mockQueryHelper,
         },
       ],
     }).compile();
@@ -71,149 +61,6 @@ describe('MemberService', () => {
         where,
       });
       expect(result).toStrictEqual({ member });
-    });
-  });
-
-  describe('findAllSkills', () => {
-    let memberSkills: MemberSkillEntity;
-    let where: Prisma.MemberSkillWhereInput;
-
-    beforeEach(() => {
-      memberSkills = new MemberSkillEntity();
-    });
-
-    it('member skills 조회 성공', async () => {
-      mockPrismaService.memberSkill.findMany.mockReturnValue(
-        memberSkills as any,
-      );
-
-      const result = await memberService.findAllSkills(where);
-
-      expect(mockPrismaService.memberSkill.findMany).toBeCalledWith({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-      expect(result).toStrictEqual({
-        memberSkills,
-      });
-    });
-  });
-
-  describe('findAlliInterests', () => {
-    let memberInterests: MemberInterestEntity;
-    let where: Prisma.MemberSkillWhereInput;
-
-    beforeEach(() => {
-      memberInterests = new MemberInterestEntity();
-    });
-
-    it('member interests 조회 성공', async () => {
-      mockPrismaService.memberInterest.findMany.mockReturnValue(
-        memberInterests as any,
-      );
-
-      const result = await memberService.findAlliInterests(where);
-
-      expect(mockPrismaService.memberInterest.findMany).toBeCalledWith({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-      expect(result).toStrictEqual({
-        memberInterests,
-      });
-    });
-  });
-
-  describe('findOneReport', () => {
-    let memberReport: MemberReportEntity;
-    let where: Prisma.MemberSkillWhereInput;
-
-    beforeEach(() => {
-      memberReport = new MemberReportEntity();
-    });
-
-    it('member report 조회 성공', async () => {
-      mockPrismaService.memberReport.findFirst.mockReturnValue(
-        memberReport as any,
-      );
-
-      const result = await memberService.findOneReport(where);
-
-      expect(mockPrismaService.memberReport.findFirst).toBeCalledWith({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-      expect(result).toStrictEqual({
-        memberReport,
-      });
-    });
-  });
-
-  describe('findAllFollowers', () => {
-    let memberFollows: { follower: MemberEntity }[];
-    let memberId: number;
-    let query: FindAllFollowListRequestQueryDto;
-    let totalCount: number;
-
-    beforeEach(() => {
-      memberFollows = [{ follower: new MemberEntity() }];
-      memberId = faker.datatype.number();
-      query = new FindAllFollowListRequestQueryDto();
-      totalCount = faker.datatype.number();
-    });
-
-    it('member followers 조회 성공', async () => {
-      mockPrismaService.$transaction.mockResolvedValue([
-        memberFollows,
-        totalCount,
-      ]);
-
-      const result = await memberService.findAllFollowers(memberId, query);
-
-      expect(mockPrismaService.memberFollow.findMany).toBeCalledTimes(1);
-      expect(mockPrismaService.memberFollow.count).toBeCalledTimes(1);
-      expect(mockPrismaService.$transaction).toBeCalledTimes(1);
-      expect(result).toStrictEqual({
-        followers: [new MemberEntity()],
-        totalCount,
-      });
-    });
-  });
-
-  describe('findAllFollowings', () => {
-    let memberFollows: { following: MemberEntity }[];
-    let memberId: number;
-    let query: FindAllFollowListRequestQueryDto;
-    let totalCount: number;
-
-    beforeEach(() => {
-      memberFollows = [{ following: new MemberEntity() }];
-      memberId = faker.datatype.number();
-      query = new FindAllFollowListRequestQueryDto();
-      totalCount = faker.datatype.number();
-    });
-
-    it('member followings 조회 성공', async () => {
-      mockPrismaService.$transaction.mockResolvedValue([
-        memberFollows,
-        totalCount,
-      ]);
-
-      const result = await memberService.findAllFollowings(memberId, query);
-
-      expect(mockPrismaService.memberFollow.findMany).toBeCalledTimes(1);
-      expect(mockPrismaService.memberFollow.count).toBeCalledTimes(1);
-      expect(mockPrismaService.$transaction).toBeCalledTimes(1);
-      expect(result).toStrictEqual({
-        followings: [new MemberEntity()],
-        totalCount,
-      });
     });
   });
 

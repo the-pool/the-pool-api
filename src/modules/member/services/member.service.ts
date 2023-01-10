@@ -1,17 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Member, Prisma, PrismaPromise } from '@prisma/client';
-import { QueryHelper } from '@src/helpers/query.helper';
+import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { FindAllFollowListRequestQueryDto } from '../dtos/find-all-follow-list-request-query.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
-import { MemberInterestEntity } from '../entities/member-interest.entity';
-import { MemberSkillEntity } from '../entities/member-skill.entity';
 import { MemberEntity } from '../entities/member.entity';
 
 @Injectable()
@@ -19,7 +14,6 @@ export class MemberService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
-    private readonly queryHelper: QueryHelper,
   ) {}
 
   /**
@@ -33,146 +27,6 @@ export class MemberService {
     });
 
     return { member } as { member: MemberEntity };
-  }
-
-  /**
-   * @todo 우선 orderBy 고정해놨지만 추후에 orderBy 도 클라이언트에서 받아서 처리하는것도 고려
-   *
-   * member 의 스킬 리스트 조회
-   */
-  async findAllSkills(
-    where: Prisma.MemberSkillWhereInput,
-  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
-    const memberSkills: MemberSkillEntity[] =
-      await this.prismaService.memberSkill.findMany({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-
-    return { memberSkills };
-  }
-
-  /**
-   * @todo 우선 orderBy 고정해놨지만 추후에 orderBy 도 클라이언트에서 받아서 처리하는것도 고려
-   *
-   * member 의 관심사 리스트 조회
-   */
-  async findAlliInterests(
-    where: Prisma.MemberInterestWhereInput,
-  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
-    const memberInterests: MemberSkillEntity[] =
-      await this.prismaService.memberInterest.findMany({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-
-    return { memberInterests };
-  }
-
-  /**
-   * member 의 report 조회
-   */
-  async findOneReport(
-    where: Prisma.MemberReportWhereInput,
-  ): Promise<{ memberReport: MemberReportEntity }> {
-    const memberReport = await this.prismaService.memberReport.findFirst({
-      where,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-
-    return { memberReport } as { memberReport: MemberReportEntity };
-  }
-
-  /**
-   * member 의 follower 리스트 조회
-   * 해당 member 를 구독하는 사람
-   */
-  async findAllFollowers(
-    memberId: number,
-    query: FindAllFollowListRequestQueryDto,
-  ): Promise<{ followers: MemberEntity[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy } =
-      query as Required<FindAllFollowListRequestQueryDto>;
-
-    const select = { follower: true };
-    const where = { followingId: memberId };
-    const order = this.queryHelper.buildOrderByPropForFind([orderBy], [sortBy]);
-
-    const memberFollowsQuery: PrismaPromise<{ follower: Member }[]> =
-      this.prismaService.memberFollow.findMany({
-        select,
-        where,
-        orderBy: order,
-        skip: page * pageSize,
-        take: pageSize,
-      });
-
-    const totalCountQuery: PrismaPromise<number> =
-      this.prismaService.memberFollow.count({
-        where,
-        orderBy: order,
-      });
-
-    const [memberFollows, totalCount] = await this.prismaService.$transaction([
-      memberFollowsQuery,
-      totalCountQuery,
-    ]);
-
-    return {
-      followers: memberFollows.map((memberFollow) => {
-        return memberFollow.follower;
-      }),
-      totalCount,
-    };
-  }
-
-  /**
-   * member 의 following 리스트 조회
-   * 해당 member 가 구독하는 사람
-   */
-  async findAllFollowings(
-    memberId: number,
-    query: FindAllFollowListRequestQueryDto,
-  ): Promise<{ followings: MemberEntity[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy } =
-      query as Required<FindAllFollowListRequestQueryDto>;
-
-    const select = { following: true };
-    const where = { followerId: memberId };
-    const order = this.queryHelper.buildOrderByPropForFind([orderBy], [sortBy]);
-
-    const memberFollowsQuery: PrismaPromise<{ following: Member }[]> =
-      this.prismaService.memberFollow.findMany({
-        select,
-        where,
-        orderBy: order,
-        skip: page * pageSize,
-        take: pageSize,
-      });
-
-    const totalCountQuery: PrismaPromise<number> =
-      this.prismaService.memberFollow.count({
-        where,
-        orderBy: order,
-      });
-
-    const [memberFollows, totalCount] = await this.prismaService.$transaction([
-      memberFollowsQuery,
-      totalCountQuery,
-    ]);
-
-    return {
-      followings: memberFollows.map((memberFollow) => {
-        return memberFollow.following;
-      }),
-      totalCount,
-    };
   }
 
   /**

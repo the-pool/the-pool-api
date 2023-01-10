@@ -3,6 +3,10 @@ import { PrivateStorageService } from '@src/modules/core/private-storage/interfa
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MajorService } from '@src/modules/major/services/major.service';
+import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
+import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
+import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
+import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { MockClassType } from './mock.type';
@@ -17,16 +21,28 @@ export const mockJwtService = {
 
 export const mockMemberService: MockClassType<MemberService> = {
   findOne: jest.fn(),
-  findAllSkills: jest.fn(),
-  findAlliInterests: jest.fn(),
-  findOneReport: jest.fn(),
-  findAllFollowers: jest.fn(),
-  findAllFollowings: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
+};
+
+export const mockMemberFriendshipService: MockClassType<MemberFriendshipService> =
+  {
+    findAll: jest.fn(),
+  };
+
+export const mockMemberInterestService: MockClassType<MemberInterestService> = {
+  findAll: jest.fn(),
+};
+
+export const mockMemberReportService: MockClassType<MemberReportService> = {
+  findAll: jest.fn(),
+};
+
+export const mockMemberSkillService: MockClassType<MemberSkillService> = {
+  findAll: jest.fn(),
 };
 
 export const mockMemberValidationService: MockClassType<MemberValidationService> =

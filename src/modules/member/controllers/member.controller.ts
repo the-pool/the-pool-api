@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,7 +14,6 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiExtraModels,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -24,12 +22,10 @@ import {
   ApiParam,
   ApiTags,
   ApiUnauthorizedResponse,
-  getSchemaPath,
   IntersectionType,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -37,10 +33,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
-import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
 import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
@@ -51,7 +44,6 @@ import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { LoginOrSignUpDto } from '../dtos/login-or-sign-up.dto';
-import { MemberSkillEntity } from '../entities/member-skill.entity';
 import { MemberEntity } from '../entities/member.entity';
 import { MemberService } from '../services/member.service';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
@@ -59,6 +51,11 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
+ * @todo swagger 개선해야함
+ * @todo active member guard
+ *
+ * memberSkill 옮김
+ * memberInterest 옮김
  */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -95,139 +92,6 @@ export class MemberController {
     return this.memberService.findOne({
       id: params.id,
     });
-  }
-
-  @ApiOperation({ summary: 'member 의 스킬 리스트 조회' })
-  @ApiExtraModels(MemberSkillEntity)
-  @ApiOkResponse({
-    schema: {
-      properties: {
-        memberSkills: {
-          type: 'array',
-          items: {
-            $ref: getSchemaPath(MemberSkillEntity),
-          },
-        },
-      },
-    },
-  })
-  @Get(':id/skills')
-  findAllSkills(
-    @SetModelNameToParam('member')
-    @Param()
-    params: IdRequestParamDto,
-  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
-    return this.memberService.findAllSkills({
-      memberSkillMappings: {
-        some: {
-          memberId: params.id,
-        },
-      },
-    });
-  }
-
-  @ApiOperation({ summary: 'member 관심사 리스트 조회' })
-  @ApiExtraModels(MemberInterestEntity)
-  @ApiOkResponse({
-    schema: {
-      properties: {
-        memberInterests: {
-          type: 'array',
-          items: {
-            $ref: getSchemaPath(MemberInterestEntity),
-          },
-        },
-      },
-    },
-  })
-  @Get(':id/interests')
-  findAlliInterests(
-    @SetModelNameToParam('member')
-    @Param()
-    params: IdRequestParamDto,
-  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
-    return this.memberService.findAlliInterests({
-      memberInterestMappings: {
-        some: {
-          memberId: params.id,
-        },
-      },
-    });
-  }
-
-  @ApiOperation({ summary: 'member report 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, { memberReport: MemberReportEntity })
-  @Get(':id/report')
-  findOneReport(
-    @SetModelNameToParam('member')
-    @Param()
-    params: IdRequestParamDto,
-  ): Promise<{ memberReport: MemberReportEntity }> {
-    return this.memberService.findOneReport({
-      memberId: params.id,
-    });
-  }
-
-  @ApiOperation({
-    summary: 'member 팔로워 리스트 조회 (해당 member 를 구독하는 사람)',
-  })
-  @ApiExtraModels(MemberEntity)
-  @ApiOkResponse({
-    schema: {
-      properties: {
-        followers: {
-          type: 'array',
-          items: {
-            $ref: getSchemaPath(MemberEntity),
-          },
-        },
-        totalCount: {
-          type: 'number',
-        },
-      },
-    },
-  })
-  @Get(':id/followers')
-  findAllFollowers(
-    @Query()
-    @SetDefaultPageSize(20)
-    query: FindAllFollowListRequestQueryDto,
-    @SetModelNameToParam('member')
-    @Param()
-    params: IdRequestParamDto,
-  ): Promise<{ followers: MemberEntity[] }> {
-    return this.memberService.findAllFollowers(params.id, query);
-  }
-
-  @ApiOperation({
-    summary: 'member 팔로잉 리스트 조회 (해당 member 가 구독하는 사람)',
-  })
-  @ApiExtraModels(MemberEntity)
-  @ApiOkResponse({
-    schema: {
-      properties: {
-        followings: {
-          type: 'array',
-          items: {
-            $ref: getSchemaPath(MemberEntity),
-          },
-        },
-        totalCount: {
-          type: 'number',
-        },
-      },
-    },
-  })
-  @Get(':id/followings')
-  findAllFollowings(
-    @Query()
-    @SetDefaultPageSize(20)
-    query: FindAllFollowListRequestQueryDto,
-    @SetModelNameToParam('member')
-    @Param()
-    params: IdRequestParamDto,
-  ): Promise<{ followings: MemberEntity[] }> {
-    return this.memberService.findAllFollowings(params.id, query);
   }
 
   /**

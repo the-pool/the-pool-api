@@ -3,11 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
-import { FindAllFollowListRequestQueryDto } from '@src/modules/member/dtos/find-all-follow-list-request-query.dto';
 import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
-import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
@@ -78,125 +74,6 @@ describe('MemberController', () => {
         id: params.id,
       });
       expect(result).toStrictEqual(member);
-    });
-  });
-
-  describe('findAllSkills', () => {
-    let memberSkills: MemberSkillEntity;
-    let params: IdRequestParamDto;
-
-    beforeEach(() => {
-      memberSkills = new MemberSkillEntity();
-      params = new IdRequestParamDto();
-    });
-
-    it('조회 성공', () => {
-      mockMemberService.findAllSkills.mockReturnValue(memberSkills);
-
-      const result = memberController.findAllSkills(params);
-
-      expect(mockMemberService.findAllSkills).toBeCalledWith({
-        memberSkillMappings: {
-          some: {
-            memberId: params.id,
-          },
-        },
-      });
-      expect(result).toStrictEqual(memberSkills);
-    });
-  });
-
-  describe('findAlliInterests', () => {
-    let memberInterests: MemberInterestEntity;
-    let params: IdRequestParamDto;
-
-    beforeEach(() => {
-      memberInterests = new MemberInterestEntity();
-      params = new IdRequestParamDto();
-    });
-
-    it('조회 성공', () => {
-      mockMemberService.findAlliInterests.mockReturnValue(memberInterests);
-
-      const result = memberController.findAlliInterests(params);
-
-      expect(mockMemberService.findAlliInterests).toBeCalledWith({
-        memberInterestMappings: {
-          some: {
-            memberId: params.id,
-          },
-        },
-      });
-      expect(result).toStrictEqual(memberInterests);
-    });
-  });
-
-  describe('findOneReport', () => {
-    let memberReport: MemberReportEntity;
-    let params: IdRequestParamDto;
-
-    beforeEach(() => {
-      memberReport = new MemberReportEntity();
-      params = new IdRequestParamDto();
-    });
-
-    it('조회 성공', () => {
-      mockMemberService.findOneReport.mockReturnValue(memberReport);
-
-      const result = memberController.findOneReport(params);
-
-      expect(mockMemberService.findOneReport).toBeCalledWith({
-        memberId: params.id,
-      });
-      expect(result).toStrictEqual(memberReport);
-    });
-  });
-
-  describe('findAllFollowers', () => {
-    let memberFollowers: MemberEntity;
-    let params: IdRequestParamDto;
-    let query: FindAllFollowListRequestQueryDto;
-
-    beforeEach(() => {
-      memberFollowers = new MemberEntity();
-      params = new IdRequestParamDto();
-      query = new FindAllFollowListRequestQueryDto();
-    });
-
-    it('조회 성공', () => {
-      mockMemberService.findAllFollowers.mockReturnValue(memberFollowers);
-
-      const result = memberController.findAllFollowers(query, params);
-
-      expect(mockMemberService.findAllFollowers).toBeCalledWith(
-        params.id,
-        query,
-      );
-      expect(result).toStrictEqual(memberFollowers);
-    });
-  });
-
-  describe('findAllFollowings', () => {
-    let memberFollowings: MemberEntity;
-    let params: IdRequestParamDto;
-    let query: FindAllFollowListRequestQueryDto;
-
-    beforeEach(() => {
-      memberFollowings = new MemberEntity();
-      params = new IdRequestParamDto();
-      query = new FindAllFollowListRequestQueryDto();
-    });
-
-    it('조회 성공', () => {
-      mockMemberService.findAllFollowings.mockReturnValue(memberFollowings);
-
-      const result = memberController.findAllFollowings(query, params);
-
-      expect(mockMemberService.findAllFollowings).toBeCalledWith(
-        params.id,
-        query,
-      );
-      expect(result).toStrictEqual(memberFollowings);
     });
   });
 

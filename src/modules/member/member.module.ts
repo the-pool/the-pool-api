@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { QueryHelper } from '@src/helpers/query.helper';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 
@@ -15,7 +14,6 @@ import { MemberService } from './services/member.service';
     MemberService,
     MemberValidationService,
     UseDevelopmentInterceptor,
-    QueryHelper,
   ],
 })
 export class MemberModule {}
