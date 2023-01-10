@@ -9,8 +9,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { FindMemberInterestListQueryDto } from '@src/modules/member-interest/dtos/find-member-interest-list-query.dto';
+import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 

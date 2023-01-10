@@ -8,8 +8,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
+import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 

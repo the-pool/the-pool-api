@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
+import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { MemberInterestService } from './member-interest.service';
 

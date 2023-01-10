@@ -3,7 +3,7 @@ import { PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
+import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 
 @Injectable()
 export class MemberReportService {

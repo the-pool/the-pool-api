@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FindMemberInterestListQueryDto } from '@src/modules/member-interest/dtos/find-member-interest-list-query.dto';
+import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
 import { mockMemberInterestService } from '../../../../test/mock/mock-services';
 import { MemberInterestController } from './member-interest.controller';
 

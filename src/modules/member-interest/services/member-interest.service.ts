@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberInterestEntity } from '@src/modules/member/entities/member-interest.entity';
+import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 
 @Injectable()
 export class MemberInterestService {

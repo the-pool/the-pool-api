@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
+import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
-import { MemberReportEntity } from '@src/modules/member/entities/member-report.entity';
 import { mockMemberReportService } from '../../../../test/mock/mock-services';
 import { MemberReportController } from './member-report.controller';
 

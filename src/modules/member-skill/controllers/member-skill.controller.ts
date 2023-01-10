@@ -9,8 +9,8 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 import { FindMemberSkillListQueryDto } from '@src/modules/member-skill/dtos/find-member-skill-list-query.dto';
+import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
-import { MemberSkillEntity } from '@src/modules/member/entities/member-skill.entity';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 
