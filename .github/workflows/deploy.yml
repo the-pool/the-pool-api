@@ -2,7 +2,7 @@ name: deploy
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
     name: Deploy
     runs-on: [self-hosted, api-server]
     steps:
-      - name: Login to Amazon ECR
+      - name: Login to Docker
         env:
           REGISTRY: ${{ secrets.AWS_ECR_NAME }}
         run: |

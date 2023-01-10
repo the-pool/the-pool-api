@@ -92,6 +92,7 @@ export class PrismaService
         throw new InternalServerErrorException(err);
       });
   }
+<<<<<<< HEAD
 
   async validateDuplicateAndFail(
     modelName: PrismaModelName,
@@ -108,4 +109,6 @@ export class PrismaService
     }
     return;
   }
+=======
+>>>>>>> a52b8f7be2906834f331ada8531df8d2212eda46
 }

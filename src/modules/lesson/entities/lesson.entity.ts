@@ -1,16 +1,10 @@
-import {
-  ApiProperty,
-  ApiPropertyOptional,
-  IntersectionType,
-} from '@nestjs/swagger';
+import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { Lesson } from '@prisma/client';
 import { getEntriesByEnum } from '@src/common/common';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { LessonEvaluationEntity } from './lesson-evaluation.entity';
-import { LessonHashtagEntity } from './lesson-hashtag.entity';
 
 export class LessonEntity
   extends IntersectionType(IdResponseType, DateResponseType)
