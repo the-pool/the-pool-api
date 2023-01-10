@@ -61,16 +61,4 @@ export class LessonEntity
     enum: getEntriesByEnum(LessonCategoryId),
   })
   categoryId: LessonCategoryId;
-
-  @ApiPropertyOptional({
-    description: '과제의 hashtag entity',
-    type: [LessonHashtagEntity],
-  })
-  hashtags?: LessonHashtagEntity[];
-
-  @ApiPropertyOptional({
-    description: '과제의 evaluation entity',
-    type: [LessonEvaluationEntity],
-  })
-  evaluations?: LessonEvaluationEntity[];
 }

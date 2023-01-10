@@ -3,23 +3,14 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
   Query,
 } from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  OmitType,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
-import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -35,6 +26,13 @@ import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
+import {
+  ApiCreateLesson,
+  ApiDeleteLesson,
+  ApiReadOneLesson,
+  ApiReadSimilarLesson,
+  ApiUpdateLesson,
+} from '../swaggers/lesson.swagger';
 
 @ApiTags('과제')
 @Controller()
@@ -44,11 +42,8 @@ export class LessonController {
     private readonly prismaService: PrismaService,
   ) {}
 
-  @ApiOperation({ summary: '과제 생성' })
+  @ApiCreateLesson('과제 생성')
   @BearerAuth(JwtAuthGuard)
-  @ApiSuccessResponse(HttpStatus.CREATED, {
-    lesson: OmitType(LessonEntity, ['hashtags']),
-  })
   @Post()
   async createLesson(
     @Body() createLessonDto: CreateLessonDto,
@@ -62,12 +57,7 @@ export class LessonController {
     return { lesson };
   }
 
-  @ApiOperation({ summary: '과제 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    lesson: OmitType(LessonEntity, ['hashtags']),
-  })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiUpdateLesson('과제 수정')
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
   async updateLesson(
@@ -76,7 +66,7 @@ export class LessonController {
     param: IdRequestParamDto,
     @Body() updateLessonDto: UpdateLessonDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lesson: Omit<LessonEntity, 'hashtag' | 'evaluations'> }> {
+  ): Promise<{ lesson: LessonEntity }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
@@ -90,12 +80,7 @@ export class LessonController {
     return { lesson: updatedLesson };
   }
 
-  @ApiOperation({ summary: '과제 삭제' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    lesson: OmitType(LessonEntity, ['hashtags']),
-  })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiDeleteLesson('과제 삭제')
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
   async deleteLesson(
@@ -114,9 +99,7 @@ export class LessonController {
     return { lesson: deletedLesson };
   }
 
-  @ApiOperation({ summary: '과제 상세 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, { lesson: ReadOneLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadOneLesson('과제 상세 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   async readOneLesson(
@@ -132,9 +115,7 @@ export class LessonController {
     return { lesson };
   }
 
-  @ApiOperation({ summary: '과제 상세 조회의 유사과제' })
-  @ApiOkResponse({ type: ReadSimilarLessonDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadSimilarLesson('과제 상세 조회의 유사과제')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id/similarity')
   async readSimilarLesson(

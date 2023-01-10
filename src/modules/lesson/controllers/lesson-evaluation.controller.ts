@@ -32,8 +32,6 @@ import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-q
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
-import { query } from 'express';
-import { LessonEntity } from '../entities/lesson.entity';
 
 @ApiTags('남들이 평가하는 과제 난이도')
 @Controller(':id/evaluations')
@@ -44,9 +42,9 @@ export class LessonEvaluationController {
   ) {}
 
   @ApiOperation({ summary: '과제 평가 생성' })
-  @ApiSuccessResponse(HttpStatus.CREATED, {
-    evaluation: LessonEvaluationEntity,
-  })
+  // @ApiSuccessResponse(HttpStatus.CREATED, {
+  //   evaluation: LessonEvaluationEntity,
+  // })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @ApiFailureResponse(HttpStatus.CONFLICT, HTTP_ERROR_MESSAGE.CONFLICT)
@@ -84,9 +82,9 @@ export class LessonEvaluationController {
   }
 
   @ApiOperation({ summary: '과제 평가 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    evaluation: LessonEvaluationEntity,
-  })
+  // @ApiSuccessResponse(HttpStatus.OK, {
+  //   evaluation: LessonEvaluationEntity,
+  // })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
@@ -138,7 +136,7 @@ export class LessonEvaluationController {
   }
 
   @ApiOperation({ summary: '과제 평가 대량 조회' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['evaluations']) })
+  // @ApiOkResponse({ type: PickType(LessonEntity, ['evaluations']) })
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
@@ -147,7 +145,7 @@ export class LessonEvaluationController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Query() query: LessonEvaluationQueryDto,
-  ): Promise<Pick<LessonEntity, 'evaluations'>> {
+  ): Promise<any> {
     const evaluations = await this.lessonEvaluationService.readManyEvaluation(
       param.id,
       query,

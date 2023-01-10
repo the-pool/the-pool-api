@@ -21,7 +21,7 @@ export class LessonService {
   createLesson(
     lesson: CreateLessonDto,
     memberId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag' | 'evaluations'>> {
+  ): Promise<LessonEntity> {
     return this.prismaService.lesson.create({
       data: {
         ...lesson,
@@ -36,7 +36,7 @@ export class LessonService {
   updateLesson(
     lesson: UpdateLessonDto,
     lessonId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag' | 'evaluations'>> {
+  ): Promise<LessonEntity> {
     return this.prismaService.lesson.update({
       where: { id: lessonId },
       data: { ...lesson },

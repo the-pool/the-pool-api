@@ -42,7 +42,7 @@ export class LessonHashtagController {
   ) {}
 
   @ApiOperation({ summary: '과제 해시태그 생성' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  // @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
@@ -68,7 +68,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 대량 수정' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  // @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
@@ -94,7 +94,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
+  // @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
@@ -126,7 +126,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
+  // @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(JwtAuthGuard)
@@ -156,7 +156,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 조회' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
+  // @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
@@ -171,7 +171,7 @@ export class LessonHashtagController {
   }
 
   @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
+  // @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
   @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
   @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
   @BearerAuth(OptionalJwtAuthGuard)
