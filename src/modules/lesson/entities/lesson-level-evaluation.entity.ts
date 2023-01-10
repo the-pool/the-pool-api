@@ -1,25 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { LessonEvaluationEntity } from './lesson-evaluation.entity';
 
-export class LessonLevelEvaluationEntity {
-  @ApiProperty({
-    example: 1,
-    description: '난이도 상',
-  })
-  @Type(() => Number)
-  top: number;
-
-  @ApiProperty({
-    example: 5,
-    description: '난이도 중',
-  })
-  @Type(() => Number)
-  middle: number;
-
+export class LessonLevelEvaluationEntity extends PickType(
+  LessonEvaluationEntity,
+  ['levelId'],
+) {
   @ApiProperty({
     example: 10,
-    description: '난이도 하',
+    description: '평가된 갯수',
   })
-  @Type(() => Number)
-  bottom: number;
+  count: number;
 }

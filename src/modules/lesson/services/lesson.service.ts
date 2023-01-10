@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateLessonDto } from '../dtos/create-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
+import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
@@ -21,7 +21,7 @@ export class LessonService {
   createLesson(
     lesson: CreateLessonDto,
     memberId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+  ): Promise<LessonEntity> {
     return this.prismaService.lesson.create({
       data: {
         ...lesson,
@@ -36,7 +36,7 @@ export class LessonService {
   updateLesson(
     lesson: UpdateLessonDto,
     lessonId: number,
-  ): Promise<Omit<LessonEntity, 'hashtag'>> {
+  ): Promise<LessonEntity> {
     return this.prismaService.lesson.update({
       where: { id: lessonId },
       data: { ...lesson },
@@ -55,16 +55,11 @@ export class LessonService {
   /**
    * 과제 상세 조회 메서드
    */
-  async readOneLesson(
+  readOneLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
   ): Promise<ReadOneLessonDto> {
-    const [lesson, lessonLevelEvaluation] = await Promise.all([
-      this.lessonRepository.readOneLesson(lessonId, memberId),
-      this.lessonRepository.readLessonLevelEvaluation(lessonId),
-    ]);
-
-    return Object.assign({}, lesson, { lessonLevelEvaluation });
+    return this.lessonRepository.readOneLesson(lessonId, memberId);
   }
 
   /**
@@ -72,7 +67,7 @@ export class LessonService {
    */
   readSimilarLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
     query: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     return this.lessonRepository.readSimilarLesson(lessonId, memberId, query);

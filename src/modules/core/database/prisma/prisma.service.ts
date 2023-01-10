@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   INestApplication,
   Injectable,
@@ -90,5 +91,21 @@ export class PrismaService
 
         throw new InternalServerErrorException(err);
       });
+  }
+
+  async validateDuplicateAndFail(
+    modelName: PrismaModelName,
+    where: any,
+  ): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const model = await this[modelName].findMany({
+      where,
+    });
+
+    if (model?.length) {
+      throw new ConflictException(`${modelName} is duplicatd`);
+    }
+    return;
   }
 }

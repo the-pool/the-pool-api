@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
-import { ReadOneLessonDto } from '../dtos/read-one-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
+import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { Prisma } from '@prisma/client';
-import { LessonEntity } from '../entities/lesson.entity';
-import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 
 @Injectable()
 export class LessonRepository {
@@ -18,11 +15,9 @@ export class LessonRepository {
    */
   async readOneLesson(
     lessonId: number,
-    memberId: number,
-  ): Promise<Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>> {
-    const result = await this.prismaService.$queryRaw<
-      [Omit<ReadOneLessonDto, 'lessonLevelEvaluation'>]
-    >`
+    memberId: number | null,
+  ): Promise<ReadOneLessonDto> {
+    const result = await this.prismaService.$queryRaw<[ReadOneLessonDto]>`
     SELECT 
         "Lesson"."title" ,
         "Lesson"."description",
@@ -51,31 +46,11 @@ export class LessonRepository {
   }
 
   /**
-   * 과제를 수행한 멤버들의 과제 난이도 평가 정보 조회 query
-   */
-  async readLessonLevelEvaluation(
-    lessonId: number,
-  ): Promise<LessonLevelEvaluationEntity> {
-    const result = await this.prismaService.$queryRaw<
-      [LessonLevelEvaluationEntity]
-    >`
-    SELECT 
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" = ${LessonLevelId.Top}) AS "top",
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Middle}) AS  "middle",
-    	COUNT(1) FILTER(WHERE "LessonLevelEvaluation"."levelId" =  ${LessonLevelId.Bottom}) AS  "bottom"
-    FROM "LessonLevelEvaluation" 
-    WHERE "LessonLevelEvaluation"."lessonId" = ${lessonId}
-    `;
-
-    return result[0];
-  }
-
-  /**
    * 유사 과제 조회 query
    */
   readSimilarLesson(
     lessonId: number,
-    memberId: number,
+    memberId: number | null,
     { sortBy, orderBy, page, pageSize }: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     return this.prismaService.$queryRaw<SimilarLessonEntity[]>`
