@@ -27,7 +27,7 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
+import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonEntity } from '../entities/lesson.entity';
@@ -49,7 +49,7 @@ export class LessonHashtagController {
     private readonly prismaService: PrismaService,
   ) {}
 
-  @ApiCreateManyHashtag('과제 해시태그 생성')
+  @ApiCreateManyHashtag('과제 해시태그 대량 생성')
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createManyHashtag(
@@ -102,7 +102,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
-    @Body() { hashtag }: UpdateHashtagDto,
+    @Body() { hashtag }: UpdateOneHashtagDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     await Promise.all([

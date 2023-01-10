@@ -4,7 +4,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
+import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
@@ -47,32 +47,32 @@ describe('LessonHashtagController', () => {
     expect(lessonHashtagController).toBeDefined();
   });
 
-  describe('createHashtag', () => {
-    let createHashtagDto: CreateManyHashtagDto;
+  describe('createManyHashtag', () => {
+    let createManyHashtagDto: CreateManyHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let createdHashtags;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      createHashtagDto = new CreateManyHashtagDto();
+      createManyHashtagDto = new CreateManyHashtagDto();
       param = new IdRequestParamDto();
       createdHashtags = [{ name: faker.datatype.string }];
 
-      lessonHashtagService.createHashtag.mockReturnValue(createdHashtags);
+      lessonHashtagService.createManyHashtag.mockReturnValue(createdHashtags);
     });
 
     it('success - check method called', async () => {
       await lessonHashtagController.createManyHashtag(
         param,
-        createHashtagDto,
+        createManyHashtagDto,
         memberId,
       );
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
-      expect(lessonHashtagService.createHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.createHashtag).toBeCalledWith(
-        createHashtagDto.hashtags,
+      expect(lessonHashtagService.createManyHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.createManyHashtag).toBeCalledWith(
+        createManyHashtagDto.hashtags,
         param.id,
       );
     });
@@ -80,7 +80,7 @@ describe('LessonHashtagController', () => {
     it('success - check Input & Output', async () => {
       const returnValue = await lessonHashtagController.createManyHashtag(
         param,
-        createHashtagDto,
+        createManyHashtagDto,
         memberId,
       );
 
@@ -89,14 +89,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('updateManyHashtag', () => {
-    let updateHashtagDto: UpdateManyHashtagDto;
+    let updateOneHashtagDto: UpdateManyHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let updatedHashtags;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      updateHashtagDto = new UpdateManyHashtagDto();
+      updateOneHashtagDto = new UpdateManyHashtagDto();
       param = new IdRequestParamDto();
       updatedHashtags = [{ name: faker.datatype.string }];
 
@@ -110,7 +110,7 @@ describe('LessonHashtagController', () => {
     it('success - check method called', async () => {
       await lessonHashtagController.updateManyHashtag(
         param,
-        updateHashtagDto,
+        updateOneHashtagDto,
         memberId,
       );
 
@@ -119,7 +119,7 @@ describe('LessonHashtagController', () => {
         1,
       );
       expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
-        updateHashtagDto.hashtags,
+        updateOneHashtagDto.hashtags,
         param.id,
       );
     });
@@ -127,7 +127,7 @@ describe('LessonHashtagController', () => {
     it('success - check Input & Output', async () => {
       const returnValue = await lessonHashtagController.updateManyHashtag(
         param,
-        updateHashtagDto,
+        updateOneHashtagDto,
         memberId,
       );
 
@@ -135,40 +135,40 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  describe('updateHashtag', () => {
-    let updateHashtagDto: UpdateHashtagDto;
+  describe('updateOneHashtag', () => {
+    let updateOneHashtagDto: UpdateOneHashtagDto;
     let param: LessonHashtagParamDto;
     let memberId: number;
     let updatedHashtag;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      updateHashtagDto = new UpdateHashtagDto();
+      updateOneHashtagDto = new UpdateOneHashtagDto();
       param = new LessonHashtagParamDto();
       updatedHashtag = new LessonHashtagEntity();
 
-      lessonHashtagService.updateHashtag.mockReturnValue(updatedHashtag);
+      lessonHashtagService.updateOneHashtag.mockReturnValue(updatedHashtag);
     });
 
     it('success - check method called', async () => {
       await lessonHashtagController.updateOneHashtag(
         param,
-        updateHashtagDto,
+        updateOneHashtagDto,
         memberId,
       );
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
-      expect(lessonHashtagService.updateHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.updateHashtag).toBeCalledWith(
+      expect(lessonHashtagService.updateOneHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.updateOneHashtag).toBeCalledWith(
         param.hashtagId,
-        updateHashtagDto.hashtag,
+        updateOneHashtagDto.hashtag,
       );
     });
 
     it('success - check Input & Output', async () => {
       const reuturnValue = await lessonHashtagController.updateOneHashtag(
         param,
-        updateHashtagDto,
+        updateOneHashtagDto,
         memberId,
       );
 
@@ -176,7 +176,7 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  describe('deleteHashtag', () => {
+  describe('deleteOneHashtag', () => {
     let param: LessonHashtagParamDto;
     let memberId: number;
     let deletedHashtag: LessonHashtagEntity;
@@ -186,15 +186,15 @@ describe('LessonHashtagController', () => {
       param = new LessonHashtagParamDto();
       deletedHashtag = new LessonHashtagEntity();
 
-      lessonHashtagService.deleteHashtag.mockReturnValue(deletedHashtag);
+      lessonHashtagService.deleteOneHashtag.mockReturnValue(deletedHashtag);
     });
 
     it('success - check method called', async () => {
       await lessonHashtagController.deleteOneHashtag(param, memberId);
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
-      expect(lessonHashtagService.deleteHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.deleteHashtag).toBeCalledWith(
+      expect(lessonHashtagService.deleteOneHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.deleteOneHashtag).toBeCalledWith(
         param.hashtagId,
       );
     });
@@ -234,7 +234,7 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  describe('readHashtag', () => {
+  describe('readOneHashtag', () => {
     let param: LessonHashtagParamDto;
     let hashtag: LessonHashtagEntity;
 
@@ -242,15 +242,17 @@ describe('LessonHashtagController', () => {
       param = new LessonHashtagParamDto();
       hashtag = new LessonHashtagEntity();
 
-      lessonHashtagService.readHashtag.mockReturnValue(hashtag);
+      lessonHashtagService.readOneHashtag.mockReturnValue(hashtag);
     });
 
     it('success - check method called', async () => {
       await lessonHashtagController.readOneHashtag(param);
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
-      expect(lessonHashtagService.readHashtag).toBeCalledTimes(1);
-      expect(lessonHashtagService.readHashtag).toBeCalledWith(param.hashtagId);
+      expect(lessonHashtagService.readOneHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.readOneHashtag).toBeCalledWith(
+        param.hashtagId,
+      );
     });
 
     it('success - check Input & Output', async () => {
