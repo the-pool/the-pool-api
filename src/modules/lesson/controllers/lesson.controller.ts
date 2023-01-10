@@ -135,4 +135,10 @@ export class LessonController {
       lessons: readSimilarLessons,
     });
   }
+
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get()
+  async readManyLesson(@Query() query: any) {
+    console.log(query);
+  }
 }

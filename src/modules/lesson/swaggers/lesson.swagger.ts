@@ -37,17 +37,21 @@ export const ApiDeleteLesson = (summary: string) => {
 };
 
 export const ApiReadOneLesson = (summary: string) => {
-  return (
+  return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, { lesson: { type: ReadOneLessonDto } }),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
 
 export const ApiReadSimilarLesson = (summary: string) => {
-  return (
+  return applyDecorators(
     ApiOperation({ summary }),
     ApiOkResponse({ type: ReadSimilarLessonDto }),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
+};
+
+export const ApiReadManyLesson = (summary) => {
+  return;
 };
