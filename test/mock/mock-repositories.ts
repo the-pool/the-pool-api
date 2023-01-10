@@ -3,6 +3,5 @@ import { MockClassType } from './mock.type';
 
 export const mockLessonRepository: MockClassType<LessonRepository> = {
   readOneLesson: jest.fn(),
-  readLessonLevelEvaluation: jest.fn(),
   readSimilarLesson: jest.fn(),
 };
