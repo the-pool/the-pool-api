@@ -3,21 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  PickType,
-} from '@nestjs/swagger';
-import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
+import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -26,11 +17,10 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
-import { LessonEntity } from '../entities/lesson.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import {
   ApiCreateManyHashtag,

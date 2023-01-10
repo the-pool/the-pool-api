@@ -1,24 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  PickType,
-} from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
-import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ModelName } from '@src/constants/enum';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -27,8 +10,8 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
-import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
+import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
@@ -56,12 +39,10 @@ export class LessonEvaluationController {
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity }> {
     await Promise.all([
-      // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
       this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
         memberId,
         lessonId: param.id,
       }),
-      // 이전에 해당 과제에 평가 존재하는지 있는지 확인
       this.prismaHelper.validateDuplicateAndFail(
         ModelName.LessonLevelEvaluation,
         {
@@ -91,7 +72,6 @@ export class LessonEvaluationController {
     @Body() { levelId }: UpdateEvaluationDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity | {} }> {
-    // member가 lessonId에 해당하는 과제물을 제출하였는지 확인
     await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
       memberId,
       lessonId: param.id,
@@ -118,13 +98,11 @@ export class LessonEvaluationController {
     param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<ReadEvaluationDto> {
-    const countedEvaluation =
-      await this.lessonEvaluationService.readCountedEvaluation(param.id);
-    const memberEvaluate =
-      await this.lessonEvaluationService.readMemberEvaluation(
-        param.id,
-        member.id,
-      );
+    const [countedEvaluation, memberEvaluate] = await Promise.all([
+      this.lessonEvaluationService.readCountedEvaluation(param.id),
+      this.lessonEvaluationService.readMemberEvaluation(param.id, member.id),
+    ]);
+
     return { countedEvaluation, memberEvaluate };
   }
 
