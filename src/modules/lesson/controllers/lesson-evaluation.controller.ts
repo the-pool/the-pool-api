@@ -32,6 +32,12 @@ import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-q
 import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
+import {
+  ApiCreateEvaluation,
+  ApiReadCountedEvaluation,
+  ApiReadManyEvaluation,
+  ApiUpdateEvaluation,
+} from '../swaggers/lesson-evaluation.swagger';
 
 @ApiTags('남들이 평가하는 과제 난이도')
 @Controller(':id/evaluations')
@@ -41,13 +47,7 @@ export class LessonEvaluationController {
     private readonly prismaHelper: PrismaService,
   ) {}
 
-  @ApiOperation({ summary: '과제 평가 생성' })
-  // @ApiSuccessResponse(HttpStatus.CREATED, {
-  //   evaluation: LessonEvaluationEntity,
-  // })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
-  @ApiFailureResponse(HttpStatus.CONFLICT, HTTP_ERROR_MESSAGE.CONFLICT)
+  @ApiCreateEvaluation('과제 평가 생성')
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createEvaluation(
@@ -81,12 +81,7 @@ export class LessonEvaluationController {
     return { evaluation: createdEvaluation };
   }
 
-  @ApiOperation({ summary: '과제 평가 수정' })
-  // @ApiSuccessResponse(HttpStatus.OK, {
-  //   evaluation: LessonEvaluationEntity,
-  // })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiUpdateEvaluation('과제 평가 수정')
   @BearerAuth(JwtAuthGuard)
   @Put()
   async updateEvaluation(
@@ -112,11 +107,9 @@ export class LessonEvaluationController {
     return { evaluation: updatedEvaluation };
   }
 
-  @ApiOperation({
-    summary: '과제 평가 난이도별 평가 갯수 & 상세 조회한 유저의 평가 조회',
-  })
-  @ApiOkResponse({ type: ReadEvaluationDto })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadCountedEvaluation(
+    '과제 평가 난이도별 평가 갯수 & 상세 조회한 유저의 평가 조회',
+  )
   @BearerAuth(OptionalJwtAuthGuard)
   @Get('total-count')
   async readCountedEvaluation(
@@ -135,9 +128,7 @@ export class LessonEvaluationController {
     return { countedEvaluation, memberEvaluate };
   }
 
-  @ApiOperation({ summary: '과제 평가 대량 조회' })
-  // @ApiOkResponse({ type: PickType(LessonEntity, ['evaluations']) })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadManyEvaluation('과제 평가 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyEvaluation(

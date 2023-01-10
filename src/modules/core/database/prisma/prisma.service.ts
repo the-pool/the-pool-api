@@ -99,11 +99,11 @@ export class PrismaService
   ): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const { length } = await this.prismaService[modelName].findMany({
+    const model = await this[modelName].findMany({
       where,
     });
 
-    if (length) {
+    if (model?.length) {
       throw new ConflictException(`${modelName} is duplicatd`);
     }
     return;
