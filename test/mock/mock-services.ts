@@ -39,6 +39,7 @@ export const mockMemberInterestService: MockClassType<MemberInterestService> = {
 
 export const mockMemberReportService: MockClassType<MemberReportService> = {
   findAll: jest.fn(),
+  findOne: jest.fn(),
 };
 
 export const mockMemberSkillService: MockClassType<MemberSkillService> = {

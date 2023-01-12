@@ -3,6 +3,7 @@ import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/fi
 import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
 import { mockMemberReportService } from '../../../../test/mock/mock-services';
+import { FindMemberReportRequestParamDto } from '../dtos/find-member-report-request-param.dto';
 import { MemberReportController } from './member-report.controller';
 
 describe('MemberReportController', () => {
@@ -42,6 +43,27 @@ describe('MemberReportController', () => {
 
       expect(mockMemberReportService.findAll).toBeCalledWith(query);
       expect(result).toStrictEqual(memberReports);
+    });
+  });
+
+  describe('findOne', () => {
+    let memberReport: MemberReportEntity;
+    let params: FindMemberReportRequestParamDto;
+
+    beforeEach(() => {
+      memberReport = new MemberReportEntity();
+      params = new FindMemberReportRequestParamDto();
+    });
+
+    it('조회 성공', () => {
+      mockMemberReportService.findOne.mockReturnValue(memberReport);
+
+      const result = controller.findOne(params);
+
+      expect(mockMemberReportService.findOne).toBeCalledWith({
+        memberId: params.memberId,
+      });
+      expect(result).toStrictEqual(memberReport);
     });
   });
 });

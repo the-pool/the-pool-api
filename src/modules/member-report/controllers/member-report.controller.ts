@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -7,11 +7,13 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { setResponse } from '@src/decorators/set-response.decorator';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
 import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
+import { FindMemberReportRequestParamDto } from '../dtos/find-member-report-request-param.dto';
 
 @ApiTags('멤버 report (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -42,5 +44,21 @@ export class MemberReportController {
     @Query() query: FindMemberReportListQueryDto,
   ): Promise<{ memberReports: MemberReportEntity[]; totalCount: number }> {
     return this.memberReportService.findAll(query);
+  }
+
+  @ApiOperation({ summary: 'member report 단일 조회' })
+  @ApiOkResponse({
+    schema: {
+      properties: {
+        memberReport: {
+          $ref: getSchemaPath(MemberReportEntity),
+        },
+      },
+    },
+  })
+  @setResponse('memberReport')
+  @Get(':memberId')
+  findOne(@Param() params: FindMemberReportRequestParamDto) {
+    return this.memberReportService.findOne({ memberId: params.memberId });
   }
 }

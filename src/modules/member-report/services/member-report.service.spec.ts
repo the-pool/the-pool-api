@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Prisma } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
@@ -35,7 +36,7 @@ describe('MemberReportService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('findOneReport', () => {
+  describe('findAll', () => {
     let memberReports: MemberReportEntity[];
     let totalCount: number;
     let query: FindMemberReportListQueryDto;
@@ -46,7 +47,7 @@ describe('MemberReportService', () => {
       query = new FindMemberReportListQueryDto();
     });
 
-    it('member report 조회 성공', async () => {
+    it('member report list 조회 성공', async () => {
       mockPrismaService.memberReport.findMany.mockResolvedValue(
         memberReports as any,
       );
@@ -79,6 +80,29 @@ describe('MemberReportService', () => {
         memberReports,
         totalCount,
       });
+    });
+  });
+
+  describe('findOne', () => {
+    let memberReport: MemberReportEntity;
+    let where: Prisma.MemberReportWhereInput;
+
+    beforeEach(() => {
+      memberReport = new MemberReportEntity();
+      where = { memberId: faker.datatype.number() };
+    });
+
+    it('member report 조회 성공', () => {
+      mockPrismaService.memberReport.findFirst.mockReturnValue(
+        memberReport as any,
+      );
+
+      const result = service.findOne(where);
+
+      expect(mockPrismaService.memberReport.findFirst).toBeCalledWith({
+        where,
+      });
+      expect(result).toStrictEqual(memberReport);
     });
   });
 });

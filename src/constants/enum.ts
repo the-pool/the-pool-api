@@ -3,6 +3,7 @@ export enum ModelName {
   Post = 'post',
   Lesson = 'lesson',
   LessonHashtag = 'lessonHashtag',
+  MemberReport = 'memberReport',
 }
 
 export enum OrderBy {
