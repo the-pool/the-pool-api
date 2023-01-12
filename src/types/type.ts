@@ -1,3 +1,4 @@
+import { Type } from '@nestjs/common';
 import {
   Lesson,
   LessonBookmark,
@@ -64,3 +65,29 @@ export type Target<M extends PrismaModel = PrismaModel> = {
 export type MajorText = '개발' | '디자인';
 
 export type JwtGuard = typeof JwtAuthGuard | typeof OptionalJwtAuthGuard;
+
+export type OptionalProperty = {
+  isArray?: boolean;
+  nullable?: boolean;
+  deprecated?: boolean;
+  title?: string;
+  description?: string;
+  maxLength?: number;
+  minLength?: number;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  maxProperties?: number;
+  minProperties?: number;
+  enum?: any[];
+  default?: any;
+};
+
+export type Reference = OptionalProperty & {
+  type: Type<unknown>;
+};
+
+export type Primitive = OptionalProperty & {
+  type: string | Record<string, any>;
+  example?: any;
+};

@@ -12,32 +12,7 @@ import {
   SchemaObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { getNumberEnumValues, getStrMapByEnum } from '@src/common/common';
-
-type OptionalProperty = {
-  isArray?: boolean;
-  nullable?: boolean;
-  deprecated?: boolean;
-  title?: string;
-  description?: string;
-  maxLength?: number;
-  minLength?: number;
-  maxItems?: number;
-  minItems?: number;
-  uniqueItems?: boolean;
-  maxProperties?: number;
-  minProperties?: number;
-  enum?: any[];
-  default?: any;
-};
-
-type Reference = OptionalProperty & {
-  type: Type<unknown>;
-};
-
-type Primitive = OptionalProperty & {
-  type: string | Record<string, any>;
-  example?: any;
-};
+import { Primitive, Reference } from '@src/types/type';
 
 /**
  * 성공에 대한 응답을 swagger상에 보여주고 싶은데 필드명을 커스텀 하고 싶을 때
