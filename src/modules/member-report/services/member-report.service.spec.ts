@@ -63,6 +63,9 @@ describe('MemberReportService', () => {
         orderBy: null,
         skip: expect.anything(),
         take: expect.anything(),
+        include: {
+          member: true,
+        },
       });
       expect(mockPrismaService.memberReport.count).toBeCalledWith({
         where: null,

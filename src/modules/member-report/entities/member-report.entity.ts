@@ -30,7 +30,7 @@ export class MemberReportEntity extends IdResponseType implements MemberReport {
     description: '팔로우 개수',
     default: 0,
   })
-  followCount: number;
+  followerCount: number;
 
   @ApiProperty({
     description: '팔로잉 개수',
