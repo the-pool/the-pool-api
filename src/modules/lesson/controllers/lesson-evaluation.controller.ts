@@ -12,7 +12,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
-import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
+import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import {

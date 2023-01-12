@@ -7,7 +7,7 @@ import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
-import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
+import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
