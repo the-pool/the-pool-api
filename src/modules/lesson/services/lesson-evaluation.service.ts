@@ -92,7 +92,7 @@ export class LessonEvaluationService {
   readManyEvaluation(
     lessonId: number,
     { memberId, levelId }: LessonEvaluationQueryDto,
-  ) {
+  ): Promise<LessonEvaluationEntity[]> {
     return this.prismaService.lessonLevelEvaluation.findMany({
       where: { lessonId, memberId, levelId },
     });

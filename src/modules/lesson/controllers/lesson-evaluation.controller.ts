@@ -114,7 +114,7 @@ export class LessonEvaluationController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Query() query: LessonEvaluationQueryDto,
-  ): Promise<any> {
+  ): Promise<{ evaluations: LessonEvaluationEntity[] }> {
     const evaluations = await this.lessonEvaluationService.readManyEvaluation(
       param.id,
       query,
