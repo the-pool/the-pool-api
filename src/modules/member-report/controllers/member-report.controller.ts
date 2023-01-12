@@ -7,6 +7,7 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { incrementMemberReport } from '@src/decorators/increment-member-report.decorator';
 import { setResponse } from '@src/decorators/set-response.decorator';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
 import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
@@ -56,6 +57,7 @@ export class MemberReportController {
       },
     },
   })
+  @incrementMemberReport('commentCount')
   @setResponse('memberReport')
   @Get(':memberId')
   findOne(@Param() params: FindMemberReportRequestParamDto) {

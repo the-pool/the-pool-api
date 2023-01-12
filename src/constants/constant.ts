@@ -29,3 +29,10 @@ export const HTTP_ERROR_MESSAGE = {
   FORBIDDEN: 'You do not have access to {modelName}',
   NOT_FOUND: "{modelId} doesn't exist id in {modelName}",
 };
+
+// member report increment meta data
+export const MEMBER_REPORT_INCREMENT_FIELD_NAME =
+  'memberReportIncrementFieldName';
+
+// response field name meta data
+export const RESPONSE_FIELD_NAME = 'responseFieldName';

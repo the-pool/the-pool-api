@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import { Reflector } from '@nestjs/core';
+import { RESPONSE_FIELD_NAME } from '@src/constants/constant';
 import { map, Observable } from 'rxjs';
 
 /**
@@ -18,7 +19,7 @@ export class SetResponseInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const key = this.reflector.get<string>(
-      'responseFieldName',
+      RESPONSE_FIELD_NAME,
       context.getHandler(),
     );
 
