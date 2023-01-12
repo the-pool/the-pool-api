@@ -8,6 +8,7 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { setResponse } from '@src/decorators/set-response.decorator';
 import { FindMemberSkillListQueryDto } from '@src/modules/member-skill/dtos/find-member-skill-list-query.dto';
 import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
@@ -35,10 +36,11 @@ export class MemberSkillController {
       },
     },
   })
+  @setResponse('memberSkills')
   @Get()
   findAll(
     @Query() query: FindMemberSkillListQueryDto,
-  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
+  ): Promise<MemberSkillEntity[]> {
     return this.memberSkillService.findAll(query.memberId);
   }
 }

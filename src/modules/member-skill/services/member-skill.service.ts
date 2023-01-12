@@ -12,9 +12,7 @@ export class MemberSkillService {
    *
    * member-skill 리스트 조회
    */
-  async findAll(
-    memberId?: number,
-  ): Promise<{ memberSkills: MemberSkillEntity[] }> {
+  findAll(memberId?: number): Promise<MemberSkillEntity[]> {
     let where: Prisma.MemberSkillWhereInput | undefined = undefined;
 
     if (memberId) {
@@ -27,14 +25,11 @@ export class MemberSkillService {
       };
     }
 
-    const memberSkills: MemberSkillEntity[] =
-      await this.prismaService.memberSkill.findMany({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-
-    return { memberSkills };
+    return this.prismaService.memberSkill.findMany({
+      where,
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 }

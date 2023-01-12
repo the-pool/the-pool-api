@@ -8,6 +8,7 @@ import {
   ApiTags,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { setResponse } from '@src/decorators/set-response.decorator';
 import { FindMemberInterestListQueryDto } from '@src/modules/member-interest/dtos/find-member-interest-list-query.dto';
 import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
@@ -35,10 +36,11 @@ export class MemberInterestController {
       },
     },
   })
+  @setResponse('memberInterests')
   @Get()
   findAll(
     @Query() query: FindMemberInterestListQueryDto,
-  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
+  ): Promise<MemberInterestEntity[]> {
     return this.memberInterestService.findAll(query.memberId);
   }
 }

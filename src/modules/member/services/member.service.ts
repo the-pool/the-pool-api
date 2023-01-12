@@ -19,14 +19,10 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  async findOne(
-    where: Prisma.MemberWhereInput,
-  ): Promise<{ member: MemberEntity }> {
-    const member = await this.prismaService.member.findFirst({
+  findOne(where: Prisma.MemberWhereInput): Promise<MemberEntity> {
+    return this.prismaService.member.findFirst({
       where,
-    });
-
-    return { member } as { member: MemberEntity };
+    }) as Promise<MemberEntity>;
   }
 
   /**
@@ -71,20 +67,13 @@ export class MemberService {
     };
   }
 
-  async updateFromPatch(
-    id: number,
-    data: UpdateMemberDto,
-  ): Promise<{ member: MemberEntity }> {
-    const updatedMember: MemberEntity = await this.prismaService.member.update({
+  updateFromPatch(id: number, data: UpdateMemberDto): Promise<MemberEntity> {
+    return this.prismaService.member.update({
       data,
       where: {
         id,
       },
     });
-
-    return {
-      member: updatedMember,
-    };
   }
 
   /**

@@ -60,7 +60,7 @@ describe('MemberService', () => {
       expect(mockPrismaService.member.findFirst).toBeCalledWith({
         where,
       });
-      expect(result).toStrictEqual({ member });
+      expect(result).toStrictEqual(member);
     });
   });
 
@@ -116,19 +116,19 @@ describe('MemberService', () => {
 
   describe('updateFromPatch', () => {
     let id: number;
-    let data: UpdateMemberDto;
+    let member: UpdateMemberDto;
 
     beforeEach(() => {
       id = faker.datatype.number();
-      data = new UpdateMemberDto();
+      member = new UpdateMemberDto();
     });
 
     it('업데이트 성공', async () => {
-      mockPrismaService.member.update.mockResolvedValue(data as any);
+      mockPrismaService.member.update.mockResolvedValue(member as any);
 
-      const result = await memberService.updateFromPatch(id, data);
+      const result = await memberService.updateFromPatch(id, member);
 
-      expect(result).toStrictEqual({ member: data });
+      expect(result).toStrictEqual(member);
     });
   });
 

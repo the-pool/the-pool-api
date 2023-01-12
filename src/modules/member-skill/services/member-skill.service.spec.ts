@@ -47,9 +47,7 @@ describe('MemberSkillService', () => {
           id: 'asc',
         },
       });
-      expect(result).toStrictEqual({
-        memberSkills,
-      });
+      expect(result).toStrictEqual(memberSkills);
     });
 
     it('memberId 를 넘겼을 경우', async () => {
@@ -72,9 +70,7 @@ describe('MemberSkillService', () => {
           id: 'asc',
         },
       });
-      expect(result).toStrictEqual({
-        memberSkills,
-      });
+      expect(result).toStrictEqual(memberSkills);
     });
   });
 });

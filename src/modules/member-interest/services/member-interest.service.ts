@@ -12,9 +12,7 @@ export class MemberInterestService {
    *
    * member-interest 리스트 조회
    */
-  async findAll(
-    memberId?: number,
-  ): Promise<{ memberInterests: MemberInterestEntity[] }> {
+  findAll(memberId?: number): Promise<MemberInterestEntity[]> {
     let where: Prisma.MemberSkillWhereInput | undefined = undefined;
 
     if (memberId) {
@@ -27,14 +25,11 @@ export class MemberInterestService {
       };
     }
 
-    const memberInterests: MemberInterestEntity[] =
-      await this.prismaService.memberInterest.findMany({
-        where,
-        orderBy: {
-          id: 'asc',
-        },
-      });
-
-    return { memberInterests };
+    return this.prismaService.memberInterest.findMany({
+      where,
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 }
