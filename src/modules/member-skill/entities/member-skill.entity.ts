@@ -9,12 +9,6 @@ export class MemberSkillEntity extends IdResponseType implements MemberSkill {
   name: string;
 
   @ApiProperty({
-    example: '😃',
-    description: 'skill 이모티콘',
-  })
-  emoji: string;
-
-  @ApiProperty({
     example: '2022-10-03T09:54:50.563Z',
     description: '생성일자',
   })

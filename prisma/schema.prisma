@@ -104,8 +104,6 @@ model MemberSkill {
   id        Int      @id @default(autoincrement())
   /// skill 명
   name      String   @unique @db.VarChar(50)
-  /// 이모티콘
-  emoji     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
@@ -133,8 +131,6 @@ model MemberInterest {
   id        Int      @id @default(autoincrement())
   /// skill 명
   name      String   @unique @db.VarChar(50)
-  /// 이모티콘
-  emoji     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 

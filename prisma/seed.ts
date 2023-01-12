@@ -176,39 +176,30 @@ async function thePoolSeed() {
   await prisma.memberSkill.createMany({
     data: [
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
     ],
@@ -221,31 +212,24 @@ async function thePoolSeed() {
   await prisma.memberInterest.createMany({
     data: [
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
       {
-        emoji: String(faker.datatype.number({ max: 5 })),
         name: faker.datatype.string(),
       },
     ],
