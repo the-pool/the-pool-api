@@ -1,4 +1,4 @@
-import { MajorId } from './enum';
+import { LessonOrderBy, MajorId } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -29,4 +29,9 @@ export const HTTP_ERROR_MESSAGE = {
   FORBIDDEN: 'You do not have access to {modelName}',
   NOT_FOUND: "{modelId} doesn't exist id in {modelName}",
   CONFLICT: '{model} is duplicatd',
-};
+} as const;
+
+export const LESSON_ORDER_COLUMN = {
+  [LessonOrderBy.CreateAt]: 'lesson.createdAt',
+  [LessonOrderBy.Comments]: 'enrolmentStudents',
+} as const;

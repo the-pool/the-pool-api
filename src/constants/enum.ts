@@ -59,3 +59,10 @@ export enum LessonCategoryId {
   Bx = 8,
   EtcDesign = 9,
 }
+
+export enum LessonOrderBy {
+  CreateAt = 'createdAt',
+  Comments = 'comments',
+  Solutions = 'soluations',
+  Likes = 'likes',
+}

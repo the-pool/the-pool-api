@@ -53,5 +53,5 @@ export const ApiReadSimilarLesson = (summary: string) => {
 };
 
 export const ApiReadManyLesson = (summary) => {
-  return;
+  return applyDecorators(ApiOperation({ summary }));
 };
