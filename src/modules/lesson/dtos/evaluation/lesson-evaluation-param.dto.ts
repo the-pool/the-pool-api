@@ -3,7 +3,7 @@ import { ModelName } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { Type } from 'class-transformer';
-import { Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class LessonEvaluationParamDto extends IdRequestParamDto {
   @ApiProperty({
@@ -13,6 +13,7 @@ export class LessonEvaluationParamDto extends IdRequestParamDto {
   })
   @IsRecord({ model: ModelName.LessonLevelEvaluation, field: 'id' }, true)
   @Min(1)
+  @IsInt()
   @Type(() => Number)
   evaluationId: number;
 }

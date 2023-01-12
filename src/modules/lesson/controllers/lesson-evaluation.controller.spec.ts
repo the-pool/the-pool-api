@@ -98,7 +98,7 @@ describe('LessonEvaluationController', () => {
     let memberId: number;
     let updatedEvaluation: LessonEvaluationEntity;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       param = new IdRequestParamDto();
       updateEvaluationDto = new UpdateEvaluationDto();
       memberId = faker.datatype.number();
@@ -141,7 +141,7 @@ describe('LessonEvaluationController', () => {
     let countedEvaluation: LessonLevelEvaluationEntity[];
     let memberEvaluate: LessonEvaluationEntity | null;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       param = new IdRequestParamDto();
       member = new MemberEntity();
       countedEvaluation = [new LessonLevelEvaluationEntity()];

@@ -27,7 +27,7 @@ import {
 export class LessonEvaluationController {
   constructor(
     private readonly lessonEvaluationService: LessonEvaluationService,
-    private readonly prismaHelper: PrismaService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   @ApiCreateEvaluation('과제 평가 생성')
@@ -39,11 +39,11 @@ export class LessonEvaluationController {
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity }> {
     await Promise.all([
-      this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
+      this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
         memberId,
         lessonId: param.id,
       }),
-      this.prismaHelper.validateDuplicateAndFail(
+      this.prismaService.validateDuplicateAndFail(
         ModelName.LessonLevelEvaluation,
         {
           memberId,
@@ -72,7 +72,7 @@ export class LessonEvaluationController {
     @Body() { levelId }: UpdateEvaluationDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity | {} }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
       memberId,
       lessonId: param.id,
     });
