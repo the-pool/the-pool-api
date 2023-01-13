@@ -60,12 +60,11 @@ export class LessonEvaluationService {
       });
 
     const countedEvaluation: LessonLevelEvaluationEntity[] = [];
-
     lessonEvaluations.forEach((lessonEvaluation) => {
-      const obj = <LessonLevelEvaluationEntity>{};
-
-      obj['levelId'] = lessonEvaluation.levelId;
-      obj['count'] = lessonEvaluation._count.lessonId;
+      const obj: LessonLevelEvaluationEntity = {
+        levelId: lessonEvaluation.levelId,
+        count: lessonEvaluation._count.lessonId,
+      };
 
       countedEvaluation.push(obj);
     });
