@@ -71,7 +71,7 @@ export class LessonEvaluationController {
     param: IdRequestParamDto,
     @Body() { levelId }: UpdateEvaluationDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ evaluation: LessonEvaluationEntity | {} }> {
+  ): Promise<{ evaluation: LessonEvaluationEntity | Record<string, never> }> {
     await this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
       memberId,
       lessonId: param.id,

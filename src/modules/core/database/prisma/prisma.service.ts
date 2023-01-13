@@ -93,18 +93,21 @@ export class PrismaService
       });
   }
 
+  /**
+   * where 조건에 맞는 리소스가 존재하면 Conflict 에러를 뱉는 메서드
+   */
   async validateDuplicateAndFail(
     modelName: PrismaModelName,
     where: any,
   ): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const model = await this[modelName].findMany({
+    const prismaModels: PrismaModel[] = await this[modelName].findMany({
       where,
     });
 
-    if (model?.length) {
-      throw new ConflictException(`${modelName} is duplicatd`);
+    if (prismaModels.length) {
+      throw new ConflictException(`${modelName} is duplicated `);
     }
     return;
   }

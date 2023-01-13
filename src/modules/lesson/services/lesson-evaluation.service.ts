@@ -29,7 +29,7 @@ export class LessonEvaluationService {
     lessonId: number,
     levelId: number | null,
     memberId: number,
-  ): Promise<LessonEvaluationEntity | {}> {
+  ): Promise<LessonEvaluationEntity | Record<string, never>> {
     await this.prismaService.lessonLevelEvaluation.deleteMany({
       where: {
         lessonId,
