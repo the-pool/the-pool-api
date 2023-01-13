@@ -1,4 +1,4 @@
-import { MajorId } from './enum';
+import { LessonLevelId, MajorId } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -30,3 +30,9 @@ export const HTTP_ERROR_MESSAGE = {
   NOT_FOUND: "{modelId} doesn't exist id in {modelName}",
   CONFLICT: '{model} is duplicated',
 };
+
+export const LESSON_LEVEL = {
+  [LessonLevelId.Top]: 'top',
+  [LessonLevelId.Middle]: 'middle',
+  [LessonLevelId.Bottom]: 'bottom',
+} as const;

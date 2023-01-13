@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
@@ -149,7 +150,7 @@ describe('LessonEvaluationService', () => {
       countedEvaluation = [
         {
           _count: { lessonId: faker.datatype.number() },
-          levelId: faker.datatype.number(),
+          levelId: LessonLevelId.Top,
         },
       ];
 
@@ -169,8 +170,7 @@ describe('LessonEvaluationService', () => {
         lessonId,
       );
 
-      expect(returnValue[0]).toHaveProperty('count');
-      expect(returnValue[0]).toHaveProperty('levelId');
+      expect(returnValue).toHaveProperty('top');
     });
   });
 

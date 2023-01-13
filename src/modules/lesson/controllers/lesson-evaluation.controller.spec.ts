@@ -5,11 +5,12 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
+import { CountEvaluationDto } from '../dtos/evaluation/count-evaluation.dto';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
+import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
 import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
-import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import { LessonEvaluationController } from './lesson-evaluation.controller';
 
@@ -138,13 +139,13 @@ describe('LessonEvaluationController', () => {
   describe('readCountedEvaluation', () => {
     let param: IdRequestParamDto;
     let member: MemberEntity | { id: null };
-    let countedEvaluation: LessonLevelEvaluationEntity[];
+    let countedEvaluation: CountEvaluationDto;
     let memberEvaluate: LessonEvaluationEntity | null;
 
     beforeEach(() => {
       param = new IdRequestParamDto();
       member = new MemberEntity();
-      countedEvaluation = [new LessonLevelEvaluationEntity()];
+      countedEvaluation = new CountEvaluationDto();
       memberEvaluate = new LessonEvaluationEntity();
 
       lessonEvaluationService.readCountedEvaluation.mockReturnValue(
@@ -173,7 +174,7 @@ describe('LessonEvaluationController', () => {
       const returnValue =
         await lessonEvaluationController.readCountedEvaluation(param, member);
 
-      expect(returnValue).toStrictEqual({ countedEvaluation, memberEvaluate });
+      expect(returnValue).toBeInstanceOf(ReadEvaluationDto);
     });
   });
 

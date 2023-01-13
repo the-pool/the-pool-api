@@ -9,6 +9,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
@@ -103,7 +104,10 @@ export class LessonEvaluationController {
       this.lessonEvaluationService.readMemberEvaluation(param.id, member.id),
     ]);
 
-    return { countedEvaluation, memberEvaluate };
+    return plainToInstance(ReadEvaluationDto, {
+      countedEvaluation,
+      memberEvaluate,
+    });
   }
 
   @ApiReadManyEvaluation('과제 평가 조회')

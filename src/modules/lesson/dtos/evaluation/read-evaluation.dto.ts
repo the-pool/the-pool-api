@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import { LessonEvaluationEntity } from '../../entities/lesson-evaluation.entity';
-import { LessonLevelEvaluationEntity } from '../../entities/lesson-level-evaluation.entity';
+import { CountEvaluationDto } from './count-evaluation.dto';
 
 export class ReadEvaluationDto {
   @ApiProperty({
     description: '과제의 난이도 별 count 갯수',
-    type: [LessonLevelEvaluationEntity],
+    type: [CountEvaluationDto],
   })
-  countedEvaluation: LessonLevelEvaluationEntity[];
+  @Type(() => CountEvaluationDto)
+  countedEvaluation: CountEvaluationDto;
 
   @ApiProperty({
     description:
