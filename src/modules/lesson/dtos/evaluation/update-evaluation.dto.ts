@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { getEntriesByEnum } from '@src/common/common';
+import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
 import { LessonLevelId } from '@src/constants/enum';
-import { IsEnum, IsOptional } from 'class-validator';
+import { IsEnum, IsIn, IsOptional } from 'class-validator';
 import { CreateEvaluationDto } from './create-evaluation.dto';
 
 export class UpdateEvaluationDto extends CreateEvaluationDto {
@@ -9,8 +9,8 @@ export class UpdateEvaluationDto extends CreateEvaluationDto {
     example: LessonLevelId.Top,
     description: '과제를 수행한 member가 느끼는 과제의 난이도',
     enum: getEntriesByEnum(LessonLevelId),
+    nullable: true,
   })
-  @IsEnum(LessonLevelId)
-  @IsOptional()
+  @IsIn([...getValueByEnum(LessonLevelId, 'number'), null])
   levelId: LessonLevelId;
 }
