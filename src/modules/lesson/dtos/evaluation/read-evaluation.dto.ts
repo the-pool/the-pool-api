@@ -6,7 +6,7 @@ import { CountEvaluationDto } from './count-evaluation.dto';
 export class ReadEvaluationDto {
   @ApiProperty({
     description: '과제의 난이도 별 count 갯수',
-    type: [CountEvaluationDto],
+    type: CountEvaluationDto,
   })
   @Type(() => CountEvaluationDto)
   countedEvaluation: CountEvaluationDto;
