@@ -3,7 +3,7 @@ import { getEntriesByEnum } from '@src/common/common';
 import { IsEnum, IsString } from 'class-validator';
 import { MemberLoginType } from '../constants/member.enum';
 
-export class LoginOrSignUpDto {
+export class LoginOrSignUpRequestBodyDto {
   @ApiProperty({
     description: 'oauth accesstoken',
     example: 'B1PQ7e14y69IdyisLn-0Mx_eDlM3H-8MEwBJuVXoCj11WgAAAYQDMBGy',

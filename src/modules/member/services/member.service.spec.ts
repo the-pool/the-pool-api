@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
@@ -116,11 +116,11 @@ describe('MemberService', () => {
 
   describe('updateFromPatch', () => {
     let id: number;
-    let member: UpdateMemberDto;
+    let member: PatchUpdateMemberRequestBodyDto;
 
     beforeEach(() => {
       id = faker.datatype.number();
-      member = new UpdateMemberDto();
+      member = new PatchUpdateMemberRequestBodyDto();
     });
 
     it('업데이트 성공', async () => {

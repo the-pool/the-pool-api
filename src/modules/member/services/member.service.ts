@@ -3,8 +3,8 @@ import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
-import { AccessTokenType } from '@src/modules/member/types/access-token.type';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { AccessToken } from '@src/modules/member/types/member.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberEntity } from '../entities/member.entity';
@@ -31,7 +31,7 @@ export class MemberService {
   async signUp(
     account: string,
     loginType: MemberLoginType,
-  ): Promise<{ member: MemberEntity } & AccessTokenType> {
+  ): Promise<{ member: MemberEntity } & AccessToken> {
     // 새로운 멤버 생성
     const newMember: MemberEntity = await this.prismaService.member.create({
       data: {
@@ -57,7 +57,7 @@ export class MemberService {
   /**
    * member 로그인
    */
-  login(member: MemberEntity): { member: MemberEntity } & AccessTokenType {
+  login(member: MemberEntity): { member: MemberEntity } & AccessToken {
     // access token 생성
     const accessToken: string = this.authService.createAccessToken(member.id);
 
@@ -67,7 +67,10 @@ export class MemberService {
     };
   }
 
-  updateFromPatch(id: number, data: UpdateMemberDto): Promise<MemberEntity> {
+  updateFromPatch(
+    id: number,
+    data: PatchUpdateMemberRequestBodyDto,
+  ): Promise<MemberEntity> {
     return this.prismaService.member.update({
       data,
       where: {

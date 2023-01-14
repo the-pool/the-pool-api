@@ -3,7 +3,7 @@ import { getEntriesByEnum } from '@src/common/common';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { IsEnum, IsOptional, MaxLength } from 'class-validator';
 
-export class UpdateMemberDto {
+export class PatchUpdateMemberRequestBodyDto {
   @ApiPropertyOptional({
     description: 'member nickname',
     maxLength: 30,

@@ -13,7 +13,7 @@ import {
   MemberLoginType,
   MemberStatus,
 } from '@src/modules/member/constants/member.enum';
-import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
 @Injectable()
@@ -82,7 +82,7 @@ export class MemberValidationService {
    */
   async canUpdateFromPatchOrFail(
     updateId: number,
-    updateInfo: UpdateMemberDto,
+    updateInfo: PatchUpdateMemberRequestBodyDto,
     oldMember: MemberEntity,
   ): Promise<void> {
     // 본인에 대해 업데이트 하는게 아니라면 에러

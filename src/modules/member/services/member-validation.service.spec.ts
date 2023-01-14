@@ -5,7 +5,7 @@ import {
   MemberLoginType,
   MemberStatus,
 } from '@src/modules/member/constants/member.enum';
-import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
@@ -156,13 +156,13 @@ describe('MemberValidationService', () => {
 
   describe('canUpdateFromPatchOrFail', () => {
     let updateId: number;
-    let updateInfo: UpdateMemberDto;
+    let updateInfo: PatchUpdateMemberRequestBodyDto;
     let oldMember: MemberEntity;
 
     beforeEach(() => {
       updateId = faker.datatype.number();
       oldMember = new MemberEntity();
-      updateInfo = new UpdateMemberDto();
+      updateInfo = new PatchUpdateMemberRequestBodyDto();
     });
 
     it('본인을 업데이트 하려는 경우가 아닌 경우', async () => {

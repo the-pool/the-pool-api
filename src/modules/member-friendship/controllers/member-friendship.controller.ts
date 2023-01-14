@@ -43,7 +43,7 @@ export class MemberFriendshipController {
     };
   }
 
-  @FindAllFollowings('member 팔로잉 리스트 조회 (해당 member 를 구독하는 사람)')
+  @FindAllFollowings('member 팔로잉 리스트 조회 (해당 member 가 구독하는 사람)')
   @Get('followings')
   async findAllFollowings(
     @Query()

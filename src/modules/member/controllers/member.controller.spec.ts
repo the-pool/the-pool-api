@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
-import { LoginOrSignUpDto } from '@src/modules/member/dtos/login-or-sign-up.dto';
+import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
@@ -79,12 +79,12 @@ describe('MemberController', () => {
 
   describe('loginOrSignUp', () => {
     let member: MemberEntity;
-    let body: LoginOrSignUpDto;
+    let body: LoginOrSignUpRequestBodyDto;
     let accessToken: string;
 
     beforeEach(() => {
       member = new MemberEntity();
-      body = new LoginOrSignUpDto();
+      body = new LoginOrSignUpRequestBodyDto();
       accessToken = faker.datatype.string();
       mockAuthService.createAccessToken.mockReturnValue(accessToken);
     });

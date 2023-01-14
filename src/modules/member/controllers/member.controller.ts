@@ -34,14 +34,14 @@ import {
   LoginOrSignUp,
   UpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
-import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
-import { AccessTokenType } from '@src/modules/member/types/access-token.type';
+import { AccessToken } from '@src/modules/member/types/member.type';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
-import { LoginOrSignUpDto } from '../dtos/login-or-sign-up.dto';
+import { LoginOrSignUpRequestBodyDto } from '../dtos/login-or-sign-up-request-body.dto';
 import { MemberEntity } from '../entities/member.entity';
 import { MemberService } from '../services/member.service';
 import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
@@ -91,8 +91,8 @@ export class MemberController {
   @Post()
   async loginOrSignUp(
     @UserLogin() member: MemberEntity,
-    @Body() body: LoginOrSignUpDto,
-  ): Promise<{ member: MemberEntity } & AccessTokenType> {
+    @Body() body: LoginOrSignUpRequestBodyDto,
+  ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
     const account = await this.authService.validateExternalAccessTokenOrFail(
       body.accessToken,
@@ -133,7 +133,7 @@ export class MemberController {
     @SetModelNameToParam('member')
     @Param()
     params: IdRequestParamDto,
-    @Body() body: UpdateMemberDto,
+    @Body() body: PatchUpdateMemberRequestBodyDto,
   ): Promise<MemberEntity> {
     await this.memberValidationService.canUpdateFromPatchOrFail(
       params.id,
