@@ -15,7 +15,7 @@ import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 
-@ApiTags('멤버 friendships (유저)')
+@ApiTags('멤버 friendships (유저 follow)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
 @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseType })
 @Controller('api/member-friendship')

@@ -86,7 +86,7 @@ export class MemberController {
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
-  @ApiLoginOrSignUp('회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)')
+  @ApiLoginOrSignUp('회원가입 | 로그인 (계정이 없다면 회원가입 처리합니다.)')
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   async loginOrSignUp(
