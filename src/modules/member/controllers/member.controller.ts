@@ -11,21 +11,15 @@ import {
 } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import {
-  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiTags,
-  ApiUnauthorizedResponse,
-  IntersectionType,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -34,12 +28,15 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import {
+  FindOne,
+  GetAccessTokenForDevelop,
+  LoginOrSignUp,
+  UpdateFromPatch,
+} from '@src/modules/member/controllers/member.swagger';
 import { UpdateMemberDto } from '@src/modules/member/dtos/update-member.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessTokenType } from '@src/modules/member/types/access-token.type';
-import { MemberLoginOrSignUpBadRequestResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-bad-request-response.type';
-import { MemberLoginOrSignUpForbiddenResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-forbidden-response.type';
-import { MemberLoginOrSignUpUnauthorizedResponseType } from '@src/modules/member/types/response/member-login-or-sign-up-unauthorized-response.type';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -52,11 +49,8 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
- * @todo swagger 개선해야함
  * @todo active member guard
  *
- * memberSkill 옮김
- * memberInterest 옮김
  */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -69,21 +63,14 @@ export class MemberController {
     private readonly authService: AuthService,
   ) {}
 
+  @GetAccessTokenForDevelop('accessToken 발급 받기 (개발용)')
   @UseInterceptors(UseDevelopmentInterceptor)
-  @ApiParam({
-    name: 'id',
-    type: 'string',
-  })
-  @ApiOperation({
-    summary: 'accessToken 발급 받기 (개발용)',
-  })
   @Post('access-token/:id')
   getAccessTokenForDevelop(@Param() params: { id: string }): string {
     return this.authService.createAccessToken(+params.id);
   }
 
-  @ApiOperation({ summary: 'member 단일 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, { member: MemberEntity })
+  @FindOne('member 단일 조회')
   @SetResponse('member')
   @Get(':id')
   findOne(
@@ -99,19 +86,7 @@ export class MemberController {
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
-  @ApiOperation({
-    summary: '회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)',
-  })
-  @ApiSuccessResponse(HttpStatus.CREATED, {
-    member: IntersectionType(MemberEntity, AccessTokenType),
-  })
-  @ApiBadRequestResponse({ type: MemberLoginOrSignUpBadRequestResponseType })
-  @ApiUnauthorizedResponse({
-    type: MemberLoginOrSignUpUnauthorizedResponseType,
-  })
-  @ApiForbiddenResponse({
-    type: MemberLoginOrSignUpForbiddenResponseType,
-  })
+  @LoginOrSignUp('회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)')
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   async loginOrSignUp(
@@ -147,15 +122,9 @@ export class MemberController {
     return this.memberService.login(member);
   }
 
-  @ApiOperation({
-    summary:
-      '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
-  })
-  @ApiSuccessResponse(HttpStatus.OK, {
-    member: MemberLastStepLoginResponseType,
-  })
-  @ApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
-  @ApiBearerAuth()
+  @UpdateFromPatch(
+    '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
+  )
   @UseGuards(JwtAuthGuard)
   @SetResponse('member')
   @Patch(':id')
