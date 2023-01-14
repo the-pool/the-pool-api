@@ -1,5 +1,6 @@
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MajorService } from '@src/modules/major/services/major.service';
@@ -85,6 +86,15 @@ export const mockLessonHashtagService: MockClassType<LessonHashtagService> = {
   readOneHashtag: jest.fn(),
   readManyHashtag: jest.fn(),
 };
+
+export const mockLessonEvaluationService: MockClassType<LessonEvaluationService> =
+  {
+    createEvaluation: jest.fn(),
+    updateEvaluation: jest.fn(),
+    readCountedEvaluation: jest.fn(),
+    readMemberEvaluation: jest.fn(),
+    readManyEvaluation: jest.fn(),
+  };
 
 export const mockMajorService: MockClassType<MajorService> = {
   findMajors: jest.fn(),

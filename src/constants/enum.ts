@@ -3,6 +3,8 @@ export enum ModelName {
   Post = 'post',
   Lesson = 'lesson',
   LessonHashtag = 'lessonHashtag',
+  LessonLevelEvaluation = 'lessonLevelEvaluation',
+  LessonSolution = 'lessonSolution',
   MemberReport = 'memberReport',
 }
 
