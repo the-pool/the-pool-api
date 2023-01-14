@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 
-export const FindAll = (summary: string) => {
+export const ApiFindAll = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {

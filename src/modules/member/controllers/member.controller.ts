@@ -29,10 +29,10 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import {
-  FindOne,
-  GetAccessTokenForDevelop,
-  LoginOrSignUp,
-  UpdateFromPatch,
+  ApiFindOne,
+  ApiGetAccessTokenForDevelop,
+  ApiLoginOrSignUp,
+  ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -63,14 +63,14 @@ export class MemberController {
     private readonly authService: AuthService,
   ) {}
 
-  @GetAccessTokenForDevelop('accessToken 발급 받기 (개발용)')
+  @ApiGetAccessTokenForDevelop('accessToken 발급 받기 (개발용)')
   @UseInterceptors(UseDevelopmentInterceptor)
   @Post('access-token/:id')
   getAccessTokenForDevelop(@Param() params: { id: string }): string {
     return this.authService.createAccessToken(+params.id);
   }
 
-  @FindOne('member 단일 조회')
+  @ApiFindOne('member 단일 조회')
   @SetResponse('member')
   @Get(':id')
   findOne(
@@ -86,7 +86,7 @@ export class MemberController {
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
-  @LoginOrSignUp('회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)')
+  @ApiLoginOrSignUp('회원가입 & 로그인 (계정이 없다면 회원가입 처리합니다.)')
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   async loginOrSignUp(
@@ -122,7 +122,7 @@ export class MemberController {
     return this.memberService.login(member);
   }
 
-  @UpdateFromPatch(
+  @ApiUpdateFromPatch(
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
   @UseGuards(JwtAuthGuard)

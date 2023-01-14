@@ -6,8 +6,8 @@ import {
 } from '@nestjs/swagger';
 import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
 import {
-  FindAllFollowers,
-  FindAllFollowings,
+  ApiFindAllFollowers,
+  ApiFindAllFollowings,
 } from '@src/modules/member-friendship/controllers/member-friendship.swagger';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
@@ -24,7 +24,9 @@ export class MemberFriendshipController {
     private readonly memberFriendshipService: MemberFriendshipService,
   ) {}
 
-  @FindAllFollowers('member 팔로워 리스트 조회 (해당 member 를 구독하는 사람)')
+  @ApiFindAllFollowers(
+    'member 팔로워 리스트 조회 (해당 member 를 구독하는 사람)',
+  )
   @Get('followers')
   async findAllFollowers(
     @Query()
@@ -43,7 +45,9 @@ export class MemberFriendshipController {
     };
   }
 
-  @FindAllFollowings('member 팔로잉 리스트 조회 (해당 member 가 구독하는 사람)')
+  @ApiFindAllFollowings(
+    'member 팔로잉 리스트 조회 (해당 member 가 구독하는 사람)',
+  )
   @Get('followings')
   async findAllFollowings(
     @Query()

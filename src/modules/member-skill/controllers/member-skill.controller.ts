@@ -5,7 +5,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SetResponse } from '@src/decorators/set-response.decorator';
-import { FindAll } from '@src/modules/member-skill/controllers/member-skill.swagger';
+import { ApiFindAll } from '@src/modules/member-skill/controllers/member-skill.swagger';
 import { FindMemberSkillListQueryDto } from '@src/modules/member-skill/dtos/find-member-skill-list-query.dto';
 import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
@@ -19,7 +19,7 @@ import { NotFoundResponseType } from '@src/types/not-found-response.type';
 export class MemberSkillController {
   constructor(private readonly memberSkillService: MemberSkillService) {}
 
-  @FindAll('member 의 스킬 리스트 조회')
+  @ApiFindAll('member 의 스킬 리스트 조회')
   @SetResponse('memberSkills')
   @Get()
   findAll(

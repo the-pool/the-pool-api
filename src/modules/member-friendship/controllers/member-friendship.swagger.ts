@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
-export const FindAllFollowers = (summary: string) => {
+export const ApiFindAllFollowers = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(
@@ -23,7 +23,7 @@ export const FindAllFollowers = (summary: string) => {
   );
 };
 
-export const FindAllFollowings = (summary: string) => {
+export const ApiFindAllFollowings = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(

@@ -6,8 +6,8 @@ import {
 } from '@nestjs/swagger';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import {
-  FindAll,
-  FindOne,
+  ApiFindAll,
+  ApiFindOne,
 } from '@src/modules/member-report/controllers/member-report.swagger';
 import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
 import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
@@ -23,7 +23,7 @@ import { FindMemberReportRequestParamDto } from '../dtos/find-member-report-requ
 export class MemberReportController {
   constructor(private readonly memberReportService: MemberReportService) {}
 
-  @FindAll('member report list 조회')
+  @ApiFindAll('member report list 조회')
   @Get()
   findAll(
     @Query() query: FindMemberReportListQueryDto,
@@ -31,7 +31,7 @@ export class MemberReportController {
     return this.memberReportService.findAll(query);
   }
 
-  @FindOne('member report 단일 조회')
+  @ApiFindOne('member report 단일 조회')
   @SetResponse('memberReport')
   @Get(':memberId')
   findOne(@Param() params: FindMemberReportRequestParamDto) {

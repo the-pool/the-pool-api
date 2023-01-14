@@ -3,7 +3,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
 
-export const FindAll = (summary: string) => {
+export const ApiFindAll = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(
@@ -23,7 +23,7 @@ export const FindAll = (summary: string) => {
   );
 };
 
-export const FindOne = (summary: string) => {
+export const ApiFindOne = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {

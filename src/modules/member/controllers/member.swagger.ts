@@ -4,7 +4,7 @@ import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorat
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
-export const GetAccessTokenForDevelop = (summary: string) => {
+export const ApiGetAccessTokenForDevelop = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiParam({
@@ -14,7 +14,7 @@ export const GetAccessTokenForDevelop = (summary: string) => {
   );
 };
 
-export const FindOne = (summary: string) => {
+export const ApiFindOne = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {
@@ -25,7 +25,7 @@ export const FindOne = (summary: string) => {
   );
 };
 
-export const LoginOrSignUp = (summary: string) => {
+export const ApiLoginOrSignUp = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(
@@ -54,7 +54,7 @@ export const LoginOrSignUp = (summary: string) => {
   );
 };
 
-export const UpdateFromPatch = (summary: string) => {
+export const ApiUpdateFromPatch = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiBearerAuth(),
