@@ -2,14 +2,13 @@ import { PickType } from '@nestjs/swagger';
 import { LESSON_TITLE_LENGTH } from '@src/constants/constant';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
 import {
-  IsArray,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   Length,
 } from 'class-validator';
-import { LessonEntity } from '../entities/lesson.entity';
+import { LessonEntity } from '../../entities/lesson.entity';
 
 export class CreateLessonDto extends PickType(LessonEntity, [
   'levelId',

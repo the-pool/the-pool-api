@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
-import { CreateLessonDto } from '../dtos/create-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/similar-lesson.dto';
-import { UpdateLessonDto } from '../dtos/update-lesson.dto';
+import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
+import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
@@ -131,28 +131,26 @@ describe('LessonService', () => {
   describe('readOneLesson', () => {
     let memberId: number;
     let lessonId: number;
+    let lesson: LessonEntity;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
-    });
-    // 과제 평가 api를 생성하는 pr에서 test 하겠습니다.
-    xit('success', async () => {
-      const lesson = faker.datatype.string();
-      const lessonLevelEvaluation = faker.datatype.string();
-      const lessonHashtag = faker.datatype.array();
+      lesson = new LessonEntity();
 
       lessonRepository.readOneLesson.mockReturnValue(lesson);
-      lessonRepository.readLessonLevelEvaluation.mockReturnValue(
-        lessonLevelEvaluation,
-      );
-      lessonRepository.readLessonHashtag.mockReturnValue(lessonHashtag);
+    });
+    it('success - check method called', () => {
+      lessonService.readOneLesson(lessonId, memberId);
 
-      const returnValue = await lessonService.readOneLesson(lessonId, memberId);
+      expect(lessonRepository.readOneLesson).toBeCalledTimes(1);
+      expect(lessonRepository.readOneLesson).toBeCalledWith(lessonId, memberId);
+    });
 
-      expect(returnValue).toStrictEqual(
-        Object.assign({}, lesson, lessonHashtag, { lessonLevelEvaluation }),
-      );
+    it('success - check Input & Output', () => {
+      const returnValue = lessonService.readOneLesson(lessonId, memberId);
+
+      expect(returnValue).toStrictEqual(lesson);
     });
   });
 

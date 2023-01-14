@@ -3,21 +3,12 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiOperation,
-  ApiTags,
-  PickType,
-} from '@nestjs/swagger';
-import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
+import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -26,12 +17,19 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { LessonHashtagParamDto } from '@src/modules/hashtag/dtos/hashtag-param.dto';
-import { UpdateHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
+import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
 import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
-import { LessonEntity } from '../entities/lesson.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
+import {
+  ApiCreateManyHashtag,
+  APiDeleteOneHashtag,
+  ApiReadManyHashtag,
+  ApiReadOneHashtag,
+  ApiUpdateManyHashtag,
+  ApiUpdateOneHashtag,
+} from '../swaggers/lesson-hashtag.swagger';
 
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
@@ -41,10 +39,7 @@ export class LessonHashtagController {
     private readonly prismaService: PrismaService,
   ) {}
 
-  @ApiOperation({ summary: '과제 해시태그 생성' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiCreateManyHashtag('과제 해시태그 대량 생성')
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createManyHashtag(
@@ -67,10 +62,7 @@ export class LessonHashtagController {
     return { hashtags: createdHashtags };
   }
 
-  @ApiOperation({ summary: '과제 해시태그 대량 수정' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiUpdateManyHashtag('과제 해시태그 대량 수정')
   @BearerAuth(JwtAuthGuard)
   @Put()
   async updateManyHashtag(
@@ -93,17 +85,14 @@ export class LessonHashtagController {
     return { hashtags: updatedHashtags };
   }
 
-  @ApiOperation({ summary: '과제 해시태그 단일 수정' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiUpdateOneHashtag('과제 해시태그 단일 수정')
   @BearerAuth(JwtAuthGuard)
   @Put(':hashtagId')
   async updateOneHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
-    @Body() { hashtag }: UpdateHashtagDto,
+    @Body() { hashtag }: UpdateOneHashtagDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     await Promise.all([
@@ -125,10 +114,7 @@ export class LessonHashtagController {
     return { hashtag: updatedHashtag };
   }
 
-  @ApiOperation({ summary: '과제 해시태그 단일 삭제' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @APiDeleteOneHashtag('과제 해시태그 단일 삭제')
   @BearerAuth(JwtAuthGuard)
   @Delete(':hashtagId')
   async deleteOneHashtag(
@@ -155,9 +141,7 @@ export class LessonHashtagController {
     return { hashtag: deletedHashtag };
   }
 
-  @ApiOperation({ summary: '과제의 해시태그 조회' })
-  @ApiOkResponse({ type: PickType(LessonEntity, ['hashtags']) })
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadManyHashtag('과제의 해시태그 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyHashtag(
@@ -170,10 +154,7 @@ export class LessonHashtagController {
     return { hashtags };
   }
 
-  @ApiOperation({ summary: '과제의 해시태그 단일 조회' })
-  @ApiSuccessResponse(HttpStatus.OK, { hashtag: LessonHashtagEntity })
-  @ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN)
-  @ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND)
+  @ApiReadOneHashtag('과제의 해시태그 단일 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':hashtagId')
   async readOneHashtag(

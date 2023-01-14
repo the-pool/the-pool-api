@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   INestApplication,
   Injectable,
@@ -90,5 +91,24 @@ export class PrismaService
 
         throw new InternalServerErrorException(err);
       });
+  }
+
+  /**
+   * where 조건에 맞는 리소스가 존재하면 Conflict 에러를 뱉는 메서드
+   */
+  async validateDuplicateAndFail(
+    modelName: PrismaModelName,
+    where: any,
+  ): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const prismaModel: PrismaModel | null = await this[modelName].findFirst({
+      where,
+    });
+
+    if (prismaModel) {
+      throw new ConflictException(`${modelName} is duplicated `);
+    }
+    return;
   }
 }
