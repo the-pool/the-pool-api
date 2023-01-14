@@ -45,7 +45,6 @@ export class IncreaseMemberReportInterceptor implements NestInterceptor {
         MEMBER_REPORT_INCREASE_FIELD_NAME,
         context.getHandler(),
       );
-    console.log(member, action, memberReportIncreaseFieldName);
 
     return next.handle().pipe(
       tap(async () => {
