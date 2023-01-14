@@ -15,10 +15,13 @@ export class UseDevelopmentInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const isProduction =
       this.configService.get<string>('NODE_ENV') === 'production';
-    const path = context.switchToHttp().getRequest().path;
+    const requestPath = context.switchToHttp().getRequest().path;
+    const requestMethod = context.switchToHttp().getRequest().method;
 
     if (isProduction) {
-      throw new NotFoundException('Cannot GET' + ' ' + path);
+      throw new NotFoundException(
+        'Cannot' + ' ' + requestMethod + ' ' + requestPath,
+      );
     }
 
     return next.handle();
