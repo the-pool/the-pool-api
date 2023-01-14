@@ -1,262 +1,26 @@
-// prisma/seed.ts
-
-import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
+import { lessonCategorySeed } from './functions/lesson-category.seed';
+import { lessonLevelSeed } from './functions/lesson-level.seed';
+import { majorSkillSeed } from './functions/major-skill.seed';
+import { majorSeed } from './functions/major.seed';
+import { memberInterestSeed } from './functions/member-interest.seed';
 
 // initialize Prisma Client
 const prisma = new PrismaClient();
-
-enum DevelopMajorSkillName {
-  Backend = '백엔드개발',
-  WebFrontend = '웹 프론트엔드',
-  Ios = 'IOS',
-  Android = 'Android',
-  Etc = '기타 개발',
-}
-
-enum DesignMajorSkillName {
-  WebDesign = '웹 디자인',
-  UiUx = 'UI/UX',
-  Bx = 'BX',
-  Etc = '기타 디자인',
-}
-
-enum DevelopCategoryName {
-  Backend = '백엔드개발',
-  WebFrontend = '웹 프론트엔드',
-  Ios = 'IOS',
-  Android = 'Android',
-  Etc = '기타 개발',
-}
-
-enum DesignCategoryName {
-  WebDesign = '웹 디자인',
-  UiUx = 'UI/UX',
-  Bx = 'BX',
-  Etc = '기타 디자인',
-}
-
-enum LessonLevel {
-  Top = '상',
-  Middle = '중',
-  Bottom = '하',
-}
 
 /**
  * the pool seed
  */
 async function thePoolSeed() {
-  // Major Seed
-  const design = '디자인';
-  const develop = '개발';
-  // 모델 필요
-  // Major Seed
-  await prisma.major.createMany({
-    data: [
-      {
-        id: 1,
-        name: develop,
-      },
-      {
-        id: 2,
-        name: design,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  // MajorSkill Seed
-  await prisma.majorSkill.createMany({
-    data: [
-      {
-        id: 1,
-        majorId: 1,
-        name: DevelopMajorSkillName.Backend,
-      },
-      {
-        id: 2,
-        majorId: 1,
-        name: DevelopMajorSkillName.WebFrontend,
-      },
-      {
-        id: 4,
-        majorId: 1,
-        name: DevelopMajorSkillName.Android,
-      },
-      {
-        id: 3,
-        majorId: 1,
-        name: DevelopMajorSkillName.Ios,
-      },
-      {
-        id: 5,
-        majorId: 1,
-        name: DevelopMajorSkillName.Etc,
-      },
-      {
-        id: 6,
-        majorId: 2,
-        name: DesignMajorSkillName.WebDesign,
-      },
-      {
-        id: 7,
-        majorId: 2,
-        name: DesignMajorSkillName.UiUx,
-      },
-      {
-        id: 8,
-        majorId: 2,
-        name: DesignMajorSkillName.Bx,
-      },
-      {
-        id: 9,
-        majorId: 2,
-        name: DesignMajorSkillName.Etc,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  // LessonLevel Seed
-  await prisma.lessonLevel.createMany({
-    data: [
-      { level: LessonLevel.Top },
-      { level: LessonLevel.Middle },
-      { level: LessonLevel.Bottom },
-    ],
-    skipDuplicates: true,
-  });
-
-  // LessonCategory Seed
-  await prisma.lessonCategory.createMany({
-    data: [
-      {
-        id: 1,
-        name: DevelopCategoryName.Backend,
-      },
-      {
-        id: 2,
-        name: DevelopCategoryName.WebFrontend,
-      },
-      {
-        id: 4,
-        name: DevelopCategoryName.Android,
-      },
-      {
-        id: 3,
-        name: DevelopCategoryName.Ios,
-      },
-      {
-        id: 5,
-        name: DevelopCategoryName.Etc,
-      },
-      {
-        id: 6,
-        name: DesignCategoryName.WebDesign,
-      },
-      {
-        id: 7,
-        name: DesignCategoryName.UiUx,
-      },
-      {
-        id: 8,
-        name: DesignCategoryName.Bx,
-      },
-      {
-        id: 9,
-        name: DesignCategoryName.Etc,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  /**
-   * 우선 mock data 넣고 정해지면 수정
-   */
-  await prisma.memberSkill.createMany({
-    data: [
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  /**
-   * 우선 mock data 넣고 정해지면 수정
-   */
-  await prisma.memberInterest.createMany({
-    data: [
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-      {
-        name: faker.datatype.string(),
-      },
-    ],
-    skipDuplicates: true,
-  });
+  await lessonCategorySeed(prisma);
+  await lessonLevelSeed(prisma);
+  await majorSeed(prisma);
+  await majorSeed(prisma);
+  await memberInterestSeed(prisma);
+  await majorSkillSeed(prisma);
 }
 
-async function developmentMockDataSeed() {
-  await prisma.memberFollow.createMany({
-    data: [
-      {
-        followerId: 2,
-        followingId: 3,
-      },
-      {
-        followerId: 2,
-        followingId: 3,
-      },
-      {
-        followerId: 2,
-        followingId: 5,
-      },
-    ],
-  });
-}
-
-developmentMockDataSeed()
+thePoolSeed()
   .catch((e) => {
     console.error(e);
     process.exit(1);
@@ -265,13 +29,3 @@ developmentMockDataSeed()
     // close Prisma Client at the end
     await prisma.$disconnect();
   });
-
-// thePoolSeed()
-//   .catch((e) => {
-//     console.error(e);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     // close Prisma Client at the end
-//     await prisma.$disconnect();
-//   });
