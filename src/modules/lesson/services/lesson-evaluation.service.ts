@@ -33,8 +33,8 @@ export class LessonEvaluationService {
   ): Promise<LessonEvaluationEntity | Record<string, never>> {
     await this.prismaService.lessonLevelEvaluation.deleteMany({
       where: {
-        lessonId,
         memberId,
+        lessonId,
       },
     });
 

@@ -309,7 +309,9 @@ model LessonLevel {
   level     String   @db.VarChar(10)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
-  lessons   Lesson[]
+
+  lessons                Lesson[]
+  lessonLevelEvaluations LessonLevelEvaluation[]
 }
 
 /// 과제의 해시 태그
