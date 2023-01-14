@@ -1,9 +1,10 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { getEntriesByEnum } from '@src/common/common';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { IsEnum, IsOptional, MaxLength } from 'class-validator';
 
-export class PatchUpdateMemberRequestBodyDto {
+export class PatchUpdateMemberRequestBodyDto implements Partial<MemberEntity> {
   @ApiPropertyOptional({
     description: 'member nickname',
     maxLength: 30,

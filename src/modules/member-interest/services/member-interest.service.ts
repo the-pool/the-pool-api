@@ -15,6 +15,7 @@ export class MemberInterestService {
   findAll(memberId?: number): Promise<MemberInterestEntity[]> {
     let where: Prisma.MemberSkillWhereInput | undefined = undefined;
 
+    // 특정 멤버에 대한 관심사만 조회 할 경우 where 조건을 만들어준다.
     if (memberId) {
       where = {
         memberSkillMappings: {

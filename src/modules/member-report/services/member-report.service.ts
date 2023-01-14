@@ -13,14 +13,20 @@ export class MemberReportService {
     private readonly queryHelper: QueryHelper,
   ) {}
 
+  /**
+   * member report pagination
+   */
   async findAll(
     query: FindMemberReportListQueryDto,
   ): Promise<{ memberReports: MemberReportEntity[]; totalCount: number }> {
     const { page, pageSize, orderBy, sortBy, ...filter } = query;
 
+    // search 조건 build
     const where = this.queryHelper.buildWherePropForFind(filter);
+    // order 조건 build
     const order = this.queryHelper.buildOrderByPropForFind([orderBy], [sortBy]);
 
+    // 프로미스한 findMany 만 만들어놓는다.
     const memberReportsQuery: PrismaPromise<
       (MemberReportEntity & { member: MemberEntity })[]
     > = this.prismaService.memberReport.findMany({
@@ -33,12 +39,14 @@ export class MemberReportService {
       },
     });
 
+    // 프로미스한 count 만 만들어놓는다.
     const totalCountQuery: PrismaPromise<number> =
       this.prismaService.memberReport.count({
         where,
         orderBy: order,
       });
 
+    // transaction 을 통해 한번에 처리
     const [memberReports, totalCount] = await this.prismaService.$transaction([
       memberReportsQuery,
       totalCountQuery,
@@ -47,6 +55,9 @@ export class MemberReportService {
     return { memberReports, totalCount };
   }
 
+  /**
+   * member report 단일 조회
+   */
   findOne(where: Prisma.MemberReportWhereInput) {
     return this.prismaService.memberReport.findFirst({
       where,

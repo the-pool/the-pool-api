@@ -26,7 +26,7 @@ export class MemberService {
   }
 
   /**
-   * member 회원가입
+   * member signUp
    */
   async signUp(
     account: string,
@@ -55,7 +55,7 @@ export class MemberService {
   }
 
   /**
-   * member 로그인
+   * member login
    */
   login(member: MemberEntity): { member: MemberEntity } & AccessToken {
     // access token 생성
@@ -67,6 +67,9 @@ export class MemberService {
     };
   }
 
+  /**
+   * member patch update
+   */
   updateFromPatch(
     id: number,
     data: PatchUpdateMemberRequestBodyDto,
