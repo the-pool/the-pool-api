@@ -92,13 +92,15 @@ export class AuthHelper {
   }
 
   /**
+   * @todo 클라이언트측에서 애플 클라이언트 아이디 발급받으면 로직 추가
    * 애플은 아래 url 에 설명대로 검증
    * url: https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/verifying_a_user
    */
   async validateAppleAccessTokenOrFail(accessToken: string): Promise<string> {
     // 애플에 등록되어있는 clientId
     // 나중에 clientId 발급받으면 환경변수로
-    const appleClientIds: string[] = ['com.thepool.web'];
+    // 클라이언트측에서 애플 클라이언트 아이디 발급받으면 로직 추가
+    // const appleClientIds: string[] = ['com.thepool.web'];
 
     // jwt 토큰 decode
     const decodedJwt: Jwt | null = jwt.decode(accessToken, {
@@ -125,9 +127,10 @@ export class AuthHelper {
     });
 
     // 아래 조건에 걸린다면 유효하지 않은 토큰
+    // 클라이언트측에서 애플 클라이언트 아이디 발급받으면 로직 추가
     if (
       !payload.nonce_supported ||
-      !appleClientIds.includes(payload.aud) ||
+      // !appleClientIds.includes(payload.aud) ||
       payload.iss !== 'https://appleid.apple.com'
     ) {
       throw new UnauthorizedException('유효하지 않은 토큰');
