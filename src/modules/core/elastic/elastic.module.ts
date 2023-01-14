@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 
+/**
+ * elastic stack 사용할 때 사용
+ */
 @Module({
   imports: [
     ElasticsearchModule.register({
