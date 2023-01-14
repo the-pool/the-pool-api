@@ -31,8 +31,11 @@ export const HTTP_ERROR_MESSAGE = {
 };
 
 // member report increment meta data
-export const MEMBER_REPORT_INCREMENT_FIELD_NAME =
-  'memberReportIncrementFieldName';
+export const MEMBER_REPORT_INCREASE_FIELD_NAME =
+  'memberReportIncreaseFieldName';
+
+// 증가 또는 action meta data
+export const INCREASE_ACTION = 'increaseAction';
 
 // response field name meta data
 export const RESPONSE_FIELD_NAME = 'responseFieldName';

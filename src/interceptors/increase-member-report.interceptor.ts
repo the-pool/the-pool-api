@@ -6,17 +6,21 @@ import {
 } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import { Reflector } from '@nestjs/core';
-import { Prisma } from '@prisma/client';
-import { MEMBER_REPORT_INCREMENT_FIELD_NAME } from '@src/constants/constant';
+import {
+  INCREASE_ACTION,
+  MEMBER_REPORT_INCREASE_FIELD_NAME,
+} from '@src/constants/constant';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberReportIncrementFieldName } from '@src/modules/member-report/types/member-report.type';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { IncreaseAction } from '@src/types/type';
 import { map, Observable, tap } from 'rxjs';
 
 /**
  * member 가 count 를 올리는 행동을 했을 때 increment 시키는 인터셉터
  */
 @Injectable()
-export class IncrementMemberReportInterceptor implements NestInterceptor {
+export class IncreaseMemberReportInterceptor implements NestInterceptor {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly reflector: Reflector,
@@ -26,15 +30,22 @@ export class IncrementMemberReportInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<any> | Promise<Observable<any>> {
+    // 특정 행동을 한 유저의 정보를 가져온다.
     const member: Partial<MemberEntity> = context
       .switchToHttp()
       .getRequest().user;
-    const memberReportIncrementFieldName: keyof Omit<
-      Prisma.MemberReportUpdateInput,
-      'rank' | 'count' | 'member'
-    > = this.reflector.get<
-      keyof Omit<Prisma.MemberReportUpdateInput, 'rank' | 'count' | 'member'>
-    >(MEMBER_REPORT_INCREMENT_FIELD_NAME, context.getHandler());
+    // 증가시킬지 감소시킬지에 대한 정보를 가져온다.
+    const action = this.reflector.get<IncreaseAction>(
+      INCREASE_ACTION,
+      context.getHandler(),
+    );
+    // 증감시킬 대상 필드명을 가져온다.
+    const memberReportIncreaseFieldName =
+      this.reflector.get<MemberReportIncrementFieldName>(
+        MEMBER_REPORT_INCREASE_FIELD_NAME,
+        context.getHandler(),
+      );
+    console.log(member, action, memberReportIncreaseFieldName);
 
     return next.handle().pipe(
       tap(async () => {
@@ -44,8 +55,8 @@ export class IncrementMemberReportInterceptor implements NestInterceptor {
 
         await this.prismaService.memberReport.update({
           data: {
-            [memberReportIncrementFieldName]: {
-              increment: 1,
+            [memberReportIncreaseFieldName]: {
+              [action]: 1,
             },
           },
           where: {

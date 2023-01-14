@@ -27,7 +27,7 @@ import {
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
-import { setResponse } from '@src/decorators/set-response.decorator';
+import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
@@ -84,7 +84,7 @@ export class MemberController {
 
   @ApiOperation({ summary: 'member 단일 조회' })
   @ApiSuccessResponse(HttpStatus.OK, { member: MemberEntity })
-  @setResponse('member')
+  @SetResponse('member')
   @Get(':id')
   findOne(
     @SetModelNameToParam('member')
@@ -157,7 +157,7 @@ export class MemberController {
   @ApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @setResponse('member')
+  @SetResponse('member')
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,

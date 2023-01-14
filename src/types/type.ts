@@ -57,6 +57,8 @@ export type Target<M extends PrismaModel = PrismaModel> = {
   field?: keyof M;
 };
 
+export type IncreaseAction = 'increment' | 'decrement';
+
 export type MajorText = '개발' | '디자인';
 
 export type JwtGuard = typeof JwtAuthGuard | typeof OptionalJwtAuthGuard;
