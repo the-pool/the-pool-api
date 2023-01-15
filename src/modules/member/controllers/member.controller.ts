@@ -20,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { AllowMemberStatuses } from '@src/decorators/member-status.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -28,6 +29,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
@@ -145,9 +147,16 @@ export class MemberController {
     return this.memberService.updateFromPatch(params.id, body);
   }
 
+  /**
+   * 로그인 해야하고
+   * pending 상태여야하고
+   * 본인 정보에 접근해야한다.
+   */
+  @AllowMemberStatuses([MemberStatus.Active])
+  @UseGuards(JwtAuthGuard)
   @Post(':id/majors/:majorId')
   mappingMajor(
-    // @UserLogin() member: MemberEntity,
+    @UserLogin() member: MemberEntity,
     @SetModelNameToParam('member')
     @Param()
     params: CreateMemberMajorMappingRequestParamDto,

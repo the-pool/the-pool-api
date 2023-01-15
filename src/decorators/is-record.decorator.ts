@@ -20,9 +20,6 @@ export class IsRecordConstraint implements ValidatorConstraintInterface {
     const targetName = field || args.property;
     const modelName = model || args.object['model'];
 
-    console.log(args);
-    console.log(targetName, value);
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const uniqueRecord = await this.prismaService[modelName].findFirst({
