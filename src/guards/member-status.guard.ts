@@ -8,15 +8,16 @@ import { Reflector } from '@nestjs/core';
 import { MEMBER_STATUSES } from '@src/modules/member/constants/member.const';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberStatuses } from '@src/modules/member/types/member.type';
-import { Observable } from 'rxjs';
 
+/**
+ * 특정 status 를 가진 member 만 access 가능하게 하는 guard
+ * 이 가드를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
+ */
 @Injectable()
 export class MemberStatusGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private readonly reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const member: MemberEntity = request.user;
     const allowMemberStatuses: MemberStatuses =

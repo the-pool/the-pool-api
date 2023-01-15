@@ -21,6 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { AllowMemberStatuses } from '@src/decorators/member-status.decorator';
+import { OwnMemberDecorator } from '@src/decorators/own-member.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -147,12 +148,8 @@ export class MemberController {
     return this.memberService.updateFromPatch(params.id, body);
   }
 
-  /**
-   * 로그인 해야하고
-   * pending 상태여야하고
-   * 본인 정보에 접근해야한다.
-   */
-  @AllowMemberStatuses([MemberStatus.Active])
+  @AllowMemberStatuses([MemberStatus.Pending])
+  @OwnMemberDecorator()
   @UseGuards(JwtAuthGuard)
   @Post(':id/majors/:majorId')
   mappingMajor(
