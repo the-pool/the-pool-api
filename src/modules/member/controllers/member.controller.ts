@@ -34,6 +34,7 @@ import {
   ApiLoginOrSignUp,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
+import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -142,6 +143,16 @@ export class MemberController {
     );
 
     return this.memberService.updateFromPatch(params.id, body);
+  }
+
+  @Post(':id/majors/:majorId')
+  mappingMajor(
+    // @UserLogin() member: MemberEntity,
+    @SetModelNameToParam('member')
+    @Param()
+    params: CreateMemberMajorMappingRequestParamDto,
+  ) {
+    return this.memberService.mappingMajor(params.id, params.majorId);
   }
 
   /**
