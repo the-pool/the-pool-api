@@ -78,7 +78,7 @@ describe('MemberController', () => {
   });
 
   describe('loginOrSignUp', () => {
-    let member: MemberEntity;
+    let member: MemberEntity | { id: null };
     let body: LoginOrSignUpRequestBodyDto;
     let accessToken: string;
 
@@ -107,6 +107,7 @@ describe('MemberController', () => {
 
     describe('회원가입 하는 경우', () => {
       it('회원가입 성공', async () => {
+        member.id = null;
         const result = await memberController.loginOrSignUp(member, body);
 
         expect(mockMemberService.signUp).toBeCalledTimes(1);
