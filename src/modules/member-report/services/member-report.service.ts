@@ -58,9 +58,9 @@ export class MemberReportService {
   /**
    * member report 단일 조회
    */
-  findOne(where: Prisma.MemberReportWhereInput) {
+  findOne(where: Prisma.MemberReportWhereInput): Promise<MemberReportEntity> {
     return this.prismaService.memberReport.findFirst({
       where,
-    });
+    }) as Promise<MemberReportEntity>;
   }
 }

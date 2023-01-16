@@ -34,7 +34,9 @@ export class MemberReportController {
   @ApiFindOne('member report 단일 조회')
   @SetResponse('memberReport')
   @Get(':memberId')
-  findOne(@Param() params: FindMemberReportRequestParamDto) {
+  findOne(
+    @Param() params: FindMemberReportRequestParamDto,
+  ): Promise<MemberReportEntity> {
     return this.memberReportService.findOne({ memberId: params.memberId });
   }
 }
