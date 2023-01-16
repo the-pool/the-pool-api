@@ -7,7 +7,6 @@ import {
   Patch,
   Post,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -26,7 +25,6 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { UseDevelopmentInterceptor } from '@src/interceptors/use-development.interceptor';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import {
   ApiFindOne,
@@ -64,7 +62,6 @@ export class MemberController {
   ) {}
 
   @ApiGetAccessTokenForDevelop('accessToken 발급 받기 (개발용)')
-  @UseInterceptors(UseDevelopmentInterceptor)
   @Post('access-token/:id')
   getAccessTokenForDevelop(@Param() params: { id: string }): string {
     return this.authService.createAccessToken(+params.id);
