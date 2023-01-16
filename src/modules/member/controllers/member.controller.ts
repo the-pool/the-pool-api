@@ -9,7 +9,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { isNil } from '@nestjs/common/utils/shared.utils';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -91,7 +90,7 @@ export class MemberController {
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   async loginOrSignUp(
-    @UserLogin() member: MemberEntity,
+    @UserLogin() member: MemberEntity | { id: null },
     @Body() body: LoginOrSignUpRequestBodyDto,
   ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
@@ -101,7 +100,7 @@ export class MemberController {
     );
 
     // 회원가입 하려는 경우
-    if (isNil(member.id)) {
+    if (member.id === null) {
       // 먼저 회원가입이 가능한지 확인한다.
       await this.memberValidationService.canCreateOrFail({
         account,
