@@ -5,6 +5,7 @@ export enum ModelName {
   LessonHashtag = 'lessonHashtag',
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
+  Member = 'member',
   MemberReport = 'memberReport',
 }
 

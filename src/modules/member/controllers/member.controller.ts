@@ -19,6 +19,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
@@ -74,7 +75,7 @@ export class MemberController {
   @SetResponse('member')
   @Get(':id')
   findOne(
-    @SetModelNameToParam('member')
+    @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
   ): Promise<MemberEntity> {
@@ -130,7 +131,7 @@ export class MemberController {
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,
-    @SetModelNameToParam('member')
+    @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,
