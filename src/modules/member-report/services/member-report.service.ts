@@ -24,7 +24,9 @@ export class MemberReportService {
     // search 조건 build
     const where = this.queryHelper.buildWherePropForFind(filter);
     // order 조건 build
-    const order = this.queryHelper.buildOrderByPropForFind([orderBy], [sortBy]);
+    const order = this.queryHelper.buildOrderByPropForFind({
+      [sortBy]: orderBy,
+    });
 
     // 프로미스한 findMany 만 만들어놓는다.
     const memberReportsQuery: PrismaPromise<
