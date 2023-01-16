@@ -37,13 +37,13 @@ describe('MemberReportService', () => {
   });
 
   describe('findAll', () => {
-    let memberReports: MemberReportEntity[];
-    let totalCount: number;
+    let memberReports: Promise<MemberReportEntity[]>;
+    let totalCount: Promise<number>;
     let query: FindMemberReportListQueryDto;
 
     beforeEach(() => {
-      memberReports = [new MemberReportEntity()];
-      totalCount = faker.datatype.number();
+      memberReports = new Promise(() => [new MemberReportEntity()]);
+      totalCount = new Promise(() => faker.datatype.number());
       query = new FindMemberReportListQueryDto();
     });
 
@@ -73,8 +73,8 @@ describe('MemberReportService', () => {
         orderBy: null,
       });
       expect(mockPrismaService.$transaction).toBeCalledWith([
-        Promise.resolve(memberReports),
-        Promise.resolve(totalCount),
+        memberReports,
+        totalCount,
       ]);
       expect(result).toStrictEqual({
         memberReports,
