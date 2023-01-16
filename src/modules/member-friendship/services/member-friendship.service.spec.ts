@@ -40,6 +40,7 @@ describe('FriendshipService', () => {
     let findManyResult;
     let query: FindMemberFriendshipListQueryDto;
     let order: string;
+    let result;
 
     beforeEach(() => {
       follower = new MemberEntity();
@@ -50,7 +51,7 @@ describe('FriendshipService', () => {
       order = faker.datatype.string();
     });
 
-    it('member followers 조회 성공', async () => {
+    beforeEach(() => {
       query.memberId = faker.datatype.number({ min: 1 });
       mockPrismaService.memberFollow.findMany.mockResolvedValue(
         findManyResult as any,
@@ -61,8 +62,10 @@ describe('FriendshipService', () => {
         totalCount,
       ] as any);
       mockQueryHelper.buildOrderByPropForFind.mockReturnValue(order);
+    });
 
-      const result = await service.findAll(query, 'follower');
+    it('member followers 조회 성공', async () => {
+      result = await service.findAll(query, 'follower');
 
       expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
         select: {
@@ -83,33 +86,10 @@ describe('FriendshipService', () => {
         },
         orderBy: expect.anything(),
       });
-      expect(mockPrismaService.$transaction).toBeCalledWith([
-        Promise.resolve(findManyResult),
-        Promise.resolve(totalCount),
-      ]);
-      expect(mockPrismaService.memberFollow.findMany).toBeCalledTimes(1);
-      expect(mockPrismaService.memberFollow.count).toBeCalledTimes(1);
-      expect(mockPrismaService.$transaction).toBeCalledTimes(1);
-      expect(result).toStrictEqual({
-        followers: [follower],
-        followings: [following],
-        totalCount,
-      });
     });
 
     it('member followings 조회 성공', async () => {
-      query.memberId = faker.datatype.number({ min: 1 });
-      mockPrismaService.memberFollow.findMany.mockResolvedValue(
-        findManyResult as any,
-      );
-      mockPrismaService.memberFollow.count.mockResolvedValue(totalCount as any);
-      mockPrismaService.$transaction.mockResolvedValue([
-        findManyResult,
-        totalCount,
-      ] as any);
-      mockQueryHelper.buildOrderByPropForFind.mockReturnValue(order);
-
-      const result = await service.findAll(query, 'following');
+      result = await service.findAll(query, 'following');
 
       expect(mockPrismaService.memberFollow.findMany).toBeCalledWith({
         select: {
@@ -130,6 +110,9 @@ describe('FriendshipService', () => {
         },
         orderBy: expect.anything(),
       });
+    });
+
+    afterEach(() => {
       expect(mockPrismaService.$transaction).toBeCalledWith([
         Promise.resolve(findManyResult),
         Promise.resolve(totalCount),
