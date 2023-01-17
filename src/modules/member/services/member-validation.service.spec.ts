@@ -165,18 +165,6 @@ describe('MemberValidationService', () => {
       updateInfo = new PatchUpdateMemberRequestBodyDto();
     });
 
-    it('본인을 업데이트 하려는 경우가 아닌 경우', async () => {
-      oldMember.id = updateId + 1;
-
-      await expect(async () => {
-        await memberValidationService.canUpdateFromPatchOrFail(
-          updateId,
-          updateInfo,
-          oldMember,
-        );
-      }).rejects.toThrowError('본인 정보가 아니면 수정이 불가능합니다.');
-    });
-
     it('멤버가 활성중이 아니고 활성 상태로 변경하는 경우가 아닌 경우', async () => {
       oldMember.id = updateId;
       oldMember.status = MemberStatus.Pending;

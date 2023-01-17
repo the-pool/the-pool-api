@@ -25,6 +25,7 @@ export const mockMemberService: MockClassType<MemberService> = {
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),
+  mappingMajor: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
 };

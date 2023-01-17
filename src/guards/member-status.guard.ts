@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { MEMBER_STATUSES } from '@src/modules/member/constants/member.const';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberStatuses } from '@src/modules/member/types/member.type';
 
@@ -22,10 +23,17 @@ export class MemberStatusGuard implements CanActivate {
     const member: MemberEntity = request.user;
     const allowMemberStatuses: MemberStatuses =
       this.reflector.get<MemberStatuses>(MEMBER_STATUSES, context.getHandler());
+    const allowMemberStatusesStr = allowMemberStatuses
+      .map((status) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return MemberStatus[status];
+      })
+      .join(', ');
 
     if (!allowMemberStatuses.includes(member.status)) {
       throw new ForbiddenException(
-        'pending 상태의 유저만 major 를 선택 가능합니다.',
+        allowMemberStatusesStr + ' ' + '상태의 유저만 접근 가능합니다.',
       );
     }
 

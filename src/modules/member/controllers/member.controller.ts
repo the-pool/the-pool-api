@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { AllowMemberStatuses } from '@src/decorators/member-status.decorator';
-import { OwnMemberDecorator } from '@src/decorators/own-member.decorator';
+import { OwnMember } from '@src/decorators/own.member';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -35,6 +35,7 @@ import {
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
+  ApiMappingMajor,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
@@ -129,6 +130,8 @@ export class MemberController {
   @ApiUpdateFromPatch(
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
+  @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
+  @OwnMember()
   @UseGuards(JwtAuthGuard)
   @SetResponse('member')
   @Patch(':id')
@@ -148,12 +151,13 @@ export class MemberController {
     return this.memberService.updateFromPatch(params.id, body);
   }
 
-  @AllowMemberStatuses([MemberStatus.Pending])
-  @OwnMemberDecorator()
+  @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
+  @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
+  @OwnMember()
   @UseGuards(JwtAuthGuard)
+  @SetResponse('member')
   @Post(':id/majors/:majorId')
   mappingMajor(
-    @UserLogin() member: MemberEntity,
     @SetModelNameToParam('member')
     @Param()
     params: CreateMemberMajorMappingRequestParamDto,
