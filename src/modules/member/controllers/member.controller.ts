@@ -151,6 +151,9 @@ export class MemberController {
     return this.memberService.updateFromPatch(params.id, body);
   }
 
+  /**
+   * @todo @SetModelNameToParam('member') enum 으로 처리
+   */
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
   @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
   @OwnMember()

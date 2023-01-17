@@ -18,6 +18,7 @@ describe('OwnMember', () => {
 
   it('fieldName 을 주었을 경우', () => {
     const fieldName = faker.datatype.string();
+
     OwnMember(fieldName);
 
     expect(SetMetadata).toBeCalledWith(OWN_MEMBER_FIELD_NAME, fieldName);
