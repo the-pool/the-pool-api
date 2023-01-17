@@ -14,6 +14,7 @@ export const mockReflector = {
 
 export const mockRequest = {
   user: <any>undefined,
+  params: <any>undefined,
 };
 
 export const mockHttpArgumentHost = {
