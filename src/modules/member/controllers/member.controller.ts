@@ -20,8 +20,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { AllowMemberStatuses } from '@src/decorators/member-status.decorator';
-import { OwnMember } from '@src/decorators/own.member';
+import { AllowMemberStatuses } from '@src/decorators/member-statuses.decorator';
+import { OwnMember } from '@src/decorators/own-member.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
