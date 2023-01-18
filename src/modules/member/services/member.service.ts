@@ -19,10 +19,10 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  findOne(where: Prisma.MemberWhereInput): Promise<MemberEntity> {
+  findOne(where: Prisma.MemberWhereInput): Promise<MemberEntity | null> {
     return this.prismaService.member.findFirst({
       where,
-    }) as Promise<MemberEntity>;
+    });
   }
 
   /**

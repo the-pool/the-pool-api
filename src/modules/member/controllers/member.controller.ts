@@ -77,7 +77,7 @@ export class MemberController {
   ): Promise<MemberEntity> {
     return this.memberService.findOne({
       id: params.id,
-    });
+    }) as Promise<MemberEntity>;
   }
 
   /**

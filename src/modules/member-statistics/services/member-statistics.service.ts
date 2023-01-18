@@ -64,9 +64,9 @@ export class MemberStatisticsService {
    */
   findOne(
     where: Prisma.MemberStatisticsWhereInput,
-  ): Promise<MemberStatisticsEntity> {
+  ): Promise<MemberStatisticsEntity | null> {
     return this.prismaService.memberStatistics.findFirst({
       where,
-    }) as Promise<MemberStatisticsEntity>;
+    });
   }
 }

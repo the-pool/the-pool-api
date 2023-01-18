@@ -40,6 +40,8 @@ export class MemberStatisticsController {
   findOne(
     @Param() params: FindMemberStatisticsRequestParamDto,
   ): Promise<MemberStatisticsEntity> {
-    return this.memberStatisticsService.findOne({ memberId: params.memberId });
+    return this.memberStatisticsService.findOne({
+      memberId: params.memberId,
+    }) as Promise<MemberStatisticsEntity>;
   }
 }
