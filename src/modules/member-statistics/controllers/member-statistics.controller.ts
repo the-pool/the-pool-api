@@ -19,7 +19,7 @@ import { FindMemberStatisticsRequestParamDto } from '../dtos/find-member-statist
 @ApiTags('멤버 statistics (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
 @ApiInternalServerErrorResponse({ type: InternalServerErrorResponseType })
-@Controller('api/member-reports')
+@Controller('api/member-statistics')
 export class MemberStatisticsController {
   constructor(
     private readonly memberStatisticsService: MemberStatisticsService,
