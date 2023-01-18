@@ -3,19 +3,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { FindMemberReportListQueryDto } from '@src/modules/member-report/dtos/find-member-report-list-query.dto';
-import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
+import { FindMemberStatisticsListQueryDto } from '@src/modules/member-statistics/dtos/find-member-statistics-list-query.dto';
+import { MemberStatisticsEntity } from '@src/modules/member-statistics/entities/member-statistics.entity';
 import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { MemberReportService } from './member-report.service';
+import { MemberStatisticsService } from './member-statistics.service';
 
-describe('MemberReportService', () => {
-  let service: MemberReportService;
+describe('MemberStatisticsService', () => {
+  let service: MemberStatisticsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MemberReportService,
+        MemberStatisticsService,
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -29,7 +29,7 @@ describe('MemberReportService', () => {
 
     mockQueryHelper.buildWherePropForFind.mockReturnValue(null);
     mockQueryHelper.buildOrderByPropForFind.mockReturnValue(null);
-    service = module.get<MemberReportService>(MemberReportService);
+    service = module.get<MemberStatisticsService>(MemberStatisticsService);
   });
 
   it('should be defined', () => {
@@ -37,29 +37,31 @@ describe('MemberReportService', () => {
   });
 
   describe('findAll', () => {
-    let memberReports: Promise<MemberReportEntity[]>;
+    let memberStatisticsList: Promise<MemberStatisticsEntity[]>;
     let totalCount: Promise<number>;
-    let query: FindMemberReportListQueryDto;
+    let query: FindMemberStatisticsListQueryDto;
 
     beforeEach(() => {
-      memberReports = new Promise(() => [new MemberReportEntity()]);
+      memberStatisticsList = new Promise(() => [new MemberStatisticsEntity()]);
       totalCount = new Promise(() => faker.datatype.number());
-      query = new FindMemberReportListQueryDto();
+      query = new FindMemberStatisticsListQueryDto();
     });
 
-    it('member report list 조회 성공', async () => {
-      mockPrismaService.memberReport.findMany.mockResolvedValue(
-        memberReports as any,
+    it('member Statistics list 조회 성공', async () => {
+      mockPrismaService.memberStatistics.findMany.mockResolvedValue(
+        memberStatisticsList as any,
       );
-      mockPrismaService.memberReport.count.mockResolvedValue(totalCount as any);
+      mockPrismaService.memberStatistics.count.mockResolvedValue(
+        totalCount as any,
+      );
       mockPrismaService.$transaction.mockResolvedValue([
-        memberReports,
+        memberStatisticsList,
         totalCount,
       ] as any);
 
       const result = await service.findAll(query);
 
-      expect(mockPrismaService.memberReport.findMany).toBeCalledWith({
+      expect(mockPrismaService.memberStatistics.findMany).toBeCalledWith({
         where: null,
         orderBy: null,
         skip: expect.anything(),
@@ -68,41 +70,41 @@ describe('MemberReportService', () => {
           member: true,
         },
       });
-      expect(mockPrismaService.memberReport.count).toBeCalledWith({
+      expect(mockPrismaService.memberStatistics.count).toBeCalledWith({
         where: null,
         orderBy: null,
       });
       expect(mockPrismaService.$transaction).toBeCalledWith([
-        memberReports,
+        memberStatisticsList,
         totalCount,
       ]);
       expect(result).toStrictEqual({
-        memberReports,
+        memberStatisticsList,
         totalCount,
       });
     });
   });
 
   describe('findOne', () => {
-    let memberReport: MemberReportEntity;
-    let where: Prisma.MemberReportWhereInput;
+    let memberStatistics: MemberStatisticsEntity;
+    let where: Prisma.MemberStatisticsWhereInput;
 
     beforeEach(() => {
-      memberReport = new MemberReportEntity();
+      memberStatistics = new MemberStatisticsEntity();
       where = { memberId: faker.datatype.number() };
     });
 
-    it('member report 조회 성공', () => {
-      mockPrismaService.memberReport.findFirst.mockReturnValue(
-        memberReport as any,
+    it('member Statistics 조회 성공', () => {
+      mockPrismaService.memberStatistics.findFirst.mockReturnValue(
+        memberStatistics as any,
       );
 
       const result = service.findOne(where);
 
-      expect(mockPrismaService.memberReport.findFirst).toBeCalledWith({
+      expect(mockPrismaService.memberStatistics.findFirst).toBeCalledWith({
         where,
       });
-      expect(result).toStrictEqual(memberReport);
+      expect(result).toStrictEqual(memberStatistics);
     });
   });
 });

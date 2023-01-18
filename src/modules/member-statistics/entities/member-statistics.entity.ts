@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MemberReport } from '@prisma/client';
-import { IdResponseType } from '@src/types/id-response-type';
+import { MemberStatistics } from '@prisma/client';
 
-export class MemberReportEntity extends IdResponseType implements MemberReport {
+export class MemberStatisticsEntity implements MemberStatistics {
   @ApiProperty({
     description: 'memberId',
   })

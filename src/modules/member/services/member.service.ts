@@ -37,7 +37,7 @@ export class MemberService {
       data: {
         account,
         loginType,
-        memberReport: {
+        memberStatistics: {
           create: {},
         },
       },

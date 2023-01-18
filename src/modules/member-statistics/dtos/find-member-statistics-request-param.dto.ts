@@ -4,11 +4,11 @@ import { IsRecord } from '@src/decorators/is-record.decorator';
 import { Type } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
 
-export class FindMemberReportRequestParamDto {
+export class FindMemberStatisticsRequestParamDto {
   @ApiProperty({
     description: 'member 고유 ID',
   })
-  @IsRecord({ model: ModelName.MemberReport }, true)
+  @IsRecord({ model: ModelName.MemberStatistics }, true)
   @Min(1)
   @IsInt()
   @Type(() => Number)

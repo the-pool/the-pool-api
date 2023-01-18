@@ -6,8 +6,8 @@ import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MajorService } from '@src/modules/major/services/major.service';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
-import { MemberReportService } from '@src/modules/member-report/services/member-report.service';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
+import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { MockClassType } from './mock.type';
@@ -38,10 +38,11 @@ export const mockMemberInterestService: MockClassType<MemberInterestService> = {
   findAll: jest.fn(),
 };
 
-export const mockMemberReportService: MockClassType<MemberReportService> = {
-  findAll: jest.fn(),
-  findOne: jest.fn(),
-};
+export const mockMemberStatisticsService: MockClassType<MemberStatisticsService> =
+  {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+  };
 
 export const mockMemberSkillService: MockClassType<MemberSkillService> = {
   findAll: jest.fn(),

@@ -84,7 +84,7 @@ model Member {
   deletedAt  DateTime? @db.Timestamp(6)
 
   major                    Major?                    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  memberReport             MemberReport?
+  memberStatistics         MemberStatistics?
   followers                MemberFollow[]            @relation("follower")
   followings               MemberFollow[]            @relation("following")
   lessons                  Lesson[]
@@ -153,11 +153,9 @@ model MemberInterestMapping {
 }
 
 /// 멤버 활동 모델
-model MemberReport {
-  /// 고유 ID
-  id             Int  @id @default(autoincrement())
+model MemberStatistics {
   /// member 고유 ID
-  memberId       Int  @unique
+  memberId       Int  @id @unique
   /// 과제 제출 개수
   lessonCount    Int  @default(0)
   /// 피드백 한 총 개수
