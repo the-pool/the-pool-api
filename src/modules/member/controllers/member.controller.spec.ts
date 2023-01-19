@@ -79,7 +79,7 @@ describe('MemberController', () => {
   });
 
   describe('loginOrSignUp', () => {
-    let member: MemberEntity;
+    let member: MemberEntity | { id: null };
     let body: LoginOrSignUpRequestBodyDto;
     let accessToken: string;
 
