@@ -37,9 +37,9 @@ export const LESSON_LEVEL = {
   [LessonLevelId.Bottom]: 'bottom',
 } as const;
 
-// member report increment meta data
-export const MEMBER_REPORT_INCREASE_FIELD_NAME =
-  'memberReportIncreaseFieldName';
+// member statistics increase meta data
+export const MEMBER_STATISTICS_INCREASE_FIELD_NAME =
+  'memberStatisticsIncreaseFieldName';
 
 // 증가 또는 action meta data
 export const INCREASE_ACTION = 'increaseAction';

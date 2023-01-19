@@ -84,7 +84,7 @@ model Member {
   deletedAt  DateTime? @db.Timestamp(6)
 
   major                    Major?                    @relation(fields: [majorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  memberReport             MemberReport?
+  memberStatistics         MemberStatistics?
   followers                MemberFollow[]            @relation("follower")
   followings               MemberFollow[]            @relation("following")
   lessons                  Lesson[]
@@ -153,11 +153,9 @@ model MemberInterestMapping {
 }
 
 /// 멤버 활동 모델
-model MemberReport {
-  /// 고유 ID
-  id             Int  @id @default(autoincrement())
+model MemberStatistics {
   /// member 고유 ID
-  memberId       Int  @unique
+  memberId       Int  @id @unique
   /// 과제 제출 개수
   lessonCount    Int  @default(0)
   /// 피드백 한 총 개수
@@ -245,9 +243,9 @@ model LessonLevelEvaluation {
   /// 삭제일자
   deletedAt DateTime? @db.Timestamp(6)
 
-  member        Member       @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  lesson        Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  LessonLevel   LessonLevel? @relation(fields: [levelId], references: [id])
+  member      Member       @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson      Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  LessonLevel LessonLevel? @relation(fields: [levelId], references: [id])
 }
 
 /// 이미지에 대한 처리는 회의 후 추가

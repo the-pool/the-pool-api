@@ -8,10 +8,10 @@ import { isNil } from '@nestjs/common/utils/shared.utils';
 import { Reflector } from '@nestjs/core';
 import {
   INCREASE_ACTION,
-  MEMBER_REPORT_INCREASE_FIELD_NAME,
+  MEMBER_STATISTICS_INCREASE_FIELD_NAME,
 } from '@src/constants/constant';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberReportIncrementFieldName } from '@src/modules/member-report/types/member-report.type';
+import { MemberStatisticsIncrementFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { IncreaseAction } from '@src/types/type';
 import { map, Observable, tap } from 'rxjs';
@@ -20,7 +20,7 @@ import { map, Observable, tap } from 'rxjs';
  * member 가 count 를 올리는 행동을 했을 때 increment 시키는 인터셉터
  */
 @Injectable()
-export class IncreaseMemberReportInterceptor implements NestInterceptor {
+export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly reflector: Reflector,
@@ -41,8 +41,8 @@ export class IncreaseMemberReportInterceptor implements NestInterceptor {
     );
     // 증감시킬 대상 필드명을 가져온다.
     const memberReportIncreaseFieldName =
-      this.reflector.get<MemberReportIncrementFieldName>(
-        MEMBER_REPORT_INCREASE_FIELD_NAME,
+      this.reflector.get<MemberStatisticsIncrementFieldName>(
+        MEMBER_STATISTICS_INCREASE_FIELD_NAME,
         context.getHandler(),
       );
 
@@ -52,7 +52,7 @@ export class IncreaseMemberReportInterceptor implements NestInterceptor {
           return;
         }
 
-        await this.prismaService.memberReport.update({
+        await this.prismaService.memberStatistics.update({
           data: {
             [memberReportIncreaseFieldName]: {
               [action]: 1,

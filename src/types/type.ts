@@ -11,7 +11,7 @@ import {
   MajorSkill,
   Member,
   MemberFollow,
-  MemberReport,
+  MemberStatistics,
   MemberSkill,
   Prisma,
 } from '@prisma/client';
@@ -42,7 +42,7 @@ export type PrismaModel =
   | MajorSkill
   | Major
   | Member
-  | MemberReport
+  | MemberStatistics
   | MemberFollow
   | Lesson
   | LessonLevelEvaluation

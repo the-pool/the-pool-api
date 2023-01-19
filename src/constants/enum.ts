@@ -5,7 +5,8 @@ export enum ModelName {
   LessonHashtag = 'lessonHashtag',
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
-  MemberReport = 'memberReport',
+  Member = 'member',
+  MemberStatistics = 'memberStatistics',
 }
 
 export enum OrderBy {

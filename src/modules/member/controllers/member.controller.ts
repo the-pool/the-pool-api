@@ -9,7 +9,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { isNil } from '@nestjs/common/utils/shared.utils';
 import {
   ApiBearerAuth,
   ApiCreatedResponse,
@@ -19,6 +18,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { AllowMemberStatuses } from '@src/decorators/member-statuses.decorator';
 import { OwnMember } from '@src/decorators/own-member.decorator';
@@ -79,13 +79,13 @@ export class MemberController {
   @SetResponse('member')
   @Get(':id')
   findOne(
-    @SetModelNameToParam('member')
+    @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
   ): Promise<MemberEntity> {
     return this.memberService.findOne({
       id: params.id,
-    });
+    }) as Promise<MemberEntity>;
   }
 
   /**
@@ -95,7 +95,7 @@ export class MemberController {
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
   async loginOrSignUp(
-    @UserLogin() member: MemberEntity,
+    @UserLogin() member: MemberEntity | { id: null },
     @Body() body: LoginOrSignUpRequestBodyDto,
   ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
@@ -105,7 +105,7 @@ export class MemberController {
     );
 
     // 회원가입 하려는 경우
-    if (isNil(member.id)) {
+    if (member.id === null) {
       // 먼저 회원가입이 가능한지 확인한다.
       await this.memberValidationService.canCreateOrFail({
         account,
@@ -130,14 +130,12 @@ export class MemberController {
   @ApiUpdateFromPatch(
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
-  @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
-  @OwnMember()
   @UseGuards(JwtAuthGuard)
   @SetResponse('member')
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,
-    @SetModelNameToParam('member')
+    @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,

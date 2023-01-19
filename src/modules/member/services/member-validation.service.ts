@@ -85,6 +85,11 @@ export class MemberValidationService {
     updateInfo: PatchUpdateMemberRequestBodyDto,
     oldMember: MemberEntity,
   ): Promise<void> {
+    // 본인에 대해 업데이트 하는게 아니라면 에러
+    if (updateId !== oldMember.id) {
+      throw new ForbiddenException('본인 정보가 아니면 수정이 불가능합니다.');
+    }
+
     // 멤버가 활성중이 아니고 활성 상태로 변경하는 경우가 아니면 에러
     if (
       oldMember.status !== MemberStatus.Active &&

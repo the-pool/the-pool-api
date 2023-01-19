@@ -28,17 +28,12 @@ export class QueryHelper {
   /**
    * find 시 order by field 를 만드는 메서드
    */
-  buildOrderByPropForFind(
-    orderBy: OrderBy[],
-    sortBy: string[],
-  ): { [key: string]: OrderBy }[] {
-    if (orderBy.length !== sortBy.length) {
-      return [{ id: OrderBy.Asc }];
-    }
-
-    return orderBy.map((order, idx) => {
+  buildOrderByPropForFind(orders: {
+    [key: string]: OrderBy;
+  }): { [key: string]: OrderBy }[] {
+    return Object.entries(orders).map(([sortBy, orderBy]) => {
       return {
-        [sortBy[idx]]: order,
+        [sortBy]: orderBy,
       };
     });
   }

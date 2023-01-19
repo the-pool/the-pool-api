@@ -23,7 +23,9 @@ export class MemberFriendshipService {
     const { page, pageSize, orderBy, sortBy, memberId } = query;
 
     // 정렬 옵션 build
-    const order = this.queryHelper.buildOrderByPropForFind([orderBy], [sortBy]);
+    const order = this.queryHelper.buildOrderByPropForFind({
+      [sortBy]: orderBy,
+    });
     // follower or following 만 select
     const select: Prisma.MemberFollowSelect = {
       [target]: true,

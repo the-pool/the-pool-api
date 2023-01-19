@@ -132,6 +132,94 @@ describe('MemberService', () => {
     });
   });
 
+  describe('findOne', () => {
+    let member: MemberEntity;
+    let where: Prisma.MemberWhereInput;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+    });
+
+    it('조회 성공', async () => {
+      mockPrismaService.member.findFirst.mockReturnValue(member as any);
+
+      const result = await memberService.findOne(where);
+
+      expect(mockPrismaService.member.findFirst).toBeCalledWith({
+        where,
+      });
+      expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('loginOrSignUp', () => {
+    describe('signUp', () => {
+      let account: string;
+      let newMember: MemberEntity;
+      let accessToken: string;
+      const loginType = MemberLoginType.Apple;
+
+      beforeEach(() => {
+        account = faker.datatype.string();
+        newMember = new MemberEntity();
+      });
+
+      it('회원가입 성공', async () => {
+        accessToken = faker.datatype.string();
+        mockPrismaService.member.create.mockResolvedValue(newMember as any);
+        mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+        const result = await memberService.signUp(account, loginType);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member: newMember,
+        });
+      });
+    });
+
+    describe('login', () => {
+      let account: string;
+      let member: MemberEntity;
+      let accessToken: string;
+
+      beforeEach(() => {
+        account = faker.datatype.string();
+        member = new MemberEntity();
+      });
+
+      it('로그인 성공', async () => {
+        accessToken = faker.datatype.string();
+        mockAuthService.createAccessToken.mockReturnValue(accessToken);
+
+        const result = await memberService.login(member);
+
+        expect(result).toStrictEqual({
+          accessToken,
+          member,
+        });
+      });
+    });
+  });
+
+  describe('updateFromPatch', () => {
+    let id: number;
+    let member: PatchUpdateMemberRequestBodyDto;
+
+    beforeEach(() => {
+      id = faker.datatype.number();
+      member = new PatchUpdateMemberRequestBodyDto();
+    });
+
+    it('업데이트 성공', async () => {
+      mockPrismaService.member.update.mockResolvedValue(member as any);
+
+      const result = await memberService.updateFromPatch(id, member);
+
+      expect(result).toStrictEqual(member);
+    });
+  });
+
   describe('mappingMajor', () => {
     let id: number;
     let majorId: number;

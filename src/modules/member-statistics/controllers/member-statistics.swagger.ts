@@ -1,7 +1,7 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { MemberReportEntity } from '@src/modules/member-report/entities/member-report.entity';
+import { MemberStatisticsEntity } from '@src/modules/member-statistics/entities/member-statistics.entity';
 
 export const ApiFindAll = (summary: string) => {
   return applyDecorators(
@@ -9,8 +9,8 @@ export const ApiFindAll = (summary: string) => {
     ApiSuccessResponse(
       HttpStatus.OK,
       {
-        memberReports: {
-          type: MemberReportEntity,
+        memberStatisticsList: {
+          type: MemberStatisticsEntity,
           isArray: true,
         },
       },
@@ -27,8 +27,8 @@ export const ApiFindOne = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {
-      memberReport: {
-        type: MemberReportEntity,
+      memberStatistics: {
+        type: MemberStatisticsEntity,
       },
     }),
   );
