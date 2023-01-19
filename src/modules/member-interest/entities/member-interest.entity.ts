@@ -1,15 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { MainSkill } from '@prisma/client';
+import { MemberInterest } from '@prisma/client';
 import { IdResponseType } from '@src/types/id-response-type';
 
-export class MainSkillEntity extends IdResponseType implements MainSkill {
+export class MemberInterestEntity
+  extends IdResponseType
+  implements MemberInterest
+{
   @ApiProperty({
-    description: '스킬의 분야 고유 ID',
-  })
-  majorId: number;
-
-  @ApiProperty({
-    description: '스킬 명',
+    description: '관심사 명',
   })
   name: string;
 

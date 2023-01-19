@@ -12,14 +12,15 @@ export class PageDto {
   @IsOptional()
   @IsInt()
   @Transform(pageTransform)
-  page?: number = 0;
+  page = 0;
 
   @ApiProperty({
     description: '페이지당 아이템 수',
     required: false,
+    type: 'number',
   })
   @IsOptional()
   @IsInt()
   @Type(() => Number)
-  pageSize?: number;
+  pageSize = 20;
 }

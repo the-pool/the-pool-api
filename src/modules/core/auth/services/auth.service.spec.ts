@@ -1,106 +1,127 @@
-import { HttpService } from '@nestjs/axios';
-import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
-import jwt from 'jsonwebtoken';
 import { faker } from '@faker-js/faker';
-import { HttpConfigModule } from '../../http/http-config.module';
-import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
-import { UnauthorizedException } from '@nestjs/common';
-import { of } from 'rxjs';
-import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
-import exp from 'constants';
+import { HttpService } from '@nestjs/axios';
+import { JwtService } from '@nestjs/jwt';
+import { Test, TestingModule } from '@nestjs/testing';
+import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { mockAuthHelper } from '../../../../../test/mock/mock-helpers';
+import { mockJwtService } from '../../../../../test/mock/mock-services';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let jwtService: JwtService;
-  let httpService;
 
   beforeEach(async () => {
-    const config = {
-      secretOrKeyProvider: (requestType: JwtSecretRequestType) =>
-        requestType === JwtSecretRequestType.SIGN
-          ? 'sign_secret'
-          : 'verify_secret',
-      secret: 'default_secret',
-      publicKey: 'public_key',
-      privateKey: 'private_key',
-    };
-
     const module: TestingModule = await Test.createTestingModule({
-      imports: [JwtModule.register(config), HttpConfigModule],
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
+        {
+          provide: HttpService,
+          useValue: {},
+        },
+        {
+          provide: AuthHelper,
+          useValue: mockAuthHelper,
+        },
+      ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    jwtService = module.get<JwtService>(JwtService);
-    httpService = module.get<HttpService>(HttpService);
   });
 
   it('should be defined', () => {
-    expect(httpService).toBeDefined();
+    expect(authService).toBeDefined();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('createAccessToken', () => {
-    let signSpy: jest.SpyInstance;
-    let testPayload: string = faker.internet.email();
+    let randomValue;
 
-    beforeEach(async () => {
-      signSpy = jest
-        .spyOn(jwt, 'sign')
-        .mockImplementation((token, secret, options, callback) => {
-          const result = 'signed_' + token + '_by_' + secret;
-          return callback ? callback(null, result) : result;
-        });
+    beforeEach(() => {
+      randomValue = faker.datatype.string();
+      mockJwtService.sign.mockReturnValue(randomValue);
     });
 
-    afterEach(() => {
-      signSpy.mockRestore();
-    });
+    it('토큰 생성 성공', () => {
+      const id = faker.datatype.number();
 
-    it('signing should use config.secretOrKeyProvider', async () => {
-      expect(jwtService.sign(testPayload)).toBe(
-        `signed_${testPayload}_by_sign_secret`,
-      );
+      const result = authService.createAccessToken(id);
+
+      expect(mockJwtService.sign).toBeCalledTimes(1);
+      expect(result).toBe(randomValue);
     });
   });
 
-  describe('validateOAuth', () => {
-    let accessToken = 'validatedToken';
-    let oAuthAgency = 1;
+  describe('validateExternalAccessTokenOrFail', () => {
+    let accessToken;
+    let randomValue;
 
-    it('success', async () => {
-      const result: AxiosResponse = {
-        data: {
-          expiresInMillis: 3295497,
-          id: 123456789,
-          expires_in: 3295,
-          app_id: 811991,
-          appId: 811991,
-        },
-        status: 200,
-        statusText: 'OK',
-        headers: {},
-        config: {},
-      };
-      jest.spyOn(httpService, 'get').mockImplementationOnce(() => of(result));
-
-      const returnValue = await authService.validateOAuth(
-        accessToken,
-        oAuthAgency,
-      );
-
-      expect(typeof returnValue === 'string').toBeTruthy();
-      expect(returnValue === OAUTH_AGENCY_COLUMN[oAuthAgency] + result.data.id);
+    beforeEach(() => {
+      accessToken = faker.datatype.string();
+      randomValue = faker.datatype.string();
     });
 
-    it('false - 유효하지 않은 토큰을 넘겨 받았을 때', async () => {
-      accessToken = 'inValidToken';
+    it('카카오', async () => {
+      mockAuthHelper.validateKakaoAccessTokenOrFail.mockReturnValue(
+        randomValue,
+      );
+      const oAuthProvider = MemberLoginType.Kakao;
+
+      const result = await authService.validateExternalAccessTokenOrFail(
+        accessToken,
+        oAuthProvider,
+      );
+
+      expect(result).toBe(randomValue);
+    });
+
+    it('구글', async () => {
+      mockAuthHelper.validateGoogleAccessTokenOrFail.mockReturnValue(
+        randomValue,
+      );
+      const oAuthProvider = MemberLoginType.Google;
+
+      const result = await authService.validateExternalAccessTokenOrFail(
+        accessToken,
+        oAuthProvider,
+      );
+
+      expect(result).toBe(randomValue);
+    });
+
+    it('애플', async () => {
+      mockAuthHelper.validateAppleAccessTokenOrFail.mockReturnValue(
+        randomValue,
+      );
+      const oAuthProvider = MemberLoginType.Apple;
+
+      const result = await authService.validateExternalAccessTokenOrFail(
+        accessToken,
+        oAuthProvider,
+      );
+
+      expect(result).toBe(randomValue);
+    });
+
+    it('혹시 나는 에러', async () => {
+      const oAuthProvider = 'undefined';
 
       await expect(async () => {
-        await authService.validateOAuth(accessToken, oAuthAgency);
+        await authService.validateExternalAccessTokenOrFail(
+          accessToken,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          oAuthProvider,
+        );
       }).rejects.toThrowError(
-        new UnauthorizedException('소셜 로그인에 실패하였습니다.'),
+        'validateExternalAccessTokenOrFail 중 유효하지 않은 로그인 타입',
       );
     });
   });

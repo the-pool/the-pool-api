@@ -36,3 +36,13 @@ export const LESSON_LEVEL = {
   [LessonLevelId.Middle]: 'middle',
   [LessonLevelId.Bottom]: 'bottom',
 } as const;
+
+// member statistics increase meta data
+export const MEMBER_STATISTICS_INCREASE_FIELD_NAME =
+  'memberStatisticsIncreaseFieldName';
+
+// 증가 또는 action meta data
+export const INCREASE_ACTION = 'increaseAction';
+
+// response field name meta data
+export const RESPONSE_FIELD_NAME = 'responseFieldName';
