@@ -52,8 +52,6 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
- * @todo active member guard
- *
  */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -146,9 +144,6 @@ export class MemberController {
     return this.memberService.updateFromPatch(params.id, body);
   }
 
-  /**
-   * @todo @SetModelNameToParam('member') enum 으로 처리
-   */
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
   @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
   @OwnMember()
@@ -156,7 +151,7 @@ export class MemberController {
   @SetResponse('member')
   @Post(':id/majors/:majorId')
   mappingMajor(
-    @SetModelNameToParam('member')
+    @SetModelNameToParam(ModelName.Member)
     @Param()
     params: CreateMemberMajorMappingRequestParamDto,
   ) {
