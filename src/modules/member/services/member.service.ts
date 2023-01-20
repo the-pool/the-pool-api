@@ -85,13 +85,13 @@ export class MemberService {
   /**
    * member 와 major 를 매핑
    */
-  mappingMajor(id: number, majorId: number) {
+  async mappingMajor(memberId: number, majorId: number) {
     return this.prismaService.member.update({
       data: {
         majorId,
       },
       where: {
-        id,
+        id: memberId,
       },
       include: {
         major: true,
