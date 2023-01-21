@@ -24,7 +24,6 @@ import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import {
   ApiFindOne,
@@ -83,11 +82,11 @@ export class MemberController {
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
-  @ApiLoginOrSignUp('회원가입 | 로그인 (계정이 없다면 회원가입 처리합니다.)')
-  @UseGuards(OptionalJwtAuthGuard)
+  @ApiLoginOrSignUp(
+    '회원가입 or 로그인 (body 로 넘어온 accessToken 에 해당하는 계정이 없다면 회원가입 처리합니다.)',
+  )
   @Post()
   async loginOrSignUp(
-    @UserLogin() member: MemberEntity | { id: null },
     @Body() body: LoginOrSignUpRequestBodyDto,
   ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
@@ -96,8 +95,13 @@ export class MemberController {
       body.loginType,
     );
 
+    // account 를 통해 member 가 있는지 조회한다.
+    const member = await this.memberService.findOne({
+      account,
+    });
+
     // 회원가입 하려는 경우
-    if (member.id === null) {
+    if (member === null) {
       // 먼저 회원가입이 가능한지 확인한다.
       await this.memberValidationService.canCreateOrFail({
         account,
@@ -118,6 +122,47 @@ export class MemberController {
 
     return this.memberService.login(member);
   }
+
+  // /**
+  //  * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
+  //  */
+  // @ApiLoginOrSignUp(
+  //   '회원가입 or 로그인 (body 로 넘어온 accessToken 에 해당하는 계정이 없다면 회원가입 처리합니다.)',
+  // )
+  // @UseGuards(OptionalJwtAuthGuard)
+  // @Post()
+  // async loginOrSignUp(
+  //   @UserLogin() member: MemberEntity | { id: null },
+  //   @Body() body: LoginOrSignUpRequestBodyDto,
+  // ): Promise<{ member: MemberEntity } & AccessToken> {
+  //   // access token 이 유효한지 검증한다.
+  //   const account = await this.authService.validateExternalAccessTokenOrFail(
+  //     body.accessToken,
+  //     body.loginType,
+  //   );
+  //
+  //   // 회원가입 하려는 경우
+  //   if (member.id === null) {
+  //     // 먼저 회원가입이 가능한지 확인한다.
+  //     await this.memberValidationService.canCreateOrFail({
+  //       account,
+  //       loginType: body.loginType,
+  //     });
+  //
+  //     return this.memberService.signUp(account, body.loginType);
+  //   }
+  //
+  //   // 로그인 하는 경우
+  //   // 먼저 로그인 가능한 유저인지 확인
+  //   this.memberValidationService.canLoginOrFail(
+  //     account,
+  //     body.loginType,
+  //     member.status,
+  //     member,
+  //   );
+  //
+  //   return this.memberService.login(member);
+  // }
 
   @ApiUpdateFromPatch(
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',

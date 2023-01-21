@@ -11,6 +11,8 @@ import {
 } from '@src/modules/core/auth/constants/auth.constant';
 import { KakaoErrorCode } from '@src/modules/core/auth/constants/auth.enum';
 import { KakaoAccessTokenResponse } from '@src/modules/core/auth/type/auth.type';
+import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { OAuth2Client, TokenInfo } from 'google-auth-library';
 import jwt, { Jwt, JwtPayload } from 'jsonwebtoken';
 import JwksRsa, { SigningKey } from 'jwks-rsa';
@@ -44,7 +46,11 @@ export class AuthHelper {
           ajaxConfig,
         )
         .pipe(
-          map((res) => String(res.data.id)),
+          map((res) => {
+            return (
+              MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao] + String(res.data.id)
+            );
+          }),
           catchError((e) => {
             const errorCode: KakaoErrorCode = e.response.data.code;
 
@@ -85,7 +91,7 @@ export class AuthHelper {
         accessToken,
       );
 
-      return response.aud;
+      return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google] + response.aud;
     } catch (err) {
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
@@ -136,6 +142,6 @@ export class AuthHelper {
       throw new UnauthorizedException('유효하지 않은 토큰');
     }
 
-    return payload.sub;
+    return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + payload.sub;
   }
 }
