@@ -1,3 +1,4 @@
+import { Type } from '@nestjs/common';
 import {
   Lesson,
   LessonBookmark,
@@ -6,15 +7,13 @@ import {
   LessonLevel,
   LessonLevelEvaluation,
   LessonSolution,
-  MainSkill,
   Major,
+  MajorSkill,
   Member,
   MemberFollow,
-  MemberReport,
+  MemberStatistics,
   MemberSkill,
-  Post,
   Prisma,
-  User,
 } from '@prisma/client';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
@@ -40,10 +39,10 @@ export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 //   | Prisma.MemberScalarWhereInput;
 
 export type PrismaModel =
-  | MainSkill
+  | MajorSkill
   | Major
   | Member
-  | MemberReport
+  | MemberStatistics
   | MemberFollow
   | Lesson
   | LessonLevelEvaluation
@@ -52,15 +51,41 @@ export type PrismaModel =
   | LessonLevel
   | LessonHashtag
   | LessonComment
-  | MemberSkill
-  | Post
-  | User;
+  | MemberSkill;
 
 export type Target<M extends PrismaModel = PrismaModel> = {
   model?: PrismaModelName;
   field?: keyof M;
 };
 
+export type IncreaseAction = 'increment' | 'decrement';
+
 export type MajorText = '개발' | '디자인';
 
 export type JwtGuard = typeof JwtAuthGuard | typeof OptionalJwtAuthGuard;
+
+export type OptionalProperty = {
+  isArray?: boolean;
+  nullable?: boolean;
+  deprecated?: boolean;
+  title?: string;
+  description?: string;
+  maxLength?: number;
+  minLength?: number;
+  maxItems?: number;
+  minItems?: number;
+  uniqueItems?: boolean;
+  maxProperties?: number;
+  minProperties?: number;
+  enum?: any[];
+  default?: any;
+};
+
+export type Reference = OptionalProperty & {
+  type: Type<unknown>;
+};
+
+export type Primitive = OptionalProperty & {
+  type: string | Record<string, any>;
+  example?: any;
+};

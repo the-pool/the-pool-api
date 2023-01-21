@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Major } from '@prisma/client';
 import { MajorText } from '@src/constants/enum';
 import { IdResponseType } from '@src/types/id-response-type';
-import { MainSkillEntity } from './main-skill.entity';
+import { MajorSkillEntity } from './major-skill.entity';
 
 export class MajorEntity extends IdResponseType implements Major {
   @ApiProperty({
@@ -19,7 +19,7 @@ export class MajorEntity extends IdResponseType implements Major {
 
   @ApiPropertyOptional({
     description: '분야 의 메인스킬들',
-    type: [MainSkillEntity],
+    type: [MajorSkillEntity],
   })
-  mainSkills?: MainSkillEntity[];
+  majorSkills?: MajorSkillEntity[];
 }

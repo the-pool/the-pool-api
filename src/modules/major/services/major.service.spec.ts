@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
-import { MainSkillEntity } from '@src/modules/major/entities/main-skill.entity';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { MajorService } from './major.service';
@@ -39,7 +39,7 @@ describe('MajorService', () => {
     beforeEach(() => {
       mockMajors = [new MajorEntity()];
       query = new MajorRelationFieldRequestQueryDto();
-      query.mainSkills = faker.datatype.boolean();
+      query.majorSkills = faker.datatype.boolean();
       mockPrismaService.major.findMany.mockResolvedValueOnce(mockMajors);
     });
 
@@ -48,7 +48,7 @@ describe('MajorService', () => {
 
       expect(mockPrismaService.major.findMany).toBeCalledTimes(1);
       expect(mockPrismaService.major.findMany).toBeCalledWith({
-        include: { mainSkills: query.mainSkills },
+        include: { majorSkills: query.majorSkills },
       });
       expect(result).toStrictEqual(mockMajors);
     });
@@ -63,7 +63,7 @@ describe('MajorService', () => {
       mockMajor = new MajorEntity();
       majorId = faker.datatype.number();
       query = new MajorRelationFieldRequestQueryDto();
-      query.mainSkills = faker.datatype.boolean();
+      query.majorSkills = faker.datatype.boolean();
       mockPrismaService.major.findUnique.mockResolvedValueOnce(mockMajor);
     });
 
@@ -76,66 +76,66 @@ describe('MajorService', () => {
           id: majorId,
         },
         include: {
-          mainSkills: query.mainSkills,
+          majorSkills: query.majorSkills,
         },
       });
       expect(result).toStrictEqual(mockMajor);
     });
   });
 
-  describe('findMainSkills - 메인 스킬 리스트 조회', () => {
-    let mockMainSkills: MainSkillEntity[];
+  describe('findMajorSkills - 메인 스킬 리스트 조회', () => {
+    let mockMajorSkills: MajorSkillEntity[];
     let majorId: number;
 
     beforeEach(() => {
-      mockMainSkills = [new MainSkillEntity()];
+      mockMajorSkills = [new MajorSkillEntity()];
       majorId = faker.datatype.number();
-      mockPrismaService.mainSkill.findMany.mockResolvedValueOnce(
-        mockMainSkills,
+      mockPrismaService.majorSkill.findMany.mockResolvedValueOnce(
+        mockMajorSkills,
       );
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
-      const result: MainSkillEntity[] = await service.findMainSkills(majorId);
+      const result: MajorSkillEntity[] = await service.findMajorSkills(majorId);
 
-      expect(mockPrismaService.mainSkill.findMany).toBeCalledTimes(1);
-      expect(mockPrismaService.mainSkill.findMany).toBeCalledWith({
+      expect(mockPrismaService.majorSkill.findMany).toBeCalledTimes(1);
+      expect(mockPrismaService.majorSkill.findMany).toBeCalledWith({
         where: {
           majorId,
         },
       });
-      expect(result).toStrictEqual(mockMainSkills);
+      expect(result).toStrictEqual(mockMajorSkills);
     });
   });
 
-  describe('findMainSkill - 메인 스킬 단일 조회', () => {
-    let mockMainSkill: MainSkillEntity;
+  describe('findMajorSkill - 메인 스킬 단일 조회', () => {
+    let mockMajorSkill: MajorSkillEntity;
     let majorId: number;
-    let mainSkillId: number;
+    let majorSkillId: number;
 
     beforeEach(() => {
-      mockMainSkill = new MainSkillEntity();
+      mockMajorSkill = new MajorSkillEntity();
       majorId = faker.datatype.number();
-      mainSkillId = faker.datatype.number();
-      mockPrismaService.mainSkill.findUnique.mockResolvedValueOnce(
-        mockMainSkill,
+      majorSkillId = faker.datatype.number();
+      mockPrismaService.majorSkill.findUnique.mockResolvedValueOnce(
+        mockMajorSkill,
       );
     });
 
     it('넘어온 query 를 prismaService 에 전달해주는 역할만 함', async () => {
-      const result: MainSkillEntity = await service.findMainSkill(
+      const result: MajorSkillEntity = await service.findMajorSkill(
         majorId,
-        mainSkillId,
+        majorSkillId,
       );
 
-      expect(mockPrismaService.mainSkill.findUnique).toBeCalledTimes(1);
-      expect(mockPrismaService.mainSkill.findUnique).toBeCalledWith({
+      expect(mockPrismaService.majorSkill.findUnique).toBeCalledTimes(1);
+      expect(mockPrismaService.majorSkill.findUnique).toBeCalledWith({
         where: {
           majorId,
-          id: mainSkillId,
+          id: majorSkillId,
         },
       });
-      expect(result).toStrictEqual(mockMainSkill);
+      expect(result).toStrictEqual(mockMajorSkill);
     });
   });
 });

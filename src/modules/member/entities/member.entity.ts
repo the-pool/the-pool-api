@@ -3,13 +3,12 @@ import {
   ApiPropertyOptional,
   IntersectionType,
 } from '@nestjs/swagger';
+import { Member } from '@prisma/client';
 import { getEntriesByEnum } from '@src/common/common';
 import { MajorId } from '@src/constants/enum';
-import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { Member } from '@prisma/client';
-import { MemberStatus } from '../constants/member.enum';
+import { MemberLoginType, MemberStatus } from '../constants/member.enum';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)
@@ -35,6 +34,19 @@ export class MemberEntity
   nickname: string | null;
 
   @ApiProperty({
+    description: 'member 노출명',
+    default: 'uuid',
+  })
+  memberName: string;
+
+  @ApiProperty({
+    description: 'member 가 지정한 직업',
+    example: '백엔드 개발자',
+    nullable: true,
+  })
+  job: string | null;
+
+  @ApiProperty({
     description: 'member의 상태',
     example: 0,
     enum: getEntriesByEnum(MemberStatus),
@@ -44,9 +56,9 @@ export class MemberEntity
   @ApiProperty({
     description: 'member의 소셜 종류',
     example: 1,
-    enum: getEntriesByEnum(OAuthAgency),
+    enum: getEntriesByEnum(MemberLoginType),
   })
-  loginType: OAuthAgency;
+  loginType: MemberLoginType;
 
   @ApiProperty({
     description: 'member의 프로필 이미지',

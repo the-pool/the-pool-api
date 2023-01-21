@@ -9,10 +9,11 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
 import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
 import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
-import { UpdateEvaluationDto } from '../dtos/lesson/update-evaluation.dto';
+import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationService } from '../services/lesson-evaluation.service';
 import {
@@ -27,7 +28,7 @@ import {
 export class LessonEvaluationController {
   constructor(
     private readonly lessonEvaluationService: LessonEvaluationService,
-    private readonly prismaHelper: PrismaService,
+    private readonly prismaService: PrismaService,
   ) {}
 
   @ApiCreateEvaluation('과제 평가 생성')
@@ -39,11 +40,11 @@ export class LessonEvaluationController {
     @UserLogin('id') memberId: number,
   ): Promise<{ evaluation: LessonEvaluationEntity }> {
     await Promise.all([
-      this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
+      this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
         memberId,
         lessonId: param.id,
       }),
-      this.prismaHelper.validateDuplicateAndFail(
+      this.prismaService.validateDuplicateAndFail(
         ModelName.LessonLevelEvaluation,
         {
           memberId,
@@ -71,8 +72,8 @@ export class LessonEvaluationController {
     param: IdRequestParamDto,
     @Body() { levelId }: UpdateEvaluationDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ evaluation: LessonEvaluationEntity | {} }> {
-    await this.prismaHelper.validateOwnerOrFail(ModelName.LessonSolution, {
+  ): Promise<{ evaluation: LessonEvaluationEntity | Record<string, never> }> {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
       memberId,
       lessonId: param.id,
     });
@@ -103,7 +104,10 @@ export class LessonEvaluationController {
       this.lessonEvaluationService.readMemberEvaluation(param.id, member.id),
     ]);
 
-    return { countedEvaluation, memberEvaluate };
+    return plainToInstance(ReadEvaluationDto, {
+      countedEvaluation,
+      memberEvaluate,
+    });
   }
 
   @ApiReadManyEvaluation('과제 평가 조회')
@@ -114,7 +118,7 @@ export class LessonEvaluationController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @Query() query: LessonEvaluationQueryDto,
-  ): Promise<any> {
+  ): Promise<{ evaluations: LessonEvaluationEntity[] }> {
     const evaluations = await this.lessonEvaluationService.readManyEvaluation(
       param.id,
       query,

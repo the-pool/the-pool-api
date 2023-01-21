@@ -11,61 +11,8 @@ import {
   ReferenceObject,
   SchemaObject,
 } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
-
-const getEntriesByEnum = <T>(Enum: {
-  [key in keyof T]: T[key];
-}): T => {
-  const entries = Object.entries(Enum);
-  entries.splice(0, entries.length / 2);
-
-  return entries.reduce((acc, cur) => {
-    acc[cur[0]] = cur[1];
-    return acc;
-  }, {}) as T;
-};
-
-const getNumberEnumValues = (numberEnum: {
-  [key: string]: string | number;
-}): (number | string)[] => {
-  return Object.values(numberEnum).filter((v) => Number.isInteger(v));
-};
-
-const getStrMapByEnum = (Enum) => {
-  const map = getEntriesByEnum<typeof Enum>(Enum);
-  let mapStr = '{ ';
-
-  for (const key in map) {
-    mapStr += key + ': ' + map[key] + ', ';
-  }
-
-  return mapStr + ' }';
-};
-
-type OptionalProperty = {
-  isArray?: boolean;
-  nullable?: boolean;
-  deprecated?: boolean;
-  title?: string;
-  description?: string;
-  maxLength?: number;
-  minLength?: number;
-  maxItems?: number;
-  minItems?: number;
-  uniqueItems?: boolean;
-  maxProperties?: number;
-  minProperties?: number;
-  enum?: any[];
-  default?: any;
-};
-
-type Reference = OptionalProperty & {
-  type: Type<unknown>;
-};
-
-type Primitive = OptionalProperty & {
-  type: string | Record<string, any>;
-  example?: any;
-};
+import { getNumberEnumValues, getStrMapByEnum } from '@src/common/common';
+import { Primitive, Reference } from '@src/types/type';
 
 /**
  * 성공에 대한 응답을 swagger상에 보여주고 싶은데 필드명을 커스텀 하고 싶을 때

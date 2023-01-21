@@ -1,5 +1,17 @@
+import { faker } from '@faker-js/faker';
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockMemberService } from '../../../../test/mock/mock-services';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
+import {
+  mockAuthService,
+  mockConfigService,
+  mockMemberService,
+  mockMemberValidationService,
+} from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
@@ -14,8 +26,20 @@ describe('MemberController', () => {
       controllers: [MemberController],
       providers: [
         {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
+        {
           provide: MemberService,
           useValue: mockMemberService,
+        },
+        {
+          provide: MemberValidationService,
+          useValue: mockMemberValidationService,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
         },
       ],
     }).compile();
@@ -24,8 +48,75 @@ describe('MemberController', () => {
     memberService = mockMemberService;
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should be defined', () => {
     expect(memberController).toBeDefined();
+  });
+
+  describe('findOne', () => {
+    let member: MemberEntity;
+    let params: IdRequestParamDto;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      params = new IdRequestParamDto();
+    });
+
+    it('조회 성공', async () => {
+      mockMemberService.findOne.mockReturnValue(member);
+
+      const result = memberController.findOne(params);
+
+      expect(mockMemberService.findOne).toBeCalledWith({
+        id: params.id,
+      });
+      expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('loginOrSignUp', () => {
+    let member: MemberEntity | { id: null };
+    let body: LoginOrSignUpRequestBodyDto;
+    let accessToken: string;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      body = new LoginOrSignUpRequestBodyDto();
+      accessToken = faker.datatype.string();
+      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+    });
+
+    describe('로그인 하는 경우', () => {
+      beforeEach(() => {
+        member.id = faker.datatype.number();
+      });
+
+      it('로그인 성공', async () => {
+        const result = await memberController.loginOrSignUp(member, body);
+
+        expect(mockMemberService.login).toBeCalledTimes(1);
+      });
+
+      afterEach(() => {
+        expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
+      });
+    });
+
+    describe('회원가입 하는 경우', () => {
+      it('회원가입 성공', async () => {
+        member.id = null;
+        const result = await memberController.loginOrSignUp(member, body);
+
+        expect(mockMemberService.signUp).toBeCalledTimes(1);
+      });
+
+      afterEach(() => {
+        expect(mockMemberValidationService.canCreateOrFail).toBeCalledTimes(1);
+      });
+    });
   });
 
   describe('loginByOAuth', () => {

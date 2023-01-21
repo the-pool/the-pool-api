@@ -4,11 +4,10 @@
     "json",
     "ts"
   ],
-  "rootDir": ".",
   "moduleNameMapper": {
-    "^@src/(.*)$": "<rootDir>/../src/$1"
+    "^@src/(.*)$": "<rootDir>/../../src/$1"
   },
-  "rootDir": ".",
+  "rootDir": "./apis",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {

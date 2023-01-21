@@ -51,7 +51,3 @@ export const ApiReadSimilarLesson = (summary: string) => {
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
-
-export const ApiReadManyLesson = (summary) => {
-  return applyDecorators(ApiOperation({ summary }));
-};

@@ -1,4 +1,4 @@
-import { LessonOrderBy, MajorId } from './enum';
+import { LessonLevelId, LessonOrderBy, MajorId } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -35,3 +35,19 @@ export const LESSON_ORDER_COLUMN = {
   [LessonOrderBy.CreateAt]: 'lesson.createdAt',
   [LessonOrderBy.Comments]: 'enrolmentStudents',
 } as const;
+
+export const LESSON_LEVEL = {
+  [LessonLevelId.Top]: 'top',
+  [LessonLevelId.Middle]: 'middle',
+  [LessonLevelId.Bottom]: 'bottom',
+} as const;
+
+// member statistics increase meta data
+export const MEMBER_STATISTICS_INCREASE_FIELD_NAME =
+  'memberStatisticsIncreaseFieldName';
+
+// 증가 또는 action meta data
+export const INCREASE_ACTION = 'increaseAction';
+
+// response field name meta data
+export const RESPONSE_FIELD_NAME = 'responseFieldName';

@@ -48,3 +48,20 @@ export const customValidate = async <T>(property: {
 }): Promise<ValidationError[]> => {
   return await validate(property, { skipUndefinedProperties: true });
 };
+
+export const getNumberEnumValues = (numberEnum: {
+  [key: string]: string | number;
+}): (number | string)[] => {
+  return Object.values(numberEnum).filter((v) => Number.isInteger(v));
+};
+
+export const getStrMapByEnum = (Enum) => {
+  const map = getEntriesByEnum<typeof Enum>(Enum);
+  let mapStr = '{ ';
+
+  for (const key in map) {
+    mapStr += key + ': ' + map[key] + ', ';
+  }
+
+  return mapStr + ' }';
+};

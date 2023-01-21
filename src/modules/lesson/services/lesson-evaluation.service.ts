@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonLevelEvaluationEntity } from '../entities/lesson-level-evaluation.entity';
 import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
 import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
+import { LESSON_LEVEL } from '@src/constants/constant';
+import { CountEvaluationDto } from '../dtos/evaluation/count-evaluation.dto';
 
 @Injectable()
 export class LessonEvaluationService {
@@ -29,11 +30,11 @@ export class LessonEvaluationService {
     lessonId: number,
     levelId: number | null,
     memberId: number,
-  ): Promise<LessonEvaluationEntity | {}> {
+  ): Promise<LessonEvaluationEntity | Record<string, never>> {
     await this.prismaService.lessonLevelEvaluation.deleteMany({
       where: {
-        lessonId,
         memberId,
+        lessonId,
       },
     });
 
@@ -45,9 +46,7 @@ export class LessonEvaluationService {
   /**
    * lesson의 체감 난이도 조회
    */
-  async readCountedEvaluation(
-    lessonId: number,
-  ): Promise<LessonLevelEvaluationEntity[]> {
+  async readCountedEvaluation(lessonId: number): Promise<CountEvaluationDto> {
     const lessonEvaluations =
       await this.prismaService.lessonLevelEvaluation.groupBy({
         by: ['levelId'],
@@ -59,18 +58,11 @@ export class LessonEvaluationService {
         },
       });
 
-    const countedEvaluation: LessonLevelEvaluationEntity[] = [];
+    return lessonEvaluations.reduce((acc, cur) => {
+      acc[LESSON_LEVEL[cur.levelId]] = cur._count.lessonId;
 
-    lessonEvaluations.forEach((lessonEvaluation) => {
-      const obj = <LessonLevelEvaluationEntity>{};
-
-      obj['levelId'] = lessonEvaluation.levelId;
-      obj['count'] = lessonEvaluation._count.lessonId;
-
-      countedEvaluation.push(obj);
-    });
-
-    return countedEvaluation;
+      return acc;
+    }, <CountEvaluationDto>{});
   }
 
   /**
@@ -92,7 +84,7 @@ export class LessonEvaluationService {
   readManyEvaluation(
     lessonId: number,
     { memberId, levelId }: LessonEvaluationQueryDto,
-  ) {
+  ): Promise<LessonEvaluationEntity[]> {
     return this.prismaService.lessonLevelEvaluation.findMany({
       where: { lessonId, memberId, levelId },
     });

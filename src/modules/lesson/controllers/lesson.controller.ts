@@ -29,7 +29,6 @@ import { LessonService } from '../services/lesson.service';
 import {
   ApiCreateLesson,
   ApiDeleteLesson,
-  ApiReadManyLesson,
   ApiReadOneLesson,
   ApiReadSimilarLesson,
   ApiUpdateLesson,
@@ -137,7 +136,7 @@ export class LessonController {
     });
   }
 
-  @ApiReadManyLesson('과제 목록 조회')
+  @ApiReadOneLesson('과제 목록 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyLesson(@Query() query: any) {
