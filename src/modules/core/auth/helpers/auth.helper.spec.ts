@@ -8,6 +8,8 @@ import {
 } from '@src/modules/core/auth/constants/auth.constant';
 import { KakaoErrorCode } from '@src/modules/core/auth/constants/auth.enum';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import jwt from 'jsonwebtoken';
 import { of, throwError } from 'rxjs';
 import {
@@ -81,7 +83,9 @@ describe('AuthHelper', () => {
         accessToken,
       );
 
-      expect(result).toBe(String(id));
+      expect(result).toBe(
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao] + String(id),
+      );
     });
 
     it('유효하지 않은 토큰', async () => {
@@ -160,7 +164,9 @@ describe('AuthHelper', () => {
         accessToken,
       );
 
-      expect(result).toStrictEqual(aud);
+      expect(result).toStrictEqual(
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google] + aud,
+      );
     });
 
     it('유효하지 않은 토큰', async () => {
@@ -207,7 +213,7 @@ describe('AuthHelper', () => {
         accessToken,
       );
 
-      expect(result).toBe(sub);
+      expect(result).toBe(MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + sub);
     });
 
     it('애플에서 발급하지 않았거나 jwt 토큰이 아닌 경우', async () => {
