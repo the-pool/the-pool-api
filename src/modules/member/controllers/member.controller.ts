@@ -21,7 +21,7 @@ import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
-import { OwnMember } from '@src/decorators/own-member.decorator';
+import { OwnMemberSetMetadataGuard } from '@src/decorators/own-member-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -151,7 +151,7 @@ export class MemberController {
     MemberStatus.Pending,
     MemberStatus.Active,
   ])
-  @OwnMember()
+  @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
   @SetResponse('member')
   @Post(':id/majors/:majorId')
