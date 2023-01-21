@@ -6,7 +6,7 @@ import { MemberMajors } from '@src/modules/member/types/member.type';
 /**
  * 이 데코레이터를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
  */
-export const MemberMajorDecorator = (majors: MemberMajors) => {
+export const MemberMajor = (...majors: MemberMajors) => {
   return applyDecorators(
     SetMetadata(MEMBER_JOBS, majors),
     UseGuards(MemberMajorGuard),
