@@ -15,7 +15,7 @@ import { IncreaseAction } from '@src/types/type';
  *
  * 데코레이터 추가해주세요
  */
-export const IncreaseMemberStatistics = (
+export const IncreaseMemberStatisticsSetMetadataGuard = (
   memberReportIncrementFieldName: MemberStatisticsIncrementFieldName,
   action: IncreaseAction,
 ) => {
