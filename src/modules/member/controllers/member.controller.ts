@@ -20,7 +20,7 @@ import {
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
-import { AllowMemberStatuses } from '@src/decorators/member-statuses.decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { OwnMember } from '@src/decorators/own-member.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { SetResponse } from '@src/decorators/set-response.decorator';
@@ -147,7 +147,10 @@ export class MemberController {
 
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
   @MemberMajorSetMetadataGuard()
-  @AllowMemberStatuses([MemberStatus.Pending, MemberStatus.Active])
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
   @OwnMember()
   @UseGuards(JwtAuthGuard)
   @SetResponse('member')
