@@ -23,7 +23,7 @@ import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-me
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { OwnMemberSetMetadataGuard } from '@src/decorators/own-member-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
@@ -72,7 +72,7 @@ export class MemberController {
   }
 
   @ApiFindOne('member 단일 조회')
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
     @SetModelNameToParam(ModelName.Member)
@@ -127,7 +127,7 @@ export class MemberController {
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
   @UseGuards(JwtAuthGuard)
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,
@@ -153,7 +153,7 @@ export class MemberController {
   ])
   @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Post(':id/majors/:majorId')
   mappingMajor(
     @SetModelNameToParam(ModelName.Member)
