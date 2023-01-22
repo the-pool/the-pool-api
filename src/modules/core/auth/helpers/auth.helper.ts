@@ -139,7 +139,7 @@ export class AuthHelper {
       // !appleClientIds.includes(payload.aud) ||
       payload.iss !== 'https://appleid.apple.com'
     ) {
-      throw new UnauthorizedException('유효하지 않은 토큰');
+      throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
 
     return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + payload.sub;

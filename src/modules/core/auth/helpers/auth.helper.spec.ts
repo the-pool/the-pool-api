@@ -247,7 +247,7 @@ describe('AuthHelper', () => {
 
       await expect(async () => {
         await authHelper.validateAppleAccessTokenOrFail(accessToken);
-      }).rejects.toThrowError('유효하지 않은 토큰');
+      }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
   });
 });
