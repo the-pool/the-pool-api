@@ -50,6 +50,7 @@ describe('MemberController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // jest.clearAllTimers();
   });
 
   it('should be defined', () => {
@@ -78,7 +79,7 @@ describe('MemberController', () => {
   });
 
   describe('loginOrSignUp', () => {
-    let member: MemberEntity | { id: null };
+    let member: MemberEntity | null;
     let body: LoginOrSignUpRequestBodyDto;
     let accessToken: string;
 
@@ -91,29 +92,35 @@ describe('MemberController', () => {
 
     describe('로그인 하는 경우', () => {
       beforeEach(() => {
-        member.id = faker.datatype.number();
+        mockMemberService.findOne.mockReturnValue(member);
       });
 
       it('로그인 성공', async () => {
-        const result = await memberController.loginOrSignUp(member, body);
+        const result = await memberController.loginOrSignUp(body);
 
         expect(mockMemberService.login).toBeCalledTimes(1);
       });
 
       afterEach(() => {
+        expect(mockMemberService.findOne).toBeCalledTimes(1);
         expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
       });
     });
 
     describe('회원가입 하는 경우', () => {
+      beforeEach(() => {
+        member = null;
+        mockMemberService.findOne.mockReturnValue(member);
+      });
+
       it('회원가입 성공', async () => {
-        member.id = null;
-        const result = await memberController.loginOrSignUp(member, body);
+        const result = await memberController.loginOrSignUp(body);
 
         expect(mockMemberService.signUp).toBeCalledTimes(1);
       });
 
       afterEach(() => {
+        expect(mockMemberService.findOne).toBeCalledTimes(1);
         expect(mockMemberValidationService.canCreateOrFail).toBeCalledTimes(1);
       });
     });
