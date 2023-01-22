@@ -47,7 +47,7 @@ describe('MemberValidationService', () => {
           memberStatus,
           member,
         );
-      }).rejects.toThrowError('존재하지 않는 리소스입니다.');
+      }).rejects.toThrowError('존재하지 않는 member 입니다.');
     });
 
     it('pending 상태의 유저인 경우', () => {

@@ -34,7 +34,7 @@ export class MemberValidationService {
       loginType !== member.loginType ||
       memberStatus !== member.status
     ) {
-      throw new NotFoundException('존재하지 않는 리소스입니다.');
+      throw new NotFoundException('존재하지 않는 member 입니다.');
     }
 
     // pending 상태의 유저인 경우
