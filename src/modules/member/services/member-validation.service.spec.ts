@@ -66,7 +66,7 @@ describe('MemberValidationService', () => {
           memberStatus,
           member,
         );
-      }).rejects.toThrowError('추가정보 입력이 필요한 유저입니다.');
+      }).rejects.toThrowError('pending 상태의 유저 입니다.');
     });
 
     it('비활성 유저인 경우', () => {

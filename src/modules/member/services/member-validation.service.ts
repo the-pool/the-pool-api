@@ -39,7 +39,7 @@ export class MemberValidationService {
 
     // pending 상태의 유저인 경우
     if (memberStatus === MemberStatus.Pending) {
-      throw new ForbiddenException('추가정보 입력이 필요한 유저입니다.');
+      throw new ForbiddenException('pending 상태의 유저 입니다.');
     }
 
     // 비활성 유저인 경우
