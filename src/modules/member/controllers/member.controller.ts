@@ -102,12 +102,6 @@ export class MemberController {
 
     // 회원가입 하려는 경우
     if (member === null) {
-      // 먼저 회원가입이 가능한지 확인한다.
-      await this.memberValidationService.canCreateOrFail({
-        account,
-        loginType: body.loginType,
-      });
-
       return this.memberService.signUp(account, body.loginType);
     }
 

@@ -121,7 +121,6 @@ describe('MemberController', () => {
 
       afterEach(() => {
         expect(mockMemberService.findOne).toBeCalledTimes(1);
-        expect(mockMemberValidationService.canCreateOrFail).toBeCalledTimes(1);
       });
     });
   });

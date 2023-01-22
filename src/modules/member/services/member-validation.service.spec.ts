@@ -108,52 +108,6 @@ describe('MemberValidationService', () => {
     });
   });
 
-  describe('canCreateOrFail', () => {
-    let member: MemberEntity;
-
-    beforeEach(() => {
-      member = new MemberEntity();
-    });
-
-    it('member 를 생성할 수 있을 경우', async () => {
-      mockPrismaService.member.findUnique.mockResolvedValue(null);
-
-      const result = await memberValidationService.canCreateOrFail({
-        id: 1,
-      });
-
-      expect(result).toBeUndefined();
-    });
-
-    it('member 가 pending 상태인 경우', async () => {
-      const oldMember = {
-        status: MemberStatus.Pending,
-      };
-
-      mockPrismaService.member.findUnique.mockResolvedValue(oldMember as any);
-
-      await expect(async () => {
-        await memberValidationService.canCreateOrFail({
-          id: 1,
-        });
-      }).rejects.toThrowError('pending 상태인 member 입니다.');
-    });
-
-    it('member 가 active 상태인 경우', async () => {
-      const oldMember = {
-        status: MemberStatus.Active,
-      };
-
-      mockPrismaService.member.findUnique.mockResolvedValue(oldMember as any);
-
-      await expect(async () => {
-        await memberValidationService.canCreateOrFail({
-          id: 1,
-        });
-      }).rejects.toThrowError('이미 활성중인 member 입니다.');
-    });
-  });
-
   describe('canUpdateFromPatchOrFail', () => {
     let updateId: number;
     let updateInfo: PatchUpdateMemberRequestBodyDto;

@@ -51,7 +51,6 @@ export const mockMemberSkillService: MockClassType<MemberSkillService> = {
 export const mockMemberValidationService: MockClassType<MemberValidationService> =
   {
     canLoginOrFail: jest.fn(),
-    canCreateOrFail: jest.fn(),
     canUpdateFromPatchOrFail: jest.fn(),
   };
 

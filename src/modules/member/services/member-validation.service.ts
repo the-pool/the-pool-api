@@ -7,7 +7,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { isNil } from '@nestjs/common/utils/shared.utils';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import {
   MemberLoginType,
@@ -46,34 +45,6 @@ export class MemberValidationService {
     // 비활성 유저인 경우
     if (memberStatus === MemberStatus.Inactive) {
       throw new ForbiddenException('비활성된 유저입니다.');
-    }
-  }
-
-  /**
-   * member 를 생성할 수 있는지 판별한다.
-   */
-  async canCreateOrFail(
-    newMember: Prisma.MemberWhereUniqueInput,
-  ): Promise<void> {
-    // 이미 존재하는 member 인지 확인한다.
-    const oldMember = await this.prismaService.member.findUnique({
-      where: {
-        ...newMember,
-      },
-    });
-
-    if (!oldMember) {
-      return;
-    }
-
-    // 대기중인 member 인 경우
-    if (oldMember.status === MemberStatus.Pending) {
-      throw new BadRequestException('pending 상태인 member 입니다.');
-    }
-
-    // 활성중인 member 인 경우
-    if (oldMember.status === MemberStatus.Active) {
-      throw new BadRequestException('이미 활성중인 member 입니다.');
     }
   }
 
