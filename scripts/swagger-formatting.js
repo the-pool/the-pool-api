@@ -43,7 +43,7 @@ ex) npm run swagger -m "member" -c "member-like" => member module 안에있는 m
 
 const options = program.opts();
 const moduleName = options.module;
-const controllerName = options.Controller || moduleName;
+const controllerName = options.controller || moduleName;
 const controllerFileName = controllerName + '.controller.ts';
 
 let dir = __dirname.split('/');
