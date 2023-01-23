@@ -1,9 +1,16 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { EntityId } from '@src/constants/enum';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
+import { LessonVirtualColumnForReadMany } from '../constants/lesson.const';
+import { LessonVirtualColumn } from '../constants/lesson.enum';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
@@ -15,6 +22,7 @@ describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
   let lessonRepository;
+  let queryHelper;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,12 +37,17 @@ describe('LessonService', () => {
           provide: LessonRepository,
           useValue: mockLessonRepository,
         },
+        {
+          provide: QueryHelper,
+          useValue: mockQueryHelper,
+        },
       ],
     }).compile();
 
     lessonService = module.get<LessonService>(LessonService);
     lessonRepository = mockLessonRepository;
     prismaService = mockPrismaService;
+    queryHelper = mockQueryHelper;
   });
 
   afterEach(() => {
@@ -188,6 +201,71 @@ describe('LessonService', () => {
       );
 
       expect(returnValue).toStrictEqual(readSimilarLessons);
+    });
+  });
+
+  describe('readManyLesson', () => {
+    let query: ReadManyLessonQueryDto;
+    let readManyLesson: ReadManyLessonDto[];
+    let totalCount: number;
+
+    beforeEach(() => {
+      query = new ReadManyLessonQueryDto();
+      readManyLesson = [new ReadManyLessonDto()];
+      totalCount = faker.datatype.number();
+      prismaService.lesson.findMany.mockResolvedValue(readManyLesson);
+      prismaService.lesson.count.mockResolvedValue(totalCount);
+      prismaService.$transaction.mockResolvedValue([
+        readManyLesson,
+        totalCount,
+      ]);
+    });
+
+    it('success - check method called', async () => {
+      const { page, pageSize, orderBy, sortBy, ...filter } = query;
+      const settedOrderBy = LessonVirtualColumnForReadMany[sortBy]
+        ? { _count: orderBy }
+        : orderBy;
+
+      await lessonService.readManyLesson(query);
+
+      expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
+      expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
+      expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
+      expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
+        [sortBy]: settedOrderBy,
+      });
+      expect(prismaService.lesson.findMany).toBeCalledTimes(1);
+      expect(prismaService.lesson.count).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonService.readManyLesson(query);
+
+      expect(returnValue).toStrictEqual({
+        lessons: readManyLesson,
+        totalCount,
+      });
+    });
+
+    it('case - sortBy is virtualColumn', async () => {
+      query.sortBy = LessonVirtualColumn.LessonSolution;
+
+      await lessonService.readManyLesson(query);
+
+      expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
+        [query.sortBy]: { _count: query.orderBy },
+      });
+    });
+
+    it('case - sortBy is not virtualColumn', async () => {
+      query.sortBy = EntityId.Id;
+
+      await lessonService.readManyLesson(query);
+
+      expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
+        [query.sortBy]: query.orderBy,
+      });
     });
   });
 });
