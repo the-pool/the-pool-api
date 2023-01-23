@@ -83,7 +83,7 @@ export class MemberController {
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
   @ApiLoginOrSignUp(
-    '회원가입 or 로그인 (body 로 넘어온 accessToken 에 해당하는 계정이 없다면 회원가입 처리합니다.)',
+    '회원가입 or 로그인 (body 로 넘어온 oAuthToken 에 해당하는 계정이 없다면 회원가입 처리합니다.)',
   )
   @Post()
   async loginOrSignUp(
@@ -91,7 +91,7 @@ export class MemberController {
   ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
     const account = await this.authService.validateExternalAccessTokenOrFail(
-      body.accessToken,
+      body.oAuthToken,
       body.loginType,
     );
 

@@ -32,10 +32,10 @@ export class AuthHelper {
    * 카카오 open api 를 통해 검증
    * https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#get-token-info
    */
-  validateKakaoAccessTokenOrFail(accessToken: string): Promise<string> {
+  validateKakaoAccessTokenOrFail(oAuthToken: string): Promise<string> {
     const ajaxConfig = {
       headers: {
-        Authorization: 'Bearer' + ' ' + accessToken,
+        Authorization: 'Bearer' + ' ' + oAuthToken,
       },
     };
 
@@ -83,12 +83,12 @@ export class AuthHelper {
    * api 문서: https://developers.google.com/identity/sign-in/web/backend-auth
    * github: https://github.com/googleapis/google-auth-library-nodejs
    */
-  async validateGoogleAccessTokenOrFail(accessToken: string): Promise<string> {
+  async validateGoogleAccessTokenOrFail(oAuthToken: string): Promise<string> {
     try {
       // 구글 내부 axios gAxios 를 통해 토큰 검증
       // 토큰이 유효하지 않으면 라이브러리 내부에서 에러를 throw 함
       const response: TokenInfo = await this.googleAuth.getTokenInfo(
-        accessToken,
+        oAuthToken,
       );
 
       return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google] + response.aud;
@@ -102,14 +102,14 @@ export class AuthHelper {
    * 애플은 아래 url 에 설명대로 검증
    * url: https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/verifying_a_user
    */
-  async validateAppleAccessTokenOrFail(accessToken: string): Promise<string> {
+  async validateAppleAccessTokenOrFail(oAuthToken: string): Promise<string> {
     // 애플에 등록되어있는 clientId
     // 나중에 clientId 발급받으면 환경변수로
     // 클라이언트측에서 애플 클라이언트 아이디 발급받으면 로직 추가
     // const appleClientIds: string[] = ['com.thepool.web'];
 
     // jwt 토큰 decode
-    const decodedJwt: Jwt | null = jwt.decode(accessToken, {
+    const decodedJwt: Jwt | null = jwt.decode(oAuthToken, {
       complete: true,
     });
 
@@ -128,7 +128,7 @@ export class AuthHelper {
     const appleSignKey: string = applePublicKey.getPublicKey();
 
     // 애플 jwt 토큰 decode
-    const { payload }: JwtPayload = jwt.verify(accessToken, appleSignKey, {
+    const { payload }: JwtPayload = jwt.verify(oAuthToken, appleSignKey, {
       complete: true,
     });
 

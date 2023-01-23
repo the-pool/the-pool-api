@@ -60,11 +60,11 @@ describe('AuthService', () => {
   });
 
   describe('validateExternalAccessTokenOrFail', () => {
-    let accessToken;
+    let oAuthToken;
     let randomValue;
 
     beforeEach(() => {
-      accessToken = faker.datatype.string();
+      oAuthToken = faker.datatype.string();
       randomValue = faker.datatype.string();
     });
 
@@ -75,7 +75,7 @@ describe('AuthService', () => {
       const oAuthProvider = MemberLoginType.Kakao;
 
       const result = await authService.validateExternalAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
         oAuthProvider,
       );
 
@@ -89,7 +89,7 @@ describe('AuthService', () => {
       const oAuthProvider = MemberLoginType.Google;
 
       const result = await authService.validateExternalAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
         oAuthProvider,
       );
 
@@ -103,7 +103,7 @@ describe('AuthService', () => {
       const oAuthProvider = MemberLoginType.Apple;
 
       const result = await authService.validateExternalAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
         oAuthProvider,
       );
 
@@ -115,7 +115,7 @@ describe('AuthService', () => {
 
       await expect(async () => {
         await authService.validateExternalAccessTokenOrFail(
-          accessToken,
+          oAuthToken,
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           oAuthProvider,

@@ -48,7 +48,7 @@ describe('AuthHelper', () => {
   });
 
   describe('validateKakaoAccessTokenOrFail', () => {
-    let accessToken: string;
+    let oAuthToken: string;
     let id: number;
     const successResponse: AxiosResponse = {
       data: {
@@ -68,7 +68,7 @@ describe('AuthHelper', () => {
     };
 
     beforeEach(() => {
-      accessToken = faker.datatype.string();
+      oAuthToken = faker.datatype.string();
     });
 
     it('성공하는 경우', async () => {
@@ -80,7 +80,7 @@ describe('AuthHelper', () => {
         .mockImplementationOnce(() => of(successResponse));
 
       const result = await authHelper.validateKakaoAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
       );
 
       expect(result).toBe(
@@ -98,7 +98,7 @@ describe('AuthHelper', () => {
       );
 
       await expect(async () => {
-        await authHelper.validateKakaoAccessTokenOrFail(accessToken);
+        await authHelper.validateKakaoAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
 
@@ -112,7 +112,7 @@ describe('AuthHelper', () => {
       );
 
       await expect(async () => {
-        await authHelper.validateKakaoAccessTokenOrFail(accessToken);
+        await authHelper.validateKakaoAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError(
         '카카오 서버의 일시적인 장애 잠시후 다시 요청해주세요.',
       );
@@ -128,7 +128,7 @@ describe('AuthHelper', () => {
       );
 
       await expect(async () => {
-        await authHelper.validateKakaoAccessTokenOrFail(accessToken);
+        await authHelper.validateKakaoAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError();
     });
 
@@ -140,16 +140,16 @@ describe('AuthHelper', () => {
       );
 
       await expect(async () => {
-        await authHelper.validateKakaoAccessTokenOrFail(accessToken);
+        await authHelper.validateKakaoAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError();
     });
   });
 
   describe('validateGoogleAccessTokenOrFail', () => {
-    let accessToken: string;
+    let oAuthToken: string;
 
     beforeEach(() => {
-      accessToken = faker.datatype.string();
+      oAuthToken = faker.datatype.string();
     });
 
     it('성공하는 경우', async () => {
@@ -161,7 +161,7 @@ describe('AuthHelper', () => {
       mockGoogleAuth.getTokenInfo.mockReturnValue(response);
 
       const result = await authHelper.validateGoogleAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
       );
 
       expect(result).toStrictEqual(
@@ -173,16 +173,16 @@ describe('AuthHelper', () => {
       mockGoogleAuth.getTokenInfo.mockRejectedValueOnce('');
 
       await expect(async () => {
-        await authHelper.validateGoogleAccessTokenOrFail(accessToken);
+        await authHelper.validateGoogleAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
   });
 
   describe('validateAppleAccessTokenOrFail', () => {
-    let accessToken;
+    let oAuthToken;
 
     beforeEach(() => {
-      accessToken = faker.datatype.string();
+      oAuthToken = faker.datatype.string();
       mockJwksClient.getSigningKey.mockReturnValue({
         getPublicKey: jest.fn().mockReturnValue(faker.datatype.string()),
       });
@@ -210,7 +210,7 @@ describe('AuthHelper', () => {
       });
 
       const result = await authHelper.validateAppleAccessTokenOrFail(
-        accessToken,
+        oAuthToken,
       );
 
       expect(result).toBe(MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + sub);
@@ -220,7 +220,7 @@ describe('AuthHelper', () => {
       jest.spyOn(jwt, 'decode').mockImplementationOnce(() => '');
 
       await expect(async () => {
-        await authHelper.validateAppleAccessTokenOrFail(accessToken);
+        await authHelper.validateAppleAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
 
@@ -246,7 +246,7 @@ describe('AuthHelper', () => {
       });
 
       await expect(async () => {
-        await authHelper.validateAppleAccessTokenOrFail(accessToken);
+        await authHelper.validateAppleAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
   });

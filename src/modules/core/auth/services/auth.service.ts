@@ -56,22 +56,22 @@ export class AuthService {
    * 외부에서 받은 access token 검증
    */
   async validateExternalAccessTokenOrFail(
-    accessToken: string,
+    oAuthToken: string,
     oAuthProvider: MemberLoginType,
   ): Promise<string> {
     // 카카오
     if (oAuthProvider === MemberLoginType.Kakao) {
-      return this.authHelper.validateKakaoAccessTokenOrFail(accessToken);
+      return this.authHelper.validateKakaoAccessTokenOrFail(oAuthToken);
     }
 
     // 구글
     if (oAuthProvider === MemberLoginType.Google) {
-      return this.authHelper.validateGoogleAccessTokenOrFail(accessToken);
+      return this.authHelper.validateGoogleAccessTokenOrFail(oAuthToken);
     }
 
     // 애플
     if (oAuthProvider === MemberLoginType.Apple) {
-      return this.authHelper.validateAppleAccessTokenOrFail(accessToken);
+      return this.authHelper.validateAppleAccessTokenOrFail(oAuthToken);
     }
 
     // 빌드시에 타입이 깨지면 빌드가 안되지만 만약에 상황에 대비해 처리

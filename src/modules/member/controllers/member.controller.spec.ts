@@ -81,13 +81,13 @@ describe('MemberController', () => {
   describe('loginOrSignUp', () => {
     let member: MemberEntity | null;
     let body: LoginOrSignUpRequestBodyDto;
-    let accessToken: string;
+    let oAuthToken: string;
 
     beforeEach(() => {
       member = new MemberEntity();
       body = new LoginOrSignUpRequestBodyDto();
-      accessToken = faker.datatype.string();
-      mockAuthService.createAccessToken.mockReturnValue(accessToken);
+      oAuthToken = faker.datatype.string();
+      mockAuthService.createAccessToken.mockReturnValue(oAuthToken);
     });
 
     describe('로그인 하는 경우', () => {
