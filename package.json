@@ -43,6 +43,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "commander": "^10.0.0",
     "google-auth-library": "^8.7.0",
     "helmet": "^6.0.0",
     "jest-mock-extended": "^3.0.1",
