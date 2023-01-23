@@ -50,7 +50,7 @@ let dir = __dirname.split('/');
 dir.pop();
 dir = path.join(dir.join('/'), 'src', 'modules', options.module, 'controllers');
 
-const swaggerFilePath = dir + '/' + controllerName + '.swaggerasd.ts';
+const swaggerFilePath = dir + '/' + controllerName + '.swagger.ts';
 const controllerPath = path.join(dir, controllerFileName);
 
 fs.readFile(controllerPath, 'utf8', (err, data) => {
