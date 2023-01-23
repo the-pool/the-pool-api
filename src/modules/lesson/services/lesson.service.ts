@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaPromise } from '@prisma/client';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { LessonVirtualColumnForReadMany } from '../constants/lesson.const';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
+import { LessonCategoryEntity } from '../entities/lesson-category.entity';
 import { LessonEntity } from '../entities/lesson.entity';
 import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
@@ -13,6 +20,7 @@ export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly lessonRepository: LessonRepository,
+    private readonly queryHelper: QueryHelper,
   ) {}
 
   /**
@@ -71,5 +79,58 @@ export class LessonService {
     query: SimilarLessonQueryDto,
   ): Promise<SimilarLessonEntity[]> {
     return this.lessonRepository.readSimilarLesson(lessonId, memberId, query);
+  }
+
+  /**
+   * 과제 목록 조회 메서드
+   */
+  async readManyLesson(
+    query: ReadManyLessonQueryDto,
+  ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
+    const { page, pageSize, orderBy, sortBy, ...filter } = query;
+
+    // search 조건 build
+    const where = this.queryHelper.buildWherePropForFind(filter);
+
+    // sortBy가 가상 컬럼인 경우 { _count: orderBy } 형식으로 orderBy 세팅
+    const settedOrderBy = LessonVirtualColumnForReadMany[sortBy]
+      ? { _count: orderBy }
+      : orderBy;
+
+    // order 조건 build
+    const order = this.queryHelper.buildOrderByPropForFind({
+      [sortBy]: settedOrderBy,
+    });
+
+    // promise 한 lesson 목록
+    const readManyLessonQuery: PrismaPromise<ReadManyLessonDto[]> =
+      this.prismaService.lesson.findMany({
+        where,
+        orderBy: order,
+        skip: page * pageSize,
+        take: pageSize,
+        include: {
+          member: true,
+          lessonCategory: true,
+          _count: {
+            select: {
+              lessonLikes: true,
+              lessonComments: true,
+              lessonSolutions: true,
+            },
+          },
+        },
+      });
+
+    // promise 한 count
+    const totalCountQuery: PrismaPromise<number> =
+      this.prismaService.lesson.count({ where, orderBy: order });
+
+    const [lessons, totalCount] = await this.prismaService.$transaction([
+      readManyLessonQuery,
+      totalCountQuery,
+    ]);
+
+    return { lessons, totalCount };
   }
 }

@@ -5,6 +5,7 @@ export enum ModelName {
   LessonHashtag = 'lessonHashtag',
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
+  LessonCategory = 'lessonCategory',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
 }
@@ -62,9 +63,12 @@ export enum LessonCategoryId {
   EtcDesign = 9,
 }
 
-export enum LessonOrderBy {
+export enum EntityDate {
   CreateAt = 'createdAt',
-  Comments = 'comments',
-  Solutions = 'soluations',
-  Likes = 'likes',
+  UpdateAt = 'updatedAt',
+  DeletedAt = 'deletedAt',
+}
+
+export enum EntityId {
+  Id = 'id',
 }

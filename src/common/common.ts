@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { BooleanString } from '@src/constants/enum';
 import { validate, ValidationError } from 'class-validator';
 
@@ -28,16 +29,14 @@ export const getValueByEnum = <T extends string | number>(
  */
 export const getEntriesByEnum = <T>(Enum: {
   [key in keyof T]: T[key];
-}): T[] => {
+}): T => {
   const entries = Object.entries(Enum);
   entries.splice(0, entries.length / 2);
 
-  return [
-    entries.reduce((acc, cur) => {
-      acc[cur[0]] = cur[1];
-      return acc;
-    }, {}) as T,
-  ];
+  return entries.reduce((acc, cur) => {
+    acc[cur[0]] = cur[1];
+    return acc;
+  }, {}) as T;
 };
 
 /**
@@ -64,4 +63,21 @@ export const getStrMapByEnum = (Enum) => {
   }
 
   return mapStr + ' }';
+};
+
+/**
+ * 객체의 모든 value를 숫자로 변환해 새로운 객체를 return 해주는 함수
+ */
+export const setObjectValuesToNumber = (
+  obj: {
+    [key: string]: any;
+  },
+  min: number,
+  max: number,
+): { [key: string]: number } => {
+  return Object.keys(obj).reduce((acc, key) => {
+    acc[key] = faker.datatype.number({ min, max });
+
+    return acc;
+  }, {});
 };
