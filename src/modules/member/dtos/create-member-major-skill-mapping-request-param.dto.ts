@@ -6,7 +6,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { Type } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
 
-export class CreateMemberMajorMappingRequestParamDto extends IdRequestParamDto {
+export class CreateMemberMajorSkillMappingRequestParamDto extends IdRequestParamDto {
   @ApiProperty({
     description: 'major 고유 ID',
   })
@@ -17,7 +17,7 @@ export class CreateMemberMajorMappingRequestParamDto extends IdRequestParamDto {
   majorId: number;
 
   @ApiProperty({
-    description: 'major 고유 ID',
+    description: 'major skill 고유 ID',
   })
   @IsRecord<MajorSkill>({ model: ModelName.MajorSkill, field: 'id' }, true)
   @Min(1)

@@ -38,6 +38,7 @@ import {
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
+import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -171,7 +172,11 @@ export class MemberController {
   @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
   @Post(':id/majors/:majorId/skills/:skillId')
-  mappingMajorSkill() {
+  mappingMajorSkill(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberMajorSkillMappingRequestParamDto,
+  ) {
     return this.memberService.mappingMajorSkill();
   }
 
