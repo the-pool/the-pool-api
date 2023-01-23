@@ -7,6 +7,7 @@ export enum ModelName {
   LessonSolution = 'lessonSolution',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
+  MajorSkill = 'majorSkill',
 }
 
 export enum OrderBy {

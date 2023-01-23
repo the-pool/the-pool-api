@@ -171,7 +171,9 @@ export class MemberController {
   @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
   @Post(':id/majors/:majorId/skills/:skillId')
-  mappingMajorSkill() {}
+  mappingMajorSkill() {
+    return this.memberService.mappingMajorSkill();
+  }
 
   /**
    * @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거
