@@ -10,8 +10,7 @@ const getSwaggerMethodName = (methodName) => {
 };
 
 const getSwaggerFormat = (methodName) => {
-  return `
-export const ${methodName} = (summary: string) => {
+  return `export const ${methodName} = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {}),
@@ -43,7 +42,6 @@ ex) npm run swagger -m "member" -c "member-like" => member module 안에있는 m
   .parse();
 
 const options = program.opts();
-console.log(options);
 const moduleName = options.module;
 const controllerName = options.Controller || moduleName;
 const controllerFileName = controllerName + '.controller.ts';
@@ -52,7 +50,7 @@ let dir = __dirname.split('/');
 dir.pop();
 dir = path.join(dir.join('/'), 'src', 'modules', options.module, 'controllers');
 
-const swaggerFilePath = dir + '/' + controllerName + '.swaggera.ts';
+const swaggerFilePath = dir + '/' + controllerName + '.swaggerasd.ts';
 const controllerPath = path.join(dir, controllerFileName);
 
 fs.readFile(controllerPath, 'utf8', (err, data) => {
@@ -62,6 +60,7 @@ fs.readFile(controllerPath, 'utf8', (err, data) => {
     return;
   }
 
+  const toCreateMethod = {};
   const controllerMethodNames = data
     .match(/^(  [a-z].{0,})/gm)
     .map((el) => {
@@ -74,43 +73,58 @@ fs.readFile(controllerPath, 'utf8', (err, data) => {
       return el.replace(/async/g, '');
     });
 
+  controllerMethodNames.forEach((controllerMethodName) => {
+    toCreateMethod[getSwaggerMethodName(controllerMethodName)] = undefined;
+  });
+
   let description;
   let swaggerFile;
-  let createMethodNames;
+  const createMethodNames = [];
 
   try {
     swaggerFile = fs.readFileSync(swaggerFilePath, 'utf8');
   } catch (e) {}
 
   if (swaggerFile) {
-    const existMethodNames = swaggerFile
-      .match(/^export const.{0,}/gm)
-      .map((str) => {
-        return str.split(' ')[2];
-      });
+    const existSwaggerMethod = {};
 
-    const swaggerMethodNames = controllerMethodNames.map((methodName) => {
-      return getSwaggerMethodName(methodName);
+    swaggerFile.split('export const').map((el, idx) => {
+      if (idx === 0) {
+        el = el.slice(0, -1);
+        description = el;
+
+        return;
+      }
+
+      if (el.slice(-2) === '\n\n') {
+        el = el.slice(0, -1);
+      }
+
+      existSwaggerMethod[[el.split('=')[0].trim()]] = 'export const' + el;
     });
 
-    createMethodNames = swaggerMethodNames.filter((swaggerMethodName) => {
-      return !existMethodNames.includes(swaggerMethodName);
-    });
+    for (const toCreateMethodName in toCreateMethod) {
+      if (existSwaggerMethod[toCreateMethodName]) {
+        toCreateMethod[toCreateMethodName] =
+          existSwaggerMethod[toCreateMethodName];
+      } else {
+        toCreateMethod[toCreateMethodName] =
+          getSwaggerFormat(toCreateMethodName);
+        createMethodNames.push(toCreateMethodName);
+      }
+    }
 
-    description = swaggerFile;
-
-    createMethodNames.forEach((createMethodName) => {
-      description += getSwaggerFormat(createMethodName);
-    });
+    for (const toCreateMethodName in toCreateMethod) {
+      description += '\n' + toCreateMethod[toCreateMethodName];
+    }
   } else {
     description = getBaseImport();
-
-    createMethodNames = controllerMethodNames;
 
     controllerMethodNames.forEach((methodName) => {
       const swaggerMethodName = getSwaggerMethodName(methodName);
 
-      description += getSwaggerFormat(swaggerMethodName);
+      description += '\n' + getSwaggerFormat(swaggerMethodName);
+      createMethodNames.push(getSwaggerMethodName(methodName));
     });
   }
 
