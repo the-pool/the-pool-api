@@ -17,7 +17,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { ModelName } from '@src/constants/enum';
+import { MajorId, ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
@@ -162,6 +162,16 @@ export class MemberController {
   ) {
     return this.memberService.mappingMajor(params.id, params.majorId);
   }
+
+  @MemberMajorSetMetadataGuard(MajorId.Development, MajorId.Design)
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/majors/:majorId/skills/:skillId')
+  mappingMajorSkill() {}
 
   /**
    * @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거

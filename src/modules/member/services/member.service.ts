@@ -100,6 +100,11 @@ export class MemberService {
   }
 
   /**
+   * member 와 majorSkill 을 매핑
+   */
+  mappingMajorSkill() {}
+
+  /**
    * @deprecated 클라이언트에서 POST /api/members/social 걷어내면 제거
    *  유저 로그인 및 회원가입 로직
    */
