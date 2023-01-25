@@ -9,7 +9,7 @@ export class LoginOrSignUpRequestBodyDto {
     example: 'B1PQ7e14y69IdyisLn-0Mx_eDlM3H-8MEwBJuVXoCj11WgAAAYQDMBGy',
   })
   @IsString()
-  accessToken: string;
+  oAuthToken: string;
 
   @ApiProperty({
     description: 'member 의 로그인 타입',

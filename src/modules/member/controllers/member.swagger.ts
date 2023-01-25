@@ -47,10 +47,10 @@ export const ApiLoginOrSignUp = (summary: string) => {
     ApiFailureResponse(HttpStatus.BAD_REQUEST, ['이미 존재하는 유저입니다.']),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
     ApiFailureResponse(HttpStatus.FORBIDDEN, [
-      '유효하지 않은 토큰입니다.',
-      '추가정보 입력이 필요한 유저입니다.',
+      'pending 상태의 유저 입니다.',
       '비활성된 유저입니다.',
     ]),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, ['존재하지 않는 member 입니다.']),
   );
 };
 
