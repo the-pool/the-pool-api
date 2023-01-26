@@ -88,7 +88,7 @@ fs.readFile(controllerPath, 'utf8', (err, data) => {
   if (swaggerFile) {
     const existSwaggerMethod = {};
 
-    swaggerFile.split('export const').map((el, idx) => {
+    swaggerFile.split('export const').forEach((el, idx) => {
       if (idx === 0) {
         el = el.slice(0, -1);
         description = el;
