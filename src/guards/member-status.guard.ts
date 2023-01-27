@@ -12,7 +12,10 @@ import { MemberStatuses } from '@src/modules/member/types/member.type';
 
 /**
  * 특정 status 를 가진 member 만 access 가능하게 하는 guard
+ *
  * 이 가드를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
+ *
+ * AllowMemberStatusesSetMetadataGuard 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
 export class MemberStatusGuard implements CanActivate {
