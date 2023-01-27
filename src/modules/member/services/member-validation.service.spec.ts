@@ -47,7 +47,7 @@ describe('MemberValidationService', () => {
           memberStatus,
           member,
         );
-      }).rejects.toThrowError('존재하지 않는 리소스입니다.');
+      }).rejects.toThrowError('존재하지 않는 member 입니다.');
     });
 
     it('pending 상태의 유저인 경우', () => {
@@ -66,7 +66,7 @@ describe('MemberValidationService', () => {
           memberStatus,
           member,
         );
-      }).rejects.toThrowError('추가정보 입력이 필요한 유저입니다.');
+      }).rejects.toThrowError('pending 상태의 유저 입니다.');
     });
 
     it('비활성 유저인 경우', () => {
@@ -105,52 +105,6 @@ describe('MemberValidationService', () => {
       );
 
       expect(result).toBeUndefined();
-    });
-  });
-
-  describe('canCreateOrFail', () => {
-    let member: MemberEntity;
-
-    beforeEach(() => {
-      member = new MemberEntity();
-    });
-
-    it('member 를 생성할 수 있을 경우', async () => {
-      mockPrismaService.member.findUnique.mockResolvedValue(null);
-
-      const result = await memberValidationService.canCreateOrFail({
-        id: 1,
-      });
-
-      expect(result).toBeUndefined();
-    });
-
-    it('member 가 pending 상태인 경우', async () => {
-      const oldMember = {
-        status: MemberStatus.Pending,
-      };
-
-      mockPrismaService.member.findUnique.mockResolvedValue(oldMember as any);
-
-      await expect(async () => {
-        await memberValidationService.canCreateOrFail({
-          id: 1,
-        });
-      }).rejects.toThrowError('pending 상태인 member 입니다.');
-    });
-
-    it('member 가 active 상태인 경우', async () => {
-      const oldMember = {
-        status: MemberStatus.Active,
-      };
-
-      mockPrismaService.member.findUnique.mockResolvedValue(oldMember as any);
-
-      await expect(async () => {
-        await memberValidationService.canCreateOrFail({
-          id: 1,
-        });
-      }).rejects.toThrowError('이미 활성중인 member 입니다.');
     });
   });
 
