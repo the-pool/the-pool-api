@@ -34,5 +34,5 @@ export class CreateMemberMajorSkillMappingRequestParamDto extends IdRequestParam
   @Transform(transformCsvToArray)
   @Transform(transformEachTrim)
   @Transform(transformEachStrungToNumber)
-  majorSkillIds: number;
+  majorSkillIds: number[];
 }
