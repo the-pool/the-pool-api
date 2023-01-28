@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
+import { CreateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/create-many-lesson-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
-import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { UpdateOneLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-one-lesson-hashtag.dto';
+import { UpdateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-many-lesson-hashtag.dto';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
@@ -48,14 +48,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('createManyHashtag', () => {
-    let createManyHashtagDto: CreateManyHashtagDto;
+    let createManyHashtagDto: CreateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let createdHashtags;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      createManyHashtagDto = new CreateManyHashtagDto();
+      createManyHashtagDto = new CreateManyLessonHashtagDto();
       param = new IdRequestParamDto();
       createdHashtags = [{ name: faker.datatype.string }];
 
@@ -89,14 +89,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('updateManyHashtag', () => {
-    let updateOneHashtagDto: UpdateManyHashtagDto;
+    let updateOneHashtagDto: UpdateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
     let updatedHashtags;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      updateOneHashtagDto = new UpdateManyHashtagDto();
+      updateOneHashtagDto = new UpdateManyLessonHashtagDto();
       param = new IdRequestParamDto();
       updatedHashtags = [{ name: faker.datatype.string }];
 
@@ -136,14 +136,14 @@ describe('LessonHashtagController', () => {
   });
 
   describe('updateOneHashtag', () => {
-    let updateOneHashtagDto: UpdateOneHashtagDto;
+    let updateOneHashtagDto: UpdateOneLessonHashtagDto;
     let param: LessonHashtagParamDto;
     let memberId: number;
     let updatedHashtag;
 
     beforeEach(() => {
       memberId = faker.datatype.number();
-      updateOneHashtagDto = new UpdateOneHashtagDto();
+      updateOneHashtagDto = new UpdateOneLessonHashtagDto();
       param = new LessonHashtagParamDto();
       updatedHashtag = new LessonHashtagEntity();
 

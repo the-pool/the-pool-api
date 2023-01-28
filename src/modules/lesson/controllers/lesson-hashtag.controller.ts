@@ -16,9 +16,9 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
-import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
+import { CreateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/create-many-lesson-hashtag.dto';
+import { UpdateOneLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-one-lesson-hashtag.dto';
+import { UpdateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-many-lesson-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
@@ -46,7 +46,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { hashtags }: CreateManyHashtagDto,
+    @Body() { hashtags }: CreateManyLessonHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
@@ -69,7 +69,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { hashtags }: UpdateManyHashtagDto,
+    @Body() { hashtags }: UpdateManyLessonHashtagDto,
     @UserLogin('id') memberId: number,
   ) {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
@@ -92,7 +92,7 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
-    @Body() { hashtag }: UpdateOneHashtagDto,
+    @Body() { hashtag }: UpdateOneLessonHashtagDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ hashtag: LessonHashtagEntity }> {
     await Promise.all([
