@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OrderBy } from '@src/constants/enum';
+import { VirtualColumnCount } from '@src/types/type';
 
 @Injectable()
 export class QueryHelper {
@@ -29,8 +30,8 @@ export class QueryHelper {
    * find 시 order by field 를 만드는 메서드
    */
   buildOrderByPropForFind(orders: {
-    [key: string]: OrderBy;
-  }): { [key: string]: OrderBy }[] {
+    [key: string]: OrderBy | VirtualColumnCount;
+  }): { [key: string]: OrderBy | VirtualColumnCount }[] {
     return Object.entries(orders).map(([sortBy, orderBy]) => {
       return {
         [sortBy]: orderBy,

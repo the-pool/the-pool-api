@@ -29,7 +29,7 @@ export const HTTP_ERROR_MESSAGE = {
   FORBIDDEN: 'You do not have access to {modelName}',
   NOT_FOUND: "{modelId} doesn't exist id in {modelName}",
   CONFLICT: '{model} is duplicated',
-};
+} as const;
 
 export const LESSON_LEVEL = {
   [LessonLevelId.Top]: 'top',
