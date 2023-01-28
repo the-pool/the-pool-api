@@ -64,8 +64,8 @@ export enum LessonCategoryId {
 }
 
 export enum EntityDate {
-  CreateAt = 'createdAt',
-  UpdateAt = 'updatedAt',
+  CreatedAt = 'createdAt',
+  UpdatedAt = 'updatedAt',
   DeletedAt = 'deletedAt',
 }
 

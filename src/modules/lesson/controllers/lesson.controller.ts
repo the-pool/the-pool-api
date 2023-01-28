@@ -140,7 +140,6 @@ export class LessonController {
   }
 
   @ApiReadManyLesson('과제 목록 조회')
-  @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   readManyLesson(
     @Query() query: ReadManyLessonQueryDto,

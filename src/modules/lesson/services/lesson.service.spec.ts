@@ -6,7 +6,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonRepository } from '../../../../test/mock/mock-repositories';
-import { LessonVirtualColumnForReadMany } from '../constants/lesson.const';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
 import { LessonVirtualColumn } from '../constants/lesson.enum';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
@@ -223,7 +223,7 @@ describe('LessonService', () => {
 
     it('success - check method called', async () => {
       const { page, pageSize, orderBy, sortBy, ...filter } = query;
-      const settedOrderBy = LessonVirtualColumnForReadMany[sortBy]
+      const settledOrderBy = LESSON_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
         ? { _count: orderBy }
         : orderBy;
 
@@ -233,7 +233,7 @@ describe('LessonService', () => {
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
-        [sortBy]: settedOrderBy,
+        [sortBy]: settledOrderBy,
       });
       expect(prismaService.lesson.findMany).toBeCalledTimes(1);
       expect(prismaService.lesson.count).toBeCalledTimes(1);
@@ -249,7 +249,7 @@ describe('LessonService', () => {
     });
 
     it('case - sortBy is virtualColumn', async () => {
-      query.sortBy = LessonVirtualColumn.LessonSolution;
+      query.sortBy = LessonVirtualColumn.LessonSolutions;
 
       await lessonService.readManyLesson(query);
 

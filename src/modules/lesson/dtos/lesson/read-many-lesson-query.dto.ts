@@ -10,7 +10,7 @@ import {
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { Type } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
-import { LessonVirtualColumnForReadMany } from '../../constants/lesson.const';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../../constants/lesson.const';
 import { LessonDto } from './lesson.dto';
 
 export class ReadManyLessonQueryDto extends PickType(LessonDto, [
@@ -36,17 +36,17 @@ export class ReadManyLessonQueryDto extends PickType(LessonDto, [
     description: '과제 목록의 정렬에 사용될 필드',
     enum: getValueByEnum(
       {
-        ...LessonVirtualColumnForReadMany,
+        ...LESSON_VIRTUAL_COLUMN_FOR_READ_MANY,
         ...EntityId,
-        [EntityDate.CreateAt]: EntityDate.CreateAt,
+        [EntityDate.CreatedAt]: EntityDate.CreatedAt,
       },
       'string',
     ),
   })
   @IsEnum({
-    ...LessonVirtualColumnForReadMany,
+    ...LESSON_VIRTUAL_COLUMN_FOR_READ_MANY,
     ...EntityId,
-    [EntityDate.CreateAt]: EntityDate.CreateAt,
+    [EntityDate.CreatedAt]: EntityDate.CreatedAt,
   })
   @IsOptional()
   sortBy: string = 'id';

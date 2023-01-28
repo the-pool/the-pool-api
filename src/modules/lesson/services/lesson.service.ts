@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonVirtualColumnForReadMany } from '../constants/lesson.const';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
@@ -91,13 +91,13 @@ export class LessonService {
     const where = this.queryHelper.buildWherePropForFind(filter);
 
     // sortBy가 가상 컬럼인 경우 { _count: orderBy } 형식으로 orderBy 세팅
-    const settedOrderBy = LessonVirtualColumnForReadMany[sortBy]
+    const settledOrderBy = LESSON_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
       ? { _count: orderBy }
       : orderBy;
 
     // order 조건 build
     const order = this.queryHelper.buildOrderByPropForFind({
-      [sortBy]: settedOrderBy,
+      [sortBy]: settledOrderBy,
     });
 
     // promise 한 lesson 목록

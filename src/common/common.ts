@@ -69,11 +69,9 @@ export const getStrMapByEnum = (Enum) => {
  * 객체의 모든 value를 숫자로 변환해 새로운 객체를 return 해주는 함수
  */
 export const setObjectValuesToNumber = (
-  obj: {
-    [key: string]: any;
-  },
-  min: number,
-  max: number,
+  obj: Record<string, any>,
+  min?: number,
+  max?: number,
 ): { [key: string]: number } => {
   return Object.keys(obj).reduce((acc, key) => {
     acc[key] = faker.datatype.number({ min, max });
