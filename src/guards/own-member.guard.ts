@@ -10,7 +10,10 @@ import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
 /**
  * 변경하려는 정보가 본인 정보인지 확인하는 가드
+ *
  * 이 가드를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
+ *
+ * OwnMemberSetMetadataGuard 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
 export class OwnMemberGuard implements CanActivate {

@@ -27,7 +27,6 @@ import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
@@ -88,27 +87,26 @@ export class MemberController {
   /**
    * @todo 현재 email login 이 없어서 구현은 안하지만 추후에 추가 필요
    */
-  @ApiLoginOrSignUp('회원가입 | 로그인 (계정이 없다면 회원가입 처리합니다.)')
-  @UseGuards(OptionalJwtAuthGuard)
+  @ApiLoginOrSignUp(
+    '회원가입 or 로그인 (body 로 넘어온 oAuthToken 에 해당하는 계정이 없다면 회원가입 처리합니다.)',
+  )
   @Post()
   async loginOrSignUp(
-    @UserLogin() member: MemberEntity | { id: null },
     @Body() body: LoginOrSignUpRequestBodyDto,
   ): Promise<{ member: MemberEntity } & AccessToken> {
     // access token 이 유효한지 검증한다.
     const account = await this.authService.validateExternalAccessTokenOrFail(
-      body.accessToken,
+      body.oAuthToken,
       body.loginType,
     );
 
-    // 회원가입 하려는 경우
-    if (member.id === null) {
-      // 먼저 회원가입이 가능한지 확인한다.
-      await this.memberValidationService.canCreateOrFail({
-        account,
-        loginType: body.loginType,
-      });
+    // account 를 통해 member 가 있는지 조회한다.
+    const member = await this.memberService.findOne({
+      account,
+    });
 
+    // 회원가입 하려는 경우
+    if (member === null) {
       return this.memberService.signUp(account, body.loginType);
     }
 

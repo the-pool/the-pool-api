@@ -11,7 +11,8 @@ import { map, Observable } from 'rxjs';
 
 /**
  * 클라이언트에게 response 전 특정 key 를 가진 객체로 response 해주는 interceptor
- * @return { key: value }
+ *
+ * SetResponseSetMetadataInterceptor 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
 export class SetResponseInterceptor implements NestInterceptor {

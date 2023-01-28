@@ -9,6 +9,7 @@ import { IncreaseAction } from '@src/types/type';
 
 /**
  * IncreaseMemberStatisticsInterceptor 를 사용하기 위해 fieldName 메타데이터를 추가해주는 기능을 추가한 데코레이터
+ *
  * 1. lesson 작성, 삭제
  * 2. feedback 작성, 삭제
  * 3. comment 작성, 삭제
