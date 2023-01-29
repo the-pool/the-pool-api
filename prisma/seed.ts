@@ -19,12 +19,10 @@ export const createDataForSeed = (
   Enum: Record<string, string | number>,
   type: 'number' | 'string',
   fieldName: string,
-) => {
-  return getValueByEnum(Enum, type).reduce((acc, cur, idx) => {
-    acc.push({ id: ++idx, [fieldName]: cur });
-
-    return acc;
-  }, [] as { id: number; [fieldName: string]: string | number }[]);
+): { id: number; [fieldName: string]: string | number }[] => {
+  return getValueByEnum(Enum, type).map((item, idx) => {
+    return { id: ++idx, [fieldName]: item };
+  });
 };
 
 /**
