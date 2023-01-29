@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
-import { ReadManyLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class LessonHashtagService {
   async createManyHashtag(
     lessonhashtagIds: number[],
     lessonId: number,
-  ): Promise<ReadManyLessonHashtagDto[]> {
+  ): Promise<ReadLessonHashtagDto[]> {
     const lessonIds = Array.from(
       { length: lessonhashtagIds.length },
       () => lessonId,
@@ -44,7 +44,7 @@ export class LessonHashtagService {
   async updateManyHashtag(
     lessonHashtagIds: number[],
     lessonId: number,
-  ): Promise<ReadManyLessonHashtagDto[]> {
+  ): Promise<ReadLessonHashtagDto[]> {
     await this.deleteManyHashtag(lessonId);
 
     return this.createManyHashtag(lessonHashtagIds, lessonId);
@@ -74,7 +74,7 @@ export class LessonHashtagService {
   //   });
   // }
 
-  readManyHashtag(lessonId: number): Promise<ReadManyLessonHashtagDto[]> {
+  readManyHashtag(lessonId: number): Promise<ReadLessonHashtagDto[]> {
     return this.prismaService.lessonHashtagMapping.findMany({
       where: {
         lessonId,

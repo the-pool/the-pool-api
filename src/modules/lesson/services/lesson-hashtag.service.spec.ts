@@ -4,7 +4,7 @@ import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockDataStructureHelper } from '../../../../test/mock/mock-helper';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { ReadManyLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from './lesson-hashtag.service';
 
@@ -42,12 +42,12 @@ describe('LessonHashtagService', () => {
   describe('createHashtag', () => {
     let lessonHashtagIds: number[];
     let lessonId: number;
-    let createdLessonHashtags: ReadManyLessonHashtagDto[];
+    let createdLessonHashtags: ReadLessonHashtagDto[];
 
     beforeEach(() => {
       lessonHashtagIds = [faker.datatype.number()];
       lessonId = faker.datatype.number();
-      createdLessonHashtags = [new ReadManyLessonHashtagDto()];
+      createdLessonHashtags = [new ReadLessonHashtagDto()];
 
       prismaService.lessonHashtagMapping.findMany.mockReturnValue(
         createdLessonHashtags,
@@ -81,48 +81,44 @@ describe('LessonHashtagService', () => {
     });
   });
 
-  // describe('updateManyHashtag', () => {
-  //   let hashtags: string[];
-  //   let lessonId: number;
-  //   let fakeId: number;
-  //   let fakeString: string;
-  //   let createdLessonHashtags;
-  //   let spyDeleteManyHashtag: jest.SpyInstance;
-  //   let spyCreateHashtag: jest.SpyInstance;
+  describe('updateManyHashtag', () => {
+    let lessonHashtagIds: number[];
+    let lessonId: number;
+    let createdLessonHashtags: ReadLessonHashtagDto[];
+    let spyDeleteManyHashtag: jest.SpyInstance;
+    let spyCreateHashtag: jest.SpyInstance;
 
-  //   beforeEach(() => {
-  //     fakeId = faker.datatype.number();
-  //     fakeString = faker.datatype.string();
-  //     hashtags = [fakeString];
-  //     lessonId = faker.datatype.number();
-  //     createdLessonHashtags = [new LessonHashtagEntity()];
+    beforeEach(() => {
+      lessonHashtagIds = [faker.datatype.number()];
+      lessonId = faker.datatype.number();
+      createdLessonHashtags = [new ReadLessonHashtagDto()];
 
-  //     prismaService.lessonHashtag.findMany.mockReturnValue(
-  //       createdLessonHashtags,
-  //     );
-  //     spyDeleteManyHashtag = jest.spyOn(
-  //       lessonHashtagService,
-  //       'deleteManyHashtag',
-  //     );
-  //     spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createManyHashtag');
-  //   });
+      prismaService.lessonHashtagMapping.findMany.mockReturnValue(
+        createdLessonHashtags,
+      );
+      spyDeleteManyHashtag = jest.spyOn(
+        lessonHashtagService,
+        'deleteManyHashtag',
+      );
+      spyCreateHashtag = jest.spyOn(lessonHashtagService, 'createManyHashtag');
+    });
 
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagService.updateManyHashtag(hashtags, lessonId);
+    it('success - check method called', async () => {
+      await lessonHashtagService.updateManyHashtag(lessonHashtagIds, lessonId);
 
-  //     expect(spyDeleteManyHashtag).toBeCalledTimes(1);
-  //     expect(spyCreateHashtag).toBeCalledTimes(1);
-  //   });
+      expect(spyDeleteManyHashtag).toBeCalledTimes(1);
+      expect(spyCreateHashtag).toBeCalledTimes(1);
+    });
 
-  //   it('success - check Input & Output', async () => {
-  //     const returnValue = await lessonHashtagService.updateManyHashtag(
-  //       hashtags,
-  //       lessonId,
-  //     );
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagService.updateManyHashtag(
+        lessonHashtagIds,
+        lessonId,
+      );
 
-  //     expect(returnValue).toStrictEqual(createdLessonHashtags);
-  //   });
-  // });
+      expect(returnValue).toStrictEqual(createdLessonHashtags);
+    });
+  });
 
   // describe('updateHashtag', () => {
   //   let hashtagId: number;
@@ -177,39 +173,39 @@ describe('LessonHashtagService', () => {
   //   });
   // });
 
-  // describe('deleteManyHashtag', () => {
-  //   let lessonId: number;
-  //   let deletedManyHashtag: { count: number };
-
-  //   beforeEach(() => {
-  //     lessonId = faker.datatype.number();
-  //     deletedManyHashtag = { count: faker.datatype.number() };
-
-  //     prismaService.lessonHashtag.deleteMany.mockReturnValue(
-  //       deletedManyHashtag,
-  //     );
-  //   });
-
-  //   it('success - check method called', () => {
-  //     lessonHashtagService.deleteManyHashtag(lessonId);
-
-  //     expect(prismaService.lessonHashtag.deleteMany).toBeCalledTimes(1);
-  //   });
-
-  //   it('success - check Input & Output', () => {
-  //     const returnValue = lessonHashtagService.deleteManyHashtag(lessonId);
-
-  //     expect(returnValue).toStrictEqual(deletedManyHashtag);
-  //   });
-  // });
-
-  describe('readManyHashtag', () => {
+  describe('deleteManyHashtag', () => {
     let lessonId: number;
-    let lessonHashtags: ReadManyLessonHashtagDto[];
+    let deletedManyHashtag: { count: number };
 
     beforeEach(() => {
       lessonId = faker.datatype.number();
-      lessonHashtags = [new ReadManyLessonHashtagDto()];
+      deletedManyHashtag = { count: faker.datatype.number() };
+
+      prismaService.lessonHashtagMapping.deleteMany.mockReturnValue(
+        deletedManyHashtag,
+      );
+    });
+
+    it('success - check method called', () => {
+      lessonHashtagService.deleteManyHashtag(lessonId);
+
+      expect(prismaService.lessonHashtagMapping.deleteMany).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonHashtagService.deleteManyHashtag(lessonId);
+
+      expect(returnValue).toStrictEqual(deletedManyHashtag);
+    });
+  });
+
+  describe('readManyHashtag', () => {
+    let lessonId: number;
+    let lessonHashtags: ReadLessonHashtagDto[];
+
+    beforeEach(() => {
+      lessonId = faker.datatype.number();
+      lessonHashtags = [new ReadLessonHashtagDto()];
 
       prismaService.lessonHashtagMapping.findMany.mockReturnValue(
         lessonHashtags,

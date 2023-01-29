@@ -11,7 +11,7 @@ import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import { LessonHashtagController } from './lesson-hashtag.controller';
-import { ReadManyLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 
 describe('LessonHashtagController', () => {
   let lessonHashtagController: LessonHashtagController;
@@ -52,13 +52,13 @@ describe('LessonHashtagController', () => {
     let createManyHashtagDto: CreateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
-    let createdLessonHashtags: ReadManyLessonHashtagDto[];
+    let createdLessonHashtags: ReadLessonHashtagDto[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       createManyHashtagDto = new CreateManyLessonHashtagDto();
       param = new IdRequestParamDto();
-      createdLessonHashtags = [new ReadManyLessonHashtagDto()];
+      createdLessonHashtags = [new ReadLessonHashtagDto()];
 
       lessonHashtagService.createManyHashtag.mockReturnValue(
         createdLessonHashtags,
@@ -95,13 +95,13 @@ describe('LessonHashtagController', () => {
     let updateManyLessonHashtagDto: UpdateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
-    let updatedLessonHashtags: ReadManyLessonHashtagDto[];
+    let updatedLessonHashtags: ReadLessonHashtagDto[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       updateManyLessonHashtagDto = new UpdateManyLessonHashtagDto();
       param = new IdRequestParamDto();
-      updatedLessonHashtags = [new ReadManyLessonHashtagDto()];
+      updatedLessonHashtags = [new ReadLessonHashtagDto()];
 
       lessonHashtagService.updateManyHashtag.mockReturnValue(
         updatedLessonHashtags,
@@ -134,9 +134,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(returnValue.lessonHashtags).toStrictEqual(
-        updatedLessonHashtags,
-      );
+      expect(returnValue.lessonHashtags).toStrictEqual(updatedLessonHashtags);
     });
   });
 

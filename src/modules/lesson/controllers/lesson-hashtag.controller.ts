@@ -30,7 +30,7 @@ import {
   ApiUpdateManyHashtag,
   ApiUpdateOneHashtag,
 } from '../swaggers/lesson-hashtag.swagger';
-import { ReadManyLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
@@ -49,7 +49,7 @@ export class LessonHashtagController {
     param: IdRequestParamDto,
     @Body() { lessonHashtagIds }: CreateManyLessonHashtagDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lessonHashtags: ReadManyLessonHashtagDto[] }> {
+  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
@@ -73,7 +73,7 @@ export class LessonHashtagController {
     param: IdRequestParamDto,
     @Body() { lessonHashtagIds }: UpdateManyLessonHashtagDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lessonHashtags: ReadManyLessonHashtagDto[] }> {
+  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
