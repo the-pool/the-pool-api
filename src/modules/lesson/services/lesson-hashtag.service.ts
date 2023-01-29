@@ -41,14 +41,14 @@ export class LessonHashtagService {
   //   });
   // }
 
-  // async updateManyHashtag(
-  //   hashtags: string[],
-  //   lessonId: number,
-  // ): Promise<LessonHashtagEntity[]> {
-  //   await this.deleteManyHashtag(lessonId);
+  async updateManyHashtag(
+    lessonHashtagIds: number[],
+    lessonId: number,
+  ): Promise<ReadManyLessonHashtagDto[]> {
+    await this.deleteManyHashtag(lessonId);
 
-  //   return this.createManyHashtag(hashtags, lessonId);
-  // }
+    return this.createManyHashtag(lessonHashtagIds, lessonId);
+  }
 
   // deleteOneHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
   //   return this.prismaService.lessonHashtag.delete({
@@ -58,13 +58,13 @@ export class LessonHashtagService {
   //   });
   // }
 
-  // deleteManyHashtag(lessonId: number): Promise<{ count: number }> {
-  //   return this.prismaService.lessonHashtag.deleteMany({
-  //     where: {
-  //       lessonId,
-  //     },
-  //   });
-  // }
+  deleteManyHashtag(lessonId: number): Promise<{ count: number }> {
+    return this.prismaService.lessonHashtagMapping.deleteMany({
+      where: {
+        lessonId,
+      },
+    });
+  }
 
   // readOneHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
   //   return this.prismaService.lessonHashtag.findUnique({

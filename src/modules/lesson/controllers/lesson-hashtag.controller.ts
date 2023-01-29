@@ -64,28 +64,29 @@ export class LessonHashtagController {
     return { lessonHashtags: createdLessonHashtags };
   }
 
-  // @ApiUpdateManyHashtag('과제 해시태그 대량 수정')
-  // @BearerAuth(JwtAuthGuard)
-  // @Put()
-  // async updateManyHashtag(
-  //   @Param()
-  //   @SetModelNameToParam(ModelName.Lesson)
-  //   param: IdRequestParamDto,
-  //   @Body() { hashtags }: UpdateManyLessonHashtagDto,
-  //   @UserLogin('id') memberId: number,
-  // ) {
-  //   await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-  //     id: param.id,
-  //     memberId,
-  //   });
+  @ApiUpdateManyHashtag('과제 해시태그 대량 수정')
+  @BearerAuth(JwtAuthGuard)
+  @Put()
+  async updateManyHashtag(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+    @Body() { lessonHashtagIds }: UpdateManyLessonHashtagDto,
+    @UserLogin('id') memberId: number,
+  ): Promise<{ lessonHashtags: ReadManyLessonHashtagDto[] }> {
+    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
+      id: param.id,
+      memberId,
+    });
 
-  //   const updatedHashtags = await this.lessonHashtagService.updateManyHashtag(
-  //     hashtags,
-  //     param.id,
-  //   );
+    const updatedLessonHashtags =
+      await this.lessonHashtagService.updateManyHashtag(
+        lessonHashtagIds,
+        param.id,
+      );
 
-  //   return { hashtags: updatedHashtags };
-  // }
+    return { lessonHashtags: updatedLessonHashtags };
+  }
 
   // @ApiUpdateOneHashtag('과제 해시태그 단일 수정')
   // @BearerAuth(JwtAuthGuard)
