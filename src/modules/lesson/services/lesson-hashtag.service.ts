@@ -34,12 +34,12 @@ export class LessonHashtagService {
     return this.readManyHashtag(lessonId);
   }
 
-  // updateOneHashtag(hashtagId: number, hashtag: string) {
-  //   return this.prismaService.lessonHashtag.update({
-  //     where: { id: hashtagId },
-  //     data: { tag: hashtag },
-  //   });
-  // }
+  updateOneHashtag(lessonHashtagMappingId: number, lessonHashtagId: number) {
+    return this.prismaService.lessonHashtagMapping.update({
+      where: { id: lessonHashtagMappingId },
+      data: { lessonHashtagId: lessonHashtagId },
+    });
+  }
 
   async updateManyHashtag(
     lessonHashtagIds: number[],

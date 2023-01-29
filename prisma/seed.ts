@@ -20,8 +20,8 @@ export const createDataForSeed = (
   type: 'number' | 'string',
   fieldName: string,
 ): { id: number; [fieldName: string]: string | number }[] => {
-  return getValueByEnum(Enum, type).map((item, idx) => {
-    return { id: ++idx, [fieldName]: item };
+  return getValueByEnum(Enum, type).map((fieldValue, idx) => {
+    return { id: ++idx, [fieldName]: fieldValue };
   });
 };
 

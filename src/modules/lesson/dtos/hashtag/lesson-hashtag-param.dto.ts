@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { LessonHashtag } from '@prisma/client';
-import { ModelName } from '@src/constants/enum';
+import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
+import { getEntriesByEnum } from '@src/common/common';
+import { LessonHashtagId, ModelName } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { Type } from 'class-transformer';
@@ -8,16 +9,15 @@ import { IsInt, Min } from 'class-validator';
 
 export class LessonHashtagParamDto extends IdRequestParamDto {
   @ApiProperty({
-    description: 'hashtag 고유 ID',
-    type: 'number',
-    required: true,
+    description: '특정 과제의 해시태그 고유 ID',
+    example: 1,
   })
-  @IsRecord<LessonHashtag>(
-    { model: ModelName.LessonHashtag, field: 'id' },
+  @IsRecord<LessonHashtagMapping>(
+    { model: ModelName.LessonHashtagMapping, field: 'id' },
     true,
   )
   @Min(1)
   @IsInt()
   @Type(() => Number)
-  hashtagId: number;
+  lessonHashtagMappingId: number;
 }
