@@ -120,34 +120,37 @@ describe('LessonHashtagService', () => {
     });
   });
 
-  // describe('updateHashtag', () => {
-  //   let hashtagId: number;
-  //   let hashtag: string;
-  //   let updatedHashtag: LessonHashtagEntity;
+  describe('updateOneHashtag', () => {
+    let lessonHashtagMappingId: number;
+    let lessonHashtagId: number;
+    let updatedHashtag: ReadLessonHashtagDto;
 
-  //   beforeEach(() => {
-  //     hashtagId = faker.datatype.number();
-  //     hashtag = faker.datatype.string();
-  //     updatedHashtag = new LessonHashtagEntity();
+    beforeEach(() => {
+      lessonHashtagMappingId = faker.datatype.number();
+      lessonHashtagId = faker.datatype.number();
+      updatedHashtag = new ReadLessonHashtagDto();
 
-  //     prismaService.lessonHashtag.update.mockReturnValue(updatedHashtag);
-  //   });
+      prismaService.lessonHashtagMapping.update.mockReturnValue(updatedHashtag);
+    });
 
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagService.updateOneHashtag(hashtagId, hashtag);
+    it('success - check method called', async () => {
+      await lessonHashtagService.updateOneHashtag(
+        lessonHashtagMappingId,
+        lessonHashtagId,
+      );
 
-  //     expect(prismaService.lessonHashtag.update).toBeCalledTimes(1);
-  //   });
+      expect(prismaService.lessonHashtagMapping.update).toBeCalledTimes(1);
+    });
 
-  //   it('success - check Input & Output', async () => {
-  //     const returnValue = await lessonHashtagService.updateOneHashtag(
-  //       hashtagId,
-  //       hashtag,
-  //     );
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagService.updateOneHashtag(
+        lessonHashtagMappingId,
+        lessonHashtagId,
+      );
 
-  //     expect(returnValue).toStrictEqual(updatedHashtag);
-  //   });
-  // });
+      expect(returnValue).toStrictEqual(updatedHashtag);
+    });
+  });
 
   // describe('deleteHashtag', () => {
   //   let hashtagId: number;
