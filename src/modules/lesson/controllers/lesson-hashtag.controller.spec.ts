@@ -91,52 +91,54 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  // describe('updateManyHashtag', () => {
-  //   let updateOneHashtagDto: UpdateManyLessonHashtagDto;
-  //   let param: IdRequestParamDto;
-  //   let memberId: number;
-  //   let updatedHashtags;
+  describe('updateManyHashtag', () => {
+    let updateManyLessonHashtagDto: UpdateManyLessonHashtagDto;
+    let param: IdRequestParamDto;
+    let memberId: number;
+    let updatedLessonHashtags: ReadManyLessonHashtagDto[];
 
-  //   beforeEach(() => {
-  //     memberId = faker.datatype.number();
-  //     updateOneHashtagDto = new UpdateManyLessonHashtagDto();
-  //     param = new IdRequestParamDto();
-  //     updatedHashtags = [{ name: faker.datatype.string }];
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      updateManyLessonHashtagDto = new UpdateManyLessonHashtagDto();
+      param = new IdRequestParamDto();
+      updatedLessonHashtags = [new ReadManyLessonHashtagDto()];
 
-  //     lessonHashtagService.updateManyHashtag.mockReturnValue(updatedHashtags);
-  //   });
+      lessonHashtagService.updateManyHashtag.mockReturnValue(
+        updatedLessonHashtags,
+      );
+    });
 
-  //   afterEach(() => {
-  //     lessonHashtagService.updateManyHashtag.mockRestore();
-  //   });
+    afterEach(() => {
+      lessonHashtagService.updateManyHashtag.mockRestore();
+    });
 
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagController.updateManyHashtag(
-  //       param,
-  //       updateOneHashtagDto,
-  //       memberId,
-  //     );
+    it('success - check method called', async () => {
+      await lessonHashtagController.updateManyHashtag(
+        param,
+        updateManyLessonHashtagDto,
+        memberId,
+      );
 
-  //     expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
-  //     expect(mockLessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(
-  //       1,
-  //     );
-  //     expect(mockLessonHashtagService.updateManyHashtag).toBeCalledWith(
-  //       updateOneHashtagDto.hashtags,
-  //       param.id,
-  //     );
-  //   });
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(lessonHashtagService.updateManyHashtag).toHaveBeenCalledTimes(1);
+      expect(lessonHashtagService.updateManyHashtag).toBeCalledWith(
+        updateManyLessonHashtagDto.lessonHashtagIds,
+        param.id,
+      );
+    });
 
-  //   it('success - check Input & Output', async () => {
-  //     const returnValue = await lessonHashtagController.updateManyHashtag(
-  //       param,
-  //       updateOneHashtagDto,
-  //       memberId,
-  //     );
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.updateManyHashtag(
+        param,
+        updateManyLessonHashtagDto,
+        memberId,
+      );
 
-  //     expect(returnValue.hashtags).toStrictEqual(updatedHashtags);
-  //   });
-  // });
+      expect(returnValue.lessonHashtags).toStrictEqual(
+        updatedLessonHashtags,
+      );
+    });
+  });
 
   // describe('updateOneHashtag', () => {
   //   let updateOneHashtagDto: UpdateOneLessonHashtagDto;
