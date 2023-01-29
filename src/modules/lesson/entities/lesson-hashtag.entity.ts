@@ -11,14 +11,8 @@ export class LessonHashtagEntity
   implements LessonHashtag
 {
   @ApiProperty({
-    example: 1,
-    description: 'hashtag에 해당하는 lesson의 고유 ID',
-  })
-  lessonId: number;
-
-  @ApiProperty({
     example: 'the-pool',
-    description: 'hashtag',
+    description: 'hashtag의 tag 이름',
   })
   tag: string;
 }
