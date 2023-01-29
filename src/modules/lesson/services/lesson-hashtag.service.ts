@@ -34,10 +34,19 @@ export class LessonHashtagService {
     return this.readManyHashtag(lessonId);
   }
 
-  updateOneHashtag(lessonHashtagMappingId: number, lessonHashtagId: number) {
+  updateOneHashtag(
+    lessonHashtagMappingId: number,
+    lessonHashtagId: number,
+  ): Promise<ReadLessonHashtagDto> {
     return this.prismaService.lessonHashtagMapping.update({
       where: { id: lessonHashtagMappingId },
       data: { lessonHashtagId: lessonHashtagId },
+      select: {
+        id: true,
+        createdAt: true,
+        lessonId: true,
+        lessonHashtag: true,
+      },
     });
   }
 

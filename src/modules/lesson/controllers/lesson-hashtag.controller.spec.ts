@@ -138,46 +138,46 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  // describe('updateOneHashtag', () => {
-  //   let updateOneHashtagDto: UpdateOneLessonHashtagDto;
-  //   let param: LessonHashtagParamDto;
-  //   let memberId: number;
-  //   let updatedHashtag;
+  describe('updateOneHashtag', () => {
+    let updateOneHashtagDto: UpdateOneLessonHashtagDto;
+    let param: LessonHashtagParamDto;
+    let memberId: number;
+    let updatedHashtag: ReadLessonHashtagDto;
 
-  //   beforeEach(() => {
-  //     memberId = faker.datatype.number();
-  //     updateOneHashtagDto = new UpdateOneLessonHashtagDto();
-  //     param = new LessonHashtagParamDto();
-  //     updatedHashtag = new LessonHashtagEntity();
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      updateOneHashtagDto = new UpdateOneLessonHashtagDto();
+      param = new LessonHashtagParamDto();
+      updatedHashtag = new ReadLessonHashtagDto();
 
-  //     lessonHashtagService.updateOneHashtag.mockReturnValue(updatedHashtag);
-  //   });
+      lessonHashtagService.updateOneHashtag.mockReturnValue(updatedHashtag);
+    });
 
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagController.updateOneHashtag(
-  //       param,
-  //       updateOneHashtagDto,
-  //       memberId,
-  //     );
+    it('success - check method called', async () => {
+      await lessonHashtagController.updateOneHashtag(
+        param,
+        updateOneHashtagDto,
+        memberId,
+      );
 
-  //     expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
-  //     expect(lessonHashtagService.updateOneHashtag).toBeCalledTimes(1);
-  //     expect(lessonHashtagService.updateOneHashtag).toBeCalledWith(
-  //       param.hashtagId,
-  //       updateOneHashtagDto.hashtag,
-  //     );
-  //   });
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(2);
+      expect(lessonHashtagService.updateOneHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.updateOneHashtag).toBeCalledWith(
+        param.lessonHashtagMappingId,
+        updateOneHashtagDto.lessonHashtagId,
+      );
+    });
 
-  //   it('success - check Input & Output', async () => {
-  //     const reuturnValue = await lessonHashtagController.updateOneHashtag(
-  //       param,
-  //       updateOneHashtagDto,
-  //       memberId,
-  //     );
+    it('success - check Input & Output', async () => {
+      const reuturnValue = await lessonHashtagController.updateOneHashtag(
+        param,
+        updateOneHashtagDto,
+        memberId,
+      );
 
-  //     expect(reuturnValue).toStrictEqual({ hashtag: updatedHashtag });
-  //   });
-  // });
+      expect(reuturnValue).toStrictEqual({ lessonHashtag: updatedHashtag });
+    });
+  });
 
   // describe('deleteOneHashtag', () => {
   //   let param: LessonHashtagParamDto;
