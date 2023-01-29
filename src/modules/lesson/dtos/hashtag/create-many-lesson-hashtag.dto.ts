@@ -1,13 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { LessonHashtag } from '@prisma/client';
+import { getEntriesByEnum } from '@src/common/common';
+import { LessonHashtagId, ModelName } from '@src/constants/enum';
+import { IsRecord } from '@src/decorators/is-record.decorator';
+import { IsArray, IsInt, Min } from 'class-validator';
 
 export class CreateManyLessonHashtagDto {
   @ApiProperty({
-    example: ['the-pool', '백엔드', '화이팅'],
-    description: '생성할 hashtag',
-    type: [String],
+    description: '생성할 hashtag의 고유 id',
+    example: [1, 2, 3],
+    enum: [getEntriesByEnum(LessonHashtagId)],
   })
-  @IsString({ each: true })
+  @IsRecord<LessonHashtag>(
+    { model: ModelName.LessonHashtag, field: 'id' },
+    true,
+    { each: true },
+  )
+  @Min(1, { each: true })
+  @IsInt({ each: true })
   @IsArray()
-  hashtags: string[];
+  lessonHashtagIds: LessonHashtagId[];
 }
