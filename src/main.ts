@@ -49,9 +49,9 @@ async function bootstrap() {
   if (isProduction) {
     app.enableShutdownHooks();
 
-    app.enableCors({ origin: ['domain'], credentials: true });
+//     app.enableCors({ origin: ['domain'], credentials: true });
   } else {
-    app.enableCors({ origin: true, credentials: true });
+//     app.enableCors({ origin: true, credentials: true });
 
     const config = new DocumentBuilder()
       .setTitle('title example')
