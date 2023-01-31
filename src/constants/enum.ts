@@ -5,6 +5,7 @@ export enum ModelName {
   LessonHashtag = 'lessonHashtag',
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
+  LessonCategory = 'lessonCategory',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
 }
@@ -60,4 +61,14 @@ export enum LessonCategoryId {
   UiUx = 7,
   Bx = 8,
   EtcDesign = 9,
+}
+
+export enum EntityDate {
+  CreatedAt = 'createdAt',
+  UpdatedAt = 'updatedAt',
+  DeletedAt = 'deletedAt',
+}
+
+export enum EntityId {
+  Id = 'id',
 }

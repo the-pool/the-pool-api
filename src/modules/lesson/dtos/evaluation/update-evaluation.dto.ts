@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { getEntriesByEnum, getValueByEnum } from '@src/common/common';
+import { getEntriesByEnum } from '@src/common/common';
 import { LessonLevelId } from '@src/constants/enum';
-import { IsEnum, IsIn, IsOptional } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 
 export class UpdateEvaluationDto {
   @ApiPropertyOptional({

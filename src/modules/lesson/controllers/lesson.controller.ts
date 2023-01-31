@@ -20,6 +20,8 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
 import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
@@ -29,6 +31,7 @@ import { LessonService } from '../services/lesson.service';
 import {
   ApiCreateLesson,
   ApiDeleteLesson,
+  ApiReadManyLesson,
   ApiReadOneLesson,
   ApiReadSimilarLesson,
   ApiUpdateLesson,
@@ -134,5 +137,13 @@ export class LessonController {
     return plainToInstance(ReadSimilarLessonDto, {
       lessons: readSimilarLessons,
     });
+  }
+
+  @ApiReadManyLesson('과제 목록 조회')
+  @Get()
+  readManyLesson(
+    @Query() query: ReadManyLessonQueryDto,
+  ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
+    return this.lessonService.readManyLesson(query);
   }
 }

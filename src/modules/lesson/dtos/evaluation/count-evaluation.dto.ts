@@ -18,7 +18,7 @@ export class CountEvaluationDto {
 
   @ApiProperty({
     example: 10,
-    description: '난이도 하',
+    description: '평가된 갯수',
   })
   @Type(() => Number)
   bottom: number = 0;

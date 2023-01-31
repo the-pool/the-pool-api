@@ -14,6 +14,8 @@ import { LessonEntity } from '../entities/lesson.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
+import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
@@ -232,6 +234,33 @@ describe('LessonController', () => {
 
       expect(typeof returnValue.lessons[0].isBookmark).toBe('boolean');
       expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
+    });
+  });
+
+  describe('readManyLesson', () => {
+    let query: ReadManyLessonQueryDto;
+    let readManyLesson: { lessons: ReadManyLessonDto[]; totalCount: number };
+
+    beforeEach(() => {
+      query = new ReadManyLessonQueryDto();
+      readManyLesson = {
+        lessons: [new ReadManyLessonDto()],
+        totalCount: faker.datatype.number(),
+      };
+      lessonService.readManyLesson.mockReturnValue(readManyLesson);
+    });
+
+    it('success - check method called', () => {
+      lessonController.readManyLesson(query);
+
+      expect(lessonService.readManyLesson).toBeCalledWith(query);
+      expect(lessonService.readManyLesson).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonController.readManyLesson(query);
+
+      expect(returnValue).toStrictEqual(readManyLesson);
     });
   });
 });
