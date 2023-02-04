@@ -9,7 +9,7 @@ import { QuestionService } from '../services/question.service';
 @ApiTags('커뮤니티 (QnA)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
 @ApiInternalServerErrorResponse({ type: InternalServerErrorException })
-@Controller('api/question')
+@Controller('api/questions')
 export class QuestionController {
   constructor(
     private readonly questionService: QuestionService
