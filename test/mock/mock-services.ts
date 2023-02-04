@@ -25,6 +25,7 @@ export const mockMemberService: MockClassType<MemberService> = {
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),
+  mappingMajor: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
 };
@@ -34,15 +35,15 @@ export const mockMemberFriendshipService: MockClassType<MemberFriendshipService>
     findAll: jest.fn(),
   };
 
-export const mockMemberInterestService: MockClassType<MemberInterestService> = {
-  findAll: jest.fn(),
-};
-
 export const mockMemberStatisticsService: MockClassType<MemberStatisticsService> =
   {
     findAll: jest.fn(),
     findOne: jest.fn(),
   };
+
+export const mockMemberInterestService: MockClassType<MemberInterestService> = {
+  findAll: jest.fn(),
+};
 
 export const mockMemberSkillService: MockClassType<MemberSkillService> = {
   findAll: jest.fn(),

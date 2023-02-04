@@ -5,7 +5,9 @@ import { SetResponseInterceptor } from '@src/interceptors/set-response.intercept
 /**
  * SetResponseInterceptor 를 사용하기 위해 fieldName 메타데이터를 추가해주는 기능을 추가한 데코레이터
  */
-export const SetResponse = (responseFieldName: string) => {
+export const SetResponseSetMetadataInterceptor = (
+  responseFieldName: string,
+) => {
   return applyDecorators(
     SetMetadata(RESPONSE_FIELD_NAME, responseFieldName),
     UseInterceptors(SetResponseInterceptor),

@@ -4,7 +4,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import {
   ApiFindAll,
   ApiFindOne,
@@ -35,7 +35,7 @@ export class MemberStatisticsController {
   }
 
   @ApiFindOne('member statistics 단일 조회')
-  @SetResponse('memberStatistics')
+  @SetResponseSetMetadataInterceptor('memberStatistics')
   @Get(':memberId')
   findOne(
     @Param() params: FindMemberStatisticsRequestParamDto,

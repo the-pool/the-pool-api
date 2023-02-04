@@ -132,6 +132,38 @@ describe('MemberService', () => {
     });
   });
 
+  describe('mappingMajor', () => {
+    let id: number;
+    let majorId: number;
+    let returnValue;
+
+    beforeEach(() => {
+      id = faker.datatype.number();
+      majorId = faker.datatype.number();
+      returnValue = faker.datatype.string();
+    });
+
+    it('매핑 성공', () => {
+      mockPrismaService.member.update.mockReturnValue(returnValue);
+
+      const result = memberService.mappingMajor(id, majorId);
+
+      expect(mockPrismaService.member.update).toBeCalledTimes(1);
+      expect(mockPrismaService.member.update).toBeCalledWith({
+        data: {
+          majorId,
+        },
+        where: {
+          id,
+        },
+        include: {
+          major: true,
+        },
+      });
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
   describe('loginByOAuth', () => {
     let loginByOAuthDto: LoginByOAuthDto;
 

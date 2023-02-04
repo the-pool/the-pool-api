@@ -4,6 +4,9 @@ import { MajorText } from '@src/constants/enum';
 import { IdResponseType } from '@src/types/id-response-type';
 import { MajorSkillEntity } from './major-skill.entity';
 
+/**
+ * @deprecated https://github.com/the-pool/the-pool-api/issues/76 수행 시 제거하면서 V2 를 사용
+ */
 export class MajorEntity extends IdResponseType implements Major {
   @ApiProperty({
     description: '분야 명',

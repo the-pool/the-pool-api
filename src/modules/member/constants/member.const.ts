@@ -5,3 +5,9 @@ export const MEMBER_ACCOUNT_PREFIX = {
   [MemberLoginType.Google]: 'g',
   [MemberLoginType.Apple]: 'a',
 } as const;
+
+export const MEMBER_STATUSES = 'memberStatuses';
+
+export const OWN_MEMBER_FIELD_NAME = 'ownMemberFieldName';
+
+export const MEMBER_JOBS = 'memberJobs';
