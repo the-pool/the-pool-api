@@ -5,11 +5,19 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import {
+  Lesson,
+  LessonCategory,
+  LessonHashtagMapping,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
 import { PrismaModel, PrismaModelName } from '@src/types/type';
+import { extend, number } from 'joi';
 
 @Injectable()
 export class PrismaService
@@ -108,6 +116,28 @@ export class PrismaService
 
     if (prismaModel) {
       throw new ConflictException(`${modelName} is duplicated `);
+    }
+    return;
+  }
+
+  /**
+   * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
+   */
+  // 매핑 테이블 과제 id, 해시태그 id
+  async validateMappedData(
+    modelName: PrismaModelName,
+    where: Record<string, number | { in: number[] }>,
+    length: number,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const prismaModels: PrismaModel[] = await this[modelName].findMany({
+      where,
+    });
+
+    if (prismaModels.length !== length) {
+      4;
+      throw new ForbiddenException(`You do not have access to ${modelName}`);
     }
     return;
   }

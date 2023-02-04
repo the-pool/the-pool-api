@@ -5,7 +5,6 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { mockDataStructureHelper } from '../../../../test/mock/mock-helper';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from './lesson-hashtag.service';
 
 describe('LessonHashtagService', () => {
@@ -190,13 +189,14 @@ describe('LessonHashtagService', () => {
     });
 
     it('success - check method called', () => {
-      lessonHashtagService.deleteManyHashtag(lessonId);
+      lessonHashtagService.deleteManyHashtagByLessonId(lessonId);
 
       expect(prismaService.lessonHashtagMapping.deleteMany).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonHashtagService.deleteManyHashtag(lessonId);
+      const returnValue =
+        lessonHashtagService.deleteManyHashtagByLessonId(lessonId);
 
       expect(returnValue).toStrictEqual(deletedManyHashtag);
     });

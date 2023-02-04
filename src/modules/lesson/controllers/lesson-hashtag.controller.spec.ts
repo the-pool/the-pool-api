@@ -66,7 +66,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.createManyHashtag(
+      await lessonHashtagController.createHashtag(
         param,
         createManyHashtagDto,
         memberId,
@@ -81,7 +81,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagController.createManyHashtag(
+      const returnValue = await lessonHashtagController.createHashtag(
         param,
         createManyHashtagDto,
         memberId,
@@ -113,7 +113,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonHashtagController.updateManyHashtag(
+      await lessonHashtagController.updateHashtag(
         param,
         updateManyLessonHashtagDto,
         memberId,
@@ -128,7 +128,7 @@ describe('LessonHashtagController', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonHashtagController.updateManyHashtag(
+      const returnValue = await lessonHashtagController.updateHashtag(
         param,
         updateManyLessonHashtagDto,
         memberId,

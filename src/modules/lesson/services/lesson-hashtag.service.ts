@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 
@@ -34,40 +33,28 @@ export class LessonHashtagService {
     return this.readManyHashtag(lessonId);
   }
 
-  updateOneHashtag(
-    lessonHashtagMappingId: number,
-    lessonHashtagId: number,
-  ): Promise<ReadLessonHashtagDto> {
-    return this.prismaService.lessonHashtagMapping.update({
-      where: { id: lessonHashtagMappingId },
-      data: { lessonHashtagId: lessonHashtagId },
-      select: {
-        id: true,
-        createdAt: true,
-        lessonId: true,
-        lessonHashtag: true,
-      },
-    });
-  }
-
   async updateManyHashtag(
     lessonHashtagIds: number[],
     lessonId: number,
   ): Promise<ReadLessonHashtagDto[]> {
-    await this.deleteManyHashtag(lessonId);
+    await this.deleteManyHashtagByLessonId(lessonId);
 
     return this.createManyHashtag(lessonHashtagIds, lessonId);
   }
 
-  // deleteOneHashtag(hashtagId: number): Promise<LessonHashtagEntity> {
-  //   return this.prismaService.lessonHashtag.delete({
-  //     where: {
-  //       id: hashtagId,
-  //     },
-  //   });
-  // }
+  deleteManyHashtagByHashtagId(
+    lessonId: number,
+    lessonHashtagIds: number[],
+  ): Promise<any> {
+    return this.prismaService.lessonHashtagMapping.deleteMany({
+      where: {
+        lessonId,
+        lessonHashtagId: { in: lessonHashtagIds },
+      },
+    });
+  }
 
-  deleteManyHashtag(lessonId: number): Promise<{ count: number }> {
+  deleteManyHashtagByLessonId(lessonId: number): Promise<{ count: number }> {
     return this.prismaService.lessonHashtagMapping.deleteMany({
       where: {
         lessonId,
