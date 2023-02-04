@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionCategory } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { QuestionCategoryEntity } from '../entities/question-category.entity';
 
 @Injectable()
 export class QuestionService {
@@ -8,7 +9,7 @@ export class QuestionService {
     private readonly prismaService: PrismaService
   ) { }
 
-  getQuestionCategoryList(): Promise<QuestionCategory[]> {
+  findQuestionCategoryList(): Promise<QuestionCategoryEntity[]> {
     return this.prismaService.questionCategory.findMany();
   }
 }
