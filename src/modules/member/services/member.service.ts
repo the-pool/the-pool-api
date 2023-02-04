@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
@@ -132,7 +133,7 @@ export class MemberService {
 
     // majorSkill 이 모두 존재하지 않는다면 에러
     if (majorSkills.length !== params.majorSkillIds.length) {
-      throw new BadRequestException('존재하지 않는 majorSkill 이 존재합니다.');
+      throw new NotFoundException('존재하지 않는 majorSkill 이 존재합니다.');
     }
 
     // 모든 majorSkill 이 현재 major 의 하위 집합인지 확인
