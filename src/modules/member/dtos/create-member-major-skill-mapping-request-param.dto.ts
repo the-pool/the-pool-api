@@ -23,10 +23,11 @@ export class CreateMemberMajorSkillMappingRequestParamDto extends IdRequestParam
 
   @ApiProperty({
     description:
-      'major skill 고유 ID\nCSV 형태로 보내줘야합니다.\n, 기준으로 앞뒤 공백 제거한 뒤 유효성 검사 진행합니다.',
+      'major skill 고유 ID</br>CSV 형태로 보내줘야합니다.</br>, 기준으로 앞뒤 공백 제거한 뒤 유효성 검사 진행합니다.',
     example: '1, 2, 3',
     minimum: 1,
     uniqueItems: true,
+    type: () => Number,
   })
   @Min(1, { each: true })
   @IsInt({ each: true })

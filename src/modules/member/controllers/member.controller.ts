@@ -34,6 +34,7 @@ import {
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
   ApiMappingMajor,
+  ApiMappingMajorSkill,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
@@ -162,6 +163,7 @@ export class MemberController {
     return this.memberService.mappingMajor(params.id, params.majorId);
   }
 
+  @ApiMappingMajorSkill('해당 member 와 majorSkill 을 연결해줍니다.')
   @AllowMemberStatusesSetMetadataGuard([
     MemberStatus.Pending,
     MemberStatus.Active,

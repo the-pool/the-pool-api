@@ -104,3 +104,21 @@ export const ApiMappingMajor = (summary: string) => {
     }),
   );
 };
+
+export const ApiMappingMajorSkill = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiBearerAuth(),
+    ApiSuccessResponse(
+      HttpStatus.CREATED,
+      {},
+      {
+        count: {
+          type: 'number',
+          description: 'member 와 연결 성공된 majorSkill 개수',
+          minimum: 1,
+        },
+      },
+    ),
+  );
+};
