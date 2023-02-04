@@ -368,7 +368,7 @@ model QuestionCategory {
   /// 고유 ID
   id        Int        @id @default(autoincrement())
   /// 카테고리 이름
-  category  String     @unique @db.VarChar(30)
+  name      String     @unique @db.VarChar(30)
   /// 생성일자
   createdAt DateTime   @default(now()) @db.Timestamp(6)
   // question
