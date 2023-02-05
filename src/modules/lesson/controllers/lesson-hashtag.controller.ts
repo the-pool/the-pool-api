@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
@@ -14,9 +22,12 @@ import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import {
   ApiCreateManyHashtag,
   APiDeleteManyHashtag,
+  ApiReadManyHashtag,
   ApiUpdateManyHashtag,
 } from '../swaggers/lesson-hashtag.swagger';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
 export class LessonHashtagController {
@@ -40,13 +51,12 @@ export class LessonHashtagController {
       memberId,
     });
 
-    const createdLessonHashtags =
-      await this.lessonHashtagService.createManyHashtag(
-        lessonHashtagIds,
-        param.id,
-      );
+    const lessonHashtags = await this.lessonHashtagService.createManyHashtag(
+      lessonHashtagIds,
+      param.id,
+    );
 
-    return { lessonHashtags: createdLessonHashtags };
+    return { lessonHashtags };
   }
 
   @ApiUpdateManyHashtag('과제 해시태그 수정')
@@ -64,13 +74,12 @@ export class LessonHashtagController {
       memberId,
     });
 
-    const updatedLessonHashtags =
-      await this.lessonHashtagService.updateManyHashtag(
-        lessonHashtagIds,
-        param.id,
-      );
+    const lessonHashtags = await this.lessonHashtagService.updateManyHashtag(
+      lessonHashtagIds,
+      param.id,
+    );
 
-    return { lessonHashtags: updatedLessonHashtags };
+    return { lessonHashtags };
   }
 
   @APiDeleteManyHashtag('과제 해시태그 삭제')
@@ -103,36 +112,18 @@ export class LessonHashtagController {
     );
   }
 
-  // @ApiReadManyHashtag('과제의 해시태그 조회')
-  // @BearerAuth(OptionalJwtAuthGuard)
-  // @Get()
-  // async readManyHashtag(
-  //   @Param()
-  //   @SetModelNameToParam(ModelName.Lesson)
-  //   param: IdRequestParamDto,
-  // ) {
-  //   const hashtags = await this.lessonHashtagService.readManyHashtag(param.id);
+  @ApiReadManyHashtag('과제의 해시태그 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get()
+  async readManyHashtag(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: IdRequestParamDto,
+  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
+    const lessonHashtags = await this.lessonHashtagService.readManyHashtag(
+      param.id,
+    );
 
-  //   return { hashtags };
-  // }
-
-  // @ApiReadOneHashtag('과제의 해시태그 단일 조회')
-  // @BearerAuth(OptionalJwtAuthGuard)
-  // @Get(':hashtagId')
-  // async readOneHashtag(
-  //   @Param()
-  //   @SetModelNameToParam(ModelName.Lesson)
-  //   param: LessonHashtagParamDto,
-  // ): Promise<{ hashtag: LessonHashtagEntity | null }> {
-  //   await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-  //     id: param.hashtagId,
-  //     lessonId: param.id,
-  //   });
-
-  //   const hashtag = await this.lessonHashtagService.readOneHashtag(
-  //     param.hashtagId,
-  //   );
-
-  //   return { hashtag };
-  // }
+    return { lessonHashtags };
+  }
 }

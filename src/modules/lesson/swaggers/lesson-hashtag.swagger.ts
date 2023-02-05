@@ -41,19 +41,8 @@ export const ApiReadManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {
-      hashtags: { type: LessonHashtagEntity, isArray: true },
+      lessonHashtags: { type: ReadLessonHashtagDto, isArray: true },
     }),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-  );
-};
-
-export const ApiReadOneHashtag = (summary: string) => {
-  return applyDecorators(
-    ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      hashtag: { type: LessonHashtagEntity },
-    }),
-    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };

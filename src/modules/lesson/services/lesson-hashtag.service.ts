@@ -62,14 +62,6 @@ export class LessonHashtagService {
     });
   }
 
-  // readOneHashtag(hashtagId: number): Promise<LessonHashtagEntity | null> {
-  //   return this.prismaService.lessonHashtag.findUnique({
-  //     where: {
-  //       id: hashtagId,
-  //     },
-  //   });
-  // }
-
   readManyHashtag(lessonId: number): Promise<ReadLessonHashtagDto[]> {
     return this.prismaService.lessonHashtagMapping.findMany({
       where: {
