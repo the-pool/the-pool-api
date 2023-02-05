@@ -222,28 +222,4 @@ describe('LessonHashtagService', () => {
       expect(returnValue).toStrictEqual(lessonHashtags);
     });
   });
-
-  // describe('readHashtag', () => {
-  //   let hashtagId: number;
-  //   let hashtag: LessonHashtagEntity;
-
-  //   beforeEach(() => {
-  //     hashtagId = faker.datatype.number();
-  //     hashtag = new LessonHashtagEntity();
-
-  //     prismaService.lessonHashtag.findUnique.mockReturnValue(hashtag);
-  //   });
-
-  //   it('success - check method called', () => {
-  //     lessonHashtagService.readOneHashtag(hashtagId);
-
-  //     expect(prismaService.lessonHashtag.findUnique).toBeCalledTimes(1);
-  //   });
-
-  //   it('success - check Input & Output', () => {
-  //     const returnValue = lessonHashtagService.readOneHashtag(hashtagId);
-
-  //     expect(returnValue).toStrictEqual(hashtag);
-  //   });
-  // });
 });
