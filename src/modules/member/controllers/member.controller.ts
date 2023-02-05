@@ -19,18 +19,24 @@ import {
 } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { OwnMemberSetMetadataGuard } from '@src/decorators/own-member-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
+  ApiMappingMajor,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
+import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -46,8 +52,6 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
- * @todo active member guard
- *
  */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -67,7 +71,7 @@ export class MemberController {
   }
 
   @ApiFindOne('member 단일 조회')
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
     @SetModelNameToParam(ModelName.Member)
@@ -121,7 +125,7 @@ export class MemberController {
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
   @UseGuards(JwtAuthGuard)
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,
@@ -137,6 +141,24 @@ export class MemberController {
     );
 
     return this.memberService.updateFromPatch(params.id, body);
+  }
+
+  @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
+  @MemberMajorSetMetadataGuard()
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @SetResponseSetMetadataInterceptor('member')
+  @Post(':id/majors/:majorId')
+  mappingMajor(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberMajorMappingRequestParamDto,
+  ) {
+    return this.memberService.mappingMajor(params.id, params.majorId);
   }
 
   /**

@@ -83,6 +83,23 @@ export class MemberService {
   }
 
   /**
+   * member 와 major 를 매핑
+   */
+  mappingMajor(memberId: number, majorId: number) {
+    return this.prismaService.member.update({
+      data: {
+        majorId,
+      },
+      where: {
+        id: memberId,
+      },
+      include: {
+        major: true,
+      },
+    });
+  }
+
+  /**
    * @deprecated 클라이언트에서 POST /api/members/social 걷어내면 제거
    *  유저 로그인 및 회원가입 로직
    */

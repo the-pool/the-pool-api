@@ -4,7 +4,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import { ApiFindAll } from '@src/modules/member-skill/controllers/member-skill.swagger';
 import { FindMemberSkillListQueryDto } from '@src/modules/member-skill/dtos/find-member-skill-list-query.dto';
 import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
@@ -20,7 +20,7 @@ export class MemberSkillController {
   constructor(private readonly memberSkillService: MemberSkillService) {}
 
   @ApiFindAll('member 의 스킬 리스트 조회')
-  @SetResponse('memberSkills')
+  @SetResponseSetMetadataInterceptor('memberSkills')
   @Get()
   findAll(
     @Query() query: FindMemberSkillListQueryDto,

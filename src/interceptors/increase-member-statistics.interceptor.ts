@@ -18,6 +18,8 @@ import { map, Observable, tap } from 'rxjs';
 
 /**
  * member 가 count 를 올리는 행동을 했을 때 increment 시키는 인터셉터
+ *
+ * IncreaseMemberStatisticsSetMetadataGuard 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
 export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {

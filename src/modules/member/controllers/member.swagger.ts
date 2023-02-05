@@ -1,7 +1,15 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiExtraModels,
+  ApiOperation,
+  ApiParam,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
 export const ApiGetAccessTokenForDevelop = (summary: string) => {
@@ -63,6 +71,36 @@ export const ApiUpdateFromPatch = (summary: string) => {
         type: MemberEntity,
       },
     }),
+    ApiFailureResponse(HttpStatus.BAD_REQUEST, [
+      '활성중인 유저거나 활성 상태로 변경하려는 유저만 업데이트 가능합니다.',
+    ]),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['Unauthorized']),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, [
+      '본인 정보만 접근 가능합니다.',
+      'Pending, Active 상태의 유저만 접근 가능합니다.',
+    ]),
+    ApiFailureResponse(HttpStatus.CONFLICT, ['해당 nickname 은 사용중입니다.']),
+  );
+};
+
+export const ApiMappingMajor = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiBearerAuth(),
+    ApiExtraModels(MajorEntityV2),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          member: {
+            $ref: getSchemaPath(MemberEntity),
+            properties: {
+              major: {
+                $ref: getSchemaPath(MajorEntityV2),
+              },
+            },
+          },
+        },
+      },
+    }),
   );
 };

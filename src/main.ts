@@ -12,6 +12,7 @@ import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
+import { options } from 'joi';
 import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
@@ -49,9 +50,11 @@ async function bootstrap() {
   if (isProduction) {
     app.enableShutdownHooks();
 
-    app.enableCors({ origin: ['domain'], credentials: true });
+    app.enableCors();
+    //     app.enableCors({ origin: ['domain'], credentials: true });
   } else {
-    app.enableCors({ origin: true, credentials: true });
+    app.enableCors();
+    //     app.enableCors({ origin: true, credentials: true });
 
     const config = new DocumentBuilder()
       .setTitle('title example')
