@@ -4,11 +4,9 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/create-many-lesson-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { UpdateOneLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-one-lesson-hashtag.dto';
 import { UpdateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-many-lesson-hashtag.dto';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import { LessonHashtagController } from './lesson-hashtag.controller';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
@@ -53,17 +51,15 @@ describe('LessonHashtagController', () => {
     let createManyHashtagDto: CreateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
-    let createdLessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: ReadLessonHashtagDto[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       createManyHashtagDto = new CreateManyLessonHashtagDto();
       param = new IdRequestParamDto();
-      createdLessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [new ReadLessonHashtagDto()];
 
-      lessonHashtagService.createManyHashtag.mockReturnValue(
-        createdLessonHashtags,
-      );
+      lessonHashtagService.createManyHashtag.mockReturnValue(lessonHashtags);
     });
 
     it('success - check method called', async () => {
@@ -88,7 +84,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(returnValue.lessonHashtags).toStrictEqual(createdLessonHashtags);
+      expect(returnValue).toStrictEqual({ lessonHashtags });
     });
   });
 
@@ -96,17 +92,15 @@ describe('LessonHashtagController', () => {
     let updateManyLessonHashtagDto: UpdateManyLessonHashtagDto;
     let param: IdRequestParamDto;
     let memberId: number;
-    let updatedLessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: ReadLessonHashtagDto[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       updateManyLessonHashtagDto = new UpdateManyLessonHashtagDto();
       param = new IdRequestParamDto();
-      updatedLessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [new ReadLessonHashtagDto()];
 
-      lessonHashtagService.updateManyHashtag.mockReturnValue(
-        updatedLessonHashtags,
-      );
+      lessonHashtagService.updateManyHashtag.mockReturnValue(lessonHashtags);
     });
 
     afterEach(() => {
@@ -135,7 +129,7 @@ describe('LessonHashtagController', () => {
         memberId,
       );
 
-      expect(returnValue.lessonHashtags).toStrictEqual(updatedLessonHashtags);
+      expect(returnValue).toStrictEqual({ lessonHashtags });
     });
   });
 
@@ -181,56 +175,28 @@ describe('LessonHashtagController', () => {
     });
   });
 
-  // describe('readManyHashtag', () => {
-  //   let param: IdRequestParamDto;
-  //   let hashtags: LessonHashtagEntity[];
+  describe('readManyHashtag', () => {
+    let param: IdRequestParamDto;
+    let lessonHashtags: ReadLessonHashtagDto[];
 
-  //   beforeEach(() => {
-  //     param = new IdRequestParamDto();
-  //     hashtags = [new LessonHashtagEntity()];
+    beforeEach(() => {
+      param = new IdRequestParamDto();
+      lessonHashtags = [new ReadLessonHashtagDto()];
 
-  //     lessonHashtagService.readManyHashtag.mockReturnValue(hashtags);
-  //   });
+      lessonHashtagService.readManyHashtag.mockReturnValue(lessonHashtags);
+    });
 
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagController.readManyHashtag(param);
+    it('success - check method called', async () => {
+      await lessonHashtagController.readManyHashtag(param);
 
-  //     expect(lessonHashtagService.readManyHashtag).toBeCalledTimes(1);
-  //     expect(lessonHashtagService.readManyHashtag).toBeCalledWith(param.id);
-  //   });
+      expect(lessonHashtagService.readManyHashtag).toBeCalledTimes(1);
+      expect(lessonHashtagService.readManyHashtag).toBeCalledWith(param.id);
+    });
 
-  //   it('success - check Input & Output', async () => {
-  //     const returnValue = await lessonHashtagController.readManyHashtag(param);
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.readManyHashtag(param);
 
-  //     expect(returnValue).toStrictEqual({ hashtags });
-  //   });
-  // });
-
-  // describe('readOneHashtag', () => {
-  //   let param: LessonHashtagParamDto;
-  //   let hashtag: LessonHashtagEntity;
-
-  //   beforeEach(() => {
-  //     param = new LessonHashtagParamDto();
-  //     hashtag = new LessonHashtagEntity();
-
-  //     lessonHashtagService.readOneHashtag.mockReturnValue(hashtag);
-  //   });
-
-  //   it('success - check method called', async () => {
-  //     await lessonHashtagController.readOneHashtag(param);
-
-  //     expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
-  //     expect(lessonHashtagService.readOneHashtag).toBeCalledTimes(1);
-  //     expect(lessonHashtagService.readOneHashtag).toBeCalledWith(
-  //       param.hashtagId,
-  //     );
-  //   });
-
-  //   it('success - check Input & Output', async () => {
-  //     const returnValue = await lessonHashtagController.readOneHashtag(param);
-
-  //     expect(returnValue).toStrictEqual({ hashtag });
-  //   });
-  // });
+      expect(returnValue).toStrictEqual({ lessonHashtags });
+    });
+  });
 });
