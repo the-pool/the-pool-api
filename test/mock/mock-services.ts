@@ -10,6 +10,7 @@ import { MemberSkillService } from '@src/modules/member-skill/services/member-sk
 import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
+import { QuestionService } from '@src/modules/question/services/question.service';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -30,29 +31,29 @@ export const mockMemberService: MockClassType<MemberService> = {
 };
 
 export const mockMemberFriendshipService: MockClassType<MemberFriendshipService> =
-  {
-    findAll: jest.fn(),
-  };
+{
+  findAll: jest.fn(),
+};
 
 export const mockMemberInterestService: MockClassType<MemberInterestService> = {
   findAll: jest.fn(),
 };
 
 export const mockMemberStatisticsService: MockClassType<MemberStatisticsService> =
-  {
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-  };
+{
+  findAll: jest.fn(),
+  findOne: jest.fn(),
+};
 
 export const mockMemberSkillService: MockClassType<MemberSkillService> = {
   findAll: jest.fn(),
 };
 
 export const mockMemberValidationService: MockClassType<MemberValidationService> =
-  {
-    canLoginOrFail: jest.fn(),
-    canUpdateFromPatchOrFail: jest.fn(),
-  };
+{
+  canLoginOrFail: jest.fn(),
+  canUpdateFromPatchOrFail: jest.fn(),
+};
 
 export const mockAuthService: MockClassType<AuthService> = {
   createAccessToken: jest.fn(),
@@ -88,17 +89,21 @@ export const mockLessonHashtagService: MockClassType<LessonHashtagService> = {
 };
 
 export const mockLessonEvaluationService: MockClassType<LessonEvaluationService> =
-  {
-    createEvaluation: jest.fn(),
-    updateEvaluation: jest.fn(),
-    readCountedEvaluation: jest.fn(),
-    readMemberEvaluation: jest.fn(),
-    readManyEvaluation: jest.fn(),
-  };
+{
+  createEvaluation: jest.fn(),
+  updateEvaluation: jest.fn(),
+  readCountedEvaluation: jest.fn(),
+  readMemberEvaluation: jest.fn(),
+  readManyEvaluation: jest.fn(),
+};
 
 export const mockMajorService: MockClassType<MajorService> = {
   findMajors: jest.fn(),
   findMajor: jest.fn(),
   findMajorSkills: jest.fn(),
   findMajorSkill: jest.fn(),
+};
+
+export const mockQuestionService: MockClassType<QuestionService> = {
+  findQuestionCategoryList: jest.fn()
 };
