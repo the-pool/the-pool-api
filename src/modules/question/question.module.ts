@@ -4,8 +4,7 @@ import { QuestionController } from './controllers/question.controller';
 import { QuestionService } from './services/question.service';
 
 @Module({
-  imports: [PrismaService],
   controllers: [QuestionController],
-  providers: [QuestionService]
+  providers: [QuestionService, PrismaService]
 })
 export class QuestionModule { }
