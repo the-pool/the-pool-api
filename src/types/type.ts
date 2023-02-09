@@ -91,3 +91,7 @@ export type Primitive = OptionalProperty & {
   type: string | Record<string, any>;
   example?: any;
 };
+
+export type VirtualColumnCount = {
+  _count: Prisma.SortOrder;
+};

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaModule } from '../core/database/prisma/prisma.module';
 import { LessonEvaluationController } from './controllers/lesson-evaluation.controller';
 import { LessonHashtagController } from './controllers/lesson-hashtag.controller';
@@ -21,6 +22,7 @@ import { LessonService } from './services/lesson.service';
     LessonEvaluationService,
     DataStructureHelper,
     LessonRepository,
+    QueryHelper,
   ],
   controllers: [
     LessonController,
