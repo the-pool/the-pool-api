@@ -121,7 +121,8 @@ export class MemberService {
       );
     }
 
-    // 모든 majorSkill 이 존재하는지 major 에 속하는 majorSkill 인지 확인하기 위해 값을 가져온다.
+    // 모든 majorSkill 이 존재하는지
+    // major 에 속하는 majorSkill 인지 확인하기 위해 값을 가져온다.
     const majorSkills: MajorSkillEntity[] =
       await this.prismaService.majorSkill.findMany({
         where: {
