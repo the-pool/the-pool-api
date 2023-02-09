@@ -9,16 +9,11 @@ import { QuestionController } from './question.controller';
 describe('QuestionController', () => {
   let questionController: QuestionController;
   let questionService;
-  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [QuestionController],
       providers: [
-        {
-          provide: PrismaService,
-          useValue: mockPrismaService
-        },
         {
           provide: QuestionService,
           useValue: mockQuestionService
@@ -28,7 +23,6 @@ describe('QuestionController', () => {
 
     questionController = module.get<QuestionController>(QuestionController);
     questionService = mockQuestionService;
-    prismaService = mockPrismaService;
   });
 
   afterEach(() => {
