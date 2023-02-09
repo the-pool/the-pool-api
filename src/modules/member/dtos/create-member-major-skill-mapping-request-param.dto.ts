@@ -27,7 +27,7 @@ export class CreateMemberMajorSkillMappingRequestParamDto extends IdRequestParam
     example: '1, 2, 3',
     minimum: 1,
     uniqueItems: true,
-    type: () => Number,
+    type: () => String,
   })
   @Min(1, { each: true })
   @IsInt({ each: true })
