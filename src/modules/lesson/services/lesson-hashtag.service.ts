@@ -12,17 +12,14 @@ export class LessonHashtagService {
   ) {}
 
   async createManyHashtag(
-    lessonhashtagIds: number[],
+    lessonHashtagIds: number[],
     lessonId: number,
   ): Promise<ReadLessonHashtagDto[]> {
-    const lessonIds = Array.from(
-      { length: lessonhashtagIds.length },
-      () => lessonId,
-    );
+    const lessonIds = new Array(lessonHashtagIds.length).fill(lessonId);
     const settledLessonHashtags = this.dataStructureHelper.createManyMapper<
       Pick<LessonHashtagMappingEntity, 'lessonId' | 'lessonHashtagId'>
     >({
-      lessonHashtagId: lessonhashtagIds,
+      lessonHashtagId: lessonHashtagIds,
       lessonId: lessonIds,
     });
 

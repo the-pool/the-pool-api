@@ -64,38 +64,6 @@ export enum LessonCategoryId {
   EtcDesign = 9,
 }
 
-export enum LessonHashtagId {
-  Backend = 1,
-  WebFrontend,
-  Ios,
-  Android,
-  Etc,
-  Javascript,
-  React,
-  Vue,
-  Angular,
-  Node,
-  Java,
-  Python,
-  PHP,
-  InfraStructure,
-  Database,
-  Git,
-  BigData,
-  AI,
-  MachineLearning,
-  C,
-  Greedy,
-  Implementation,
-  DFS,
-  BFS,
-  Sorting,
-  BinarySearch,
-  DynamicProgramming,
-  ShortestPath,
-  GraphTheory,
-}
-
 export enum EntityDate {
   CreatedAt = 'createdAt',
   UpdatedAt = 'updatedAt',

@@ -27,6 +27,7 @@ import {
 } from '../swaggers/lesson-hashtag.swagger';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { LessonHashtagMapping } from '@prisma/client';
 
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
@@ -96,13 +97,9 @@ export class LessonHashtagController {
         id: param.id,
         memberId,
       }),
-      this.prismaService.validateMappedData(
+      this.prismaService.validateMappedDataOrFail<LessonHashtagMapping>(
         ModelName.LessonHashtagMapping,
-        {
-          lessonId: param.id,
-          lessonHashtagId: { in: param.lessonHashtagIds },
-        },
-        param.lessonHashtagIds.length,
+        { lessonId: param.id, lessonHashtagId: { in: param.lessonHashtagIds } },
       ),
     ]);
 
@@ -126,4 +123,8 @@ export class LessonHashtagController {
 
     return { lessonHashtags };
   }
+
+  /**
+   * @todo 과제 해시태그에 들어갈 수 있는 해시태그 목록 조회 api 생성
+   */
 }

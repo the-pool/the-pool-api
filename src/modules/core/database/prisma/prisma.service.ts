@@ -5,19 +5,17 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
   OnModuleInit,
 } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import {
-  Lesson,
-  LessonCategory,
   LessonHashtagMapping,
+  Major,
   Prisma,
   PrismaClient,
 } from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
 import { PrismaModel, PrismaModelName } from '@src/types/type';
-import { extend, number } from 'joi';
 
 @Injectable()
 export class PrismaService
@@ -123,21 +121,26 @@ export class PrismaService
   /**
    * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
    */
-  // 매핑 테이블 과제 id, 해시태그 id
-  async validateMappedData(
+  async validateMappedDataOrFail<T extends LessonHashtagMapping | Major>(
     modelName: PrismaModelName,
-    where: Record<string, number | { in: number[] }>,
-    length: number,
-  ) {
+    where: {
+      [key in keyof Omit<T, 'id' | 'createdAt'>]: number | { in: number[] };
+    },
+  ): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const prismaModels: PrismaModel[] = await this[modelName].findMany({
+    const mappingModelRows: T[] = await this[modelName].findMany({
       where,
     });
+    const [, mappedModelIds] = Object.values(where) as [
+      number,
+      { in: number[] },
+    ];
 
-    if (prismaModels.length !== length) {
-      4;
-      throw new ForbiddenException(`You do not have access to ${modelName}`);
+    if (mappingModelRows.length !== mappedModelIds.in.length) {
+      // 넘겨준 매핑 정보에 해당하는 id의 길이와 매핑테이블에서 뽑아온 row의 길이가 다른경우
+      // 존재하지 않는 관계임을 알려주는 error throw
+      throw new NotFoundException(`${modelName}에 존재하지 않는 관계 입니다.`);
     }
     return;
   }

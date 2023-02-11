@@ -4,14 +4,14 @@ export const lessonHashtagSeed = async (prisma) => {
   enum DevelopHashtag {
     Backend = '백엔드개발',
     WebFrontend = '웹 프론트엔드',
-    Ios = 'IOS',
+    iOS = 'iOS',
     Android = '안드로이드',
     Etc = '기타 개발',
     Javascript = 'Javascript',
     React = 'React',
     Vue = 'Vue',
     Angular = 'Angular',
-    Node = 'Node.js',
+    NodeJS = 'NodeJS',
     Java = 'Java',
     Python = 'Python',
     PHP = 'PHP',
@@ -20,8 +20,9 @@ export const lessonHashtagSeed = async (prisma) => {
     Git = 'Git',
     BigData = '빅데이터',
     AI = 'AI',
-    MachineLearning = 'machineLearning',
+    MachineLearning = 'MachineLearning',
     C = 'C',
+    TypeScript = 'Typescript',
   }
 
   enum AlgorithmHashtag {
