@@ -1,10 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockDataStructureHelper } from '../../../../test/mock/mock-helper';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from './lesson-hashtag.service';
 
 describe('LessonHashtagService', () => {
@@ -41,13 +43,19 @@ describe('LessonHashtagService', () => {
   describe('createManyHashtag', () => {
     let lessonHashtagIds: number[];
     let lessonId: number;
-    let createdLessonHashtags: ReadLessonHashtagDto[];
+    let createdLessonHashtags: (LessonHashtagMapping & {
+      lessonHashtag: LessonHashtag;
+    })[];
 
     beforeEach(() => {
       lessonHashtagIds = [faker.datatype.number()];
       lessonId = faker.datatype.number();
-      createdLessonHashtags = [new ReadLessonHashtagDto()];
-
+      createdLessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          ...{ lessonHashtag: new LessonHashtagEntity() },
+        },
+      ];
       prismaService.lessonHashtagMapping.findMany.mockReturnValue(
         createdLessonHashtags,
       );
@@ -83,14 +91,21 @@ describe('LessonHashtagService', () => {
   describe('updateManyHashtag', () => {
     let lessonHashtagIds: number[];
     let lessonId: number;
-    let createdLessonHashtags: ReadLessonHashtagDto[];
+    let createdLessonHashtags: (LessonHashtagMapping & {
+      lessonHashtag: LessonHashtag;
+    })[];
     let spyDeleteManyHashtag: jest.SpyInstance;
     let spyCreateHashtag: jest.SpyInstance;
 
     beforeEach(() => {
       lessonHashtagIds = [faker.datatype.number()];
       lessonId = faker.datatype.number();
-      createdLessonHashtags = [new ReadLessonHashtagDto()];
+      createdLessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          ...{ lessonHashtag: new LessonHashtagEntity() },
+        },
+      ];
 
       prismaService.lessonHashtagMapping.findMany.mockReturnValue(
         createdLessonHashtags,
@@ -188,11 +203,18 @@ describe('LessonHashtagService', () => {
 
   describe('readManyHashtag', () => {
     let lessonId: number;
-    let lessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: (LessonHashtagMapping & {
+      lessonHashtag: LessonHashtag;
+    })[];
 
     beforeEach(() => {
       lessonId = faker.datatype.number();
-      lessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          ...{ lessonHashtag: new LessonHashtagEntity() },
+        },
+      ];
 
       prismaService.lessonHashtagMapping.findMany.mockReturnValue(
         lessonHashtags,
@@ -207,10 +229,7 @@ describe('LessonHashtagService', () => {
         where: {
           lessonId,
         },
-        select: {
-          id: true,
-          createdAt: true,
-          lessonId: true,
+        include: {
           lessonHashtag: true,
         },
       });
