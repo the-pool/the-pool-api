@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { CommonHelper } from '@src/helpers/common.helper';
 import {
   GOOGLE_O_AUTH2_CLIENT_TOKEN,
   JWKS_CLIENT_TOKEN,
@@ -37,6 +38,7 @@ import { OptionalJwtStrategy } from './jwt/optional-jwt.strategy';
     OptionalJwtStrategy,
     PrismaService,
     AuthHelper,
+    CommonHelper,
     {
       provide: GOOGLE_O_AUTH2_CLIENT_TOKEN,
       useClass: OAuth2Client,

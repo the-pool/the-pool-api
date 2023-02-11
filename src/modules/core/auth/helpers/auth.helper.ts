@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
+import { CommonHelper } from '@src/helpers/common.helper';
 import {
   GOOGLE_O_AUTH2_CLIENT_TOKEN,
   JWKS_CLIENT_TOKEN,
@@ -25,8 +26,11 @@ import { catchError, lastValueFrom, map } from 'rxjs';
 
 @Injectable()
 export class AuthHelper {
+  private readonly ACCOUNT_SEPARATOR = '-';
+
   constructor(
     private readonly httpService: HttpService,
+    private readonly commonHelper: CommonHelper,
     @Inject(GOOGLE_O_AUTH2_CLIENT_TOKEN)
     private readonly googleAuth: OAuth2Client,
     @Inject(JWKS_CLIENT_TOKEN)
@@ -51,8 +55,10 @@ export class AuthHelper {
         .get<KakaoAccessTokenResponse>(getAccessTokenUrl, ajaxConfig)
         .pipe(
           map((res) => {
-            return (
-              MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao] + String(res.data.id)
+            return this.commonHelper.setSeparator(
+              this.ACCOUNT_SEPARATOR,
+              MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao],
+              String(res.data.id),
             );
           }),
           catchError((err) => {
@@ -95,7 +101,11 @@ export class AuthHelper {
         oAuthToken,
       );
 
-      return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google] + response.aud;
+      return this.commonHelper.setSeparator(
+        this.ACCOUNT_SEPARATOR,
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google],
+        response.aud,
+      );
     } catch (err) {
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
@@ -146,7 +156,11 @@ export class AuthHelper {
       throw new UnauthorizedException('유효하지 않은 토큰입니다.');
     }
 
-    return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + payload.sub;
+    return this.commonHelper.setSeparator(
+      this.ACCOUNT_SEPARATOR,
+      MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple],
+      payload.sub,
+    );
   }
 
   /**
@@ -167,9 +181,10 @@ export class AuthHelper {
         .get<GitHubAccessTokenResponse>(getAccessTokenUrl, ajaxConfig)
         .pipe(
           map((res) => {
-            return (
-              MEMBER_ACCOUNT_PREFIX[MemberLoginType.GitHub] +
-              String(res.data.id)
+            return this.commonHelper.setSeparator(
+              this.ACCOUNT_SEPARATOR,
+              MEMBER_ACCOUNT_PREFIX[MemberLoginType.GitHub],
+              String(res.data.id),
             );
           }),
           catchError((err) => {
