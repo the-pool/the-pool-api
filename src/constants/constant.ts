@@ -1,5 +1,14 @@
 import { LessonLevelId, MajorId } from './enum';
 
+// 기본 길이 제한
+export const DEFAULT_LIMIT_LENGTH = {
+  /// 1
+  MIN: 1,
+  /// 50
+  MAX: 50,
+} as const;
+
+
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
   // 1
