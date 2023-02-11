@@ -121,7 +121,7 @@ export class PrismaService
   /**
    * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
    */
-  async validateMappedDataOrFail<T extends LessonHashtagMapping | Major>(
+  async validateMappedDataOrFail<T extends LessonHashtagMapping>(
     modelName: PrismaModelName,
     where: {
       [key in keyof Omit<T, 'id' | 'createdAt'>]: number | { in: number[] };
