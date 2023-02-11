@@ -27,7 +27,7 @@ import {
 } from '../swaggers/lesson-hashtag.swagger';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { LessonHashtagMapping } from '@prisma/client';
+import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
 
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
@@ -37,8 +37,6 @@ export class LessonHashtagController {
     private readonly prismaService: PrismaService,
   ) {}
 
-  // csv 형태로 받아야 함, 이미 params dto에서는 number[]의 각각 유효성에 대한 검증을 해내야 됨
-
   @ApiCreateManyHashtag('과제 해시태그 생성')
   @BearerAuth(JwtAuthGuard)
   @Post(':lessonHashtagIds')
@@ -47,7 +45,9 @@ export class LessonHashtagController {
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+  }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
@@ -70,7 +70,9 @@ export class LessonHashtagController {
     param: IdRequestParamDto,
     @Body() { lessonHashtagIds }: UpdateManyLessonHashtagDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+  }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
@@ -117,7 +119,9 @@ export class LessonHashtagController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-  ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+  }> {
     const lessonHashtags = await this.lessonHashtagService.readManyHashtag(
       param.id,
     );
