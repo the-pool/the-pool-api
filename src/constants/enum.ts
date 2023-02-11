@@ -63,6 +63,14 @@ export enum LessonCategoryId {
   EtcDesign = 9,
 }
 
+export enum QuestionCategoryId {
+  Etc = 1,
+  Develoment = 2,
+  Design = 3,
+  Career = 4,
+  WorkLife = 5,
+}
+
 export enum EntityDate {
   CreatedAt = 'createdAt',
   UpdatedAt = 'updatedAt',
