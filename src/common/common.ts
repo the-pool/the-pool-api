@@ -65,6 +65,16 @@ export const getStrMapByEnum = (Enum) => {
   return mapStr + ' }';
 };
 
+export const getStrMapByObject = (obj: Record<string, any>) => {
+  let mapStr = '{ ';
+
+  for (const key in obj) {
+    mapStr += key + ': ' + obj[key] + ', ';
+  }
+
+  return mapStr + ' }';
+};
+
 /**
  * 객체의 모든 value를 숫자로 변환해 새로운 객체를 return 해주는 함수
  */

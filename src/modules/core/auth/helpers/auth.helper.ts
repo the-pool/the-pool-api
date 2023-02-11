@@ -5,12 +5,16 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import {
   GOOGLE_O_AUTH2_CLIENT_TOKEN,
   JWKS_CLIENT_TOKEN,
 } from '@src/modules/core/auth/constants/auth.constant';
 import { KakaoErrorCode } from '@src/modules/core/auth/constants/auth.enum';
-import { KakaoAccessTokenResponse } from '@src/modules/core/auth/type/auth.type';
+import {
+  GitHubAccessTokenResponse,
+  KakaoAccessTokenResponse,
+} from '@src/modules/core/auth/type/auth.type';
 import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { OAuth2Client, TokenInfo } from 'google-auth-library';
@@ -33,18 +37,17 @@ export class AuthHelper {
    * https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#get-token-info
    */
   validateKakaoAccessTokenOrFail(oAuthToken: string): Promise<string> {
-    const ajaxConfig = {
+    const getAccessTokenUrl =
+      'https://kapi.kakao.com/v1/user/access_token_info';
+    const ajaxConfig: AxiosRequestConfig = {
       headers: {
         Authorization: 'Bearer' + ' ' + oAuthToken,
       },
-    };
+    } as const;
 
     return lastValueFrom<string>(
       this.httpService
-        .get<KakaoAccessTokenResponse>(
-          'https://kapi.kakao.com/v1/user/access_token_info',
-          ajaxConfig,
-        )
+        .get<KakaoAccessTokenResponse>(getAccessTokenUrl, ajaxConfig)
         .pipe(
           map((res) => {
             return (
@@ -143,5 +146,35 @@ export class AuthHelper {
     }
 
     return MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + payload.sub;
+  }
+
+  /**
+   * @todo 디바이스를 통한 인증 추가
+   * 깃헙은 아래 플로우를 따름
+   * https://docs.github.com/ko/developers/apps/building-oauth-apps/authorizing-oauth-apps
+   */
+  validateGitHubAccessTokenOrFail(oAuthToken: string): Promise<string> {
+    const getAccessTokenUrl = 'https://api.github.com/user';
+    const ajaxConfig: AxiosRequestConfig = {
+      headers: {
+        Authorization: 'Bearer' + ' ' + oAuthToken,
+      },
+    } as const;
+
+    return lastValueFrom<string>(
+      this.httpService
+        .get<GitHubAccessTokenResponse>(getAccessTokenUrl, ajaxConfig)
+        .pipe(
+          map((res) => {
+            return (
+              MEMBER_ACCOUNT_PREFIX[MemberLoginType.GitHub] +
+              String(res.data.id)
+            );
+          }),
+          catchError((err) => {
+            throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+          }),
+        ),
+    );
   }
 }
