@@ -42,7 +42,7 @@ export class LessonHashtagService {
   deleteManyHashtagByHashtagId(
     lessonId: number,
     lessonHashtagIds: number[],
-  ): Promise<any> {
+  ): Promise<{ count: number }> {
     return this.prismaService.lessonHashtagMapping.deleteMany({
       where: {
         lessonId,
