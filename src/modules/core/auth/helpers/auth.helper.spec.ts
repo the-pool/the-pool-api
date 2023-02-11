@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpStatus } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -248,6 +249,73 @@ describe('AuthHelper', () => {
       await expect(async () => {
         await authHelper.validateAppleAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
+    });
+  });
+
+  describe('validateGitHubAccessTokenOrFail', () => {
+    let oAuthToken: string;
+    let id: number;
+    const successResponse: AxiosResponse = {
+      data: {
+        id: undefined,
+      },
+      status: 200,
+      headers: {},
+      config: { url: 'http://localhost:3000/mockUrl' },
+      statusText: 'OK',
+    };
+    const failureResponse: any = {
+      response: {
+        status: undefined,
+      },
+    };
+
+    beforeEach(() => {
+      oAuthToken = faker.datatype.string();
+    });
+
+    it('성공하는 경우', async () => {
+      id = faker.datatype.number();
+      successResponse.data.id = id;
+
+      jest
+        .spyOn(httpService, 'get')
+        .mockImplementationOnce(() => of(successResponse));
+
+      const result = await authHelper.validateGitHubAccessTokenOrFail(
+        oAuthToken,
+      );
+
+      expect(result).toBe(
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.GitHub] + String(id),
+      );
+    });
+
+    it('유효하지 않은 토큰', async () => {
+      failureResponse.response.status = HttpStatus.UNAUTHORIZED;
+
+      jest.spyOn(httpService, 'get').mockImplementationOnce(() =>
+        throwError(() => {
+          return failureResponse;
+        }),
+      );
+
+      await expect(async () => {
+        await authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+      }).rejects.toThrowError('유효하지 않은 토큰입니다.');
+    });
+
+    it('그 외 예상치 못한 문제', async () => {
+      failureResponse.response.status = HttpStatus.INTERNAL_SERVER_ERROR;
+      jest.spyOn(httpService, 'get').mockImplementationOnce(() =>
+        throwError(() => {
+          return failureResponse;
+        }),
+      );
+
+      await expect(async () => {
+        await authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+      }).rejects.toThrowError();
     });
   });
 });

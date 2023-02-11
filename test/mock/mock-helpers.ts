@@ -6,6 +6,7 @@ export const mockAuthHelper: MockClassType<AuthHelper> = {
   validateKakaoAccessTokenOrFail: jest.fn(),
   validateGoogleAccessTokenOrFail: jest.fn(),
   validateAppleAccessTokenOrFail: jest.fn(),
+  validateGitHubAccessTokenOrFail: jest.fn(),
 };
 
 export const mockQueryHelper: MockClassType<QueryHelper> = {

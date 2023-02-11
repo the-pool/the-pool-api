@@ -1,5 +1,6 @@
 import { HttpService } from '@nestjs/axios';
 import {
+  HttpStatus,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -54,8 +55,8 @@ export class AuthHelper {
               MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao] + String(res.data.id)
             );
           }),
-          catchError((e) => {
-            const errorCode: KakaoErrorCode = e.response.data.code;
+          catchError((err) => {
+            const errorCode: KakaoErrorCode = err.response.data.code;
 
             // 유효하지 않은 토큰일 경우
             if (errorCode === KakaoErrorCode.Unauthorized) {
@@ -71,11 +72,11 @@ export class AuthHelper {
 
             // 카카오 open api 스펙에 맞지 않게 보냈을 경우
             if (errorCode === KakaoErrorCode.InvalidRequestForm) {
-              throw new InternalServerErrorException(e);
+              throw new InternalServerErrorException(err);
             }
 
             // 그 외 에러
-            throw new InternalServerErrorException(e);
+            throw new InternalServerErrorException(err);
           }),
         ),
     );
@@ -172,7 +173,14 @@ export class AuthHelper {
             );
           }),
           catchError((err) => {
-            throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            const status: number = err.response.status;
+
+            // 유효하지 않은 토큰 401 에러
+            if (status === HttpStatus.UNAUTHORIZED) {
+              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            }
+            // 그 외 에러
+            throw new InternalServerErrorException(err);
           }),
         ),
     );
