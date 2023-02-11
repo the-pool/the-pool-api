@@ -12,13 +12,13 @@ export class LessonHashtagMappingEntity
 {
   @ApiProperty({
     example: 1,
-    description: 'lesson hashtag에 해당하는 tag의 고유 ID',
-  })
-  lessonHashtagId: number;
-
-  @ApiProperty({
-    example: 1,
     description: 'lesson의 고유 ID',
   })
   lessonId: number;
+
+  @ApiProperty({
+    example: 1,
+    description: 'lesson hashtag에 해당하는 tag의 고유 ID',
+  })
+  lessonHashtagId: number;
 }

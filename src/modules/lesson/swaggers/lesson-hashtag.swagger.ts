@@ -1,16 +1,35 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 export const ApiCreateManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.CREATED, {
-      lessonHashtags: { type: ReadLessonHashtagDto, isArray: true },
+    ApiExtraModels(LessonHashtagMappingEntity),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          lessonHashtags: {
+            $ref: getSchemaPath(LessonHashtagMappingEntity),
+            properties: {
+              lessonHashtag: {
+                $ref: getSchemaPath(LessonHashtagEntity),
+              },
+            },
+          },
+        },
+      },
     }),
     ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),

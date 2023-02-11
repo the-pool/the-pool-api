@@ -41,12 +41,11 @@ export class LessonHashtagController {
 
   @ApiCreateManyHashtag('과제 해시태그 생성')
   @BearerAuth(JwtAuthGuard)
-  @Post()
+  @Post(':lessonHashtagIds')
   async createManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Body() { lessonHashtagIds }: CreateManyLessonHashtagDto,
+    param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ lessonHashtags: ReadLessonHashtagDto[] }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
@@ -55,7 +54,7 @@ export class LessonHashtagController {
     });
 
     const lessonHashtags = await this.lessonHashtagService.createManyHashtag(
-      lessonHashtagIds,
+      param.lessonHashtagIds,
       param.id,
     );
 

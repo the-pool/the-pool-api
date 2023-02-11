@@ -64,12 +64,7 @@ export class LessonHashtagService {
       where: {
         lessonId,
       },
-      select: {
-        id: true,
-        createdAt: true,
-        lessonId: true,
-        lessonHashtag: true,
-      },
+      include: { lessonHashtag: true },
     });
   }
 }
