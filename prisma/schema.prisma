@@ -330,7 +330,7 @@ model LessonHashtagMapping {
   id              Int      @id @default(autoincrement())
   /// 과제 고유 ID
   lessonId        Int
-    /// 과제 해시 태그 고유 ID
+  /// 과제 해시 태그 고유 ID
   lessonHashtagId Int
   /// 생성일자
   createdAt       DateTime @default(now()) @db.Timestamp(6)
