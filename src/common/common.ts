@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { BooleanString } from '../constants/enum';
+import { BooleanString } from '@src/constants/enum';
 import { validate, ValidationError } from 'class-validator';
 
 export const pageTransform = ({ value }) => {
@@ -10,6 +10,31 @@ export const StringBooleanTransform = ({ value }) => {
   if (value === BooleanString.True) return true;
   if (value === BooleanString.False) return false;
   return value;
+};
+
+/**
+ * class transformer CSV 형태를 array 로 변환해준다.
+ */
+export const transformCsvToArray = ({ value }: { value: string }): string[] => {
+  return value.split(',');
+};
+
+/**
+ * class transformer string[] 를 돌면서 앞뒤 공백을 제거한다.
+ */
+export const transformEachTrim = ({ value }: { value: string[] }): string[] => {
+  return value.map((str) => str.trim());
+};
+
+/**
+ * class transformer string[] 를 돌면서 number[] 로 변환한다.
+ */
+export const transformEachStrungToNumber = ({
+  value,
+}: {
+  value: string[];
+}): number[] => {
+  return value.map((str) => Number(str));
 };
 
 /**

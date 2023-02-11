@@ -37,6 +37,8 @@ export class LessonHashtagController {
     private readonly prismaService: PrismaService,
   ) {}
 
+  // csv 형태로 받아야 함, 이미 params dto에서는 number[]의 각각 유효성에 대한 검증을 해내야 됨
+
   @ApiCreateManyHashtag('과제 해시태그 생성')
   @BearerAuth(JwtAuthGuard)
   @Post()
