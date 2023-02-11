@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
@@ -15,8 +7,6 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/create-many-lesson-hashtag.dto';
-import { UpdateManyLessonHashtagDto } from '@src/modules/lesson/dtos/hashtag/update-many-lesson-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import {
@@ -25,7 +15,6 @@ import {
   ApiReadManyHashtag,
   ApiUpdateManyHashtag,
 } from '../swaggers/lesson-hashtag.swagger';
-import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
 
@@ -63,12 +52,11 @@ export class LessonHashtagController {
 
   @ApiUpdateManyHashtag('과제 해시태그 수정')
   @BearerAuth(JwtAuthGuard)
-  @Put()
+  @Put(':lessonHashtagIds')
   async updateManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Body() { lessonHashtagIds }: UpdateManyLessonHashtagDto,
+    param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{
     lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
@@ -79,7 +67,7 @@ export class LessonHashtagController {
     });
 
     const lessonHashtags = await this.lessonHashtagService.updateManyHashtag(
-      lessonHashtagIds,
+      param.lessonHashtagIds,
       param.id,
     );
 
