@@ -34,9 +34,11 @@ import {
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
   ApiMappingMajor,
+  ApiMappingMajorSkill,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
+import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -159,6 +161,23 @@ export class MemberController {
     params: CreateMemberMajorMappingRequestParamDto,
   ) {
     return this.memberService.mappingMajor(params.id, params.majorId);
+  }
+
+  @ApiMappingMajorSkill('해당 member 와 majorSkill 을 연결해줍니다.')
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/majors/:majorId/major-skills/:majorSkillIds')
+  mappingMajorSkill(
+    @UserLogin() member: MemberEntity,
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberMajorSkillMappingRequestParamDto,
+  ): Promise<{ count: number }> {
+    return this.memberService.mappingMajorSkill(member, params);
   }
 
   /**

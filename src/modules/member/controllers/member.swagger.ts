@@ -104,3 +104,35 @@ export const ApiMappingMajor = (summary: string) => {
     }),
   );
 };
+
+export const ApiMappingMajorSkill = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiBearerAuth(),
+    ApiSuccessResponse(
+      HttpStatus.CREATED,
+      {},
+      {
+        count: {
+          type: 'number',
+          description: 'member 와 연결 성공된 majorSkill 개수',
+          minimum: 1,
+        },
+      },
+    ),
+    ApiFailureResponse(HttpStatus.BAD_REQUEST, [
+      'majorSkill 중 major 에 속하지 않은 skill 이 존재합니다.',
+      '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+    ]),
+    ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, [
+      '본인 정보만 접근 가능합니다.',
+      'Pending, Active 상태의 유저만 접근 가능합니다.',
+      '유저의 major 와 다른 major 는 접근이 불가능합니다.',
+    ]),
+    ApiFailureResponse(
+      HttpStatus.NOT_FOUND,
+      '존재하지 않는 majorSkill 이 존재합니다.',
+    ),
+  );
+};

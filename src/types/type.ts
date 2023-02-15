@@ -11,8 +11,8 @@ import {
   MajorSkill,
   Member,
   MemberFollow,
-  MemberStatistics,
   MemberSkill,
+  MemberStatistics,
   Prisma,
 } from '@prisma/client';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
@@ -70,6 +70,8 @@ export type OptionalProperty = {
   deprecated?: boolean;
   title?: string;
   description?: string;
+  maximum?: number;
+  minimum?: number;
   maxLength?: number;
   minLength?: number;
   maxItems?: number;

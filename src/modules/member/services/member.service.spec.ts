@@ -1,10 +1,18 @@
 import { faker } from '@faker-js/faker';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
@@ -161,6 +169,116 @@ describe('MemberService', () => {
         },
       });
       expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('mappingMajorSkill', () => {
+    let member: MemberEntity;
+    let params: CreateMemberMajorSkillMappingRequestParamDto;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      params = new CreateMemberMajorSkillMappingRequestParamDto();
+    });
+
+    it('현재 유저가 가진 major 와 다른 major 에 접근하려는 경우', async () => {
+      member.majorId = 1;
+      params.majorId = 2;
+
+      await expect(
+        memberService.mappingMajorSkill(member, params),
+      ).rejects.toThrowError(
+        new ForbiddenException(
+          '유저의 major 와 다른 major 는 접근이 불가능합니다.',
+        ),
+      );
+    });
+
+    it('존재하지 않는 majorSkill 을 매핑하려는 경우', async () => {
+      member.majorId = 1;
+      params.majorId = 1;
+      params.majorSkillIds = [1, 2];
+      mockPrismaService.majorSkill.findMany.mockResolvedValue([
+        new MajorSkillEntity(),
+      ] as any);
+
+      await expect(
+        memberService.mappingMajorSkill(member, params),
+      ).rejects.toThrowError(
+        new NotFoundException('존재하지 않는 majorSkill 이 존재합니다.'),
+      );
+    });
+
+    it('매핑하려는 majorSkill 이 현재 유저의 major 의 skill 이 아닌 경우', async () => {
+      member.majorId = 1;
+      params.majorId = 1;
+      params.majorSkillIds = [1];
+      const majorSKills: Pick<MajorSkillEntity, 'id' | 'majorId'>[] = [
+        { id: 1, majorId: 2 },
+      ];
+      mockPrismaService.majorSkill.findMany.mockResolvedValue(
+        majorSKills as any,
+      );
+
+      await expect(
+        memberService.mappingMajorSkill(member, params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          'majorSkill 중 major 에 속하지 않은 skill 이 존재합니다.',
+        ),
+      );
+    });
+
+    it('이미 매핑돼있는 majorSkill 을 매핑하려는 경우', async () => {
+      member.majorId = 1;
+      params.majorId = 1;
+      params.majorSkillIds = [1];
+      const majorSKills: Pick<MajorSkillEntity, 'id' | 'majorId'>[] = [
+        { id: 1, majorId: 1 },
+      ];
+      mockPrismaService.majorSkill.findMany.mockResolvedValue(
+        majorSKills as any,
+      );
+      mockPrismaService.memberMajorSkillMapping.findFirst.mockResolvedValue(
+        new MemberMajorMappingEntity() as any,
+      );
+
+      await expect(
+        memberService.mappingMajorSkill(member, params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+        ),
+      );
+    });
+
+    it('매핑 성공', async () => {
+      member.majorId = 1;
+      params.majorId = 1;
+      params.id = 1;
+      params.majorSkillIds = [1];
+      const majorSKills: Pick<MajorSkillEntity, 'id' | 'majorId'>[] = [
+        { id: 1, majorId: 1 },
+      ];
+      const result = { count: 1 };
+      mockPrismaService.majorSkill.findMany.mockResolvedValue(
+        majorSKills as any,
+      );
+      mockPrismaService.memberMajorSkillMapping.findFirst.mockResolvedValue(
+        null as any,
+      );
+      mockPrismaService.memberMajorSkillMapping.createMany.mockResolvedValue(
+        result as any,
+      );
+
+      await expect(
+        memberService.mappingMajorSkill(member, params),
+      ).resolves.toStrictEqual(result);
+      expect(
+        mockPrismaService.memberMajorSkillMapping.createMany,
+      ).toBeCalledWith({
+        data: [{ majorSkillId: params.majorSkillIds[0], memberId: params.id }],
+      });
     });
   });
 

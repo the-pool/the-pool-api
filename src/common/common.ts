@@ -13,6 +13,31 @@ export const StringBooleanTransform = ({ value }) => {
 };
 
 /**
+ * class transformer CSV 형태를 array 로 변환해준다.
+ */
+export const transformCsvToArray = ({ value }: { value: string }): string[] => {
+  return value.split(',');
+};
+
+/**
+ * class transformer string[] 를 돌면서 앞뒤 공백을 제거한다.
+ */
+export const transformEachTrim = ({ value }: { value: string[] }): string[] => {
+  return value.map((str) => str.trim());
+};
+
+/**
+ * class transformer string[] 를 돌면서 number[] 로 변환한다.
+ */
+export const transformEachStrungToNumber = ({
+  value,
+}: {
+  value: string[];
+}): number[] => {
+  return value.map((str) => Number(str));
+};
+
+/**
  * swagger 상에 enum에 들어갈 value를 명시하기 위한 함수
  */
 export const getValueByEnum = <T extends string | number>(
