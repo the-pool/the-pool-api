@@ -7,7 +7,10 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { NotFoundException } from '@nestjs/common/exceptions';
+import {
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 import {
   LessonHashtagMapping,
   Major,
@@ -126,22 +129,33 @@ export class PrismaService
     where: {
       [key in keyof Omit<T, 'id' | 'createdAt'>]: number | { in: number[] };
     },
+    isShouldBeExist: boolean,
   ): Promise<void> {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const mappingModelRows: T[] = await this[modelName].findMany({
       where,
     });
-    const [, mappedModelIds] = Object.values(where) as [
-      number,
-      { in: number[] },
-    ];
+    const [mappedModelIds] = Object.values(where).filter((value) =>
+      value.hasOwnProperty('in'),
+    ) as [{ in: number[] }];
 
-    if (mappingModelRows.length !== mappedModelIds.in.length) {
-      // 넘겨준 매핑 정보에 해당하는 id의 길이와 매핑테이블에서 뽑아온 row의 길이가 다른경우
-      // 존재하지 않는 관계임을 알려주는 error throw
+    // 매핑 관계가 존재 하면 안되는 경우
+    if (!isShouldBeExist && mappingModelRows.length) {
+      throw new BadRequestException(
+        `${modelName}에 중복된 관계를 추가할 수 없습니다.`,
+      );
+    }
+
+    // 매핑 관계가 존재해야 하는 경우
+    if (
+      isShouldBeExist &&
+      mappingModelRows.length !== mappedModelIds.in.length
+    ) {
+      // 넘겨준 매핑 정보에 해당하는 id의 길이와 매핑테이블에서 뽑아온 row의 길이와 비교
       throw new NotFoundException(`${modelName}에 존재하지 않는 관계 입니다.`);
     }
+
     return;
   }
 }

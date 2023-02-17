@@ -37,10 +37,18 @@ export class LessonHashtagController {
   ): Promise<{
     lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
   }> {
-    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-      id: param.id,
-      memberId,
-    });
+    await Promise.all([
+      this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
+        id: param.id,
+        memberId,
+      }),
+      // 매핑 관계가 이미 존재하는지 확인후 이미 존재하는 태그라면 400 return
+      this.prismaService.validateMappedDataOrFail<LessonHashtagMapping>(
+        ModelName.LessonHashtagMapping,
+        { lessonId: param.id, lessonHashtagId: { in: param.lessonHashtagIds } },
+        false,
+      ),
+    ]);
 
     const lessonHashtags = await this.lessonHashtagService.createManyHashtag(
       param.lessonHashtagIds,
@@ -91,6 +99,7 @@ export class LessonHashtagController {
       this.prismaService.validateMappedDataOrFail<LessonHashtagMapping>(
         ModelName.LessonHashtagMapping,
         { lessonId: param.id, lessonHashtagId: { in: param.lessonHashtagIds } },
+        true,
       ),
     ]);
 
