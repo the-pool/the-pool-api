@@ -25,8 +25,8 @@ import { LessonService } from './services/lesson.service';
     QueryHelper,
   ],
   controllers: [
-    LessonController,
     LessonHashtagController,
+    LessonController,
     LessonEvaluationController,
   ],
 })

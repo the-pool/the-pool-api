@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
@@ -86,5 +87,14 @@ export const ApiReadManyHashtag = (summary: string) => {
       },
     }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
+  );
+};
+
+export const ApiReadLessonHashtags = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiSuccessResponse(HttpStatus.OK, {
+      lessonHashtags: { type: LessonHashtagEntity, isArray: true },
+    }),
   );
 };

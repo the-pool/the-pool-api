@@ -76,4 +76,8 @@ export class LessonHashtagService {
       include: { lessonHashtag: true },
     });
   }
+
+  readLessonHashtags(): Promise<LessonHashtagEntity[]> {
+    return this.prismaService.lessonHashtag.findMany();
+  }
 }

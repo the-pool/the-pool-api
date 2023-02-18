@@ -12,16 +12,17 @@ import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import {
   ApiCreateManyHashtag,
   APiDeleteManyHashtag,
+  ApiReadLessonHashtags,
   ApiReadManyHashtag,
   ApiUpdateManyHashtag,
 } from '../swaggers/lesson-hashtag.swagger';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
+import { LessonHashtagMapping } from '@prisma/client';
 import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @ApiTags('과제의 해시태그')
-@Controller(':id/hashtags')
+@Controller()
 export class LessonHashtagController {
   constructor(
     private readonly lessonHashtagService: LessonHashtagService,
@@ -30,7 +31,7 @@ export class LessonHashtagController {
 
   @ApiCreateManyHashtag('과제 해시태그 생성')
   @BearerAuth(JwtAuthGuard)
-  @Post(':lessonHashtagIds')
+  @Post(':id/hashtags/:lessonHashtagIds')
   async createManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -64,7 +65,7 @@ export class LessonHashtagController {
 
   @ApiUpdateManyHashtag('과제 해시태그 수정')
   @BearerAuth(JwtAuthGuard)
-  @Put(':lessonHashtagIds')
+  @Put(':id/hashtags/:lessonHashtagIds')
   async updateManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -90,7 +91,7 @@ export class LessonHashtagController {
 
   @APiDeleteManyHashtag('과제 해시태그 삭제')
   @BearerAuth(JwtAuthGuard)
-  @Delete(':lessonHashtagIds')
+  @Delete(':id/hashtags/:lessonHashtagIds')
   async deleteManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -115,9 +116,20 @@ export class LessonHashtagController {
     );
   }
 
+  @ApiReadLessonHashtags('과제 해시태그 전체 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get('hashtags')
+  async readLessonHashtags(): Promise<{
+    lessonHashtags: LessonHashtagEntity[];
+  }> {
+    const lessonHashtags = await this.lessonHashtagService.readLessonHashtags();
+
+    return { lessonHashtags };
+  }
+
   @ApiReadManyHashtag('과제의 해시태그 조회')
   @BearerAuth(OptionalJwtAuthGuard)
-  @Get()
+  @Get(':id/hashtags')
   async readManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
@@ -133,8 +145,4 @@ export class LessonHashtagController {
 
     return { lessonHashtags };
   }
-
-  /**
-   * @todo 과제 해시태그에 들어갈 수 있는 해시태그 목록 조회 api 생성
-   */
 }
