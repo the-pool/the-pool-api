@@ -205,4 +205,26 @@ describe('LessonHashtagController', () => {
       expect(returnValue).toStrictEqual({ lessonHashtags });
     });
   });
+
+  describe('readLessonHashtags', () => {
+    let lessonHashtags: LessonHashtagEntity[];
+
+    beforeEach(() => {
+      lessonHashtags = [new LessonHashtagEntity()];
+
+      lessonHashtagService.readLessonHashtags.mockReturnValue(lessonHashtags);
+    });
+
+    it('success - check method called', async () => {
+      await lessonHashtagController.readLessonHashtags();
+
+      expect(lessonHashtagService.readLessonHashtags).toBeCalledTimes(1);
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonHashtagController.readLessonHashtags();
+
+      expect(returnValue).toStrictEqual({ lessonHashtags });
+    });
+  });
 });
