@@ -7,8 +7,9 @@ import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import { LessonHashtagController } from './lesson-hashtag.controller';
-import { ReadLessonHashtagDto } from '../dtos/hashtag/read-many-lesson-hashtag.dto';
 import { ModelName } from '@src/constants/enum';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 describe('LessonHashtagController', () => {
   let lessonHashtagController: LessonHashtagController;
@@ -48,12 +49,19 @@ describe('LessonHashtagController', () => {
   describe('createManyHashtag', () => {
     let param: LessonHashtagParamDto;
     let memberId: number;
-    let lessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       param = new LessonHashtagParamDto();
-      lessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          lessonHashtag: new LessonHashtagEntity(),
+        },
+      ];
 
       lessonHashtagService.createManyHashtag.mockReturnValue(lessonHashtags);
     });
@@ -82,12 +90,19 @@ describe('LessonHashtagController', () => {
   describe('updateManyHashtag', () => {
     let param: LessonHashtagParamDto;
     let memberId: number;
-    let lessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
 
     beforeEach(() => {
       memberId = faker.datatype.number();
       param = new LessonHashtagParamDto();
-      lessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          lessonHashtag: new LessonHashtagEntity(),
+        },
+      ];
 
       lessonHashtagService.updateManyHashtag.mockReturnValue(lessonHashtags);
     });
@@ -161,11 +176,18 @@ describe('LessonHashtagController', () => {
 
   describe('readManyHashtag', () => {
     let param: IdRequestParamDto;
-    let lessonHashtags: ReadLessonHashtagDto[];
+    let lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
 
     beforeEach(() => {
       param = new IdRequestParamDto();
-      lessonHashtags = [new ReadLessonHashtagDto()];
+      lessonHashtags = [
+        {
+          ...new LessonHashtagMappingEntity(),
+          lessonHashtag: new LessonHashtagEntity(),
+        },
+      ];
 
       lessonHashtagService.readManyHashtag.mockReturnValue(lessonHashtags);
     });

@@ -17,6 +17,8 @@ import {
 } from '../swaggers/lesson-hashtag.swagger';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @ApiTags('과제의 해시태그')
 @Controller(':id/hashtags')
@@ -35,7 +37,9 @@ export class LessonHashtagController {
     param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{
-    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
   }> {
     await Promise.all([
       this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
@@ -67,7 +71,9 @@ export class LessonHashtagController {
     param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
   ): Promise<{
-    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
   }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
@@ -117,7 +123,9 @@ export class LessonHashtagController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
   ): Promise<{
-    lessonHashtags: (LessonHashtagMapping & { lessonHashtag: LessonHashtag })[];
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
   }> {
     const lessonHashtags = await this.lessonHashtagService.readManyHashtag(
       param.id,

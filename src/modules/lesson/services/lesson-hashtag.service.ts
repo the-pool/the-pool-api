@@ -3,6 +3,7 @@ import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @Injectable()
 export class LessonHashtagService {
@@ -14,7 +15,9 @@ export class LessonHashtagService {
   async createManyHashtag(
     lessonHashtagIds: number[],
     lessonId: number,
-  ): Promise<(LessonHashtagMapping & { lessonHashtag: LessonHashtag })[]> {
+  ): Promise<
+    (LessonHashtagMappingEntity & { lessonHashtag: LessonHashtagEntity })[]
+  > {
     const lessonIds = new Array(lessonHashtagIds.length).fill(lessonId);
     const settledLessonHashtags = this.dataStructureHelper.createManyMapper<
       Pick<LessonHashtagMappingEntity, 'lessonId' | 'lessonHashtagId'>
@@ -33,7 +36,9 @@ export class LessonHashtagService {
   async updateManyHashtag(
     lessonHashtagIds: number[],
     lessonId: number,
-  ): Promise<(LessonHashtagMapping & { lessonHashtag: LessonHashtag })[]> {
+  ): Promise<
+    (LessonHashtagMappingEntity & { lessonHashtag: LessonHashtagEntity })[]
+  > {
     await this.deleteManyHashtagByLessonId(lessonId);
 
     return this.createManyHashtag(lessonHashtagIds, lessonId);
@@ -61,7 +66,9 @@ export class LessonHashtagService {
 
   readManyHashtag(
     lessonId: number,
-  ): Promise<(LessonHashtagMapping & { lessonHashtag: LessonHashtag })[]> {
+  ): Promise<
+    (LessonHashtagMappingEntity & { lessonHashtag: LessonHashtagEntity })[]
+  > {
     return this.prismaService.lessonHashtagMapping.findMany({
       where: {
         lessonId,
