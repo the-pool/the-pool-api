@@ -1,0 +1,27 @@
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  transformCsvToArray,
+  transformEachStrungToNumber,
+  transformEachTrim,
+} from '@src/common/common';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { Transform } from 'class-transformer';
+import { ArrayUnique, IsInt, Min } from 'class-validator';
+
+export class CreateMemberSkillsMappingRequestParamDto extends IdRequestParamDto {
+  @ApiProperty({
+    description:
+      'member skill 고유 ID</br>CSV 형태로 보내줘야합니다.</br>, 기준으로 앞뒤 공백 제거한 뒤 유효성 검사 진행합니다.',
+    example: '1,2,3',
+    minimum: 1,
+    uniqueItems: true,
+    type: () => String,
+  })
+  @Min(1, { each: true })
+  @IsInt({ each: true })
+  @ArrayUnique()
+  @Transform(transformCsvToArray)
+  @Transform(transformEachTrim)
+  @Transform(transformEachStrungToNumber)
+  memberSkillIds: number[];
+}
