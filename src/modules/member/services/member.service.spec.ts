@@ -17,6 +17,7 @@ import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
 import { MemberService } from './member.service';
 
 describe('MemberService', () => {
@@ -279,6 +280,48 @@ describe('MemberService', () => {
       ).toBeCalledWith({
         data: [{ majorSkillId: params.majorSkillIds[0], memberId: params.id }],
       });
+    });
+  });
+
+  describe('unmappingMemberSkills', () => {
+    let params: DeleteMemberSkillsMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new DeleteMemberSkillsMappingRequestParamDto();
+    });
+
+    it('mapping 되지 않은 관계를 제거하려는 경우', async () => {
+      params.memberSkillIds = [1];
+      mockPrismaService.memberSkillMapping.count.mockResolvedValue(0);
+
+      await expect(
+        memberService.unmappingMemberSkills(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          'mapping 되지 않은 member 의 majorSkill 이 존재합니다.',
+        ),
+      );
+    });
+
+    it('mapping 제거 성공', async () => {
+      params.memberSkillIds = [1];
+      mockPrismaService.memberSkillMapping.count.mockResolvedValue(
+        params.memberSkillIds.length,
+      );
+      mockPrismaService.memberSkillMapping.deleteMany.mockResolvedValue({
+        count: params.memberSkillIds.length,
+      });
+
+      await expect(
+        memberService.unmappingMemberSkills(params),
+      ).resolves.toStrictEqual({
+        count: params.memberSkillIds.length,
+      });
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberSkillMapping.count.mockRestore();
+      mockPrismaService.memberSkillMapping.deleteMany.mockRestore();
     });
   });
 
