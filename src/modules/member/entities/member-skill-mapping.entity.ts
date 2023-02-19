@@ -1,9 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { MemberSkillMapping } from '@prisma/client';
+import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
 export class MemberSkillMappingEntity
-  extends IdResponseType
+  extends IntersectionType(
+    IdResponseType,
+    PickType(DateResponseType, ['createdAt']),
+  )
   implements MemberSkillMapping
 {
   @ApiProperty({
@@ -17,10 +21,4 @@ export class MemberSkillMappingEntity
     minimum: 1,
   })
   memberSkillId: number;
-
-  @ApiProperty({
-    example: '2022-10-03T09:54:50.563Z',
-    description: '생성일자',
-  })
-  createdAt: Date;
 }
