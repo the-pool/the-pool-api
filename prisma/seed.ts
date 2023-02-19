@@ -4,6 +4,7 @@ import { lessonLevelSeed } from './functions/lesson-level.seed';
 import { majorSkillSeed } from './functions/major-skill.seed';
 import { majorSeed } from './functions/major.seed';
 import { memberInterestSeed } from './functions/member-interest.seed';
+import { memberSkillSeed } from './functions/member-skill.seed';
 import { questionCategorySeed } from './functions/question-category.seed';
 
 // initialize Prisma Client
@@ -16,7 +17,7 @@ async function thePoolSeed() {
   await lessonCategorySeed(prisma);
   await lessonLevelSeed(prisma);
   await majorSeed(prisma);
-  await majorSeed(prisma);
+  await memberSkillSeed(prisma);
   await memberInterestSeed(prisma);
   await majorSkillSeed(prisma);
   await questionCategorySeed(prisma);
