@@ -11,6 +11,7 @@ import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '../dtos/create-member-major-skill-mapping-request-param.dto';
@@ -190,7 +191,41 @@ export class MemberService {
    */
   async mappingMemberInterests(
     params: CreateMemberInterestMappingRequestParamDto,
-  ): Promise<Prisma.BatchPayload> {}
+  ): Promise<Prisma.BatchPayload> {
+    // 현재 유저랑 mapping 돼있는 memberSkill 을 mapping 하는 경우를 체크하기 위해 값을 뽑아온다.
+    const exMemberInterestMapping: MemberInterestMappingEntity | null =
+      await this.prismaService.memberInterestMapping.findFirst({
+        where: {
+          memberId: params.id,
+          memberInterestId: {
+            in: params.memberInterestIds,
+          },
+        },
+      });
+
+    // 이미 mapping 된 관계를 만드려는 경우 에러
+    if (exMemberInterestMapping) {
+      throw new BadRequestException(
+        '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+      );
+    }
+
+    // bulk insert 를 위해 전처리
+    const toCreateMemberSkillMappings: Pick<
+      MemberInterestMappingEntity,
+      'memberId' | 'memberInterestId'
+    >[] = params.memberInterestIds.map((memberInterestId) => {
+      return {
+        memberInterestId,
+        memberId: params.id,
+      };
+    });
+
+    // bulk insert
+    return this.prismaService.memberInterestMapping.createMany({
+      data: toCreateMemberSkillMappings,
+    });
+  }
 
   /**
    * @deprecated 클라이언트에서 POST /api/members/social 걷어내면 제거
