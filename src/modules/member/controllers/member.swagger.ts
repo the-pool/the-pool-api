@@ -162,7 +162,7 @@ export const ApiMappingMemberSkills = (summary: string) => {
     ]),
     ApiFailureResponse(
       HttpStatus.NOT_FOUND,
-      "{memberSkillIds} doesn't exist id in majorSkill",
+      "{memberSkillIds} doesn't exist id in memberSkill",
     ),
   );
 };
