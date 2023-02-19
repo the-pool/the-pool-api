@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -189,7 +190,7 @@ export class MemberController {
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
-  @Post(':id/member-skills/:memberSkillIds')
+  @Delete(':id/member-skills/:memberSkillIds')
   unmappingMemberSkills(
     @SetModelNameToParam(ModelName.Member)
     @Param()

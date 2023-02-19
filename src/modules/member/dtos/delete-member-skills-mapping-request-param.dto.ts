@@ -22,7 +22,7 @@ export class DeleteMemberSkillsMappingRequestParamDto extends IdRequestParamDto 
     type: () => String,
   })
   @IsRecordMany<MemberSkillEntity>(
-    { model: ModelName.MajorSkill, field: 'id' },
+    { model: ModelName.MemberSkill, field: 'id' },
     true,
   )
   @Min(1, { each: true })

@@ -142,7 +142,7 @@ export const ApiUnmappingMemberSkills = (summary: string) => {
     ApiOperation({ summary }),
     ApiBearerAuth(),
     ApiSuccessResponse(
-      HttpStatus.CREATED,
+      HttpStatus.OK,
       {},
       {
         count: {
