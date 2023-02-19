@@ -153,7 +153,7 @@ export const ApiUnmappingMemberSkills = (summary: string) => {
       },
     ),
     ApiFailureResponse(HttpStatus.BAD_REQUEST, [
-      'mapping 되지 않은 member 의 majorSkill 이 존재합니다.',
+      'mapping 되지 않은 member 의 memberSkill 이 존재합니다.',
     ]),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
     ApiFailureResponse(HttpStatus.FORBIDDEN, [
@@ -162,7 +162,7 @@ export const ApiUnmappingMemberSkills = (summary: string) => {
     ]),
     ApiFailureResponse(
       HttpStatus.NOT_FOUND,
-      "{majorSkillIds} doesn't exist id in majorSkill",
+      "{memberSkillIds} doesn't exist id in memberSkill",
     ),
   );
 };
