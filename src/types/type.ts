@@ -14,6 +14,7 @@ import {
   MemberSkill,
   MemberStatistics,
   Prisma,
+  LessonHashtagMapping,
 } from '@prisma/client';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
@@ -50,6 +51,7 @@ export type PrismaModel =
   | LessonSolution
   | LessonLevel
   | LessonHashtag
+  | LessonHashtagMapping
   | LessonComment
   | MemberSkill;
 
