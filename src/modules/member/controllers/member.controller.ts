@@ -17,6 +17,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
@@ -35,8 +36,10 @@ import {
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
+  ApiMappingMemberInterests,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
@@ -178,6 +181,21 @@ export class MemberController {
     params: CreateMemberMajorSkillMappingRequestParamDto,
   ): Promise<{ count: number }> {
     return this.memberService.mappingMajorSkill(member, params);
+  }
+
+  @ApiMappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 매핑합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-interests/:memberInterestIds')
+  mappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.mappingMemberInterests(params);
   }
 
   /**

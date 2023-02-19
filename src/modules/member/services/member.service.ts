@@ -9,6 +9,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -183,6 +184,13 @@ export class MemberService {
       data: toCreateMemberMajorSkillMapping,
     });
   }
+
+  /**
+   * member 와 memberInterest 를 다중 매핑
+   */
+  async mappingMemberInterests(
+    params: CreateMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {}
 
   /**
    * @deprecated 클라이언트에서 POST /api/members/social 걷어내면 제거
