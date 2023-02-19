@@ -162,7 +162,7 @@ export const ApiMappingMemberInterests = (summary: string) => {
     ]),
     ApiFailureResponse(
       HttpStatus.NOT_FOUND,
-      "{memberInterestIds} doesn't exist id in majorSkill",
+      "{memberInterestIds} doesn't exist id in majorInterest",
     ),
   );
 };
