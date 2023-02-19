@@ -185,7 +185,7 @@ export class MemberController {
   }
 
   @ApiUnmappingMemberSkills(
-    '해당 member 와 memberSkill 을 다중 연결 제거합니다..',
+    '해당 member 와 memberSkill 을 다중 연결 제거합니다.',
   )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OwnMemberSetMetadataGuard()
