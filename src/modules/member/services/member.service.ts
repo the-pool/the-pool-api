@@ -203,7 +203,7 @@ export class MemberService {
         },
       });
 
-    // 이민 mapping 된 관계를 만드려는 경우 에러
+    // 이미 mapping 된 관계를 만드려는 경우 에러
     if (exMemberSkillMapping) {
       throw new BadRequestException(
         '이미 존재하는 member 의 majorSkill 이 존재합니다.',
