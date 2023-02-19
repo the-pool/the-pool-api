@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -17,6 +18,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
@@ -35,10 +37,12 @@ import {
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
+  ApiUnmappingMemberInterests,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -178,6 +182,21 @@ export class MemberController {
     params: CreateMemberMajorSkillMappingRequestParamDto,
   ): Promise<{ count: number }> {
     return this.memberService.mappingMajorSkill(member, params);
+  }
+
+  @ApiUnmappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 매핑합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/member-interests/:memberInterestIds')
+  unmappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberInterests(params);
   }
 
   /**
