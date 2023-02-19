@@ -1,15 +1,34 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiOperation,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
 import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 export const ApiCreateManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.CREATED, {
-      hashtags: { type: LessonHashtagEntity, isArray: true },
+    ApiExtraModels(LessonHashtagMappingEntity, LessonHashtagEntity),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          lessonHashtags: {
+            $ref: getSchemaPath(LessonHashtagMappingEntity),
+            properties: {
+              lessonHashtag: {
+                $ref: getSchemaPath(LessonHashtagEntity),
+              },
+            },
+          },
+        },
+      },
     }),
     ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
@@ -19,53 +38,63 @@ export const ApiCreateManyHashtag = (summary: string) => {
 export const ApiUpdateManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      hashtags: { type: LessonHashtagEntity, isArray: true },
+    ApiOkResponse({
+      schema: {
+        properties: {
+          lessonHashtags: {
+            $ref: getSchemaPath(LessonHashtagMappingEntity),
+            properties: {
+              lessonHashtag: {
+                $ref: getSchemaPath(LessonHashtagEntity),
+              },
+            },
+          },
+        },
+      },
     }),
     ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
 
-export const ApiUpdateOneHashtag = (summary: string) => {
+export const APiDeleteManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      hashtag: { type: LessonHashtagEntity },
-    }),
+    ApiOkResponse({ schema: { example: { count: 1 } } }),
     ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-  );
-};
-
-export const APiDeleteOneHashtag = (summary: string) => {
-  return applyDecorators(
-    ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      hashtag: { type: LessonHashtagEntity },
-    }),
-    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, [
+      HTTP_ERROR_MESSAGE.NOT_FOUND,
+      `{modelName}에 존재하지 않는 관계 입니다.`,
+    ]),
   );
 };
 
 export const ApiReadManyHashtag = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      hashtags: { type: LessonHashtagEntity, isArray: true },
+    ApiOkResponse({
+      schema: {
+        properties: {
+          lessonHashtags: {
+            $ref: getSchemaPath(LessonHashtagMappingEntity),
+            properties: {
+              lessonHashtag: {
+                $ref: getSchemaPath(LessonHashtagEntity),
+              },
+            },
+          },
+        },
+      },
     }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
 
-export const ApiReadOneHashtag = (summary: string) => {
+export const ApiReadLessonHashtags = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiSuccessResponse(HttpStatus.OK, {
-      hashtag: { type: LessonHashtagEntity },
+      lessonHashtags: { type: LessonHashtagEntity, isArray: true },
     }),
-    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };

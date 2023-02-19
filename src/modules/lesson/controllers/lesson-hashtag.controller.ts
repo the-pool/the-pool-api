@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-} from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
@@ -14,163 +6,143 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateManyHashtagDto } from '@src/modules/hashtag/dtos/create-many-hashtag.dto';
-import { UpdateOneHashtagDto } from '@src/modules/hashtag/dtos/update-hashtag.dto';
-import { UpdateManyHashtagDto } from '@src/modules/hashtag/dtos/update-many-hashtag.dto';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 import { LessonHashtagService } from '../services/lesson-hashtag.service';
 import {
   ApiCreateManyHashtag,
-  APiDeleteOneHashtag,
+  APiDeleteManyHashtag,
+  ApiReadLessonHashtags,
   ApiReadManyHashtag,
-  ApiReadOneHashtag,
   ApiUpdateManyHashtag,
-  ApiUpdateOneHashtag,
 } from '../swaggers/lesson-hashtag.swagger';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { LessonHashtagMapping } from '@prisma/client';
+import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
 
 @ApiTags('과제의 해시태그')
-@Controller(':id/hashtags')
+@Controller()
 export class LessonHashtagController {
   constructor(
     private readonly lessonHashtagService: LessonHashtagService,
     private readonly prismaService: PrismaService,
   ) {}
 
-  @ApiCreateManyHashtag('과제 해시태그 대량 생성')
+  @ApiCreateManyHashtag('과제 해시태그 생성')
   @BearerAuth(JwtAuthGuard)
-  @Post()
+  @Post(':id/hashtags/:lessonHashtagIds')
   async createManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Body() { hashtags }: CreateManyHashtagDto,
+    param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
-  ) {
-    await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-      id: param.id,
-      memberId,
-    });
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
+  }> {
+    await Promise.all([
+      this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
+        id: param.id,
+        memberId,
+      }),
+      // 매핑 관계가 이미 존재하는지 확인후 이미 존재하는 태그라면 400 return
+      this.prismaService.validateMappedDataOrFail<LessonHashtagMapping>(
+        ModelName.LessonHashtagMapping,
+        { lessonId: param.id, lessonHashtagId: { in: param.lessonHashtagIds } },
+        false,
+      ),
+    ]);
 
-    const createdHashtags = await this.lessonHashtagService.createManyHashtag(
-      hashtags,
+    const lessonHashtags = await this.lessonHashtagService.createManyHashtag(
+      param.lessonHashtagIds,
       param.id,
     );
 
-    return { hashtags: createdHashtags };
+    return { lessonHashtags };
   }
 
-  @ApiUpdateManyHashtag('과제 해시태그 대량 수정')
+  @ApiUpdateManyHashtag('과제 해시태그 수정')
   @BearerAuth(JwtAuthGuard)
-  @Put()
+  @Put(':id/hashtags/:lessonHashtagIds')
   async updateManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Body() { hashtags }: UpdateManyHashtagDto,
+    param: LessonHashtagParamDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
+  }> {
     await this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
       id: param.id,
       memberId,
     });
 
-    const updatedHashtags = await this.lessonHashtagService.updateManyHashtag(
-      hashtags,
+    const lessonHashtags = await this.lessonHashtagService.updateManyHashtag(
+      param.lessonHashtagIds,
       param.id,
     );
 
-    return { hashtags: updatedHashtags };
+    return { lessonHashtags };
   }
 
-  @ApiUpdateOneHashtag('과제 해시태그 단일 수정')
+  @APiDeleteManyHashtag('과제 해시태그 삭제')
   @BearerAuth(JwtAuthGuard)
-  @Put(':hashtagId')
-  async updateOneHashtag(
+  @Delete(':id/hashtags/:lessonHashtagIds')
+  async deleteManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonHashtagParamDto,
-    @Body() { hashtag }: UpdateOneHashtagDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ hashtag: LessonHashtagEntity }> {
+  ): Promise<{ count: number }> {
     await Promise.all([
       this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
         id: param.id,
         memberId,
       }),
-      this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-        id: param.hashtagId,
-        lessonId: param.id,
-      }),
+      this.prismaService.validateMappedDataOrFail<LessonHashtagMapping>(
+        ModelName.LessonHashtagMapping,
+        { lessonId: param.id, lessonHashtagId: { in: param.lessonHashtagIds } },
+        true,
+      ),
     ]);
 
-    const updatedHashtag = await this.lessonHashtagService.updateOneHashtag(
-      param.hashtagId,
-      hashtag,
+    return this.lessonHashtagService.deleteManyHashtagByHashtagId(
+      param.id,
+      param.lessonHashtagIds,
     );
-
-    return { hashtag: updatedHashtag };
   }
 
-  @APiDeleteOneHashtag('과제 해시태그 단일 삭제')
-  @BearerAuth(JwtAuthGuard)
-  @Delete(':hashtagId')
-  async deleteOneHashtag(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: LessonHashtagParamDto,
-    @UserLogin('id') memberId: number,
-  ): Promise<{ hashtag: LessonHashtagEntity }> {
-    await Promise.all([
-      this.prismaService.validateOwnerOrFail(ModelName.Lesson, {
-        id: param.id,
-        memberId,
-      }),
-      this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-        id: param.hashtagId,
-        lessonId: param.id,
-      }),
-    ]);
+  @ApiReadLessonHashtags('과제 해시태그 전체 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get('hashtags')
+  async readLessonHashtags(): Promise<{
+    lessonHashtags: LessonHashtagEntity[];
+  }> {
+    const lessonHashtags = await this.lessonHashtagService.readLessonHashtags();
 
-    const deletedHashtag = await this.lessonHashtagService.deleteOneHashtag(
-      param.hashtagId,
-    );
-
-    return { hashtag: deletedHashtag };
+    return { lessonHashtags };
   }
 
   @ApiReadManyHashtag('과제의 해시태그 조회')
   @BearerAuth(OptionalJwtAuthGuard)
-  @Get()
+  @Get(':id/hashtags')
   async readManyHashtag(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-  ) {
-    const hashtags = await this.lessonHashtagService.readManyHashtag(param.id);
-
-    return { hashtags };
-  }
-
-  @ApiReadOneHashtag('과제의 해시태그 단일 조회')
-  @BearerAuth(OptionalJwtAuthGuard)
-  @Get(':hashtagId')
-  async readOneHashtag(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: LessonHashtagParamDto,
-  ): Promise<{ hashtag: LessonHashtagEntity | null }> {
-    await this.prismaService.validateOwnerOrFail(ModelName.LessonHashtag, {
-      id: param.hashtagId,
-      lessonId: param.id,
-    });
-
-    const hashtag = await this.lessonHashtagService.readOneHashtag(
-      param.hashtagId,
+  ): Promise<{
+    lessonHashtags: (LessonHashtagMappingEntity & {
+      lessonHashtag: LessonHashtagEntity;
+    })[];
+  }> {
+    const lessonHashtags = await this.lessonHashtagService.readManyHashtag(
+      param.id,
     );
 
-    return { hashtag };
+    return { lessonHashtags };
   }
 }
