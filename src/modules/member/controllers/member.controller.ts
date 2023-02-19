@@ -17,6 +17,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
@@ -35,10 +36,12 @@ import {
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
+  ApiUnmappingMemberSkills,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -178,6 +181,20 @@ export class MemberController {
     params: CreateMemberMajorSkillMappingRequestParamDto,
   ): Promise<{ count: number }> {
     return this.memberService.mappingMajorSkill(member, params);
+  }
+
+  @ApiUnmappingMemberSkills('해당 member 와 memberSkill 을 다중 연결합니다.')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-skills/:memberSkillIds')
+  unmappingMemberSkills(
+    @UserLogin() member: MemberEntity,
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberSkills(member, params);
   }
 
   /**
