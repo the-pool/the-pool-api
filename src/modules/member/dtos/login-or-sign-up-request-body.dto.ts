@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { getEntriesByEnum } from '@src/common/common';
+import { getEntriesByEnum, getStrMapByEnum } from '@src/common/common';
 import { IsEnum, IsString } from 'class-validator';
 import { MemberLoginType } from '../constants/member.enum';
 
@@ -12,7 +12,7 @@ export class LoginOrSignUpRequestBodyDto {
   oAuthToken: string;
 
   @ApiProperty({
-    description: 'member 의 로그인 타입',
+    description: 'member 의 로그인 타입' + getStrMapByEnum(MemberLoginType),
     example: 1,
     enum: getEntriesByEnum(MemberLoginType),
   })

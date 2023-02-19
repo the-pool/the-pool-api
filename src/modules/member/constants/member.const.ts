@@ -4,6 +4,7 @@ export const MEMBER_ACCOUNT_PREFIX = {
   [MemberLoginType.Kakao]: 'k',
   [MemberLoginType.Google]: 'g',
   [MemberLoginType.Apple]: 'a',
+  [MemberLoginType.GitHub]: 'gh',
 } as const;
 
 export const MEMBER_STATUSES = 'memberStatuses';

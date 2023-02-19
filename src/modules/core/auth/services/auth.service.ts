@@ -74,6 +74,11 @@ export class AuthService {
       return this.authHelper.validateAppleAccessTokenOrFail(oAuthToken);
     }
 
+    // 깃허브
+    if (oAuthProvider === MemberLoginType.GitHub) {
+      return this.authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+    }
+
     // 빌드시에 타입이 깨지면 빌드가 안되지만 만약에 상황에 대비해 처리
     throw new InternalServerErrorException(
       'validateExternalAccessTokenOrFail 중 유효하지 않은 로그인 타입',

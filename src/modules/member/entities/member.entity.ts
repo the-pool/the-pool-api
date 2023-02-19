@@ -4,8 +4,9 @@ import {
   IntersectionType,
 } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
-import { getEntriesByEnum } from '@src/common/common';
+import { getEntriesByEnum, getStrMapByObject } from '@src/common/common';
 import { MajorId } from '@src/constants/enum';
+import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 import { MemberLoginType, MemberStatus } from '../constants/member.enum';
@@ -22,8 +23,12 @@ export class MemberEntity
   majorId: MajorId | null;
 
   @ApiProperty({
-    description: 'member의 소셜 계정 id',
-    example: 'k123456789',
+    description:
+      'member의 소셜 계정 id </br>' +
+      'prefix 와 id 의 구분자는 - </br>' +
+      'provider 별 prefix ' +
+      getStrMapByObject(MEMBER_ACCOUNT_PREFIX),
+    example: 'k-123456789',
   })
   account: string;
 

@@ -16,4 +16,6 @@ export enum MemberLoginType {
   Google = 2,
   // 애플
   Apple = 3,
+  // 깃허브
+  GitHub = 4,
 }

@@ -1,7 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpStatus } from '@nestjs/common';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CommonHelper } from '@src/helpers/common.helper';
 import {
   GOOGLE_O_AUTH2_CLIENT_TOKEN,
   JWKS_CLIENT_TOKEN,
@@ -12,6 +14,7 @@ import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.cons
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import jwt from 'jsonwebtoken';
 import { of, throwError } from 'rxjs';
+import { mockCommonHelper } from '../../../../../test/mock/mock-helpers';
 import {
   mockGoogleAuth,
   mockJwksClient,
@@ -28,6 +31,10 @@ describe('AuthHelper', () => {
       imports: [HttpModule],
       providers: [
         AuthHelper,
+        {
+          provide: CommonHelper,
+          useValue: mockCommonHelper,
+        },
         {
           provide: GOOGLE_O_AUTH2_CLIENT_TOKEN,
           useValue: mockGoogleAuth,
@@ -48,6 +55,7 @@ describe('AuthHelper', () => {
   });
 
   describe('validateKakaoAccessTokenOrFail', () => {
+    let account: string;
     let oAuthToken: string;
     let id: number;
     const successResponse: AxiosResponse = {
@@ -68,7 +76,10 @@ describe('AuthHelper', () => {
     };
 
     beforeEach(() => {
+      account = faker.datatype.string();
       oAuthToken = faker.datatype.string();
+
+      mockCommonHelper.setSeparator.mockReturnValue(account);
     });
 
     it('성공하는 경우', async () => {
@@ -83,8 +94,11 @@ describe('AuthHelper', () => {
         oAuthToken,
       );
 
-      expect(result).toBe(
-        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao] + String(id),
+      expect(result).toBe(account);
+      expect(mockCommonHelper.setSeparator).toBeCalledWith(
+        '-',
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Kakao],
+        expect.anything(),
       );
     });
 
@@ -146,10 +160,14 @@ describe('AuthHelper', () => {
   });
 
   describe('validateGoogleAccessTokenOrFail', () => {
+    let account: string;
     let oAuthToken: string;
 
     beforeEach(() => {
+      account = faker.datatype.string();
       oAuthToken = faker.datatype.string();
+
+      mockCommonHelper.setSeparator.mockReturnValue(account);
     });
 
     it('성공하는 경우', async () => {
@@ -164,8 +182,11 @@ describe('AuthHelper', () => {
         oAuthToken,
       );
 
-      expect(result).toStrictEqual(
-        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google] + aud,
+      expect(result).toBe(account);
+      expect(mockCommonHelper.setSeparator).toBeCalledWith(
+        '-',
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Google],
+        expect.anything(),
       );
     });
 
@@ -179,10 +200,14 @@ describe('AuthHelper', () => {
   });
 
   describe('validateAppleAccessTokenOrFail', () => {
-    let oAuthToken;
+    let account: string;
+    let oAuthToken: string;
 
     beforeEach(() => {
       oAuthToken = faker.datatype.string();
+      account = faker.datatype.string();
+
+      mockCommonHelper.setSeparator.mockReturnValue(account);
       mockJwksClient.getSigningKey.mockReturnValue({
         getPublicKey: jest.fn().mockReturnValue(faker.datatype.string()),
       });
@@ -213,7 +238,12 @@ describe('AuthHelper', () => {
         oAuthToken,
       );
 
-      expect(result).toBe(MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple] + sub);
+      expect(result).toBe(account);
+      expect(mockCommonHelper.setSeparator).toBeCalledWith(
+        '-',
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.Apple],
+        expect.anything(),
+      );
     });
 
     it('애플에서 발급하지 않았거나 jwt 토큰이 아닌 경우', async () => {
@@ -249,5 +279,83 @@ describe('AuthHelper', () => {
         await authHelper.validateAppleAccessTokenOrFail(oAuthToken);
       }).rejects.toThrowError('유효하지 않은 토큰입니다.');
     });
+  });
+
+  describe('validateGitHubAccessTokenOrFail', () => {
+    let account: string;
+    let oAuthToken: string;
+    let id: number;
+    const successResponse: AxiosResponse = {
+      data: {
+        id: undefined,
+      },
+      status: 200,
+      headers: {},
+      config: { url: 'http://localhost:3000/mockUrl' },
+      statusText: 'OK',
+    };
+    const failureResponse: any = {
+      response: {
+        status: undefined,
+      },
+    };
+
+    beforeEach(() => {
+      oAuthToken = faker.datatype.string();
+      account = faker.datatype.string();
+
+      mockCommonHelper.setSeparator.mockReturnValue(account);
+    });
+
+    it('성공하는 경우', async () => {
+      id = faker.datatype.number();
+      successResponse.data.id = id;
+
+      jest
+        .spyOn(httpService, 'get')
+        .mockImplementationOnce(() => of(successResponse));
+
+      const result = await authHelper.validateGitHubAccessTokenOrFail(
+        oAuthToken,
+      );
+
+      expect(result).toBe(account);
+      expect(mockCommonHelper.setSeparator).toBeCalledWith(
+        '-',
+        MEMBER_ACCOUNT_PREFIX[MemberLoginType.GitHub],
+        expect.anything(),
+      );
+    });
+
+    it('유효하지 않은 토큰', async () => {
+      failureResponse.response.status = HttpStatus.UNAUTHORIZED;
+
+      jest.spyOn(httpService, 'get').mockImplementationOnce(() =>
+        throwError(() => {
+          return failureResponse;
+        }),
+      );
+
+      await expect(async () => {
+        await authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+      }).rejects.toThrowError('유효하지 않은 토큰입니다.');
+    });
+
+    it('그 외 예상치 못한 문제', async () => {
+      failureResponse.response.status = HttpStatus.INTERNAL_SERVER_ERROR;
+      jest.spyOn(httpService, 'get').mockImplementationOnce(() =>
+        throwError(() => {
+          return failureResponse;
+        }),
+      );
+
+      await expect(async () => {
+        await authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+      }).rejects.toThrowError();
+    });
+  });
+
+  afterEach(() => {
+    mockCommonHelper.setSeparator.mockRestore();
   });
 });
