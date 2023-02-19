@@ -206,7 +206,7 @@ export class MemberService {
     // 이미 mapping 된 관계를 만드려는 경우 에러
     if (exMemberInterestMapping) {
       throw new BadRequestException(
-        '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+        '이미 존재하는 member 의 memberInterest 가 존재합니다.',
       );
     }
 
