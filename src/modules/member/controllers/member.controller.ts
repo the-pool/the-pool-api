@@ -185,7 +185,7 @@ export class MemberController {
   }
 
   @ApiUnmappingMemberInterests(
-    '해당 member 와 memberInterest 를 다중 매핑합니다.',
+    '해당 member 와 memberInterest 를 다중 연결 제거합니다..',
   )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OwnMemberSetMetadataGuard()
