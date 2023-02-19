@@ -147,14 +147,13 @@ export const ApiMappingMemberSkills = (summary: string) => {
       {
         count: {
           type: 'number',
-          description: 'member 와 연결 성공된 majorSkill 개수',
+          description: 'member 와 연결 성공된 memberSkill 개수',
           minimum: 1,
         },
       },
     ),
     ApiFailureResponse(HttpStatus.BAD_REQUEST, [
-      '존재하지 않는 memberSkill 이 존재합니다.',
-      '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+      '이미 존재하는 member 의 memberSkill 이 존재합니다.',
     ]),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
     ApiFailureResponse(HttpStatus.FORBIDDEN, [
@@ -163,7 +162,7 @@ export const ApiMappingMemberSkills = (summary: string) => {
     ]),
     ApiFailureResponse(
       HttpStatus.NOT_FOUND,
-      '존재하지 않는 memberSkill 이 존재합니다.',
+      "{majorSkillIds} doesn't exist id in majorSkill",
     ),
   );
 };

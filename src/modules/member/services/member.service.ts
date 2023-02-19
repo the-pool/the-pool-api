@@ -8,7 +8,6 @@ import { Member, Prisma } from '@prisma/client';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
-import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
@@ -194,21 +193,6 @@ export class MemberService {
     member: MemberEntity,
     params: CreateMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
-    // 모든 memberSkill 이 존재하는지 확인하기 위해 값을 가져온다.
-    const memberSkills: MemberSkillEntity[] =
-      await this.prismaService.memberSkill.findMany({
-        where: {
-          id: {
-            in: params.memberSkillIds,
-          },
-        },
-      });
-
-    // 존재하지 않는 memberSkill 이 있다면 에러
-    if (memberSkills.length !== params.memberSkillIds.length) {
-      throw new NotFoundException('존재하지 않는 memberSkill 이 존재합니다.');
-    }
-
     // 현재 유저랑 mapping 돼있는 memberSkill 을 mapping 하는 경우를 체크하기 위해 값을 뽑아온다.
     const exMemberSkillMapping: MemberSkillMappingEntity | null =
       await this.prismaService.memberSkillMapping.findFirst({

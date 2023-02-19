@@ -293,17 +293,6 @@ describe('MemberService', () => {
       params = new CreateMemberSkillsMappingRequestParamDto();
     });
 
-    it('존재하지 않는 memberSkill 이 있는 경우', async () => {
-      params.memberSkillIds = [1];
-      mockPrismaService.memberSkill.findMany.mockResolvedValue([]);
-
-      await expect(
-        memberService.mappingMemberSkills(member, params),
-      ).rejects.toThrowError(
-        new NotFoundException('존재하지 않는 memberSkill 이 존재합니다.'),
-      );
-    });
-
     it('이미 mapping 된 memberSkill 을 mapping 하려는 경우', async () => {
       params.memberSkillIds = [1];
       mockPrismaService.memberSkill.findMany.mockResolvedValue([

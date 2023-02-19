@@ -4,7 +4,11 @@ import {
   transformEachStrungToNumber,
   transformEachTrim,
 } from '@src/common/common';
+import { ModelName } from '@src/constants/enum';
+import { IsRecordMany } from '@src/decorators/is-record-many.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
+import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
+
 import { Transform } from 'class-transformer';
 import { ArrayUnique, IsInt, Min } from 'class-validator';
 
@@ -17,6 +21,10 @@ export class CreateMemberSkillsMappingRequestParamDto extends IdRequestParamDto 
     uniqueItems: true,
     type: () => String,
   })
+  @IsRecordMany<MemberSkillEntity>(
+    { model: ModelName.MajorSkill, field: 'id' },
+    true,
+  )
   @Min(1, { each: true })
   @IsInt({ each: true })
   @ArrayUnique()
