@@ -183,18 +183,19 @@ export class MemberController {
     return this.memberService.mappingMajorSkill(member, params);
   }
 
-  @ApiUnmappingMemberSkills('해당 member 와 memberSkill 을 다중 연결합니다.')
+  @ApiUnmappingMemberSkills(
+    '해당 member 와 memberSkill 을 다중 연결 제거합니다..',
+  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OwnMemberSetMetadataGuard()
   @UseGuards(JwtAuthGuard)
   @Post(':id/member-skills/:memberSkillIds')
   unmappingMemberSkills(
-    @UserLogin() member: MemberEntity,
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: DeleteMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
-    return this.memberService.unmappingMemberSkills(member, params);
+    return this.memberService.unmappingMemberSkills(params);
   }
 
   /**
