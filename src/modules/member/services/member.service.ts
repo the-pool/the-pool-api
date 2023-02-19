@@ -206,7 +206,7 @@ export class MemberService {
 
     // 존재하지 않는 memberSkill 이 있다면 에러
     if (memberSkills.length !== params.memberSkillIds.length) {
-      throw new BadRequestException('존재하지 않는 memberSkill 이 존재합니다.');
+      throw new NotFoundException('존재하지 않는 memberSkill 이 존재합니다.');
     }
 
     // 현재 유저랑 mapping 돼있는 memberSkill 을 mapping 하는 경우를 체크하기 위해 값을 뽑아온다.
