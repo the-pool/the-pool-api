@@ -285,11 +285,9 @@ describe('MemberService', () => {
   });
 
   describe('mappingMemberSkills', () => {
-    let member: MemberEntity;
     let params: CreateMemberSkillsMappingRequestParamDto;
 
     beforeEach(() => {
-      member = new MemberEntity();
       params = new CreateMemberSkillsMappingRequestParamDto();
     });
 
@@ -303,7 +301,7 @@ describe('MemberService', () => {
       );
 
       await expect(
-        memberService.mappingMemberSkills(member, params),
+        memberService.mappingMemberSkills(params),
       ).rejects.toThrowError(
         new BadRequestException(
           '이미 존재하는 member 의 majorSkill 이 존재합니다.',
@@ -326,7 +324,7 @@ describe('MemberService', () => {
       mockPrismaService.memberSkillMapping.createMany.mockResolvedValue(result);
 
       await expect(
-        memberService.mappingMemberSkills(member, params),
+        memberService.mappingMemberSkills(params),
       ).resolves.toStrictEqual(result);
       expect(mockPrismaService.memberSkillMapping.createMany).toBeCalledWith({
         data: toCreateMemberSkillMappings,

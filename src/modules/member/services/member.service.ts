@@ -190,7 +190,6 @@ export class MemberService {
    * member 와 memberSKill 을 다중 매핑
    */
   async mappingMemberSkills(
-    member: MemberEntity,
     params: CreateMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
     // 현재 유저랑 mapping 돼있는 memberSkill 을 mapping 하는 경우를 체크하기 위해 값을 뽑아온다.

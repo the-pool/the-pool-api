@@ -189,12 +189,11 @@ export class MemberController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/member-skills/:memberSkillIds')
   mappingMemberSkills(
-    @UserLogin() member: MemberEntity,
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: CreateMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
-    return this.memberService.mappingMemberSkills(member, params);
+    return this.memberService.mappingMemberSkills(params);
   }
 
   /**

@@ -177,12 +177,10 @@ describe('MemberController', () => {
   });
 
   describe('mappingMemberSkills', () => {
-    let member: MemberEntity;
     let params: CreateMemberSkillsMappingRequestParamDto;
     let returnValue: string;
 
     beforeEach(() => {
-      member = new MemberEntity();
       params = new CreateMemberSkillsMappingRequestParamDto();
       returnValue = faker.datatype.string();
     });
@@ -190,13 +188,10 @@ describe('MemberController', () => {
     it('정상 실행', () => {
       mockMemberService.mappingMemberSkills.mockReturnValue(returnValue);
 
-      const result = memberController.mappingMemberSkills(member, params);
+      const result = memberController.mappingMemberSkills(params);
 
       expect(mockMemberService.mappingMemberSkills).toBeCalledTimes(1);
-      expect(mockMemberService.mappingMemberSkills).toBeCalledWith(
-        member,
-        params,
-      );
+      expect(mockMemberService.mappingMemberSkills).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
     });
   });
