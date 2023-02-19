@@ -140,6 +140,7 @@ export const ApiMappingMajorSkill = (summary: string) => {
 export const ApiMappingMemberSkills = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
+    ApiBearerAuth(),
     ApiSuccessResponse(
       HttpStatus.CREATED,
       {},
