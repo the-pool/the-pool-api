@@ -1,14 +1,17 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
+import { UserLogin } from '@src/decorators/user-login.decorator';
 import {
+  ApiCreateFollowing,
   ApiFindAllFollowers,
   ApiFindAllFollowings,
 } from '@src/modules/member-friendship/controllers/member-friendship.swagger';
+import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -64,5 +67,17 @@ export class MemberFriendshipController {
       followings,
       totalCount,
     };
+  }
+
+  @ApiCreateFollowing('member follow (해당 member 를 팔로우 합니다.)')
+  @Post('followings/:memberId')
+  createFollowing(
+    @UserLogin() member: MemberEntity,
+    @Param() param: CreateMemberFollowingRequestParamDto,
+  ) {
+    return this.memberFriendshipService.createFollowing(
+      member.id,
+      param.memberId,
+    );
   }
 }

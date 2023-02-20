@@ -73,4 +73,9 @@ export class MemberFriendshipService {
 
     return { followers, followings, totalCount };
   }
+
+  /**
+   * member follow
+   */
+  async createFollowing(followingMemberId: number, followMemberId: number) {}
 }
