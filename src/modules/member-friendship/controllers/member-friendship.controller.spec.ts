@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -93,6 +94,31 @@ describe('FriendshipController', () => {
         followings: memberFollowings.followings,
         totalCount: memberFollowings.totalCount,
       });
+    });
+  });
+
+  describe('createFollowing', () => {
+    let member: MemberEntity;
+    let param: CreateMemberFollowingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      param = new CreateMemberFollowingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 실행', () => {
+      mockMemberFriendshipService.createFollowing.mockReturnValue(returnValue);
+
+      const result = controller.createFollowing(member, param);
+
+      expect(mockMemberFriendshipService.createFollowing).toBeCalledTimes(1);
+      expect(mockMemberFriendshipService.createFollowing).toBeCalledWith(
+        member.id,
+        param.memberId,
+      );
+      expect(result).toStrictEqual(returnValue);
     });
   });
 });
