@@ -1,5 +1,5 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -47,6 +47,7 @@ export const ApiFindAllFollowings = (summary: string) => {
 export const ApiCreateFollowing = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
+    ApiBearerAuth(),
     ApiSuccessResponse(HttpStatus.OK, {}),
     ApiFailureResponse(HttpStatus.BAD_REQUEST, []),
   );
