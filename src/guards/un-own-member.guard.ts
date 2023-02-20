@@ -5,15 +5,15 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { OWN_MEMBER_FIELD_NAME } from '@src/modules/member/constants/member.const';
+import { UN_OWN_MEMBER_FIELD_NAME } from '@src/modules/member/constants/member.const';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
 /**
- * 변경하려는 정보가 본인 정보인지 확인하는 가드
+ * 접근하려는 정보가 남의 정보인지 확인하는 가드
  *
  * 이 가드를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
  *
- * OwnMemberSetMetadataGuard 데코레이터를 통해 사용해야합니다.
+ * UnOwnMemberSetMetadataGuard 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
 export class UnOwnMemberGuard implements CanActivate {
@@ -21,7 +21,7 @@ export class UnOwnMemberGuard implements CanActivate {
 
   canActivate(context: ExecutionContext): boolean {
     const memberIdFieldName = this.reflector.get(
-      OWN_MEMBER_FIELD_NAME,
+      UN_OWN_MEMBER_FIELD_NAME,
       context.getHandler(),
     );
     const request = context.switchToHttp().getRequest();
