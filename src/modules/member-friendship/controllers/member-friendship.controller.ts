@@ -5,9 +5,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { OtherMemberSetMetadataGuard } from '@src/decorators/other-member-set-metadata.guard-decorator';
 import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
 import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
-import { UnOwnMemberSetMetadataGuard } from '@src/decorators/un-own-member-set-metadata.guard-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import {
@@ -77,7 +77,7 @@ export class MemberFriendshipController {
 
   @ApiCreateFollowing('member follow (해당 member 를 팔로우 합니다.)')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
-  @UnOwnMemberSetMetadataGuard('memberId')
+  @OtherMemberSetMetadataGuard('memberId')
   @UseGuards(JwtAuthGuard)
   @SetResponseSetMetadataInterceptor('memberFollow')
   @Post('followings/:memberId')

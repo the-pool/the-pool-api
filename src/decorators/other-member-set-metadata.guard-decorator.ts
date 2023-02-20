@@ -1,5 +1,5 @@
 import { applyDecorators, SetMetadata, UseGuards } from '@nestjs/common';
-import { UnOwnMemberGuard } from '@src/guards/un-own-member.guard';
+import { OtherMemberGuard } from '@src/guards/other-member.guard';
 import { UN_OWN_MEMBER_FIELD_NAME } from '@src/modules/member/constants/member.const';
 
 /**
@@ -7,9 +7,9 @@ import { UN_OWN_MEMBER_FIELD_NAME } from '@src/modules/member/constants/member.c
  *
  * 이 데코레이터를 사용하려면 JwtAuthGuard 가 붙어있어야합니다.
  */
-export const UnOwnMemberSetMetadataGuard = (fieldName = 'id') => {
+export const OtherMemberSetMetadataGuard = (fieldName = 'id') => {
   return applyDecorators(
     SetMetadata(UN_OWN_MEMBER_FIELD_NAME, fieldName),
-    UseGuards(UnOwnMemberGuard),
+    UseGuards(OtherMemberGuard),
   );
 };

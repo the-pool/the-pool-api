@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UnOwnMemberGuard } from '@src/guards/un-own-member.guard';
+import { OtherMemberGuard } from '@src/guards/other-member.guard';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import {
   mockContext,
@@ -10,13 +10,13 @@ import {
 } from '../../test/mock/mock-libs';
 import { MockGuardType } from '../../test/mock/mock.type';
 
-describe('UnOwnMemberGuard', () => {
+describe('OtherMemberGuard', () => {
   let unOwnMemberGuard: MockGuardType;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        UnOwnMemberGuard,
+        OtherMemberGuard,
         {
           provide: Reflector,
           useValue: mockReflector,
@@ -24,7 +24,7 @@ describe('UnOwnMemberGuard', () => {
       ],
     }).compile();
 
-    unOwnMemberGuard = module.get(UnOwnMemberGuard);
+    unOwnMemberGuard = module.get(OtherMemberGuard);
   });
 
   beforeEach(() => {

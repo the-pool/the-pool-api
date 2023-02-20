@@ -16,7 +16,7 @@ import { MemberEntity } from '@src/modules/member/entities/member.entity';
  * UnOwnMemberSetMetadataGuard 데코레이터를 통해 사용해야합니다.
  */
 @Injectable()
-export class UnOwnMemberGuard implements CanActivate {
+export class OtherMemberGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
