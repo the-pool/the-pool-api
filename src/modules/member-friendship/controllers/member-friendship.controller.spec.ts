@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
+import { DeleteMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/delete-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -120,6 +121,31 @@ describe('FriendshipController', () => {
 
       expect(mockMemberFriendshipService.createFollowing).toBeCalledTimes(1);
       expect(mockMemberFriendshipService.createFollowing).toBeCalledWith(
+        member.id,
+        param.memberId,
+      );
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('deleteFollowing', () => {
+    let member: MemberEntity;
+    let param: DeleteMemberFollowingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+      param = new DeleteMemberFollowingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 실행', () => {
+      mockMemberFriendshipService.deleteFollowing.mockReturnValue(returnValue);
+
+      const result = controller.deleteFollowing(member, param);
+
+      expect(mockMemberFriendshipService.deleteFollowing).toBeCalledTimes(1);
+      expect(mockMemberFriendshipService.deleteFollowing).toBeCalledWith(
         member.id,
         param.memberId,
       );
