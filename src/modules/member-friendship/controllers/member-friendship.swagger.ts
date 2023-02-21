@@ -67,3 +67,11 @@ export const ApiCreateFollowing = (summary: string) => {
     ApiFailureResponse(HttpStatus.CONFLICT, ['이미 follow 중입니다.']),
   );
 };
+
+export const ApiDeleteFollowing = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiSuccessResponse(HttpStatus.OK, {}),
+    ApiFailureResponse(HttpStatus.BAD_REQUEST, []),
+  );
+};

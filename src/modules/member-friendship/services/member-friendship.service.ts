@@ -128,4 +128,12 @@ export class MemberFriendshipService {
       },
     });
   }
+
+  /**
+   * member unfollow
+   */
+  async deleteFollowing(
+    followingMemberId: number,
+    followerMemberId: number,
+  ): Promise<MemberFollowEntity> {}
 }
