@@ -11,7 +11,7 @@ import {
   MEMBER_STATISTICS_INCREASE_FIELD_NAME,
 } from '@src/constants/constant';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberStatisticsIncrementFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
+import { MemberStatisticsIncreaseFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { IncreaseAction } from '@src/types/type';
 import { map, Observable, tap } from 'rxjs';
@@ -43,7 +43,7 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
     );
     // 증감시킬 대상 필드명을 가져온다.
     const memberReportIncreaseFieldName =
-      this.reflector.get<MemberStatisticsIncrementFieldName>(
+      this.reflector.get<MemberStatisticsIncreaseFieldName>(
         MEMBER_STATISTICS_INCREASE_FIELD_NAME,
         context.getHandler(),
       );

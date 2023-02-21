@@ -41,6 +41,10 @@ export const LESSON_LEVEL = {
 export const MEMBER_STATISTICS_INCREASE_FIELD_NAME =
   'memberStatisticsIncreaseFieldName';
 
+// member follow increase meta data
+export const FROM_MEMBER_REQUEST_PARAM_FIELD_NAME =
+  'fromMemberRequestParamFieldName';
+
 // 증가 또는 action meta data
 export const INCREASE_ACTION = 'increaseAction';
 
