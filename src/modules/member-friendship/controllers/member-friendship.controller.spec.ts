@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
@@ -14,6 +15,10 @@ describe('FriendshipController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MemberFriendshipController],
       providers: [
+        {
+          provide: PrismaService,
+          useValue: {},
+        },
         {
           provide: MemberFriendshipService,
           useValue: mockMemberFriendshipService,

@@ -107,7 +107,7 @@ export class MemberFriendshipService {
     }
 
     // 팔로우 정보를 가져온다.
-    const memberFollow: MemberFollowEntity | null =
+    const oldMemberFollow: MemberFollowEntity | null =
       await this.prismaService.memberFollow.findFirst({
         where: {
           followingId: followingMemberId,
@@ -116,10 +116,11 @@ export class MemberFriendshipService {
       });
 
     // 이미 팔로우하고 있는 경우
-    if (memberFollow) {
+    if (oldMemberFollow) {
       throw new ConflictException('이미 follow 중입니다.');
     }
 
+    // member 팔로우
     return this.prismaService.memberFollow.create({
       data: {
         followerId: followerMemberId,
