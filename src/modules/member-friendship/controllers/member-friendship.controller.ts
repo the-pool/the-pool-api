@@ -114,7 +114,7 @@ export class MemberFriendshipController {
     @UserLogin() member: MemberEntity,
     @Param() param: DeleteMemberFollowingRequestParamDto,
   ): Promise<MemberFollowEntity> {
-    return this.memberFriendshipService.createFollowing(
+    return this.memberFriendshipService.deleteFollowing(
       param.memberId,
       member.id,
     );
