@@ -5,6 +5,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -171,6 +172,26 @@ describe('MemberController', () => {
         member,
         params,
       );
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('mappingMemberSkills', () => {
+    let params: CreateMemberSkillsMappingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      params = new CreateMemberSkillsMappingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 실행', () => {
+      mockMemberService.mappingMemberSkills.mockReturnValue(returnValue);
+
+      const result = memberController.mappingMemberSkills(params);
+
+      expect(mockMemberService.mappingMemberSkills).toBeCalledTimes(1);
+      expect(mockMemberService.mappingMemberSkills).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
     });
   });
