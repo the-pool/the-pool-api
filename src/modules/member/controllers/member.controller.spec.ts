@@ -16,6 +16,7 @@ import {
   mockMemberValidationService,
 } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
 import { MemberService } from '../services/member.service';
 import { MemberController } from './member.controller';
@@ -192,6 +193,26 @@ describe('MemberController', () => {
 
       expect(mockMemberService.mappingMemberSkills).toBeCalledTimes(1);
       expect(mockMemberService.mappingMemberSkills).toBeCalledWith(params);
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('unmappingMemberSkills', () => {
+    let params: DeleteMemberSkillsMappingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      params = new DeleteMemberSkillsMappingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 실행', () => {
+      mockMemberService.unmappingMemberSkills.mockReturnValue(returnValue);
+
+      const result = memberController.unmappingMemberSkills(params);
+
+      expect(mockMemberService.unmappingMemberSkills).toBeCalledTimes(1);
+      expect(mockMemberService.unmappingMemberSkills).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
     });
   });

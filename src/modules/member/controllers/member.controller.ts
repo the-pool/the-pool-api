@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -37,11 +38,13 @@ import {
   ApiMappingMajor,
   ApiMappingMajorSkill,
   ApiMappingMemberSkills,
+  ApiUnmappingMemberSkills,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -194,6 +197,21 @@ export class MemberController {
     params: CreateMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
     return this.memberService.mappingMemberSkills(params);
+  }
+
+  @ApiUnmappingMemberSkills(
+    '해당 member 와 memberSkill 을 다중 연결 제거합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/member-skills/:memberSkillIds')
+  unmappingMemberSkills(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberSkills(params);
   }
 
   /**

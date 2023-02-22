@@ -10,6 +10,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -224,6 +225,41 @@ export class MemberService {
     // bulk insert
     return this.prismaService.memberSkillMapping.createMany({
       data: toCreateMemberSkillMappings,
+    });
+  }
+
+  /**
+   * member 와 memberSKill 을 다중 매핑 제거
+   */
+  async unmappingMemberSkills(
+    params: DeleteMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    // 현재 유저랑 mapping 되어있지 않은 memberSkill 을 mapping 제거 하는 경우를 체크하기 위해 값을 뽑아온다.
+    const exMemberSkillMappingCount: number =
+      await this.prismaService.memberSkillMapping.count({
+        where: {
+          memberId: params.id,
+          memberSkillId: {
+            in: params.memberSkillIds,
+          },
+        },
+      });
+
+    // mapping 되지 않은 관계를 제거하려는 경우 에러
+    if (exMemberSkillMappingCount !== params.memberSkillIds.length) {
+      throw new BadRequestException(
+        'mapping 되지 않은 member 의 majorSkill 이 존재합니다.',
+      );
+    }
+
+    // bulk delete
+    return this.prismaService.memberSkillMapping.deleteMany({
+      where: {
+        memberId: params.id,
+        memberSkillId: {
+          in: params.memberSkillIds,
+        },
+      },
     });
   }
 

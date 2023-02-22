@@ -166,3 +166,33 @@ export const ApiMappingMemberSkills = (summary: string) => {
     ),
   );
 };
+
+export const ApiUnmappingMemberSkills = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiBearerAuth(),
+    ApiSuccessResponse(
+      HttpStatus.OK,
+      {},
+      {
+        count: {
+          type: 'number',
+          description: 'member 와 연결 제거가 성공된 memberSkill 개수',
+          minimum: 1,
+        },
+      },
+    ),
+    ApiFailureResponse(HttpStatus.BAD_REQUEST, [
+      'mapping 되지 않은 member 의 memberSkill 이 존재합니다.',
+    ]),
+    ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, [
+      '본인 정보만 접근 가능합니다.',
+      'Active 상태의 유저만 접근 가능합니다.',
+    ]),
+    ApiFailureResponse(
+      HttpStatus.NOT_FOUND,
+      "{memberSkillIds} doesn't exist id in memberSkill",
+    ),
+  );
+};
