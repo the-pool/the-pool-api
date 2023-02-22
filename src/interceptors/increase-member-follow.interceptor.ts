@@ -40,28 +40,33 @@ export class IncreaseMemberFollowInterceptor implements NestInterceptor {
         );
 
         // 앞단에서 모든 유효성처리가 끝났다고 가정하고 로직 수행
-        await Promise.allSettled([
-          this.prismaService.memberStatistics.update({
-            data: {
-              followerCount: {
-                [action]: 1,
+        await this.prismaService
+          .$transaction([
+            this.prismaService.memberStatistics.update({
+              data: {
+                followerCount: {
+                  [action]: 1,
+                },
               },
-            },
-            where: {
-              memberId: fromMemberId,
-            },
-          }),
-          this.prismaService.memberStatistics.update({
-            data: {
-              followingCount: {
-                [action]: 1,
+              where: {
+                memberId: fromMemberId,
               },
-            },
-            where: {
-              memberId: toMemberId,
-            },
-          }),
-        ]);
+            }),
+            this.prismaService.memberStatistics.update({
+              data: {
+                followingCount: {
+                  [action]: 1,
+                },
+              },
+              where: {
+                memberId: toMemberId,
+              },
+            }),
+          ])
+          .catch((e) => {
+            // @todo 우선 로그만 찍게 만들고 나중에 후에 noti 보내는 로직 추가
+            console.error(e);
+          });
       }),
       map((data) => data),
     );
