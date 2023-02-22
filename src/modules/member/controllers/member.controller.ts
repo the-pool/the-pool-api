@@ -37,11 +37,13 @@ import {
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
+  ApiMappingMemberSkills,
   ApiUnmappingMemberSkills,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -182,6 +184,19 @@ export class MemberController {
     params: CreateMemberMajorSkillMappingRequestParamDto,
   ): Promise<{ count: number }> {
     return this.memberService.mappingMajorSkill(member, params);
+  }
+
+  @ApiMappingMemberSkills('해당 member 와 memberSkill 을 다중 연결합니다.')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-skills/:memberSkillIds')
+  mappingMemberSkills(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.mappingMemberSkills(params);
   }
 
   @ApiUnmappingMemberSkills(
