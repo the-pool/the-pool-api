@@ -107,5 +107,6 @@ export const mockMajorService: MockClassType<MajorService> = {
 };
 
 export const mockQuestionService: MockClassType<QuestionService> = {
-  findQuestionCategoryList: jest.fn()
+  findQuestionCategoryList: jest.fn(),
+  createQuestion: jest.fn()
 };
