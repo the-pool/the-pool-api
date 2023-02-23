@@ -23,5 +23,6 @@ export class CreateQuestionRequestBodyDto extends PickType(QuestionEntity, [
   @MinLength(DEFAULT_LIMIT_LENGTH.MIN, {
     message: 'Content is too short'
   })
+  @IsNotEmpty()
   content: string;
 }
