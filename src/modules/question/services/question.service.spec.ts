@@ -1,7 +1,10 @@
+import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { CreateQuestionRequestBodyDto } from '../dtos/create-question-request-body.dto';
 import { QuestionCategoryEntity } from '../entities/question-category.entity';
+import { QuestionEntity } from '../entities/question.entity';
 import { QuestionService } from './question.service';
 
 describe('QuestionService', () => {
@@ -31,7 +34,9 @@ describe('QuestionService', () => {
     expect(service).toBeDefined();
   });
 
-  // Get - Question Category List
+  /**
+   * Get - Question Category List
+   */
   describe('Get Question Category List', () => {
     let categoryList: QuestionCategoryEntity[];
 
@@ -45,6 +50,36 @@ describe('QuestionService', () => {
 
       expect(prismaService.questionCategory.findMany).toBeCalledTimes(1);
       expect(result).toStrictEqual(categoryList);
+    });
+  });
+
+  /**
+   * POST - Create Question
+   */
+  describe('Create Question', () => {
+    let createQuestionRequestBodyDto: CreateQuestionRequestBodyDto;
+    let memberId: number;
+    let createdQuestion: QuestionEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      createQuestionRequestBodyDto = {
+        categoryId: 1,
+        content: 'test Content',
+        title: 'test Title'
+      };
+      createdQuestion = new QuestionEntity();
+      prismaService.question.create.mockReturnValue(createdQuestion);
+    });
+
+    it('SUCCESS - 질문 생성 성공', async () => {
+      const result = await service.createQuestion(
+        createQuestionRequestBodyDto,
+        memberId
+      );
+
+      expect(prismaService.question.create).toBeCalledTimes(1);
+      expect(result).toStrictEqual(createdQuestion)
     });
   });
 });
