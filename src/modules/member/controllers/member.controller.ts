@@ -39,8 +39,10 @@ import {
   ApiMappingMajorSkill,
   ApiMappingMemberSkills,
   ApiUnmappingMemberSkills,
+  ApiMappingMemberInterests,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
@@ -212,6 +214,21 @@ export class MemberController {
     params: DeleteMemberSkillsMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
     return this.memberService.unmappingMemberSkills(params);
+  }
+
+  @ApiMappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 매핑합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-interests/:memberInterestIds')
+  mappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.mappingMemberInterests(params);
   }
 
   /**

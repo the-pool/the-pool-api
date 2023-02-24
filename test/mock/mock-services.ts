@@ -30,6 +30,7 @@ export const mockMemberService: MockClassType<MemberService> = {
   mappingMajorSkill: jest.fn(),
   mappingMemberSkills: jest.fn(),
   unmappingMemberSkills: jest.fn(),
+  mappingMemberInterests: jest.fn(),
   loginByOAuth: jest.fn(),
   updateMember: jest.fn(),
 };
