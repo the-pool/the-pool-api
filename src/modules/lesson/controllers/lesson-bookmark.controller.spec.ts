@@ -60,10 +60,14 @@ describe('LessonBookmarkController', () => {
     it('success - check method called', async () => {
       await lessonBookmarkController.createBookmark(param, memberId);
 
-      expect(prismaService.validateDuplicateAndFail).toBeCalledTimes(1);
-      expect(prismaService.validateDuplicateAndFail).toBeCalledWith(
+      expect(prismaService.validateMappedDataOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateMappedDataOrFail).toBeCalledWith(
         ModelName.LessonBookmark,
-        { memberId, lessonId: param.id },
+        {
+          memberId,
+          lessonId: { in: [param.id] },
+        },
+        false,
       );
       expect(lessonBookmarkService.createBookmark).toBeCalledTimes(1);
       expect(lessonBookmarkService.createBookmark).toBeCalledWith(
@@ -74,6 +78,48 @@ describe('LessonBookmarkController', () => {
 
     it('success - check Input & Output', async () => {
       const returnValue = await lessonBookmarkController.createBookmark(
+        param,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual({ lessonBookmark });
+    });
+  });
+
+  describe('deleteBookmark', () => {
+    let param: IdRequestParamDto;
+    let memberId: number;
+    let lessonBookmark: LessonBookmarkEntity;
+
+    beforeEach(() => {
+      param = new IdRequestParamDto();
+      memberId = faker.datatype.number();
+      lessonBookmark = new LessonBookmarkEntity();
+
+      lessonBookmarkService.deleteBookmark.mockReturnValue(lessonBookmark);
+    });
+
+    it('success - check method called', async () => {
+      await lessonBookmarkController.deleteBookmark(param, memberId);
+
+      expect(prismaService.validateMappedDataOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateMappedDataOrFail).toBeCalledWith(
+        ModelName.LessonBookmark,
+        {
+          memberId,
+          lessonId: { in: [param.id] },
+        },
+        true,
+      );
+      expect(lessonBookmarkService.deleteBookmark).toBeCalledTimes(1);
+      expect(lessonBookmarkService.deleteBookmark).toBeCalledWith(
+        param.id,
+        memberId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonBookmarkController.deleteBookmark(
         param,
         memberId,
       );

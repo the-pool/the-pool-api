@@ -1,5 +1,6 @@
 import { Controller, Delete, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { LessonBookmark } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
@@ -7,8 +8,12 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
 import { LessonBookmarkService } from '../services/lesson-bookmark.service';
-import { ApiCreateBookmark } from '../swaggers/lesson-bookmark.swagger';
+import {
+  ApiCreateBookmark,
+  ApiDeleteBookmark,
+} from '../swaggers/lesson-bookmark.swagger';
 
 @ApiTags('과제 북마크')
 @Controller(':id/bookmark')
@@ -26,13 +31,14 @@ export class LessonBookmarkController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ) {
-    await this.prismaService.validateDuplicateAndFail(
+  ): Promise<{ lessonBookmark: LessonBookmarkEntity }> {
+    await this.prismaService.validateMappedDataOrFail<LessonBookmark>(
       ModelName.LessonBookmark,
       {
         memberId,
-        lessonId: param.id,
+        lessonId: { in: [param.id] },
       },
+      false,
     );
 
     const lessonBookmark = await this.lessonBookmarkService.createBookmark(
@@ -42,6 +48,7 @@ export class LessonBookmarkController {
     return { lessonBookmark };
   }
 
+  @ApiDeleteBookmark('과제 북마크 삭제')
   @BearerAuth(JwtAuthGuard)
   @Delete()
   async deleteBookmark(
@@ -49,7 +56,20 @@ export class LessonBookmarkController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ) {
-    return this.lessonBookmarkService.deleteBookmark(param.id, memberId);
+  ): Promise<{ lessonBookmark: LessonBookmarkEntity }> {
+    await this.prismaService.validateMappedDataOrFail<LessonBookmark>(
+      ModelName.LessonBookmark,
+      {
+        memberId,
+        lessonId: { in: [param.id] },
+      },
+      true,
+    );
+
+    const lessonBookmark = await this.lessonBookmarkService.deleteBookmark(
+      param.id,
+      memberId,
+    );
+    return { lessonBookmark };
   }
 }

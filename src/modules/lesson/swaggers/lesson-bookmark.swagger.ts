@@ -1,6 +1,5 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOperation,
@@ -23,7 +22,29 @@ export const ApiCreateBookmark = (summary: string) => {
         },
       },
     }),
+    ApiFailureResponse(
+      HttpStatus.BAD_REQUEST,
+      'lessonBookmark에 중복된 관계를 추가할 수 없습니다.',
+    ),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-    ApiFailureResponse(HttpStatus.CONFLICT, HTTP_ERROR_MESSAGE.CONFLICT),
+  );
+};
+
+export const ApiDeleteBookmark = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          lessonBookmark: {
+            $ref: getSchemaPath(LessonBookmarkEntity),
+          },
+        },
+      },
+    }),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, [
+      HTTP_ERROR_MESSAGE.NOT_FOUND,
+      'lessonBookmark에 존재하지 않는 관계 입니다.',
+    ]),
   );
 };
