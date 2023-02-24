@@ -44,6 +44,12 @@ describe('LessonBookmarkService', () => {
       lessonBookmarkService.createBookmark(lessonId, memberId);
 
       expect(prismaService.lessonBookmark.create).toBeCalledTimes(1);
+      expect(prismaService.lessonBookmark.create).toBeCalledWith({
+        data: {
+          lessonId,
+          memberId,
+        },
+      });
     });
 
     it('success - check Input & Output', () => {
@@ -53,6 +59,40 @@ describe('LessonBookmarkService', () => {
       );
 
       expect(returnValue).toStrictEqual(createdBookmark);
+    });
+  });
+
+  describe('deleteBookmark', () => {
+    let lessonId: number;
+    let memberId: number;
+    let deletedBookmark: LessonBookmarkEntity;
+
+    beforeEach(() => {
+      lessonId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      deletedBookmark = new LessonBookmarkEntity();
+
+      prismaService.lessonBookmark.delete.mockReturnValue(deletedBookmark);
+    });
+
+    it('success - check method called', () => {
+      lessonBookmarkService.deleteBookmark(lessonId, memberId);
+
+      expect(prismaService.lessonBookmark.delete).toBeCalledTimes(1);
+      expect(prismaService.lessonBookmark.delete).toBeCalledWith({
+        where: {
+          lessonId_memberId: { lessonId, memberId },
+        },
+      });
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonBookmarkService.deleteBookmark(
+        lessonId,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual(deletedBookmark);
     });
   });
 });
