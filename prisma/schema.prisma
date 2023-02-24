@@ -287,6 +287,8 @@ model LessonBookmark {
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonId, memberId])
 }
 
 /// 과제 좋아요에 대한 테이블
