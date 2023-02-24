@@ -1,5 +1,6 @@
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
@@ -110,4 +111,9 @@ export const mockMajorService: MockClassType<MajorService> = {
 
 export const mockQuestionService: MockClassType<QuestionService> = {
   findQuestionCategoryList: jest.fn(),
+};
+
+export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
+  createBookmark: jest.fn(),
+  deleteBookmark: jest.fn(),
 };
