@@ -40,11 +40,13 @@ import {
   ApiMappingMemberSkills,
   ApiUnmappingMemberSkills,
   ApiMappingMemberInterests,
+  ApiUnmappingMemberInterests,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
@@ -229,6 +231,21 @@ export class MemberController {
     params: CreateMemberInterestMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
     return this.memberService.mappingMemberInterests(params);
+  }
+
+  @ApiUnmappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 연결 제거합니다..',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/member-interests/:memberInterestIds')
+  unmappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberInterests(params);
   }
 
   /**

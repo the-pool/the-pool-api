@@ -12,6 +12,7 @@ import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
@@ -303,6 +304,41 @@ export class MemberService {
     // bulk insert
     return this.prismaService.memberInterestMapping.createMany({
       data: toCreateMemberSkillMappings,
+    });
+  }
+
+  /**
+   * member 와 memberInterest 를 다중 매핑 제거
+   */
+  async unmappingMemberInterests(
+    params: DeleteMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    // 현재 유저랑 mapping 되어있지 않은 memberSkill 을 mapping 제거 하는 경우를 체크하기 위해 값을 뽑아온다.
+    const exMemberInterestMappingCount: number =
+      await this.prismaService.memberInterestMapping.count({
+        where: {
+          memberId: params.id,
+          memberInterestId: {
+            in: params.memberInterestIds,
+          },
+        },
+      });
+
+    // mapping 되지 않은 관계를 제거하려는 경우 에러
+    if (exMemberInterestMappingCount !== params.memberInterestIds.length) {
+      throw new BadRequestException(
+        'mapping 되지 않은 member 의 majorInterest 가 존재합니다.',
+      );
+    }
+
+    // bulk delete
+    return this.prismaService.memberInterestMapping.deleteMany({
+      where: {
+        memberId: params.id,
+        memberInterestId: {
+          in: params.memberInterestIds,
+        },
+      },
     });
   }
 

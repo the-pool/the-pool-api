@@ -13,6 +13,7 @@ import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
@@ -431,6 +432,48 @@ describe('MemberService', () => {
     afterEach(() => {
       mockPrismaService.memberInterestMapping.findFirst.mockRestore();
       mockPrismaService.memberInterestMapping.createMany.mockRestore();
+    });
+  });
+
+  describe('unmappingMemberInterests', () => {
+    let params: DeleteMemberInterestMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new DeleteMemberInterestMappingRequestParamDto();
+    });
+
+    it('이미 mapping 된 관계를 만드려는 경우', async () => {
+      params.memberInterestIds = [1, 2];
+      mockPrismaService.memberInterestMapping.count.mockResolvedValue(0);
+
+      await expect(
+        memberService.unmappingMemberInterests(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          'mapping 되지 않은 member 의 majorInterest 가 존재합니다.',
+        ),
+      );
+    });
+
+    it('매핑 성공', async () => {
+      params.memberInterestIds = [1];
+      mockPrismaService.memberInterestMapping.count.mockResolvedValue(
+        params.memberInterestIds.length,
+      );
+      mockPrismaService.memberInterestMapping.deleteMany.mockResolvedValue({
+        count: params.memberInterestIds.length,
+      });
+
+      await expect(
+        memberService.unmappingMemberInterests(params),
+      ).resolves.toStrictEqual({
+        count: params.memberInterestIds.length,
+      });
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberInterestMapping.count.mockRestore();
+      mockPrismaService.memberInterestMapping.deleteMany.mockRestore();
     });
   });
 
