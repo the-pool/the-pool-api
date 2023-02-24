@@ -227,7 +227,7 @@ describe('MemberController', () => {
       returnValue = faker.datatype.string();
     });
 
-    it('정상 싱행', () => {
+    it('정상 실행', () => {
       mockMemberService.mappingMemberInterests.mockReturnValue(returnValue);
 
       const result = memberController.mappingMemberInterests(params);
