@@ -2,6 +2,8 @@ import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
+  ApiForbiddenResponse,
+  ApiOkResponse,
   ApiOperation,
   getSchemaPath,
 } from '@nestjs/swagger';
@@ -26,6 +28,10 @@ export const ApiCreateBookmark = (summary: string) => {
       HttpStatus.BAD_REQUEST,
       'lessonBookmark에 중복된 관계를 추가할 수 없습니다.',
     ),
+    ApiFailureResponse(
+      HttpStatus.FORBIDDEN,
+      'Active 상태의 유저만 접근 가능합니다.',
+    ),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
@@ -33,7 +39,7 @@ export const ApiCreateBookmark = (summary: string) => {
 export const ApiDeleteBookmark = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiCreatedResponse({
+    ApiOkResponse({
       schema: {
         properties: {
           lessonBookmark: {
@@ -42,6 +48,10 @@ export const ApiDeleteBookmark = (summary: string) => {
         },
       },
     }),
+    ApiFailureResponse(
+      HttpStatus.FORBIDDEN,
+      'Active 상태의 유저만 접근 가능합니다.',
+    ),
     ApiFailureResponse(HttpStatus.NOT_FOUND, [
       HTTP_ERROR_MESSAGE.NOT_FOUND,
       'lessonBookmark에 존재하지 않는 관계 입니다.',
