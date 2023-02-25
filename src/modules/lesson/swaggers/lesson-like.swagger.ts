@@ -53,7 +53,7 @@ export const ApiDeleteLike = (summary: string) => {
     ),
     ApiFailureResponse(HttpStatus.NOT_FOUND, [
       HTTP_ERROR_MESSAGE.NOT_FOUND,
-      'lessonBookmark에 존재하지 않는 관계 입니다.',
+      'lessonLike에 존재하지 않는 관계 입니다.',
     ]),
   );
 };
