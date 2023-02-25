@@ -9,6 +9,8 @@ export enum ModelName {
   LessonCategory = 'lessonCategory',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
+  MemberSkill = 'memberSkill',
+  MemberInterest = 'memberInterest',
   MajorSkill = 'majorSkill',
 }
 

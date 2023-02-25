@@ -54,16 +54,21 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
           return;
         }
 
-        await this.prismaService.memberStatistics.update({
-          data: {
-            [memberReportIncreaseFieldName]: {
-              [action]: 1,
+        await this.prismaService.memberStatistics
+          .update({
+            data: {
+              [memberReportIncreaseFieldName]: {
+                [action]: 1,
+              },
             },
-          },
-          where: {
-            memberId: member.id,
-          },
-        });
+            where: {
+              memberId: member.id,
+            },
+          })
+          .catch((e) => {
+            // @todo 우선 로그만 찍게 만들고 나중에 후에 noti 보내는 로직 추가
+            console.error(e);
+          });
       }),
       map((data) => data),
     );
