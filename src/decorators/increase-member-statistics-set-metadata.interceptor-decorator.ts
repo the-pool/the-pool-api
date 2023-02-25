@@ -4,7 +4,7 @@ import {
   MEMBER_STATISTICS_INCREASE_FIELD_NAME,
 } from '@src/constants/constant';
 import { IncreaseMemberStatisticsInterceptor } from '@src/interceptors/increase-member-statistics.interceptor';
-import { MemberStatisticsIncrementFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
+import { MemberStatisticsIncreaseFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
 import { IncreaseAction } from '@src/types/type';
 
 /**
@@ -16,14 +16,14 @@ import { IncreaseAction } from '@src/types/type';
  *
  * 데코레이터 추가해주세요
  */
-export const IncreaseMemberStatisticsSetMetadataGuard = (
-  memberReportIncrementFieldName: MemberStatisticsIncrementFieldName,
+export const IncreaseMemberStatisticsSetMetadataInterceptor = (
+  memberReportIncreaseFieldName: MemberStatisticsIncreaseFieldName,
   action: IncreaseAction,
 ) => {
   return applyDecorators(
     SetMetadata(
       MEMBER_STATISTICS_INCREASE_FIELD_NAME,
-      memberReportIncrementFieldName,
+      memberReportIncreaseFieldName,
     ),
     SetMetadata(INCREASE_ACTION, action),
     UseInterceptors(IncreaseMemberStatisticsInterceptor),

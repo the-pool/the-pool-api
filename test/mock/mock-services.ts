@@ -39,6 +39,7 @@ export const mockMemberService: MockClassType<MemberService> = {
 export const mockMemberFriendshipService: MockClassType<MemberFriendshipService> =
   {
     findAll: jest.fn(),
+    createFollowing: jest.fn(),
   };
 
 export const mockMemberStatisticsService: MockClassType<MemberStatisticsService> =
