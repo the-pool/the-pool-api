@@ -14,6 +14,7 @@ import {
 import {
   LessonBookmark,
   LessonHashtagMapping,
+  LessonLike,
   Major,
   Prisma,
   PrismaClient,
@@ -126,7 +127,7 @@ export class PrismaService
    * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
    */
   async validateMappedDataOrFail<
-    T extends LessonHashtagMapping | LessonBookmark,
+    T extends LessonHashtagMapping | LessonBookmark | LessonLike,
   >(
     modelName: PrismaModelName,
     where: {
