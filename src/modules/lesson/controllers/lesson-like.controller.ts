@@ -41,7 +41,7 @@ export class LessonLikeController {
       false,
     );
 
-    const lessonLike = await this.lessonLikeService.craeteLike(
+    const lessonLike = await this.lessonLikeService.createLike(
       param.id,
       memberId,
     );

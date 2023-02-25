@@ -4,7 +4,7 @@ import { LessonLikeEntity } from '../entities/lesson-like.entity';
 export class LessonLikeService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  craeteLike(lessonId: number, memberId: number): Promise<LessonLikeEntity> {
+  createLike(lessonId: number, memberId: number): Promise<LessonLikeEntity> {
     return this.prismaService.lessonLike.create({
       data: {
         lessonId,
