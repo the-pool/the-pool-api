@@ -12,6 +12,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { LessonLikeEntity } from '../entities/lesson-like.entity';
 import { LessonLikeService } from '../services/lesson-like.service';
+import { ApiCreateLike, ApiDeleteLike } from '../swaggers/lesson-like.swagger';
 
 @ApiTags('과제 좋아요')
 @Controller(':id/likes')
@@ -21,6 +22,7 @@ export class LessonLikeController {
     private readonly prismaService: PrismaService,
   ) {}
 
+  @ApiCreateLike('과제 좋아요 생성')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -47,6 +49,7 @@ export class LessonLikeController {
     return { lessonLike };
   }
 
+  @ApiDeleteLike('과제 좋아요 삭제')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete()
