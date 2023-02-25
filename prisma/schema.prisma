@@ -304,6 +304,8 @@ model LessonLike {
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonId, memberId])
 }
 
 /// 과제의 난이도에 대한 테이블 
