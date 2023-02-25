@@ -37,11 +37,6 @@ export class MemberValidationService {
       throw new NotFoundException('존재하지 않는 member 입니다.');
     }
 
-    // pending 상태의 유저인 경우
-    if (memberStatus === MemberStatus.Pending) {
-      throw new ForbiddenException('pending 상태의 유저 입니다.');
-    }
-
     // 비활성 유저인 경우
     if (memberStatus === MemberStatus.Inactive) {
       throw new ForbiddenException('비활성된 유저입니다.');
