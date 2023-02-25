@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonLikeEntity } from '../entities/lesson-like.entity';
 
+@Injectable()
 export class LessonLikeService {
   constructor(private readonly prismaService: PrismaService) {}
 
