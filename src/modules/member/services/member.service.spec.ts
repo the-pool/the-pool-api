@@ -10,13 +10,19 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
+import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockAuthService } from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
 import { MemberService } from './member.service';
 
 describe('MemberService', () => {
@@ -279,6 +285,195 @@ describe('MemberService', () => {
       ).toBeCalledWith({
         data: [{ majorSkillId: params.majorSkillIds[0], memberId: params.id }],
       });
+    });
+  });
+
+  describe('mappingMemberSkills', () => {
+    let params: CreateMemberSkillsMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new CreateMemberSkillsMappingRequestParamDto();
+    });
+
+    it('이미 mapping 된 memberSkill 을 mapping 하려는 경우', async () => {
+      params.memberSkillIds = [1];
+      mockPrismaService.memberSkill.findMany.mockResolvedValue([
+        1,
+      ] as unknown as any);
+      mockPrismaService.memberSkillMapping.findFirst.mockResolvedValue(
+        new MemberSkillMappingEntity(),
+      );
+
+      await expect(
+        memberService.mappingMemberSkills(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          '이미 존재하는 member 의 majorSkill 이 존재합니다.',
+        ),
+      );
+    });
+
+    it('매핑 성공', async () => {
+      params.id = 1;
+      params.memberSkillIds = [1, 2];
+      const result = { count: 2 };
+      const toCreateMemberSkillMappings = [
+        { memberSkillId: 1, memberId: 1 },
+        { memberSkillId: 2, memberId: 1 },
+      ];
+      mockPrismaService.memberSkill.findMany.mockResolvedValue([
+        1, 2,
+      ] as unknown as any);
+      mockPrismaService.memberSkillMapping.findFirst.mockResolvedValue(null);
+      mockPrismaService.memberSkillMapping.createMany.mockResolvedValue(result);
+
+      await expect(
+        memberService.mappingMemberSkills(params),
+      ).resolves.toStrictEqual(result);
+      expect(mockPrismaService.memberSkillMapping.createMany).toBeCalledWith({
+        data: toCreateMemberSkillMappings,
+      });
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberSkill.findMany.mockRestore();
+      mockPrismaService.memberSkillMapping.findFirst.mockRestore();
+      mockPrismaService.memberSkillMapping.createMany.mockRestore();
+    });
+  });
+
+  describe('unmappingMemberSkills', () => {
+    let params: DeleteMemberSkillsMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new DeleteMemberSkillsMappingRequestParamDto();
+    });
+
+    it('mapping 되지 않은 관계를 제거하려는 경우', async () => {
+      params.memberSkillIds = [1];
+      mockPrismaService.memberSkillMapping.count.mockResolvedValue(0);
+
+      await expect(
+        memberService.unmappingMemberSkills(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          'mapping 되지 않은 member 의 majorSkill 이 존재합니다.',
+        ),
+      );
+    });
+
+    it('mapping 제거 성공', async () => {
+      params.memberSkillIds = [1];
+      mockPrismaService.memberSkillMapping.count.mockResolvedValue(
+        params.memberSkillIds.length,
+      );
+      mockPrismaService.memberSkillMapping.deleteMany.mockResolvedValue({
+        count: params.memberSkillIds.length,
+      });
+
+      await expect(
+        memberService.unmappingMemberSkills(params),
+      ).resolves.toStrictEqual({
+        count: params.memberSkillIds.length,
+      });
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberSkillMapping.count.mockRestore();
+      mockPrismaService.memberSkillMapping.deleteMany.mockRestore();
+    });
+  });
+
+  describe('mappingMemberInterests', () => {
+    let params: CreateMemberInterestMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new CreateMemberInterestMappingRequestParamDto();
+    });
+
+    it('이미 mapping 된 관계를 만드려는 경우', async () => {
+      params.memberInterestIds = [1, 2];
+      mockPrismaService.memberInterestMapping.findFirst.mockResolvedValue(
+        new MemberInterestMappingEntity(),
+      );
+
+      await expect(
+        memberService.mappingMemberInterests(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          '이미 존재하는 member 의 memberInterest 가 존재합니다.',
+        ),
+      );
+    });
+
+    it('매핑 성공', async () => {
+      params.id = 1;
+      params.memberInterestIds = [1, 2];
+      const result = { count: 2 };
+      const toCreateMemberInterestMappings = [
+        { memberInterestId: 1, memberId: 1 },
+        { memberInterestId: 2, memberId: 1 },
+      ];
+      mockPrismaService.memberInterestMapping.findFirst.mockResolvedValue(null);
+      mockPrismaService.memberInterestMapping.createMany.mockResolvedValue(
+        result,
+      );
+
+      await expect(
+        memberService.mappingMemberInterests(params),
+      ).resolves.toStrictEqual(result);
+      expect(mockPrismaService.memberInterestMapping.createMany).toBeCalledWith(
+        {
+          data: toCreateMemberInterestMappings,
+        },
+      );
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberInterestMapping.findFirst.mockRestore();
+      mockPrismaService.memberInterestMapping.createMany.mockRestore();
+    });
+  });
+
+  describe('unmappingMemberInterests', () => {
+    let params: DeleteMemberInterestMappingRequestParamDto;
+
+    beforeEach(() => {
+      params = new DeleteMemberInterestMappingRequestParamDto();
+    });
+
+    it('이미 mapping 된 관계를 만드려는 경우', async () => {
+      params.memberInterestIds = [1, 2];
+      mockPrismaService.memberInterestMapping.count.mockResolvedValue(0);
+
+      await expect(
+        memberService.unmappingMemberInterests(params),
+      ).rejects.toThrowError(
+        new BadRequestException(
+          'mapping 되지 않은 member 의 majorInterest 가 존재합니다.',
+        ),
+      );
+    });
+
+    it('매핑 성공', async () => {
+      params.memberInterestIds = [1];
+      mockPrismaService.memberInterestMapping.count.mockResolvedValue(
+        params.memberInterestIds.length,
+      );
+      mockPrismaService.memberInterestMapping.deleteMany.mockResolvedValue({
+        count: params.memberInterestIds.length,
+      });
+
+      await expect(
+        memberService.unmappingMemberInterests(params),
+      ).resolves.toStrictEqual({
+        count: params.memberInterestIds.length,
+      });
+    });
+
+    afterEach(() => {
+      mockPrismaService.memberInterestMapping.count.mockRestore();
+      mockPrismaService.memberInterestMapping.deleteMany.mockRestore();
     });
   });
 

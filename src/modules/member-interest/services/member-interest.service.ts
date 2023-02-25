@@ -13,12 +13,12 @@ export class MemberInterestService {
    * member-interest 리스트 조회
    */
   findAll(memberId?: number): Promise<MemberInterestEntity[]> {
-    let where: Prisma.MemberSkillWhereInput | undefined = undefined;
+    let where: Prisma.MemberInterestWhereInput | undefined = undefined;
 
     // 특정 멤버에 대한 관심사만 조회 할 경우 where 조건을 만들어준다.
     if (memberId) {
       where = {
-        memberSkillMappings: {
+        memberInterestMappings: {
           some: {
             memberId,
           },
