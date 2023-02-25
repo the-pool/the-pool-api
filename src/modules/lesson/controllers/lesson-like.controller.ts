@@ -10,6 +10,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
+import { LessonLikeEntity } from '../entities/lesson-like.entity';
 import { LessonLikeService } from '../services/lesson-like.service';
 
 @ApiTags('과제 좋아요')
@@ -28,7 +29,7 @@ export class LessonLikeController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<{ lessonLike: LessonLikeEntity }> {
     await this.prismaService.validateMappedDataOrFail<LessonLike>(
       ModelName.LessonLike,
       {
@@ -54,7 +55,7 @@ export class LessonLikeController {
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
     @UserLogin('id') memberId: number,
-  ) {
+  ): Promise<{ lessonLike: LessonLikeEntity }> {
     await this.prismaService.validateMappedDataOrFail<LessonLike>(
       ModelName.LessonLike,
       { memberId, lessonId: { in: [param.id] } },
