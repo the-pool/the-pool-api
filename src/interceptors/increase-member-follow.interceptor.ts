@@ -26,13 +26,14 @@ export class IncreaseMemberFollowInterceptor implements NestInterceptor {
         // follow 또는 unfollow 하는 유저의 ID 를 가져온다.
         const toMemberId: number = context.switchToHttp().getRequest().user.id;
         // follow 또는 unfollow 당하는 유저의 ID 를 가져온다.
-        const fromMemberId: number = +context.switchToHttp().getRequest()
-          .params[
-          this.reflector.get(
-            FROM_MEMBER_REQUEST_PARAM_FIELD_NAME,
-            context.getHandler(),
-          )
-        ];
+        const fromMemberId = Number(
+          context.switchToHttp().getRequest().params[
+            this.reflector.get(
+              FROM_MEMBER_REQUEST_PARAM_FIELD_NAME,
+              context.getHandler(),
+            )
+          ],
+        );
         // 증가시킬지 감소시킬지에 대한 정보를 가져온다.
         const action = this.reflector.get<IncreaseAction>(
           INCREASE_ACTION,
