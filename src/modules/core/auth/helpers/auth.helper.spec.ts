@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommonHelper } from '@src/helpers/common.helper';
@@ -42,6 +43,12 @@ describe('AuthHelper', () => {
         {
           provide: JWKS_CLIENT_TOKEN,
           useValue: mockJwksClient,
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -308,9 +315,17 @@ describe('AuthHelper', () => {
     });
 
     it('성공하는 경우', async () => {
+      successResponse.data = {
+        access_token: 'accessToken',
+        token_type: 'tokenType',
+        scope: 'scope',
+      };
+      jest
+        .spyOn(httpService, 'post')
+        .mockImplementationOnce(() => of(successResponse));
+
       id = faker.datatype.number();
       successResponse.data.id = id;
-
       jest
         .spyOn(httpService, 'get')
         .mockImplementationOnce(() => of(successResponse));
@@ -327,9 +342,30 @@ describe('AuthHelper', () => {
       );
     });
 
-    it('유효하지 않은 토큰', async () => {
-      failureResponse.response.status = HttpStatus.UNAUTHORIZED;
+    it('유효하지 않은 코드', async () => {
+      successResponse.data = {
+        error: 'error',
+      };
+      jest
+        .spyOn(httpService, 'post')
+        .mockImplementationOnce(() => of(successResponse));
 
+      await expect(async () => {
+        await authHelper.validateGitHubAccessTokenOrFail(oAuthToken);
+      }).rejects.toThrowError('유효하지 않은 토큰입니다.');
+    });
+
+    it('유효하지 않은 토큰', async () => {
+      successResponse.data = {
+        access_token: 'accessToken',
+        token_type: 'tokenType',
+        scope: 'scope',
+      };
+      jest
+        .spyOn(httpService, 'post')
+        .mockImplementationOnce(() => of(successResponse));
+
+      failureResponse.response.status = HttpStatus.UNAUTHORIZED;
       jest.spyOn(httpService, 'get').mockImplementationOnce(() =>
         throwError(() => {
           return failureResponse;
