@@ -10,9 +10,9 @@ import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-excepti
 import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
-import { options } from 'joi';
 import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
@@ -22,6 +22,7 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   const isProduction = configService.get<string>('NODE_ENV') === 'production';
 
+  const notificationService = app.get<NotificationService>(NotificationService);
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
@@ -38,7 +39,10 @@ async function bootstrap() {
   app.useGlobalFilters(
     new HttpNodeInternalServerErrorExceptionFilter(isProduction),
     new HttpRemainderExceptionFilter(),
-    new HttpNestInternalServerErrorExceptionFilter(isProduction),
+    new HttpNestInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpNotFoundExceptionFilter(),
     new HttpBadRequestExceptionFilter(),
     new JwtExceptionFilter(),
