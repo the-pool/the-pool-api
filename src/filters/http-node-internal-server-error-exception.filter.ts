@@ -39,7 +39,7 @@ export class HttpNodeInternalServerErrorExceptionFilter
     ];
 
     try {
-      await this.notificationService.serverException({
+      await this.notificationService.error({
         name: 'Http Node Internal Server Error Exception',
         method: request.method,
         path: request.url,

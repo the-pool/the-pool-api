@@ -44,7 +44,7 @@ export class HttpNestInternalServerErrorExceptionFilter
     ];
 
     try {
-      await this.notificationService.serverException({
+      await this.notificationService.error({
         name: 'Http Nest Internal Server Error Exception',
         method: request.method,
         path: request.url,

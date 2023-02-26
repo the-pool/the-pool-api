@@ -23,7 +23,7 @@ export class NotificationService {
   /**
    * 500번대 에러 시
    */
-  async serverException(exceptionField: ServerExceptionField) {
+  async error(exceptionField: ServerExceptionField) {
     const { name, method, path, status, body, stack } = exceptionField;
 
     await this.send(this.configService.get('SERVER_EXCEPTION_CHANNEL_URL'), {
