@@ -8,3 +8,7 @@ export type ServerExceptionField = {
   body: any;
   stack: any;
 };
+
+export type WarningExceptionFiled = Partial<ServerExceptionField> & {
+  description: string;
+};
