@@ -1,11 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { mockMemberFriendshipService } from '../../../../test/mock/mock-services';
+import {
+  mockMemberFriendshipService,
+  mockNotificationService,
+} from '../../../../test/mock/mock-services';
 import { MemberFriendshipController } from './member-friendship.controller';
 
 describe('FriendshipController', () => {
@@ -22,6 +26,10 @@ describe('FriendshipController', () => {
         {
           provide: MemberFriendshipService,
           useValue: mockMemberFriendshipService,
+        },
+        {
+          provide: NotificationService,
+          useValue: mockNotificationService,
         },
       ],
     }).compile();
