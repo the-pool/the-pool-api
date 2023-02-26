@@ -20,10 +20,11 @@ interface NotificationOption {
 @Injectable()
 export class NotificationService {
   constructor(private readonly configService: ConfigService) {}
+
   /**
    * 500번대 에러 시
    */
-  async error(exceptionField: ServerExceptionField) {
+  async error(exceptionField: ServerExceptionField): Promise<void> {
     const { name, method, path, status, body, stack } = exceptionField;
 
     await this.send(this.configService.get('SERVER_EXCEPTION_CHANNEL_URL'), {
@@ -67,7 +68,7 @@ export class NotificationService {
   /**
    * 실제 webhook 을 통해 보내는 메서드
    */
-  private async send(url, option: NotificationOption) {
+  private async send(url, option: NotificationOption): Promise<void> {
     const { title, color, fields } = option;
 
     const webhookClient = new WebhookClient({
