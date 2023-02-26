@@ -1,16 +1,26 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { IncreaseMemberFollowSetMetadataInterceptor } from '@src/decorators/increase-member-follow-set-metadata.interceptor.decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { OtherMemberSetMetadataGuard } from '@src/decorators/other-member-set-metadata.guard-decorator';
 import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
+import { UserLogin } from '@src/decorators/user-login.decorator';
+import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import {
+  ApiCreateFollowing,
   ApiFindAllFollowers,
   ApiFindAllFollowings,
 } from '@src/modules/member-friendship/controllers/member-friendship.swagger';
+import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
+import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
@@ -64,5 +74,22 @@ export class MemberFriendshipController {
       followings,
       totalCount,
     };
+  }
+
+  @ApiCreateFollowing('member follow (해당 member 를 팔로우 합니다.)')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OtherMemberSetMetadataGuard('memberId')
+  @UseGuards(JwtAuthGuard)
+  @IncreaseMemberFollowSetMetadataInterceptor('memberId', 'increment')
+  @SetResponseSetMetadataInterceptor('memberFollow')
+  @Post('followings/:memberId')
+  createFollowing(
+    @UserLogin() member: MemberEntity,
+    @Param() param: CreateMemberFollowingRequestParamDto,
+  ): Promise<MemberFollowEntity> {
+    return this.memberFriendshipService.createFollowing(
+      param.memberId,
+      member.id,
+    );
   }
 }

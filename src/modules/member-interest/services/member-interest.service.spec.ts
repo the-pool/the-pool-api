@@ -60,7 +60,7 @@ describe('MemberInterestService', () => {
 
       expect(mockPrismaService.memberInterest.findMany).toBeCalledWith({
         where: {
-          memberSkillMappings: {
+          memberInterestMappings: {
             some: {
               memberId,
             },

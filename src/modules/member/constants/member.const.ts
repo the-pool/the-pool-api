@@ -11,4 +11,6 @@ export const MEMBER_STATUSES = 'memberStatuses';
 
 export const OWN_MEMBER_FIELD_NAME = 'ownMemberFieldName';
 
+export const UN_OWN_MEMBER_FIELD_NAME = 'unOwnMemberFieldName';
+
 export const MEMBER_JOBS = 'memberJobs';

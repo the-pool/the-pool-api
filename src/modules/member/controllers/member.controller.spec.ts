@@ -3,9 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -213,6 +215,46 @@ describe('MemberController', () => {
 
       expect(mockMemberService.unmappingMemberSkills).toBeCalledTimes(1);
       expect(mockMemberService.unmappingMemberSkills).toBeCalledWith(params);
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('mappingMemberInterests', () => {
+    let params: CreateMemberInterestMappingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      params = new CreateMemberInterestMappingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 실행', () => {
+      mockMemberService.mappingMemberInterests.mockReturnValue(returnValue);
+
+      const result = memberController.mappingMemberInterests(params);
+
+      expect(mockMemberService.mappingMemberInterests).toBeCalledTimes(1);
+      expect(mockMemberService.mappingMemberInterests).toBeCalledWith(params);
+      expect(result).toStrictEqual(returnValue);
+    });
+  });
+
+  describe('unmappingMemberInterests', () => {
+    let params: DeleteMemberInterestMappingRequestParamDto;
+    let returnValue: string;
+
+    beforeEach(() => {
+      params = new DeleteMemberInterestMappingRequestParamDto();
+      returnValue = faker.datatype.string();
+    });
+
+    it('정상 싱행', () => {
+      mockMemberService.unmappingMemberInterests.mockReturnValue(returnValue);
+
+      const result = memberController.unmappingMemberInterests(params);
+
+      expect(mockMemberService.unmappingMemberInterests).toBeCalledTimes(1);
+      expect(mockMemberService.unmappingMemberInterests).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
     });
   });
