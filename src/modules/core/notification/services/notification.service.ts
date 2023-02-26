@@ -1,5 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Type } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  EMBED_BUILDER_TOKEN,
+  WEBHOOK_CLIENT_TOKEN,
+} from '@src/modules/core/notification/constants/notification.constant';
 import {
   ServerExceptionField,
   WarningExceptionFiled,
@@ -27,7 +31,13 @@ interface NotificationOption {
 
 @Injectable()
 export class NotificationService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @Inject(EMBED_BUILDER_TOKEN)
+    private readonly embedBuilder: Type<EmbedBuilder>,
+    @Inject(WEBHOOK_CLIENT_TOKEN)
+    private readonly webhookClient: Type<WebhookClient>,
+    private readonly configService: ConfigService,
+  ) {}
 
   /**
    * 400번대 에러 또는 인지해야하는 사항
@@ -117,11 +127,11 @@ export class NotificationService {
   private async send(url, option: NotificationOption): Promise<void> {
     const { title, color, description, fields } = option;
 
-    const webhookClient = new WebhookClient({
+    const webhookClient = new this.webhookClient({
       url,
     });
 
-    const embed = new EmbedBuilder()
+    const embed = new this.embedBuilder()
       .setTitle(title)
       .setColor(color)
       .setTimestamp();
