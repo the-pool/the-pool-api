@@ -37,7 +37,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(
-    new HttpNodeInternalServerErrorExceptionFilter(isProduction),
+    new HttpNodeInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpRemainderExceptionFilter(),
     new HttpNestInternalServerErrorExceptionFilter(
       notificationService,
