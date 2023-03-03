@@ -1,4 +1,5 @@
-import { LessonLevelId, MajorId } from './enum';
+import { PrismaCommentModelName, PrismaModelName } from '@src/types/type';
+import { DomainName, LessonLevelId, MajorId, ModelName } from './enum';
 
 // 멤버 닉네임 길이 제한
 export const MEMBER_NICKNAME_LENGTH = {
@@ -50,3 +51,14 @@ export const INCREASE_ACTION = 'increaseAction';
 
 // response field name meta data
 export const RESPONSE_FIELD_NAME = 'responseFieldName';
+
+export const DOMAIN_NAME_TO_MODEL_NAME = {
+  [DomainName.Lesson]: ModelName.Lesson,
+} as const;
+
+export const COMMENT_MODEL_NAME_MAPPER: Record<
+  Extract<PrismaModelName, 'lesson'>,
+  PrismaCommentModelName
+> = {
+  [ModelName.Lesson]: ModelName.LessonComment,
+} as const;

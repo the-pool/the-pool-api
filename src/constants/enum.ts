@@ -8,6 +8,7 @@ export enum ModelName {
   LessonSolution = 'lessonSolution',
   LessonCategory = 'lessonCategory',
   LessonBookmark = 'lessonBookmark',
+  LessonComment = 'lessonComment',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
   MemberSkill = 'memberSkill',
@@ -76,4 +77,8 @@ export enum EntityDate {
 
 export enum EntityId {
   Id = 'id',
+}
+
+export enum DomainName {
+  Lesson = 'lessons',
 }
