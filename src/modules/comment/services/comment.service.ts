@@ -1,17 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { ModelName } from '@src/constants/enum';
+import {
+  COMMENT_COLUMN_NAME_MAPPER,
+  COMMENT_MODEL_NAME_MAPPER,
+} from '@src/constants/constant';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { PrismaCommentModelName, PrismaModelName } from '@src/types/type';
+import { CreateCommentDto } from '../dtos/create-comment.dto';
 
-// 공통 service 방식으로 진행하다가 여차 하면 di 할 수있는 형태로 바꾸기
-// crete 때문에 di 하는 형태로 넘어가야 할듯.. 각각의 model의 프로퍼티 이름까지 가져오기 너무 힘들다
-// 아마 controller는 하나로 공유해도 문제 없을 듯
+/**
+ * 해당 파일에서만 쓰이는 타입
+ */
+type SettedCommentParams = {
+  commentModel: PrismaCommentModelName;
+  commentColumn: Partial<Record<`${PrismaModelName}Id`, number>>;
+};
+
 @Injectable()
 export class CommentService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createComment(parentId: number, commentModel: PrismaCommentModelName) {
+  createComment(
+    { commentModel, commentColumn }: SettedCommentParams,
+    memberId: number,
+    description: string,
+  ) {
+    console.log({ memberId: memberId, ...commentColumn, description });
     // @ts-ignore
-    return this.prismaService[commentModel].create({ data: {} });
+    return this.prismaService[commentModel].create({
+      // @ts-ignore
+      data: { memberId: memberId, ...commentColumn, description },
+    });
+  }
+  // model Name, model id로 변경해야 할수도
+  setCommentParams({
+    id: modelId,
+    model: modelName,
+  }: IdRequestParamDto): SettedCommentParams {
+    /// 도메인에 연결된 댓글 테이블 이름
+    const commentModel: PrismaCommentModelName =
+      COMMENT_MODEL_NAME_MAPPER[modelName];
+    /// 도메인에 해당하는 댓글 테이블에 필요한 컬럼
+    const commentColumn: Partial<Record<`${PrismaModelName}Id`, number>> = {
+      [COMMENT_COLUMN_NAME_MAPPER[modelName]]: modelId,
+    };
+
+    return { commentModel, commentColumn };
   }
 }

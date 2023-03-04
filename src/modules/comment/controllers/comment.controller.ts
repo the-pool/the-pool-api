@@ -1,20 +1,22 @@
-import { Controller, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { COMMENT_MODEL_NAME_MAPPER } from '@src/constants/constant';
-import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { SetModelNameToParamByDomain } from '@src/decorators/set-model-name-to-param-by-domain.decorator';
+import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
+import { CreateCommentDto } from '../dtos/create-comment.dto';
 import { CommentService } from '../services/comment.service';
+import { ApiCreateComment } from '../swaggers/comment.swagger';
 
 @ApiTags('댓글')
 @Controller(':id/comments')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
+  @ApiCreateComment('댓글 생성')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -22,9 +24,17 @@ export class CommentController {
     @Param()
     @SetModelNameToParamByDomain()
     param: IdRequestParamDto,
+    @Body() { description }: CreateCommentDto,
+    @UserLogin('id') memberId: number,
   ) {
-    const commentModel = COMMENT_MODEL_NAME_MAPPER[param.model];
+    const settedCommentParams = this.commentService.setCommentParams(param);
 
-    this.commentService.createComment(param.id, commentModel);
+    const comment = await this.commentService.createComment(
+      settedCommentParams,
+      memberId,
+      description,
+    );
+
+    return { comment };
   }
 }

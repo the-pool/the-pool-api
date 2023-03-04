@@ -7,7 +7,7 @@ import {
 } from '@src/common/common';
 import { ModelName } from '@src/constants/enum';
 import { IsRecordMany } from '@src/decorators/is-record-many.decorator';
-
+import { IsRecord } from '@src/decorators/is-record.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { Transform } from 'class-transformer';
 import { ArrayUnique, IsInt, Min } from 'class-validator';
@@ -21,6 +21,7 @@ export class LessonHashtagParamDto extends IdRequestParamDto {
     uniqueItems: true,
     type: () => String,
   })
+  @IsRecord({ model: ModelName.Lesson }, true)
   @IsRecordMany<LessonHashtag>(
     { model: ModelName.LessonHashtag, field: 'id' },
     true,

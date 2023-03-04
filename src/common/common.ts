@@ -58,10 +58,12 @@ export const getEntriesByEnum = <T>(Enum: {
   const entries = Object.entries(Enum);
   entries.splice(0, entries.length / 2);
 
-  return entries.reduce((acc, cur) => {
-    acc[cur[0]] = cur[1];
-    return acc;
-  }, {}) as T;
+  return [
+    entries.reduce((acc, cur) => {
+      acc[cur[0]] = cur[1];
+      return acc;
+    }, {}),
+  ] as T;
 };
 
 /**

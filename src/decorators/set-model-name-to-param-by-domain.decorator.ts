@@ -1,5 +1,7 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { DOMAIN_NAME_TO_MODEL_NAME } from '@src/constants/constant';
+import { DomainName } from '@src/constants/enum';
 
 export const SetModelNameToParamByDomain = createParamDecorator(
   (data: any, ctx: ExecutionContext) => {

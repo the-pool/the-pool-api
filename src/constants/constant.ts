@@ -62,3 +62,10 @@ export const COMMENT_MODEL_NAME_MAPPER: Record<
 > = {
   [ModelName.Lesson]: ModelName.LessonComment,
 } as const;
+
+export const COMMENT_COLUMN_NAME_MAPPER: Record<
+  Extract<PrismaModelName, 'lesson'>,
+  `${PrismaModelName}Id`
+> = {
+  [ModelName.Lesson]: `${ModelName.Lesson}Id`,
+} as const;
