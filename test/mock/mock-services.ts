@@ -10,11 +10,11 @@ import { MajorService } from '@src/modules/major/services/major.service';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
+import { MemberSocialLinkService } from '@src/modules/member-social-link/services/member-social-link.service';
 import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
-import { JestMockExtended } from 'jest-mock-extended';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -60,6 +60,11 @@ export const mockMemberInterestService: MockClassType<MemberInterestService> = {
 export const mockMemberSkillService: MockClassType<MemberSkillService> = {
   findAll: jest.fn(),
 };
+
+export const mockMemberSocialLinkService: MockClassType<MemberSocialLinkService> =
+  {
+    findAll: jest.fn(),
+  };
 
 export const mockMemberValidationService: MockClassType<MemberValidationService> =
   {
