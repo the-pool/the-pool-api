@@ -1,4 +1,5 @@
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
 import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
@@ -127,4 +128,9 @@ export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
 export const mockLessonLikeService: MockClassType<LessonLikeService> = {
   createLike: jest.fn(),
   deleteLike: jest.fn(),
+};
+
+export const mockNotificationService: MockClassType<NotificationService> = {
+  error: jest.fn(),
+  warning: jest.fn(),
 };
