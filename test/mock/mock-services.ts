@@ -4,6 +4,7 @@ import { PrivateStorageService } from '@src/modules/core/private-storage/interfa
 import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
+import { LessonLikeService } from '@src/modules/lesson/services/lesson-like.service';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MajorService } from '@src/modules/major/services/major.service';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
@@ -13,6 +14,7 @@ import { MemberStatisticsService } from '@src/modules/member-statistics/services
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
+import { JestMockExtended } from 'jest-mock-extended';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -42,6 +44,7 @@ export const mockMemberFriendshipService: MockClassType<MemberFriendshipService>
   {
     findAll: jest.fn(),
     createFollowing: jest.fn(),
+    deleteFollowing: jest.fn(),
   };
 
 export const mockMemberStatisticsService: MockClassType<MemberStatisticsService> =
@@ -120,6 +123,11 @@ export const mockQuestionService: MockClassType<QuestionService> = {
 export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
   createBookmark: jest.fn(),
   deleteBookmark: jest.fn(),
+};
+
+export const mockLessonLikeService: MockClassType<LessonLikeService> = {
+  createLike: jest.fn(),
+  deleteLike: jest.fn(),
 };
 
 export const mockNotificationService: MockClassType<NotificationService> = {

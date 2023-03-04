@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -13,10 +21,12 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import {
   ApiCreateFollowing,
+  ApiDeleteFollowing,
   ApiFindAllFollowers,
   ApiFindAllFollowings,
 } from '@src/modules/member-friendship/controllers/member-friendship.swagger';
 import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
+import { DeleteMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/delete-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
@@ -88,6 +98,23 @@ export class MemberFriendshipController {
     @Param() param: CreateMemberFollowingRequestParamDto,
   ): Promise<MemberFollowEntity> {
     return this.memberFriendshipService.createFollowing(
+      param.memberId,
+      member.id,
+    );
+  }
+
+  @ApiDeleteFollowing('member follow (해당 member 를 팔로우 합니다.)')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OtherMemberSetMetadataGuard('memberId')
+  @UseGuards(JwtAuthGuard)
+  @IncreaseMemberFollowSetMetadataInterceptor('memberId', 'decrement')
+  @SetResponseSetMetadataInterceptor('memberFollow')
+  @Delete('followings/:memberId')
+  deleteFollowing(
+    @UserLogin() member: MemberEntity,
+    @Param() param: DeleteMemberFollowingRequestParamDto,
+  ): Promise<MemberFollowEntity> {
+    return this.memberFriendshipService.deleteFollowing(
       param.memberId,
       member.id,
     );

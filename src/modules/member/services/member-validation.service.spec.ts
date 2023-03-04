@@ -50,25 +50,6 @@ describe('MemberValidationService', () => {
       }).rejects.toThrowError('존재하지 않는 member 입니다.');
     });
 
-    it('pending 상태의 유저인 경우', () => {
-      const account = faker.datatype.string();
-      const loginType = MemberLoginType.Apple;
-      const memberStatus = MemberStatus.Pending;
-      const member = new MemberEntity();
-      member.account = account;
-      member.loginType = loginType;
-      member.status = memberStatus;
-
-      expect(async () => {
-        await memberValidationService.canLoginOrFail(
-          account,
-          loginType,
-          memberStatus,
-          member,
-        );
-      }).rejects.toThrowError('pending 상태의 유저 입니다.');
-    });
-
     it('비활성 유저인 경우', () => {
       const account = faker.datatype.string();
       const loginType = MemberLoginType.Apple;

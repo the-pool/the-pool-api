@@ -191,6 +191,8 @@ model MemberFollow {
 
   follower  Member @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   following Member @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -304,6 +306,8 @@ model LessonLike {
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonId, memberId])
 }
 
 /// 과제의 난이도에 대한 테이블 
