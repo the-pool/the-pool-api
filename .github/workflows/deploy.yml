@@ -60,7 +60,7 @@ jobs:
           PROJECT_AWS_S3_EXPIRES: ${{ secrets.PROJECT_AWS_S3_EXPIRES }}
           CLIENT_ID_GITHUB: ${{ secrets.CLIENT_ID_GITHUB }}
           CLIENT_SECRET_GITHUB: ${{ secrets.CLIENT_SECRET_GITHUB }}
-          SERVER_EXCEPTION_CHANNEL_URL : ${{ secrets.SERVER_EXCEPTION_CHANNEL_URL }}
+          SERVER_EXCEPTION_CHANNEL_URL: ${{ secrets.SERVER_EXCEPTION_CHANNEL_URL }}
         run: |
           sudo rm .env
           touch .env
