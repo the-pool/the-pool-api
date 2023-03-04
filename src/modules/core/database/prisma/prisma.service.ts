@@ -12,8 +12,9 @@ import {
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import {
+  LessonBookmark,
   LessonHashtagMapping,
-  Major,
+  LessonLike,
   Prisma,
   PrismaClient,
 } from '@prisma/client';
@@ -124,7 +125,9 @@ export class PrismaService
   /**
    * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
    */
-  async validateMappedDataOrFail<T extends LessonHashtagMapping>(
+  async validateMappedDataOrFail<
+    T extends LessonHashtagMapping | LessonBookmark | LessonLike,
+  >(
     modelName: PrismaModelName,
     where: {
       [key in keyof Omit<T, 'id' | 'createdAt'>]: number | { in: number[] };

@@ -3,12 +3,16 @@ import { RouterModule } from '@nestjs/core';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaModule } from '../core/database/prisma/prisma.module';
+import { LessonBookmarkController } from './controllers/lesson-bookmark.controller';
 import { LessonEvaluationController } from './controllers/lesson-evaluation.controller';
 import { LessonHashtagController } from './controllers/lesson-hashtag.controller';
+import { LessonLikeController } from './controllers/lesson-like.controller';
 import { LessonController } from './controllers/lesson.controller';
 import { LessonRepository } from './repositories/lesson.repository';
+import { LessonBookmarkService } from './services/lesson-bookmark.service';
 import { LessonEvaluationService } from './services/lesson-evaluation.service';
 import { LessonHashtagService } from './services/lesson-hashtag.service';
+import { LessonLikeService } from './services/lesson-like.service';
 import { LessonService } from './services/lesson.service';
 
 @Module({
@@ -17,6 +21,8 @@ import { LessonService } from './services/lesson.service';
     RouterModule.register([{ path: 'api/lessons', module: LessonModule }]),
   ],
   providers: [
+    LessonBookmarkService,
+    LessonLikeService,
     LessonService,
     LessonHashtagService,
     LessonEvaluationService,
@@ -28,6 +34,8 @@ import { LessonService } from './services/lesson.service';
     LessonHashtagController,
     LessonController,
     LessonEvaluationController,
+    LessonBookmarkController,
+    LessonLikeController,
   ],
 })
 export class LessonModule {}

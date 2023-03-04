@@ -10,12 +10,14 @@ import {
   INCREASE_ACTION,
 } from '@src/constants/constant';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { IncreaseAction } from '@src/types/type';
 import { map, Observable, tap } from 'rxjs';
 
 @Injectable()
 export class IncreaseMemberFollowInterceptor implements NestInterceptor {
   constructor(
+    private readonly notificationService: NotificationService,
     private readonly prismaService: PrismaService,
     private readonly reflector: Reflector,
   ) {}
@@ -23,11 +25,12 @@ export class IncreaseMemberFollowInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       tap(async () => {
+        const request = context.switchToHttp().getRequest();
         // follow 또는 unfollow 하는 유저의 ID 를 가져온다.
-        const toMemberId: number = context.switchToHttp().getRequest().user.id;
+        const toMemberId: number = request.user.id;
         // follow 또는 unfollow 당하는 유저의 ID 를 가져온다.
         const fromMemberId = Number(
-          context.switchToHttp().getRequest().params[
+          request.params[
             this.reflector.get(
               FROM_MEMBER_REQUEST_PARAM_FIELD_NAME,
               context.getHandler(),
@@ -64,9 +67,15 @@ export class IncreaseMemberFollowInterceptor implements NestInterceptor {
               },
             }),
           ])
-          .catch((e) => {
-            // @todo 우선 로그만 찍게 만들고 나중에 후에 noti 보내는 로직 추가
-            console.error(e);
+          .catch(async (e) => {
+            await this.notificationService.warning({
+              description:
+                'IncreaseMemberFollowInterceptor memberStatistics update 중 에러',
+              method: request.method,
+              path: request.path,
+              body: request.body,
+              stack: e.stack,
+            });
           });
       }),
       map((data) => data),

@@ -31,3 +31,33 @@ export const mockContext = {
     return jest.fn();
   },
 };
+
+export class MockEmbedBuilder {
+  setTitle() {
+    return this;
+  }
+
+  setColor() {
+    return this;
+  }
+
+  setTimestamp() {
+    return this;
+  }
+
+  setFields() {
+    return this;
+  }
+
+  setDescription() {
+    return this;
+  }
+}
+
+export class MockWebhookClient {
+  constructor(option) {}
+
+  send() {
+    return jest.fn();
+  }
+}
