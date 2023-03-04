@@ -23,7 +23,8 @@ export class SolutionEntity
 
   @ApiProperty({
     description: '풀이와 관련된 링크',
-    example: 'https://github.com/the-pool/the-pool-api'
+    example: 'https://github.com/the-pool/the-pool-api',
+    nullable: true
   })
   relatedLink: string | null;
 }
