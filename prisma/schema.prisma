@@ -160,8 +160,10 @@ model MemberInterestMapping {
 model MemberStatistics {
   /// member 고유 ID
   memberId       Int  @id @unique
-  /// 과제 제출 개수
+  /// 문제 출제 개수
   lessonCount    Int  @default(0)
+  /// 문제-해결 개수
+  solutionCount  Int  @default(0)
   /// 피드백 한 총 개수
   feedbackCount  Int  @default(0)
   /// 질문 개수
