@@ -86,4 +86,4 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always --privileged=true $REGISTRY/$REPOSITORY:$IMAGE_TAG
