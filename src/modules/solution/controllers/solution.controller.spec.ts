@@ -45,7 +45,7 @@ describe('SolutionController', () => {
       createSolutionDto = {
         lessonId: faker.datatype.number(),
         description: faker.lorem.text(),
-        relatedLink: "https://github.com"
+        relatedLink: faker.internet.url()
       }
       solutionEntity = new SolutionEntity();
       solutionService.createSolution.mockReturnValue(solutionEntity);
