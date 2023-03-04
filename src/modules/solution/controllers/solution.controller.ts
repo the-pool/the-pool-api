@@ -1,6 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { IncreaseMemberSolutionCountInterceptor } from '@src/decorators/increase-member-solution-count.ineterceptor.decorator';
+import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
@@ -16,7 +16,7 @@ export class SolutionController {
   constructor(private readonly solutionService: SolutionService) {}
 
   @ApiCreateSolution('문제 - 풀이 생성')
-  @IncreaseMemberSolutionCountInterceptor('increment')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @UseGuards(JwtAuthGuard)
   @Post()
