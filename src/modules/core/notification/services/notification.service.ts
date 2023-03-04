@@ -144,11 +144,15 @@ export class NotificationService {
       embed.setDescription(description);
     }
 
-    await webhookClient.send({
-      username: 'thePool',
-      content: bold('the pool server notification'),
-      avatarURL: 'https://avatars.githubusercontent.com/u/113972423',
-      embeds: [embed],
-    });
+    await webhookClient
+      .send({
+        username: 'thePool',
+        content: bold('the pool server notification'),
+        avatarURL: 'https://avatars.githubusercontent.com/u/113972423',
+        embeds: [embed],
+      })
+      .catch((e) => {
+        console.error(e);
+      });
   }
 }
