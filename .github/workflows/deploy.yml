@@ -58,9 +58,9 @@ jobs:
           PROJECT_AWS_S3_BUCKET_NAME: ${{ secrets.PROJECT_AWS_S3_BUCKET_NAME }}
           PROJECT_AWS_S3_ACL: ${{ secrets.PROJECT_AWS_S3_ACL }}
           PROJECT_AWS_S3_EXPIRES: ${{ secrets.PROJECT_AWS_S3_EXPIRES }}
-          CLIENT_ID_GITHUB: ${{ secrets.CLIENT_ID_GITHUB }}
-          CLIENT_SECRET_GITHUB: ${{ secrets.CLIENT_SECRET_GITHUB }}
-          SERVER_EXCEPTION_CHANNEL_URL: ${{ secrets.SERVER_EXCEPTION_CHANNEL_URL }}
+          PROJECT_CLIENT_ID_GITHUB: ${{ secrets.PROJECT_CLIENT_ID_GITHUB }}
+          PROJECT_CLIENT_SECRET_GITHUB: ${{ secrets.PROJECT_CLIENT_SECRET_GITHUB }}
+          PROJECT_SERVER_EXCEPTION_CHANNEL_URL: ${{ secrets.PROJECT_SERVER_EXCEPTION_CHANNEL_URL }}
         run: |
           sudo rm .env
           touch .env
@@ -73,9 +73,9 @@ jobs:
           echo $PROJECT_AWS_S3_EXPIRES >> .env
           echo $PROJECT_AWS_ACCESS_KEY >> .env
           echo $PROJECT_AWS_SECRET_KEY >> .env
-          echo $CLIENT_ID_GITHUB >> .env
-          echo $CLIENT_SECRET_GITHUB >> .env
-          echo $SERVER_EXCEPTION_CHANNEL_URL >> .env
+          echo $PROJECT_CLIENT_ID_GITHUB >> .env
+          echo $PROJECT_CLIENT_SECRET_GITHUB >> .env
+          echo $PROJECT_SERVER_EXCEPTION_CHANNEL_URL >> .env
           cat .env
       - name: Docker run
         env:
