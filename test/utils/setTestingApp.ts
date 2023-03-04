@@ -3,7 +3,7 @@ import {
   INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -14,6 +14,7 @@ import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-excepti
 import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import Joi from 'joi';
@@ -41,7 +42,10 @@ export const setTestingApp = async (): Promise<INestApplication> => {
   }).compile();
 
   const app = moduleFixture.createNestApplication<INestApplication>();
+  const configService = app.get<ConfigService>(ConfigService);
+  const isProduction = configService.get<string>('NODE_ENV') === 'production';
 
+  const notificationService = app.get<NotificationService>(NotificationService);
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
@@ -56,9 +60,15 @@ export const setTestingApp = async (): Promise<INestApplication> => {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(
-    new HttpNodeInternalServerErrorExceptionFilter(false),
+    new HttpNodeInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpRemainderExceptionFilter(),
-    new HttpNestInternalServerErrorExceptionFilter(false),
+    new HttpNestInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpNotFoundExceptionFilter(),
     new HttpBadRequestExceptionFilter(),
   );

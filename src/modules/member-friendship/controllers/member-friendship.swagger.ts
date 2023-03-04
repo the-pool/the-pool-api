@@ -67,3 +67,25 @@ export const ApiCreateFollowing = (summary: string) => {
     ApiFailureResponse(HttpStatus.CONFLICT, ['이미 follow 중입니다.']),
   );
 };
+
+export const ApiDeleteFollowing = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiSuccessResponse(HttpStatus.OK, {
+      memberFollow: {
+        type: MemberFollowEntity,
+      },
+    }),
+    ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['유효하지 않은 토큰입니다.']),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, [
+      '본인 정보는 접근 불가능합니다.',
+      'Active 상태의 유저만 접근 가능합니다.',
+      'unfollowing 할 멤버가 활성 상태가 아닙니다.',
+    ]),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, [
+      "{memberId} doesn't exist id in member",
+      'unfollowing 할 멤버가 존재하지 않습니다.',
+    ]),
+    ApiFailureResponse(HttpStatus.CONFLICT, ['follow 상태가 아닙니다.']),
+  );
+};

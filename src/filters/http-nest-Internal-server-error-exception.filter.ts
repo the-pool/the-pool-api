@@ -2,10 +2,12 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpStatus,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { HttpExceptionHelper } from '@src/filters/http-exception.helper';
 import { ResponseJson } from '@src/filters/type';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { Response } from 'express';
 
 /**
@@ -17,12 +19,19 @@ export class HttpNestInternalServerErrorExceptionFilter
   extends HttpExceptionHelper
   implements ExceptionFilter<InternalServerErrorException>
 {
-  constructor(private readonly isProduction: boolean) {
+  constructor(
+    private readonly notificationService: NotificationService,
+    private readonly isProduction: boolean,
+  ) {
     super();
   }
 
-  catch(exception: InternalServerErrorException, host: ArgumentsHost): void {
+  async catch(
+    exception: InternalServerErrorException,
+    host: ArgumentsHost,
+  ): Promise<void> {
     const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();
 
@@ -33,6 +42,19 @@ export class HttpNestInternalServerErrorExceptionFilter
         this.isProduction ? undefined : exception.stack,
       ),
     ];
+
+    try {
+      await this.notificationService.error({
+        name: 'Http Nest Internal Server Error Exception',
+        method: request.method,
+        path: request.url,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        body: request.body,
+        stack: exception.stack,
+      });
+    } catch (e) {
+      console.error(e);
+    }
 
     response.status(status).json(responseJson);
   }

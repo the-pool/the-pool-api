@@ -7,6 +7,8 @@ export enum ModelName {
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
   LessonCategory = 'lessonCategory',
+  LessonBookmark = 'lessonBookmark',
+  LessonLike = 'lessonLike',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
   MemberSkill = 'memberSkill',
