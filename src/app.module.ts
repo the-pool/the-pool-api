@@ -22,6 +22,7 @@ import { IsRecordManyConstraint } from './decorators/is-record-many.decorator';
         AWS_S3_BUCKET_NAME: Joi.string(),
         AWS_S3_EXPIRES: Joi.number(),
         AWS_S3_ACL: Joi.string(),
+        AWS_CLOUD_FRONT_URL: Joi.string(),
         GITHUB_CLIENT_ID: Joi.string(),
         GITHUB_CLIENT_SECRET: Joi.string(),
       }),
