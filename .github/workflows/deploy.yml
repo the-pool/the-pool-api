@@ -72,7 +72,7 @@ jobs:
           echo $PROJECT_AWS_S3_BUCKET_NAME >> .env
           echo $PROJECT_AWS_S3_ACL >> .env
           echo $PROJECT_AWS_S3_EXPIRES >> .env
-          echo PROJECT_AWS_CLOUD_FRONT_URL >> .env
+          echo $PROJECT_AWS_CLOUD_FRONT_URL >> .env
           echo $PROJECT_AWS_ACCESS_KEY >> .env
           echo $PROJECT_AWS_SECRET_KEY >> .env
           echo $PROJECT_CLIENT_ID_GITHUB >> .env
