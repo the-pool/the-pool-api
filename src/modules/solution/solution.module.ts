@@ -6,6 +6,6 @@ import { SolutionService } from './services/solution.service';
 
 @Module({
   controllers: [SolutionController],
-  providers: [SolutionService, PrismaService, JwtStrategy]
+  providers: [SolutionService, PrismaService]
 })
-export class QuestionModule { }
+export class SolutionModule { }
