@@ -160,8 +160,10 @@ model MemberInterestMapping {
 model MemberStatistics {
   /// member 고유 ID
   memberId       Int  @id @unique
-  /// 과제 제출 개수
+  /// 문제 출제 개수
   lessonCount    Int  @default(0)
+  /// 문제-해결 개수
+  solutionCount  Int  @default(0)
   /// 피드백 한 총 개수
   feedbackCount  Int  @default(0)
   /// 질문 개수
@@ -265,6 +267,8 @@ model LessonSolution {
   lessonId    Int
   /// 과제물 본문
   description String
+  /// 과제와 관련된 링크(e.g. 깃허브)
+  relatedLink String?
   /// 생성일자          
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
@@ -272,8 +276,8 @@ model LessonSolution {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버의 과제 북마크에 대한 테이블 
