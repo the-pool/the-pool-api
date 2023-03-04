@@ -105,12 +105,12 @@ model Member {
 
 /// member 의 sns 주소
 model MemberSocialLink {
-  /// 고유 ID (0: etc, 1: 인스타그램, 2: 비헨스, 3: 노션, 4: 링크드인, 5: 깃허브)
+  /// 고유 ID (1: etc, 2: 인스타그램, 3: 비헨스, 4: 노션, 5: 링크드인, 6: 깃허브)
   id        Int       @id @default(autoincrement())
   /// 소셜 명
   name      String    @unique @db.VarChar()
   /// url
-  iconUrl   String    @unique @db.Text()
+  iconPath  String    @unique @db.Text()
   /// 생성일자
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
