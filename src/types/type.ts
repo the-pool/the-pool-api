@@ -21,7 +21,10 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 
 export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
-export type PrismaCommentModelName = Extract<PrismaModelName, 'lessonComment'>;
+export type PrismaCommentModelName = Extract<
+  PrismaModelName,
+  'lessonComment' | 'lesson'
+>;
 
 /**
  * @todo Prisma의 WhereInput 타입들을 모아놓은 타입입니다.

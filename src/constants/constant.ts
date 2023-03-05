@@ -51,21 +51,3 @@ export const INCREASE_ACTION = 'increaseAction';
 
 // response field name meta data
 export const RESPONSE_FIELD_NAME = 'responseFieldName';
-
-export const DOMAIN_NAME_TO_MODEL_NAME = {
-  [DomainName.Lesson]: ModelName.Lesson,
-} as const;
-
-export const COMMENT_MODEL_NAME_MAPPER: Record<
-  Extract<PrismaModelName, 'lesson'>,
-  PrismaCommentModelName
-> = {
-  [ModelName.Lesson]: ModelName.LessonComment,
-} as const;
-
-export const COMMENT_COLUMN_NAME_MAPPER: Record<
-  Extract<PrismaModelName, 'lesson'>,
-  `${PrismaModelName}Id`
-> = {
-  [ModelName.Lesson]: `${ModelName.Lesson}Id`,
-} as const;

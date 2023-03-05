@@ -5,7 +5,6 @@ import { MemberFriendshipModule } from '@src/modules/member-friendship/member-fr
 import { MemberInterestModule } from '@src/modules/member-interest/member-interest.module';
 import { MemberSkillModule } from '@src/modules/member-skill/member-skill.module';
 import { MemberStatisticsModule } from '@src/modules/member-statistics/member-statistics.module';
-import { CommentModule } from './comment/comment.module';
 import { LessonModule } from './lesson/lesson.module';
 import { MemberModule } from './member/member.module';
 import { QuestionModule } from './question/question.module';
@@ -21,5 +20,4 @@ export const modules = [
   LessonModule,
   MajorModule,
   QuestionModule,
-  CommentModule,
 ];
