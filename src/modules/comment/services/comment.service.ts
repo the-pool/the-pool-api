@@ -6,7 +6,6 @@ import {
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { PrismaCommentModelName, PrismaModelName } from '@src/types/type';
-import { CreateCommentDto } from '../dtos/create-comment.dto';
 
 /**
  * 해당 파일에서만 쓰이는 타입
@@ -25,7 +24,6 @@ export class CommentService {
     memberId: number,
     description: string,
   ) {
-    console.log({ memberId: memberId, ...commentColumn, description });
     // @ts-ignore
     return this.prismaService[commentModel].create({
       // @ts-ignore

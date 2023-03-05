@@ -1,4 +1,10 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  OnApplicationBootstrap,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
@@ -13,8 +19,9 @@ import { ApiCreateComment } from '../swaggers/comment.swagger';
 
 @ApiTags('댓글')
 @Controller(':id/comments')
-export class CommentController {
+export class CommentController implements OnApplicationBootstrap {
   constructor(private readonly commentService: CommentService) {}
+  onApplicationBootstrap() {}
 
   @ApiCreateComment('댓글 생성')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])

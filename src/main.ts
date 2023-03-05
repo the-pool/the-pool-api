@@ -13,6 +13,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import { options } from 'joi';
+import { doc } from 'prettier';
 import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
@@ -65,14 +66,12 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document);
   }
 
   const PORT = configService.get<number>('PORT') || 3000;
 
   await app.listen(PORT);
-
   console.info(`server listening on port ${PORT}`);
 
   if (module.hot) {
