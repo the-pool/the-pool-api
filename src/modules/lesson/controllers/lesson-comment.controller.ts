@@ -1,10 +1,4 @@
-import {
-  Body,
-  Controller,
-  OnApplicationBootstrap,
-  Param,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
