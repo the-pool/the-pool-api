@@ -79,7 +79,3 @@ export enum EntityDate {
 export enum EntityId {
   Id = 'id',
 }
-
-export enum DomainName {
-  Lesson = 'lessons',
-}

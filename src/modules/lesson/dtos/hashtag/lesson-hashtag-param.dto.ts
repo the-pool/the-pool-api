@@ -21,7 +21,6 @@ export class LessonHashtagParamDto extends IdRequestParamDto {
     uniqueItems: true,
     type: () => String,
   })
-  @IsRecord({ model: ModelName.Lesson }, true)
   @IsRecordMany<LessonHashtag>(
     { model: ModelName.LessonHashtag, field: 'id' },
     true,
