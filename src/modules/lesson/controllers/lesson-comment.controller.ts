@@ -37,7 +37,7 @@ export class LessonCommentController {
     @UserLogin('id') memberId: number,
   ): Promise<{ comment: LessonCommentEntity }> {
     const commentColumn: Partial<Record<`${PrismaModelName}Id`, number>> = {
-      [`${ModelName.Lesson}Id`]: param.id,
+      lessonId: param.id,
     };
     const comment: LessonCommentEntity =
       await this.commentService.createComment(

@@ -1,10 +1,12 @@
-import { applyDecorators } from '@nestjs/common';
+import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
   ApiOperation,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
+import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 
 export const ApiCreateComment = (summary: string) => {
@@ -20,5 +22,6 @@ export const ApiCreateComment = (summary: string) => {
         },
       },
     }),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
