@@ -8,11 +8,13 @@ import { LessonBookmarkController } from './controllers/lesson-bookmark.controll
 import { LessonCommentController } from './controllers/lesson-comment.controller';
 import { LessonEvaluationController } from './controllers/lesson-evaluation.controller';
 import { LessonHashtagController } from './controllers/lesson-hashtag.controller';
+import { LessonLikeController } from './controllers/lesson-like.controller';
 import { LessonController } from './controllers/lesson.controller';
 import { LessonRepository } from './repositories/lesson.repository';
 import { LessonBookmarkService } from './services/lesson-bookmark.service';
 import { LessonEvaluationService } from './services/lesson-evaluation.service';
 import { LessonHashtagService } from './services/lesson-hashtag.service';
+import { LessonLikeService } from './services/lesson-like.service';
 import { LessonService } from './services/lesson.service';
 
 @Module({
@@ -23,6 +25,7 @@ import { LessonService } from './services/lesson.service';
   providers: [
     CommentService,
     LessonBookmarkService,
+    LessonLikeService,
     LessonService,
     LessonHashtagService,
     LessonEvaluationService,
@@ -36,6 +39,7 @@ import { LessonService } from './services/lesson.service';
     LessonEvaluationController,
     LessonBookmarkController,
     LessonCommentController,
+    LessonLikeController,
   ],
 })
 export class LessonModule {}

@@ -6,6 +6,7 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { CommonHelper } from '@src/helpers/common.helper';
 import {
@@ -35,6 +36,7 @@ export class AuthHelper {
     private readonly googleAuth: OAuth2Client,
     @Inject(JWKS_CLIENT_TOKEN)
     private readonly jwksClient: JwksRsa.JwksClient,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -168,17 +170,67 @@ export class AuthHelper {
    * 깃헙은 아래 플로우를 따름
    * https://docs.github.com/ko/developers/apps/building-oauth-apps/authorizing-oauth-apps
    */
-  validateGitHubAccessTokenOrFail(oAuthToken: string): Promise<string> {
-    const getAccessTokenUrl = 'https://api.github.com/user';
+  async validateGitHubAccessTokenOrFail(code: string): Promise<string> {
+    const getAccessTokenUrl = 'https://github.com/login/oauth/access_token';
+
+    const tokenInfo = await lastValueFrom<{
+      access_token: string;
+      token_type: string;
+      scope: string;
+    }>(
+      this.httpService
+        .post<Record<string, string>>(
+          getAccessTokenUrl,
+          {
+            client_id: this.configService.get('CLIENT_ID_GITHUB'),
+            client_secret: this.configService.get('CLIENT_SECRET_GITHUB'),
+            code,
+          },
+          {
+            headers: {
+              Accept: 'application/json',
+            },
+          },
+        )
+        .pipe(
+          map((res) => {
+            // 이 api 는 실패시에도 200으로 내려줌
+            if (res.data.error) {
+              // log 확인을 위한 logging
+              console.info(res.data.error);
+              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            }
+
+            return {
+              access_token: res.data.access_token,
+              token_type: res.data.token_type,
+              scope: res.data.scope,
+            };
+          }),
+          catchError((err) => {
+            const status: number = err.status || err.response?.status;
+
+            // 유효하지 않은 토큰 401 에러
+            if (status === HttpStatus.UNAUTHORIZED) {
+              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            }
+
+            // 그 외 에러
+            throw new InternalServerErrorException(err);
+          }),
+        ),
+    );
+
+    const getUserInfoUrl = 'https://api.github.com/user';
     const ajaxConfig: AxiosRequestConfig = {
       headers: {
-        Authorization: 'Bearer' + ' ' + oAuthToken,
+        Authorization: tokenInfo.token_type + ' ' + tokenInfo.access_token,
       },
     } as const;
 
     return lastValueFrom<string>(
       this.httpService
-        .get<GitHubAccessTokenResponse>(getAccessTokenUrl, ajaxConfig)
+        .get<GitHubAccessTokenResponse>(getUserInfoUrl, ajaxConfig)
         .pipe(
           map((res) => {
             return this.commonHelper.setSeparator(

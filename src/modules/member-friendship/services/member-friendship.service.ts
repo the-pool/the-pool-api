@@ -128,4 +128,56 @@ export class MemberFriendshipService {
       },
     });
   }
+
+  /**
+   * member unfollow
+   */
+  async deleteFollowing(
+    unfollowingMemberId: number,
+    unfollowerMemberId: number,
+  ): Promise<MemberFollowEntity> {
+    // unfollowing 할 멤버를 가져온다.
+    const unfollowerMember: MemberEntity | null =
+      await this.prismaService.member.findUnique({
+        where: {
+          id: unfollowerMemberId,
+        },
+      });
+
+    // unfollowing 할 멤버가 없는 멤버일 경우
+    if (!unfollowerMember) {
+      throw new NotFoundException('unfollowing 할 멤버가 존재하지 않습니다.');
+    }
+
+    // unfollowing 할 멤버가 active 상태가 아닌 경우
+    if (unfollowerMember.status !== MemberStatus.Active) {
+      throw new ForbiddenException(
+        'unfollowing 할 멤버가 활성 상태가 아닙니다.',
+      );
+    }
+
+    // 팔로우 정보를 가져온다.
+    const oldMemberFollow: MemberFollowEntity | null =
+      await this.prismaService.memberFollow.findFirst({
+        where: {
+          followingId: unfollowingMemberId,
+          followerId: unfollowerMemberId,
+        },
+      });
+
+    // 팔로우 하고있지 않은 경우
+    if (!oldMemberFollow) {
+      throw new ConflictException('follow 상태가 아닙니다.');
+    }
+
+    // member unfollow
+    return this.prismaService.memberFollow.delete({
+      where: {
+        followerId_followingId: {
+          followerId: unfollowerMemberId,
+          followingId: unfollowingMemberId,
+        },
+      },
+    });
+  }
 }
