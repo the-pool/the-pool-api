@@ -40,7 +40,10 @@ export const ApiDeleteComment = (summary: string) => {
         },
       },
     }),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, [
+      HTTP_ERROR_MESSAGE.FORBIDDEN,
+      'Active 상태의 유저만 접근 가능합니다.',
+    ]),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
   );
 };

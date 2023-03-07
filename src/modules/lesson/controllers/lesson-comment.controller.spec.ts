@@ -7,6 +7,7 @@ import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { mockCommentService } from '../../../../test/mock/mock-services';
+import { LessonCommentParamDto } from '../dtos/comment/lesson-comment-param.dto';
 import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 import { LessonCommentController } from './lesson-comment.controller';
 
@@ -82,6 +83,46 @@ describe('LessonCommentController', () => {
       );
 
       expect(returnValue).toStrictEqual({ comment: createdComment });
+    });
+  });
+  describe('deleteComment', () => {
+    let param: LessonCommentParamDto;
+    let memberId: number;
+    let deletedComment: LessonCommentEntity;
+
+    beforeEach(() => {
+      param = new LessonCommentParamDto();
+      memberId = faker.datatype.number();
+      deletedComment = new LessonCommentEntity();
+
+      commentService.deleteComment.mockReturnValue(deletedComment);
+    });
+
+    it('success - check method called', async () => {
+      await lessonCommentController.deleteComment(param, memberId);
+
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledWith(
+        ModelName.LessonComment,
+        {
+          memberId,
+          lessonId: param.id,
+        },
+      );
+      expect(commentService.deleteComment).toBeCalledTimes(1);
+      expect(commentService.deleteComment).toBeCalledWith(
+        ModelName.LessonComment,
+        param.commentId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonCommentController.deleteComment(
+        param,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual({ comment: deletedComment });
     });
   });
 });
