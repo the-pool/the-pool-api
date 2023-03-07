@@ -10,6 +10,7 @@ import { CommentService } from './comment.service';
 describe('CommentService', () => {
   let commentService: CommentService;
   let prismaService;
+  const commentModels: PrismaCommentModelName[] = ['lessonComment'];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,7 +53,7 @@ describe('CommentService', () => {
     });
 
     describe('each model test', () => {
-      it.each(['lessonComment'])(
+      it.each(commentModels)(
         'success - commentModel: %s',
         async (commentModel: PrismaCommentModelName) => {
           prismaService[commentModel].create.mockReturnValue(createdComment);
@@ -70,6 +71,36 @@ describe('CommentService', () => {
             data: { memberId: memberId, ...commentColumn, description },
           });
           expect(returnValue).toStrictEqual(createdComment);
+        },
+      );
+    });
+  });
+
+  describe('deleteComment', () => {
+    let commentId: number;
+    let deletedComment: CommentEntity;
+
+    beforeEach(() => {
+      deletedComment = new CommentEntity();
+      commentId = faker.datatype.number();
+    });
+
+    describe('each model test', () => {
+      it.each(commentModels)(
+        'success - commentModel: %s',
+        async (commentModel: PrismaCommentModelName) => {
+          prismaService[commentModel].delete.mockReturnValue(deletedComment);
+
+          const returnValue = await commentService.deleteComment(
+            commentModel,
+            commentId,
+          );
+
+          expect(prismaService[commentModel].delete).toBeCalledTimes(1);
+          expect(prismaService[commentModel].delete).toBeCalledWith({
+            where: { id: commentId },
+          });
+          expect(returnValue).toStrictEqual(deletedComment);
         },
       );
     });
