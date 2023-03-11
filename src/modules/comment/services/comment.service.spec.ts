@@ -2,7 +2,11 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { PrismaCommentModelName } from '@src/types/type';
+import {
+  PrismaCommentModelName,
+  PrismaCommentParentIdColumn,
+  PrismaModelName,
+} from '@src/types/type';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { CommentBaseEntity } from '../entities/comment.entity';
 import { CommentService } from './comment.service';
@@ -36,10 +40,13 @@ describe('CommentService', () => {
   });
 
   describe('createComment', () => {
-    let createCommentColumn = (commentModel: PrismaCommentModelName) => {
+    let createCommentColumn = (
+      commentModel: PrismaCommentModelName,
+    ): PrismaCommentParentIdColumn => {
       const commentColumnField = {
         [ModelName.LessonComment]: `${ModelName.Lesson}Id`,
-      }[commentModel];
+      }[commentModel] as `${Extract<PrismaModelName, 'lesson'>}Id`;
+
       return { [commentColumnField]: faker.datatype.number() };
     };
     let memberId: number;
@@ -58,17 +65,17 @@ describe('CommentService', () => {
         async (commentModel: PrismaCommentModelName) => {
           prismaService[commentModel].create.mockReturnValue(createdComment);
 
-          const commentColumn = createCommentColumn(commentModel);
+          const parendIdColumn = createCommentColumn(commentModel);
           const returnValue = await commentService.createComment(
             commentModel,
-            commentColumn,
+            parendIdColumn,
             memberId,
             description,
           );
 
           expect(prismaService[commentModel].create).toBeCalledTimes(1);
           expect(prismaService[commentModel].create).toBeCalledWith({
-            data: { memberId: memberId, ...commentColumn, description },
+            data: { memberId, ...parendIdColumn, description },
           });
           expect(returnValue).toStrictEqual(createdComment);
         },
@@ -78,10 +85,10 @@ describe('CommentService', () => {
 
   describe('deleteComment', () => {
     let commentId: number;
-    let deletedComment: CommentEntity;
+    let deletedComment: CommentBaseEntity;
 
     beforeEach(() => {
-      deletedComment = new CommentEntity();
+      deletedComment = new CommentBaseEntity();
       commentId = faker.datatype.number();
     });
 

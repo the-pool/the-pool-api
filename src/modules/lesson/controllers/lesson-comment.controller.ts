@@ -54,7 +54,7 @@ export class LessonCommentController {
   }
 
   @ApiDeleteComment('과제 댓글 삭제')
-  // @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'decrement')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':commentId')

@@ -30,9 +30,10 @@ export class MemberSocialLinkService {
    * icon 을 조회할 수 있는 url 을 만드는 private 메서드
    */
   private setIconUrl(iconPath: string): string {
-    return path.join(
-      this.configService.get<string>('AWS_CLOUD_FRONT_URL') as string,
-      iconPath,
+    return (
+      (this.configService.get<string>('AWS_CLOUD_FRONT_URL') as string) +
+      '/' +
+      iconPath
     );
   }
 }
