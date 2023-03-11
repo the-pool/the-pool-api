@@ -182,8 +182,8 @@ export class AuthHelper {
         .post<Record<string, string>>(
           getAccessTokenUrl,
           {
-            client_id: this.configService.get('GITHUB_CLIENT_ID'),
-            client_secret: this.configService.get('GITHUB_CLIENT_SECRET'),
+            client_id: this.configService.get('CLIENT_ID_GITHUB'),
+            client_secret: this.configService.get('CLIENT_SECRET_GITHUB'),
             code,
           },
           {
@@ -196,6 +196,8 @@ export class AuthHelper {
           map((res) => {
             // 이 api 는 실패시에도 200으로 내려줌
             if (res.data.error) {
+              // log 확인을 위한 logging
+              console.info(res.data.error);
               throw new UnauthorizedException('유효하지 않은 토큰입니다.');
             }
 
@@ -204,6 +206,17 @@ export class AuthHelper {
               token_type: res.data.token_type,
               scope: res.data.scope,
             };
+          }),
+          catchError((err) => {
+            const status: number = err.status || err.response?.status;
+
+            // 유효하지 않은 토큰 401 에러
+            if (status === HttpStatus.UNAUTHORIZED) {
+              throw new UnauthorizedException('유효하지 않은 토큰입니다.');
+            }
+
+            // 그 외 에러
+            throw new InternalServerErrorException(err);
           }),
         ),
     );

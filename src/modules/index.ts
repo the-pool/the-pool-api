@@ -9,6 +9,7 @@ import { LessonModule } from './lesson/lesson.module';
 import { MemberSocialLinkModule } from './member-social-link/member-social-link.module';
 import { MemberModule } from './member/member.module';
 import { QuestionModule } from './question/question.module';
+import { SolutionModule } from './solution/solution.module';
 
 export const modules = [
   HealthModule,
@@ -21,5 +22,7 @@ export const modules = [
   MemberFriendshipModule,
   LessonModule,
   MajorModule,
+  QuestionModule,
+  SolutionModule,
   QuestionModule,
 ];

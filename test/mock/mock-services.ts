@@ -15,6 +15,8 @@ import { MemberStatisticsService } from '@src/modules/member-statistics/services
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
+import { JestMockExtended } from 'jest-mock-extended';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -123,6 +125,10 @@ export const mockMajorService: MockClassType<MajorService> = {
 
 export const mockQuestionService: MockClassType<QuestionService> = {
   findQuestionCategoryList: jest.fn(),
+};
+
+export const mockSolutionService: MockClassType<SolutionService> = {
+  createSolution: jest.fn(),
 };
 
 export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
