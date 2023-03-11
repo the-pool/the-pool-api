@@ -81,7 +81,7 @@ describe('LessonCommentController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual({ comment: createdComment });
+      expect(returnValue).toStrictEqual({ lessonComment: createdComment });
     });
   });
 });

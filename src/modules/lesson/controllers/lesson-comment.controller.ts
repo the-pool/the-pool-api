@@ -2,6 +2,7 @@ import { Body, Controller, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
+import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -19,6 +20,7 @@ export class LessonCommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @ApiCreateComment('과제 댓글 생성')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -28,11 +30,11 @@ export class LessonCommentController {
     param: IdRequestParamDto,
     @Body() { description }: CreateCommentBaseDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ comment: LessonCommentEntity }> {
+  ): Promise<{ lessonComment: LessonCommentEntity }> {
     const lessonIdColumn = {
       lessonId: param.id,
     };
-    const comment: LessonCommentEntity =
+    const lessonComment: LessonCommentEntity =
       await this.commentService.createComment(
         ModelName.LessonComment,
         lessonIdColumn,
@@ -40,6 +42,6 @@ export class LessonCommentController {
         description,
       );
 
-    return { comment };
+    return { lessonComment };
   }
 }

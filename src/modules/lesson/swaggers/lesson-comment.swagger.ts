@@ -16,7 +16,7 @@ export const ApiCreateComment = (summary: string) => {
     ApiCreatedResponse({
       schema: {
         properties: {
-          comment: {
+          lessonComment: {
             $ref: getSchemaPath(LessonCommentEntity),
           },
         },
