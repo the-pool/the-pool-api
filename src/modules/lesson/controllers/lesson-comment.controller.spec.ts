@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { CreateCommentDto } from '@src/modules/comment/dtos/create-comment.dto';
+import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
@@ -45,13 +45,13 @@ describe('LessonCommentController', () => {
   describe('createComment', () => {
     let param: IdRequestParamDto;
     let memberId: number;
-    let createCommentDto: CreateCommentDto;
+    let createCommentDto: CreateCommentBaseDto;
     let createdComment: LessonCommentEntity;
 
     beforeEach(() => {
       param = new IdRequestParamDto();
       memberId = faker.datatype.number();
-      createCommentDto = new CreateCommentDto();
+      createCommentDto = new CreateCommentBaseDto();
       createdComment = new LessonCommentEntity();
 
       commentService.createComment.mockReturnValue(createdComment);
@@ -82,7 +82,7 @@ describe('LessonCommentController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual({ comment: createdComment });
+      expect(returnValue).toStrictEqual({ lessonComment: createdComment });
     });
   });
   describe('deleteComment', () => {

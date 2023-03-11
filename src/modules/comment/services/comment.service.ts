@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { PrismaCommentModelName, PrismaModelName } from '@src/types/type';
+import {
+  PrismaCommentModelName,
+  PrismaCommentParentIdColumn,
+} from '@src/types/type';
 
 @Injectable()
 export class CommentService {
@@ -8,14 +11,14 @@ export class CommentService {
 
   createComment(
     commentModel: PrismaCommentModelName,
-    commentColumn: Partial<Record<`${PrismaModelName}Id`, number>>,
+    parentIdColumn: PrismaCommentParentIdColumn,
     memberId: number,
     description: string,
   ) {
     // @ts-ignore
     return this.prismaService[commentModel].create({
       // @ts-ignore
-      data: { memberId: memberId, ...commentColumn, description },
+      data: { memberId, ...parentIdColumn, description },
     });
   }
 

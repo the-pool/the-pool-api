@@ -4,7 +4,7 @@ import { ModelName } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { PrismaCommentModelName } from '@src/types/type';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { CommentEntity } from '../entities/comment.entity';
+import { CommentBaseEntity } from '../entities/comment.entity';
 import { CommentService } from './comment.service';
 
 describe('CommentService', () => {
@@ -44,10 +44,10 @@ describe('CommentService', () => {
     };
     let memberId: number;
     let description: string;
-    let createdComment: CommentEntity;
+    let createdComment: CommentBaseEntity;
 
     beforeEach(() => {
-      createdComment = new CommentEntity();
+      createdComment = new CommentBaseEntity();
       memberId = faker.datatype.number();
       description = faker.lorem.text();
     });

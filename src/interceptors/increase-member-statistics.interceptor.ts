@@ -77,7 +77,9 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
             });
           });
       }),
-      map((data) => data),
+      map((data) => {
+        return data;
+      }),
     );
   }
 }

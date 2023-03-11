@@ -1,14 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthModule } from '@src/modules/core/auth/auth.module';
 import { PrismaModule } from '@src/modules/core/database/prisma/prisma.module';
 import { HttpConfigModule } from './http/http-config.module';
 import { NotificationModule } from './notification/notification.module';
 import { PrivateStorageModule } from './private-storage/private-storage.module';
 
+@Global()
 @Module({
   imports: [
     AuthModule,
-    PrismaModule,
+    PrismaModule, 
     HttpConfigModule,
     PrivateStorageModule,
     NotificationModule,
