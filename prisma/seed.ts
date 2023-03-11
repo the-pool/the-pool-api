@@ -7,6 +7,7 @@ import { majorSkillSeed } from './functions/major-skill.seed';
 import { majorSeed } from './functions/major.seed';
 import { memberInterestSeed } from './functions/member-interest.seed';
 import { memberSkillSeed } from './functions/member-skill.seed';
+import { memberSocialLinkSeed } from './functions/member-social-link.seed';
 import { questionCategorySeed } from './functions/question-category.seed';
 
 // initialize Prisma Client
@@ -38,6 +39,7 @@ async function thePoolSeed() {
   await memberSkillSeed(prisma);
   await memberInterestSeed(prisma);
   await majorSkillSeed(prisma);
+  await memberSocialLinkSeed(prisma);
   await questionCategorySeed(prisma);
 }
 
