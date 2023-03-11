@@ -34,7 +34,7 @@ export const ApiDeleteComment = (summary: string) => {
     ApiOkResponse({
       schema: {
         properties: {
-          comment: {
+          lessonComment: {
             $ref: getSchemaPath(LessonCommentEntity),
           },
         },

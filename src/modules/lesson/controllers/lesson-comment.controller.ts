@@ -54,6 +54,7 @@ export class LessonCommentController {
   }
 
   @ApiDeleteComment('과제 댓글 삭제')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':commentId')
@@ -62,7 +63,7 @@ export class LessonCommentController {
     @SetModelNameToParam(ModelName.Lesson)
     param: LessonCommentParamDto,
     @UserLogin('id') memberId: number,
-  ): Promise<{ comment: LessonCommentEntity }> {
+  ): Promise<{ lessonComment: LessonCommentEntity }> {
     await this.prismaService.validateOwnerOrFail(ModelName.LessonComment, {
       memberId,
       lessonId: param.id,
@@ -73,6 +74,6 @@ export class LessonCommentController {
       param.commentId,
     );
 
-    return { comment: deletedComment };
+    return { lessonComment: deletedComment };
   }
 }

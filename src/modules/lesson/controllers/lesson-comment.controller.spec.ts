@@ -1,12 +1,18 @@
 import { faker } from '@faker-js/faker';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationModule } from '@src/modules/core/notification/notification.module';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockCommentService } from '../../../../test/mock/mock-services';
+import {
+  mockCommentService,
+  mockNotificationService,
+} from '../../../../test/mock/mock-services';
 import { LessonCommentParamDto } from '../dtos/comment/lesson-comment-param.dto';
 import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 import { LessonCommentController } from './lesson-comment.controller';
@@ -20,6 +26,7 @@ describe('LessonCommentController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LessonCommentController],
       providers: [
+        { provide: NotificationService, useValue: mockNotificationService },
         { provide: CommentService, useValue: mockCommentService },
         {
           provide: PrismaService,
@@ -122,7 +129,7 @@ describe('LessonCommentController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual({ comment: deletedComment });
+      expect(returnValue).toStrictEqual({ lessonComment: deletedComment });
     });
   });
 });
