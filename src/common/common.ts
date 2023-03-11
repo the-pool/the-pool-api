@@ -50,18 +50,19 @@ export const getValueByEnum = <T extends string | number>(
 };
 
 /**
- * swagger 상에 enum에 들어갈 key,value를 명시하기 위한 함수
+ * swagger 상에 enum에 들어갈 key,value를 명시하기 위한 함수 "a" | "b"
  */
-export const getEntriesByEnum = <T>(Enum: {
-  [key in keyof T]: T[key];
-}): T => {
-  const entries = Object.entries(Enum);
+export const getEntriesByEnum = <T>(Enum: Record<keyof T, T[keyof T]>) => {
+  const entries = Object.entries<T[keyof T]>(Enum);
+
   entries.splice(0, entries.length / 2);
 
-  return entries.reduce((acc, cur) => {
-    acc[cur[0]] = cur[1];
-    return acc;
-  }, {}) as T;
+  return [
+    entries.reduce((acc, cur) => {
+      acc[cur[0]] = cur[1];
+      return acc;
+    }, {} as Record<keyof T, T[keyof T]>),
+  ];
 };
 
 /**

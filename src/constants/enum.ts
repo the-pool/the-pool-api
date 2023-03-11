@@ -8,6 +8,7 @@ export enum ModelName {
   LessonSolution = 'lessonSolution',
   LessonCategory = 'lessonCategory',
   LessonBookmark = 'lessonBookmark',
+  LessonComment = 'lessonComment',
   LessonLike = 'lessonLike',
   Member = 'member',
   MemberStatistics = 'memberStatistics',

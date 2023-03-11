@@ -1,3 +1,4 @@
+import { CommentService } from '@src/modules/comment/services/comment.service';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
@@ -136,6 +137,9 @@ export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
   deleteBookmark: jest.fn(),
 };
 
+export const mockCommentService: MockClassType<CommentService> = {
+  createComment: jest.fn(),
+};
 export const mockLessonLikeService: MockClassType<LessonLikeService> = {
   createLike: jest.fn(),
   deleteLike: jest.fn(),

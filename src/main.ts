@@ -72,14 +72,12 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document);
   }
 
   const PORT = configService.get<number>('PORT') || 3000;
 
   await app.listen(PORT);
-
   console.info(`server listening on port ${PORT}`);
 
   if (module.hot) {
