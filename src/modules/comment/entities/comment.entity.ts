@@ -2,7 +2,7 @@ import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
-export class CommentEntity extends IntersectionType(
+export class CommentBaseEntity extends IntersectionType(
   IdResponseType,
   DateResponseType,
 ) {

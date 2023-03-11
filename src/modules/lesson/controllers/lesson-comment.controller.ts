@@ -7,7 +7,7 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { CreateCommentDto } from '@src/modules/comment/dtos/create-comment.dto';
+import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { PrismaModelName } from '@src/types/type';
@@ -27,7 +27,7 @@ export class LessonCommentController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-    @Body() { description }: CreateCommentDto,
+    @Body() { description }: CreateCommentBaseDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ comment: LessonCommentEntity }> {
     const commentColumn: Partial<Record<`${PrismaModelName}Id`, number>> = {
