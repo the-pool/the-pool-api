@@ -112,4 +112,42 @@ describe('CommentService', () => {
       );
     });
   });
+
+  describe('updateComment', () => {
+    let commentId: number;
+    let updatedComment: CommentBaseEntity;
+    let description: string;
+
+    beforeEach(() => {
+      commentId = faker.datatype.number();
+      updatedComment = new CommentBaseEntity();
+      description = faker.lorem.text();
+    });
+
+    describe('each model test', () => {
+      it.each(commentModels)(
+        'success - commentModel: %s',
+        async (commentModel: PrismaCommentModelName) => {
+          prismaService[commentModel].update.mockReturnValue(updatedComment);
+
+          const returnValue = await commentService.updateComment(
+            commentModel,
+            commentId,
+            description,
+          );
+
+          expect(prismaService[commentModel].update).toBeCalledTimes(1);
+          expect(prismaService[commentModel].update).toBeCalledWith({
+            where: {
+              id: commentId,
+            },
+            data: {
+              description,
+            },
+          });
+          expect(returnValue).toStrictEqual(updatedComment);
+        },
+      );
+    });
+  });
 });
