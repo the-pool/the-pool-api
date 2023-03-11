@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
@@ -128,6 +129,57 @@ describe('LessonCommentController', () => {
       );
 
       expect(returnValue).toStrictEqual({ lessonComment: deletedComment });
+    });
+  });
+
+  describe('updateComment', () => {
+    let param: LessonCommentParamDto;
+    let memberId: number;
+    let updatedComment: LessonCommentEntity;
+    let updateCommentDto: UpdateCommentBaseDto;
+
+    beforeEach(() => {
+      param = new LessonCommentParamDto();
+      memberId = faker.datatype.number();
+      updatedComment = new LessonCommentEntity();
+      updateCommentDto = new UpdateCommentBaseDto();
+
+      commentService.updateComment.mockReturnValue(updatedComment);
+    });
+
+    it('success - check method called', async () => {
+      await lessonCommentController.updateComment(
+        param,
+        updateCommentDto,
+        memberId,
+      );
+
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledWith(
+        ModelName.LessonComment,
+        {
+          id: param.commentId,
+          memberId,
+        },
+      );
+      expect(commentService.updateComment).toBeCalledTimes(1);
+      expect(commentService.updateComment).toBeCalledWith(
+        ModelName.LessonComment,
+        param.commentId,
+        updateCommentDto.description,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonCommentController.updateComment(
+        param,
+        updateCommentDto,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual({
+        lessonComment: updatedComment,
+      });
     });
   });
 });
