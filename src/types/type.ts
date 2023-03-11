@@ -21,8 +21,14 @@ import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 
 export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
+// 댓글 기능을 추가할 때마다 댓글 테이블이 Extract의 두번째 유니온으로 추가 되어야 함
 export type PrismaCommentModelName = Extract<PrismaModelName, 'lessonComment'>;
 
+// 댓글 기능을 추가할 때마다 댓글을 가지고 있는 부모 테이블이 Extract의 두번째 유니온으로 추가 되어야 함
+export type PrismaCommentParentIdColumn = Record<
+  `${Extract<PrismaModelName, 'lesson'>}Id`,
+  number
+>;
 /**
  * @todo Prisma의 WhereInput 타입들을 모아놓은 타입입니다.
  */

@@ -10,7 +10,6 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { PrismaModelName } from '@src/types/type';
 import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 import { ApiCreateComment } from '../swaggers/lesson-comment.swagger';
 
@@ -30,13 +29,13 @@ export class LessonCommentController {
     @Body() { description }: CreateCommentBaseDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ comment: LessonCommentEntity }> {
-    const commentColumn: Partial<Record<`${PrismaModelName}Id`, number>> = {
+    const lessonIdColumn = {
       lessonId: param.id,
     };
     const comment: LessonCommentEntity =
       await this.commentService.createComment(
         ModelName.LessonComment,
-        commentColumn,
+        lessonIdColumn,
         memberId,
         description,
       );
