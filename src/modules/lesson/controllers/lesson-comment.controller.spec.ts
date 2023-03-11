@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
+import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
