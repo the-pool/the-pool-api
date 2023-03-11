@@ -8,14 +8,14 @@ export class CommentService {
 
   createComment(
     commentModel: PrismaCommentModelName,
-    commentColumn: Partial<Record<`${PrismaModelName}Id`, number>>,
+    parentIdColumn: Partial<Record<`${PrismaModelName}Id`, number>>,
     memberId: number,
     description: string,
   ) {
     // @ts-ignore
     return this.prismaService[commentModel].create({
       // @ts-ignore
-      data: { memberId: memberId, ...commentColumn, description },
+      data: { memberId, ...parentIdColumn, description },
     });
   }
 }
