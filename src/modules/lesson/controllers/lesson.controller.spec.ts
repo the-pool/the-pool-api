@@ -4,16 +4,12 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { mockLessonService } from '../../../../test/mock/mock-services';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonService } from '../services/lesson.service';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
 import { LessonController } from './lesson.controller';
-import { plainToInstance } from 'class-transformer';
 import { LessonEntity } from '../entities/lesson.entity';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 
@@ -186,54 +182,6 @@ describe('LessonController', () => {
       const returnValue = await lessonController.readOneLesson(param, member);
 
       expect(returnValue).toStrictEqual({ lesson: readOneLesson });
-    });
-  });
-
-  describe('readSimilarLesson', () => {
-    let param: IdRequestParamDto;
-    let member: any;
-    let query: SimilarLessonQueryDto;
-    let readSimilarLessons: SimilarLessonEntity[];
-
-    beforeEach(() => {
-      member = { id: faker.datatype.number() };
-      param = {
-        id: faker.datatype.number(),
-        model: 'lesson',
-      };
-      query = new SimilarLessonQueryDto();
-      readSimilarLessons = [new SimilarLessonEntity()];
-
-      lessonService.readSimilarLesson.mockReturnValue(readSimilarLessons);
-    });
-
-    it('success - check method called', async () => {
-      await lessonController.readSimilarLesson(param, query, member);
-
-      expect(lessonService.readSimilarLesson).toBeCalledTimes(1);
-      expect(lessonService.readSimilarLesson).toBeCalledWith(
-        param.id,
-        member.id,
-        query,
-      );
-    });
-
-    it('success - Input & Output', async () => {
-      readSimilarLessons = plainToInstance(SimilarLessonEntity, [
-        {
-          isBookmark: faker.datatype.number(),
-        },
-      ]);
-      lessonService.readSimilarLesson.mockReturnValue(readSimilarLessons);
-
-      const returnValue = await lessonController.readSimilarLesson(
-        param,
-        query,
-        member,
-      );
-
-      expect(typeof returnValue.lessons[0].isBookmark).toBe('boolean');
-      expect(returnValue).toBeInstanceOf(ReadSimilarLessonDto);
     });
   });
 
