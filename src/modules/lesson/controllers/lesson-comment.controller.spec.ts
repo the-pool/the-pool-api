@@ -112,8 +112,8 @@ describe('LessonCommentController', () => {
       expect(prismaService.validateOwnerOrFail).toBeCalledWith(
         ModelName.LessonComment,
         {
+          id: param.commentId,
           memberId,
-          lessonId: param.id,
         },
       );
       expect(commentService.deleteComment).toBeCalledTimes(1);
