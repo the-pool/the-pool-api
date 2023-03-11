@@ -54,19 +54,6 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
         if (isNil(member) || !member.id) {
           return;
         }
-        console.log(`
-        this.prismaService.memberStatistics
-          .update({
-            data: {
-              ${[memberReportIncreaseFieldName]}: {
-                ${[action]}: 1,
-              },
-            },
-            where: {
-              memberId: ${member.id},
-            },
-          })
-        `);
 
         await this.prismaService.memberStatistics
           .update({
@@ -80,7 +67,6 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
             },
           })
           .catch(async (e) => {
-            console.log(e);
             await this.notificationService.warning({
               description:
                 'IncreaseMemberStatisticsInterceptor memberStatistics update 중 에러',
@@ -92,7 +78,6 @@ export class IncreaseMemberStatisticsInterceptor implements NestInterceptor {
           });
       }),
       map((data) => {
-        console.log(data);
         return data;
       }),
     );
