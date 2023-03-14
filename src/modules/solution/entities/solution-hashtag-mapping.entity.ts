@@ -1,4 +1,4 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import {
   LessonSolution,
   LessonSolutionHashtag,
@@ -8,7 +8,10 @@ import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
 export class SolutionHashtagMappingEntity
-  extends IntersectionType(IdResponseType, DateResponseType)
+  extends IntersectionType(
+    IdResponseType,
+    PickType(DateResponseType, ['createdAt']),
+  )
   implements LessonSolutionHashtagMapping
 {
   @ApiProperty({
