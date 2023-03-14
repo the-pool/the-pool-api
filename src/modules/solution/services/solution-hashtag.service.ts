@@ -34,9 +34,7 @@ export class SolutionHashtagService {
     }
 
     return Promise.all(
-      newTags.map(async (tagName: string) => {
-        return this.createHashtag(tagName, solutionId);
-      }),
+      newTags.map((tagName: string) => this.createHashtag(tagName, solutionId)),
     );
   }
 
