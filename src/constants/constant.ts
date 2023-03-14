@@ -20,7 +20,7 @@ export const LESSON_TITLE_LENGTH = {
 export const SOLUTION_HASHTAG_LENGTH = {
   // 1
   MIN: 1,
-  // 30
+  // 15
   MAX: 15,
 } as const;
 
