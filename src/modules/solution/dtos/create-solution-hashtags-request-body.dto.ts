@@ -6,6 +6,7 @@ import { IsRecord } from '@src/decorators/is-record.decorator';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
+  ArrayUnique,
   IsArray,
   IsString,
   Length,
@@ -18,13 +19,15 @@ export class CreateSolutionHashtagsRequestBodyDto {
     example: ['개발', 'Web', 'React'],
     minimum: 1,
     maximum: 5,
+    maxLength: 5,
     uniqueItems: true,
-    type: () => String,
+    type: () => [String],
   })
   @Length(SOLUTION_HASHTAG_LENGTH.MIN, SOLUTION_HASHTAG_LENGTH.MAX, {
     each: true,
   })
   @IsString({ each: true })
+  @ArrayUnique()
   @ArrayMaxSize(5)
   @ArrayNotEmpty()
   @IsArray()
