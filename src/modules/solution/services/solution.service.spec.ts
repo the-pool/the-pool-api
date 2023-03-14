@@ -15,8 +15,8 @@ describe('SolutionService', () => {
         SolutionService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService
-        }
+          useValue: mockPrismaService,
+        },
       ],
     }).compile();
 
@@ -35,7 +35,7 @@ describe('SolutionService', () => {
   describe('Create Lesson Solution', () => {
     let createSolutionDto: CreateSolutionRequestBodyDto;
     let memberId: number;
-    let createdSolution: SolutionEntity
+    let createdSolution: SolutionEntity;
 
     beforeEach(() => {
       createSolutionDto = new CreateSolutionRequestBodyDto();
@@ -43,10 +43,13 @@ describe('SolutionService', () => {
       createdSolution = new SolutionEntity();
 
       prismaService.lessonSolution.create.mockReturnValue(createdSolution);
-    })
+    });
 
     it('SUCCESS - Solution Created', async () => {
-      const result = await solutionService.createSolution(createSolutionDto, memberId);
+      const result = await solutionService.createSolution(
+        createSolutionDto,
+        memberId,
+      );
 
       expect(prismaService.lessonSolution.create).toBeCalledTimes(1);
       expect(result).toStrictEqual(createdSolution);
