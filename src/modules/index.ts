@@ -10,6 +10,7 @@ import { MemberSocialLinkModule } from './member-social-link/member-social-link.
 import { MemberModule } from './member/member.module';
 import { QuestionModule } from './question/question.module';
 import { SolutionModule } from './solution/solution.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 export const modules = [
   HealthModule,
@@ -25,4 +26,5 @@ export const modules = [
   QuestionModule,
   SolutionModule,
   QuestionModule,
+  UploadsModule,
 ];
