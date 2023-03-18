@@ -57,11 +57,25 @@ async function bootstrap() {
   if (isProduction) {
     app.enableShutdownHooks();
 
-    app.enableCors();
-    //     app.enableCors({ origin: ['domain'], credentials: true });
+    app.enableCors({
+      allowedHeaders: ['content-type'],
+      origin: [
+        'http://localhost:3000',
+        'https://dev.thepool.kr',
+        'https://thepool.kr/',
+      ],
+      credentials: true,
+    });
   } else {
-    app.enableCors();
-    //     app.enableCors({ origin: true, credentials: true });
+    app.enableCors({
+      allowedHeaders: ['content-type'],
+      origin: [
+        'http://localhost:3000',
+        'https://dev.thepool.kr',
+        'https://thepool.kr/',
+      ],
+      credentials: true,
+    });
 
     const config = new DocumentBuilder()
       .setTitle('title example')
