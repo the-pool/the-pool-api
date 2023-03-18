@@ -105,12 +105,11 @@ export class LessonController {
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
-  ): Promise<any> {
+  ): Promise<{ lesson: ReadOneLessonDto }> {
     const readOneLesson = await this.lessonService.readOneLesson(
       param.id,
       member.id,
     );
-
     const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
 
     return { lesson };

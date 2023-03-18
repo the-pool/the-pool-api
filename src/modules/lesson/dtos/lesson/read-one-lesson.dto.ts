@@ -53,7 +53,7 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
   })
   @Expose()
   get isBookmark(): boolean {
-    return !!this.lessonBookMarks;
+    return !!this.lessonBookMarks?.length;
   }
 
   @Exclude({ toPlainOnly: true })
@@ -65,6 +65,6 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
   })
   @Expose()
   get isLike(): boolean {
-    return !!this.lessonLikes;
+    return !!this.lessonLikes?.length;
   }
 }
