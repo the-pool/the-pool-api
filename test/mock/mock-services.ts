@@ -94,7 +94,6 @@ export const mockLessonService: MockClassType<LessonService> = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
   readOneLesson: jest.fn(),
-  readSimilarLesson: jest.fn(),
   deleteLesson: jest.fn(),
   readManyLesson: jest.fn(),
 };

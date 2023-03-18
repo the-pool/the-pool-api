@@ -1,11 +1,10 @@
 import { applyDecorators, HttpStatus } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 
 export const ApiCreateLesson = (summary: string) => {
@@ -55,14 +54,6 @@ export const ApiReadManyLesson = (summary: string) => {
       },
       { totalCount: { type: 'number', example: 1 } },
     ),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-  );
-};
-
-export const ApiReadSimilarLesson = (summary: string) => {
-  return applyDecorators(
-    ApiOperation({ summary }),
-    ApiOkResponse({ type: ReadSimilarLessonDto }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
