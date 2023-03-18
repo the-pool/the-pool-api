@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { OmitType } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityId } from '@src/constants/enum';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -11,6 +12,7 @@ import { LessonVirtualColumn } from '../constants/lesson.enum';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
@@ -140,28 +142,87 @@ describe('LessonService', () => {
   });
 
   describe('readOneLesson', () => {
-    let memberId: number;
+    let memberId: number | null;
     let lessonId: number;
-    let lesson: LessonEntity;
+    let lesson;
 
-    beforeEach(() => {
-      memberId = faker.datatype.number();
-      lessonId = faker.datatype.number();
-      lesson = new LessonEntity();
+    describe('memberId is number', () => {
+      beforeEach(() => {
+        memberId = faker.datatype.number();
+        lessonId = faker.datatype.number();
+        lesson = new ReadOneLessonDto();
+        delete lesson.isLike;
+        delete lesson.isBookmark;
 
-      lessonRepository.readOneLesson.mockReturnValue(lesson);
+        prismaService.lesson.findFirst.mockReturnValue(lesson);
+      });
+
+      it('success - check method called', () => {
+        lessonService.readOneLesson(lessonId, memberId);
+        const includeOption = {
+          member: true,
+          lessonCategory: true,
+          lessonLevel: true,
+          lessonBookMarks: {
+            where: {
+              lessonId,
+              memberId,
+            },
+          },
+          lessonLikes: {
+            where: {
+              lessonId,
+              memberId,
+            },
+          },
+        };
+
+        expect(prismaService.lesson.findFirst).toBeCalledTimes(1);
+        expect(prismaService.lesson.findFirst).toBeCalledWith({
+          where: { id: lessonId },
+          include: includeOption,
+        });
+      });
+
+      it('success - check Input & Output', () => {
+        const returnValue = lessonService.readOneLesson(lessonId, memberId);
+
+        expect(returnValue).toStrictEqual(lesson);
+      });
     });
-    it('success - check method called', () => {
-      lessonService.readOneLesson(lessonId, memberId);
+    describe('memberId is null', () => {
+      beforeEach(() => {
+        memberId = null;
+        lessonId = faker.datatype.number();
+        lesson = new ReadOneLessonDto();
+        delete lesson.isLike;
+        delete lesson.isBookmark;
+        delete lesson.lessonBookMarks;
+        delete lesson.lessonLikes;
 
-      expect(lessonRepository.readOneLesson).toBeCalledTimes(1);
-      expect(lessonRepository.readOneLesson).toBeCalledWith(lessonId, memberId);
-    });
+        prismaService.lesson.findFirst.mockReturnValue(lesson);
+      });
 
-    it('success - check Input & Output', () => {
-      const returnValue = lessonService.readOneLesson(lessonId, memberId);
+      it('success - check method called', () => {
+        lessonService.readOneLesson(lessonId, memberId);
+        const includeOption = {
+          member: true,
+          lessonCategory: true,
+          lessonLevel: true,
+        };
 
-      expect(returnValue).toStrictEqual(lesson);
+        expect(prismaService.lesson.findFirst).toBeCalledTimes(1);
+        expect(prismaService.lesson.findFirst).toBeCalledWith({
+          where: { id: lessonId },
+          include: includeOption,
+        });
+      });
+
+      it('success - check Input & Output', () => {
+        const returnValue = lessonService.readOneLesson(lessonId, memberId);
+
+        expect(returnValue).toStrictEqual(lesson);
+      });
     });
   });
 

@@ -1,42 +1,70 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { LessonLevelId } from '@src/constants/enum';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { Exclude, Expose, Transform } from 'class-transformer';
+import { object } from 'joi';
+import { LessonBookmarkEntity } from '../../entities/lesson-bookmark.entity';
+import { LessonCategoryEntity } from '../../entities/lesson-category.entity';
+import { LessonLevelEntity } from '../../entities/lesson-level.entity';
+import { LessonLikeEntity } from '../../entities/lesson-like.entity';
 import { LessonEntity } from '../../entities/lesson.entity';
 
 export class ReadOneLessonDto extends PickType(LessonEntity, [
   'title',
   'description',
   'hit',
+  'createdAt',
   'updatedAt',
-  'memberId',
+  'deletedAt',
 ]) {
-  @ApiProperty({
-    example: 'the-pool',
-    description: '멤버 닉네임',
-  })
-  nickname: string;
+  @Exclude()
+  memberId: number;
 
   @ApiProperty({
-    example: 10,
-    description: '제출된 과제물 수',
+    description: '과제 출제자 정보',
+    type: MemberEntity,
   })
-  @Type(() => Number)
-  solutionCount: number;
+  member: MemberEntity;
+
+  @Exclude()
+  categoryId: number;
 
   @ApiProperty({
-    example: 1,
-    description: '출제자가 생각한 과제의 난이도',
+    description: '과제의 카테고리',
+    type: LessonCategoryEntity,
   })
-  levelId: number;
+  lessonCategory: LessonCategoryEntity;
+
+  @Exclude()
+  levelId: LessonLevelId;
+
+  @ApiProperty({
+    description: '과제의 난이도',
+    type: LessonLevelEntity,
+  })
+  lessonLevel: LessonLevelEntity;
+
+  @Exclude({ toPlainOnly: true })
+  lessonBookMarks: LessonBookmarkEntity[] | null;
 
   @ApiProperty({
     example: true,
     description: '멤버의 과제 북마크 여부',
   })
-  isBookmark: boolean;
+  @Expose()
+  get isBookmark(): boolean {
+    return !!this.lessonBookMarks;
+  }
+
+  @Exclude({ toPlainOnly: true })
+  lessonLikes: LessonLikeEntity[] | null;
 
   @ApiProperty({
     example: true,
     description: '멤버의 과제 좋아요 여부',
   })
-  isLike: boolean;
+  @Expose()
+  get isLike(): boolean {
+    return !!this.lessonLikes;
+  }
 }

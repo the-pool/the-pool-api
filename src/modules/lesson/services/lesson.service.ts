@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
+import { Prisma, PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
@@ -57,13 +57,35 @@ export class LessonService {
   }
 
   /**
-   * 과제 상세 조회 메서드
+   * 과제 상세조회 메서드
    */
   readOneLesson(
     lessonId: number,
     memberId: number | null,
-  ): Promise<ReadOneLessonDto> {
-    return this.lessonRepository.readOneLesson(lessonId, memberId);
+  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'>> {
+    let includeOption: Prisma.LessonInclude = {
+      member: true,
+      lessonCategory: true,
+      lessonLevel: true,
+    };
+
+    if (memberId) {
+      const whereOption = {
+        where: {
+          lessonId,
+          memberId,
+        },
+      };
+      includeOption.lessonBookMarks = whereOption;
+      includeOption.lessonLikes = whereOption;
+    }
+
+    return this.prismaService.lesson.findFirst({
+      where: {
+        id: lessonId,
+      },
+      include: includeOption,
+    }) as Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'>>;
   }
 
   /**
