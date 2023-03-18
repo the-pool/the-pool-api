@@ -7,10 +7,8 @@ import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
-import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 
 @Injectable()
@@ -66,17 +64,6 @@ export class LessonService {
     memberId: number | null,
   ): Promise<ReadOneLessonDto> {
     return this.lessonRepository.readOneLesson(lessonId, memberId);
-  }
-
-  /**
-   * 유사 과제 조회 메서드
-   */
-  readSimilarLesson(
-    lessonId: number,
-    memberId: number | null,
-    query: SimilarLessonQueryDto,
-  ): Promise<SimilarLessonEntity[]> {
-    return this.lessonRepository.readSimilarLesson(lessonId, memberId, query);
   }
 
   /**
