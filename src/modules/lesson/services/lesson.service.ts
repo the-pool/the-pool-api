@@ -9,13 +9,11 @@ import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
-import { LessonRepository } from '../repositories/lesson.repository';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly lessonRepository: LessonRepository,
     private readonly queryHelper: QueryHelper,
   ) {}
 
