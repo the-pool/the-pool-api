@@ -58,7 +58,7 @@ async function bootstrap() {
     app.enableShutdownHooks();
 
     app.enableCors({
-      allowedHeaders: ['content-type'],
+      allowedHeaders: ['content-type', 'authorization'],
       origin: [
         'http://localhost:3000',
         'https://dev.thepool.kr',
@@ -68,7 +68,7 @@ async function bootstrap() {
     });
   } else {
     app.enableCors({
-      allowedHeaders: ['content-type'],
+      allowedHeaders: ['content-type', 'authorization'],
       origin: [
         'http://localhost:3000',
         'https://dev.thepool.kr',
