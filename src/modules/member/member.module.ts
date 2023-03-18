@@ -5,6 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
+import { IsMemberSocialLinkConstraint } from '@src/modules/member/decorators/is-member-social-link.decorator';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 
 import { AuthModule } from '../core/auth/auth.module';
@@ -15,7 +16,11 @@ import { MemberService } from './services/member.service';
 @Module({
   imports: [AuthModule, PrismaModule],
   controllers: [MemberController],
-  providers: [MemberService, MemberValidationService],
+  providers: [
+    MemberService,
+    MemberValidationService,
+    IsMemberSocialLinkConstraint,
+  ],
 })
 export class MemberModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

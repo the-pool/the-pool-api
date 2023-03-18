@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
 import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
 import {
@@ -23,10 +23,10 @@ export class IsMemberSocialLinkConstraint
   }
 
   async validate(
-    value: MemberSocialLinkDto,
+    _value: MemberSocialLinkDto,
     args: ValidationArguments,
   ): Promise<boolean> {
-    const { type, url } = value;
+    const { type, url } = args.object as MemberSocialLinkDto;
     const memberSocialLinks =
       await this.thePoolCacheService.getMemberSocialLinks();
     const targetSocial = memberSocialLinks.find((memberSocialLink) => {
@@ -34,11 +34,15 @@ export class IsMemberSocialLinkConstraint
     });
 
     if (!targetSocial) {
-      return false;
+      throw new BadRequestException(
+        'memberSocialLinks 존재하지 않는 type 입니다.',
+      );
     }
 
-    if (!targetSocial.socialDomain.startsWith(this.PROTOCOL)) {
-      return false;
+    if (/\s/.test(url)) {
+      throw new BadRequestException(
+        'memberSocialLinks url 은 공백이 존재할 수 없습니다.',
+      );
     }
 
     const targetSocialDomain = targetSocial.socialDomain.replace(
@@ -46,21 +50,17 @@ export class IsMemberSocialLinkConstraint
       '',
     );
 
-    // const regExp = new RegExp()
+    const regExp = new RegExp(
+      `https:\/\/(www.)?${targetSocialDomain}\/\\S{1,}`,
+    );
+
+    if (!regExp.test(url)) {
+      throw new BadRequestException(
+        'memberSocialLinks 유효하지 않은 url 입니다.',
+      );
+    }
 
     return true;
-  }
-
-  defaultMessage(validationArguments: ValidationArguments): string {
-    const { value, property, constraints, object } = validationArguments;
-    const { model, field } = constraints[0];
-    const modelName = model || object['model'];
-    const isShouldBeExist = constraints[1];
-    const middleMessage = isShouldBeExist
-      ? "doesn't exist"
-      : 'is already exist';
-
-    return `${value} ${middleMessage} ${field || property} in ${modelName}`;
   }
 }
 
