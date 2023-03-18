@@ -10,6 +10,7 @@ export enum ModelName {
   LessonSolutionHashtagMapping = 'lessonSolutionHashtagMapping',
   LessonCategory = 'lessonCategory',
   LessonBookmark = 'lessonBookmark',
+  LessonComment = 'lessonComment',
   LessonLike = 'lessonLike',
   Member = 'member',
   MemberStatistics = 'memberStatistics',

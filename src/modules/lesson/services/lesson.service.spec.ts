@@ -11,10 +11,8 @@ import { LessonVirtualColumn } from '../constants/lesson.enum';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
-import { SimilarLessonEntity } from '../entities/similar-lesson.entity';
 import { LessonRepository } from '../repositories/lesson.repository';
 import { LessonService } from './lesson.service';
 
@@ -164,43 +162,6 @@ describe('LessonService', () => {
       const returnValue = lessonService.readOneLesson(lessonId, memberId);
 
       expect(returnValue).toStrictEqual(lesson);
-    });
-  });
-
-  describe('readSimilarLesson', () => {
-    let memberId: number;
-    let lessonId: number;
-    let query: SimilarLessonQueryDto;
-    let readSimilarLessons: SimilarLessonEntity[];
-
-    beforeEach(() => {
-      memberId = faker.datatype.number();
-      lessonId = faker.datatype.number();
-      query = new SimilarLessonQueryDto();
-      readSimilarLessons = [new SimilarLessonEntity()];
-
-      lessonRepository.readSimilarLesson.mockReturnValue(readSimilarLessons);
-    });
-
-    it('success - check method called', async () => {
-      await lessonService.readSimilarLesson(lessonId, memberId, query);
-
-      expect(lessonRepository.readSimilarLesson).toHaveBeenCalledTimes(1);
-      expect(lessonRepository.readSimilarLesson).toBeCalledWith(
-        lessonId,
-        memberId,
-        query,
-      );
-    });
-
-    it('success - check Input & Output', async () => {
-      const returnValue = await lessonService.readSimilarLesson(
-        lessonId,
-        memberId,
-        query,
-      );
-
-      expect(returnValue).toStrictEqual(readSimilarLessons);
     });
   });
 

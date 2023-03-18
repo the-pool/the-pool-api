@@ -57,11 +57,25 @@ async function bootstrap() {
   if (isProduction) {
     app.enableShutdownHooks();
 
-    app.enableCors();
-    //     app.enableCors({ origin: ['domain'], credentials: true });
+    app.enableCors({
+      allowedHeaders: ['content-type', 'authorization'],
+      origin: [
+        'http://localhost:3000',
+        'https://dev.thepool.kr',
+        'https://thepool.kr/',
+      ],
+      credentials: true,
+    });
   } else {
-    app.enableCors();
-    //     app.enableCors({ origin: true, credentials: true });
+    app.enableCors({
+      allowedHeaders: ['content-type', 'authorization'],
+      origin: [
+        'http://localhost:3000',
+        'https://dev.thepool.kr',
+        'https://thepool.kr/',
+      ],
+      credentials: true,
+    });
 
     const config = new DocumentBuilder()
       .setTitle('title example')
@@ -72,14 +86,12 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document);
   }
 
   const PORT = configService.get<number>('PORT') || 3000;
 
   await app.listen(PORT);
-
   console.info(`server listening on port ${PORT}`);
 
   if (module.hot) {

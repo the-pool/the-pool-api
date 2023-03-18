@@ -4,6 +4,7 @@ import { JwtStrategy } from '../core/auth/jwt/jwt.strategy';
 import { PrismaService } from '../core/database/prisma/prisma.service';
 import { NotificationModule } from '../core/notification/notification.module';
 import { SolutionHashtagController } from './controllers/solution-hashtag.controller';
+import { NotificationService } from '../core/notification/services/notification.service';
 import { SolutionController } from './controllers/solution.controller';
 import { SolutionHashtagService } from './services/solution-hashtag.service';
 import { SolutionService } from './services/solution.service';

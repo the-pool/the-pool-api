@@ -6,15 +6,18 @@ import { MemberInterestModule } from '@src/modules/member-interest/member-intere
 import { MemberSkillModule } from '@src/modules/member-skill/member-skill.module';
 import { MemberStatisticsModule } from '@src/modules/member-statistics/member-statistics.module';
 import { LessonModule } from './lesson/lesson.module';
+import { MemberSocialLinkModule } from './member-social-link/member-social-link.module';
 import { MemberModule } from './member/member.module';
 import { QuestionModule } from './question/question.module';
 import { SolutionModule } from './solution/solution.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 export const modules = [
   HealthModule,
   CoreModule,
   MemberModule,
   MemberSkillModule,
+  MemberSocialLinkModule,
   MemberStatisticsModule,
   MemberInterestModule,
   MemberFriendshipModule,
@@ -22,4 +25,6 @@ export const modules = [
   MajorModule,
   QuestionModule,
   SolutionModule,
+  QuestionModule,
+  UploadsModule,
 ];

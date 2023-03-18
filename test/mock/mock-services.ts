@@ -1,3 +1,4 @@
+import { CommentService } from '@src/modules/comment/services/comment.service';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
@@ -10,6 +11,7 @@ import { MajorService } from '@src/modules/major/services/major.service';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
+import { MemberSocialLinkService } from '@src/modules/member-social-link/services/member-social-link.service';
 import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { MemberService } from '@src/modules/member/services/member.service';
@@ -63,6 +65,11 @@ export const mockMemberSkillService: MockClassType<MemberSkillService> = {
   findAll: jest.fn(),
 };
 
+export const mockMemberSocialLinkService: MockClassType<MemberSocialLinkService> =
+  {
+    findAll: jest.fn(),
+  };
+
 export const mockMemberValidationService: MockClassType<MemberValidationService> =
   {
     canLoginOrFail: jest.fn(),
@@ -88,7 +95,6 @@ export const mockLessonService: MockClassType<LessonService> = {
   createLesson: jest.fn(),
   updateLesson: jest.fn(),
   readOneLesson: jest.fn(),
-  readSimilarLesson: jest.fn(),
   deleteLesson: jest.fn(),
   readManyLesson: jest.fn(),
 };
@@ -137,6 +143,9 @@ export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
   deleteBookmark: jest.fn(),
 };
 
+export const mockCommentService: MockClassType<CommentService> = {
+  createComment: jest.fn(),
+};
 export const mockLessonLikeService: MockClassType<LessonLikeService> = {
   createLike: jest.fn(),
   deleteLike: jest.fn(),
