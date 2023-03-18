@@ -48,8 +48,8 @@ model MemberMajorSkillMapping {
   /// 생성일자
   createdAt    DateTime @default(now()) @db.Timestamp(6)
 
-  MajorSkill MajorSkill @relation(fields: [majorSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  Member     Member     @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  majorSkill MajorSkill @relation(fields: [majorSkillId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  member     Member     @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 우리 서비스의 회원을 담은 테이블 
@@ -91,11 +91,50 @@ model Member {
   memberMajorSkillMappings MemberMajorSkillMapping[]
   memberSkillMappings      MemberSkillMapping[]
   memberInterestMappings   MemberInterestMapping[]
+  memberSocialLinkMappings MemberSocialLinkMapping[]
   lessonSolutions          LessonSolution[]
   lessonComments           LessonComment[]
   lessonLevelEvaluations   LessonLevelEvaluation[]
   lessonBookmarks          LessonBookmark[]
   lessonLikes              LessonLike[]
+  questions                Question[]
+  questionAnswers          QuestionAnswer[]
+  questionLikes            QuestionLike[]
+  questionAnswerLikes      QuestionAnswerLike[]
+}
+
+/// member 의 sns 주소
+model MemberSocialLink {
+  /// 고유 ID (1: etc, 2: 인스타그램, 3: 비헨스, 4: 노션, 5: 링크드인, 6: 깃허브)
+  id        Int       @id @default(autoincrement())
+  /// 소셜 명
+  name      String    @unique @db.VarChar()
+  /// url
+  iconPath  String    @unique @db.Text()
+  /// 생성일자
+  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  /// 수정일자
+  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  /// 삭제일자
+  deletedAt DateTime? @db.Timestamp(6)
+
+  memberSocialLinkMappings MemberSocialLinkMapping[]
+}
+
+model MemberSocialLinkMapping {
+  /// 고유 ID
+  id                 Int      @id @default(autoincrement())
+  /// member 고유 ID
+  memberId           Int
+  /// memberSocialLink 고유 ID
+  memberSocialLinkId Int
+  /// url
+  url                String   @db.Text()
+  /// 생성일자
+  createdAt          DateTime @default(now()) @db.Timestamp(6)
+
+  member           Member           @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  memberSocialLink MemberSocialLink @relation(fields: [memberSocialLinkId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 }
 
 /// member 의 스킬
@@ -156,8 +195,10 @@ model MemberInterestMapping {
 model MemberStatistics {
   /// member 고유 ID
   memberId       Int  @id @unique
-  /// 과제 제출 개수
+  /// 문제 출제 개수
   lessonCount    Int  @default(0)
+  /// 문제-해결 개수
+  solutionCount  Int  @default(0)
   /// 피드백 한 총 개수
   feedbackCount  Int  @default(0)
   /// 질문 개수
@@ -187,6 +228,8 @@ model MemberFollow {
 
   follower  Member @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   following Member @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }
 
 /// 이미지에 대한 처리는 회의 후 추가
@@ -219,7 +262,7 @@ model Lesson {
   lessonLevel            LessonLevel             @relation(fields: [levelId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   lessonCategory         LessonCategory          @relation(fields: [categoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   lessonSolutions        LessonSolution[]
-  lessonHashtags         LessonHashtag[]
+  lessonHashtagMappings  LessonHashtagMapping[]
   lessonComments         LessonComment[]
   lessonLevelEvaluations LessonLevelEvaluation[]
   lessonBookMarks        LessonBookmark[]
@@ -259,6 +302,8 @@ model LessonSolution {
   lessonId    Int
   /// 과제물 본문
   description String
+  /// 과제와 관련된 링크(e.g. 깃허브)
+  relatedLink String?
   /// 생성일자          
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
@@ -266,8 +311,8 @@ model LessonSolution {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 멤버의 과제 북마크에 대한 테이블 
@@ -283,6 +328,8 @@ model LessonBookmark {
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonId, memberId])
 }
 
 /// 과제 좋아요에 대한 테이블
@@ -298,6 +345,8 @@ model LessonLike {
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonId, memberId])
 }
 
 /// 과제의 난이도에 대한 테이블 
@@ -318,13 +367,25 @@ model LessonHashtag {
   /// 고유 ID
   id        Int      @id @default(autoincrement())
   /// 태그 
-  tag       String   @db.VarChar(10)
-  /// 과제 고유 ID
-  lessonId  Int
+  tag       String   @db.VarChar(50)
   /// 생성일자
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonHashtagMappings LessonHashtagMapping[]
+}
+
+model LessonHashtagMapping {
+  /// 고유 ID
+  id              Int      @id @default(autoincrement())
+  /// 과제 고유 ID
+  lessonId        Int
+  /// 과제 해시 태그 고유 ID
+  lessonHashtagId Int
+  /// 생성일자
+  createdAt       DateTime @default(now()) @db.Timestamp(6)
+
+  lesson        Lesson        @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonHashtag LessonHashtag @relation(fields: [lessonHashtagId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 /// 과제에 달린 댓글
@@ -357,4 +418,127 @@ model LessonCategory {
   createdAt DateTime @default(now()) @db.Timestamp(6)
 
   lessons Lesson[]
+}
+
+/// 질문 카테고리
+model QuestionCategory {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 카테고리 이름
+  name      String   @unique @db.VarChar(30)
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  questions Question[]
+}
+
+/// 질문에 대한 테이블
+model Question {
+  /// 고유 ID
+  id         Int       @id @default(autoincrement())
+  /// QnA 생성한 멤버 고유 ID
+  memberId   Int
+  /// QnA 카테고리 고유 ID
+  categoryId Int
+  /// QnA 제목
+  title      String
+  /// QnA 컨텐츠
+  content    String
+  /// QnA 조회수
+  hit        Int       @default(0)
+  /// 생성일자
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  /// 수정일자
+  updatedAt  DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  /// 삭제일자
+  deletedAt  DateTime? @db.Timestamp(6)
+
+  member        Member                 @relation(fields: [memberId], references: [id])
+  category      QuestionCategory       @relation(fields: [categoryId], references: [id])
+  likes         QuestionLike[]
+  answers       QuestionAnswer[]
+  tags          QuestionHashtag[]
+  acceptAnswers QuestionAcceptAnswer[]
+}
+
+/// 질문 해시태그
+model QuestionHashtag {
+  /// 고유 ID
+  id         Int      @id @default(autoincrement())
+  /// 태그 이름
+  name       String   @db.VarChar(20)
+  /// 질문 고유 ID
+  questionId Int
+  /// 생성일자
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+/// 질문의 좋아요에 대한 테이블
+model QuestionLike {
+  /// 고유 ID
+  id         Int      @id @default(autoincrement())
+  /// 질문에 좋아요를 누른 멤버 고유 ID
+  memberId   Int
+  /// 질문 고유 ID
+  questionId Int
+  /// 생성일자
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  member   Member   @relation(fields: [memberId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+/// 질문의 답변에 대한 댓글
+model QuestionAnswer {
+  /// 고유 ID
+  id         Int       @id @default(autoincrement())
+  /// QnA 답변 생성한 멤버 고유 ID
+  memberId   Int
+  /// QnA 고유 ID
+  questionId Int
+  /// QnA 답변
+  answer     String    @db.VarChar(255)
+  /// 생성일자
+  createdAt  DateTime  @default(now()) @db.Timestamp(6)
+  /// 수정일자
+  updatedAt  DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  /// 삭제일자
+  deletedAt  DateTime? @db.Timestamp(6)
+
+  member   Member                @relation(fields: [memberId], references: [id])
+  question Question              @relation(fields: [questionId], references: [id])
+  likes    QuestionAnswerLike[]
+  accept   QuestionAcceptAnswer?
+}
+
+/// 질문의 댓글 좋아요에 대한 테이블
+model QuestionAnswerLike {
+  /// 고유 ID
+  id        Int      @id @default(autoincrement())
+  /// 좋아요를 누른 멤버 고유 ID
+  memberId  Int
+  /// QnA 답변 고유 ID
+  answerId  Int
+  /// 생성일자
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  member Member         @relation(fields: [memberId], references: [id])
+  answer QuestionAnswer @relation(fields: [answerId], references: [id])
+}
+
+/// 질문에 대한 채택된 답변 참조테이블
+model QuestionAcceptAnswer {
+  /// 고유 ID
+  id         Int      @id @default(autoincrement())
+  /// question 고유 ID
+  questionId Int
+  /// question Asnwer 고유 ID
+  answerId   Int      @unique
+  /// 생성일자
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  question       Question       @relation(fields: [questionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  questionAnswer QuestionAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

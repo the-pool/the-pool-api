@@ -10,9 +10,9 @@ import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-excepti
 import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
-import { options } from 'joi';
 import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
@@ -22,6 +22,7 @@ async function bootstrap() {
   const configService = app.get<ConfigService>(ConfigService);
   const isProduction = configService.get<string>('NODE_ENV') === 'production';
 
+  const notificationService = app.get<NotificationService>(NotificationService);
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
@@ -36,9 +37,15 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(
-    new HttpNodeInternalServerErrorExceptionFilter(isProduction),
+    new HttpNodeInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpRemainderExceptionFilter(),
-    new HttpNestInternalServerErrorExceptionFilter(isProduction),
+    new HttpNestInternalServerErrorExceptionFilter(
+      notificationService,
+      isProduction,
+    ),
     new HttpNotFoundExceptionFilter(),
     new HttpBadRequestExceptionFilter(),
     new JwtExceptionFilter(),
@@ -65,14 +72,12 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
-
     SwaggerModule.setup('api-docs', app, document);
   }
 
   const PORT = configService.get<number>('PORT') || 3000;
 
   await app.listen(PORT);
-
   console.info(`server listening on port ${PORT}`);
 
   if (module.hot) {

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -17,20 +18,37 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { Prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { OwnMemberSetMetadataGuard } from '@src/decorators/own-member-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
+  ApiMappingMajor,
+  ApiMappingMajorSkill,
+  ApiMappingMemberSkills,
+  ApiUnmappingMemberSkills,
+  ApiMappingMemberInterests,
+  ApiUnmappingMemberInterests,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
+import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
+import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
+import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
@@ -46,8 +64,6 @@ import { MemberLoginByOAuthResponseType } from '../types/response/member-login-b
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
- * @todo active member guard
- *
  */
 @ApiTags('멤버 (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })
@@ -67,7 +83,7 @@ export class MemberController {
   }
 
   @ApiFindOne('member 단일 조회')
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
     @SetModelNameToParam(ModelName.Member)
@@ -121,7 +137,7 @@ export class MemberController {
     '멤버 업데이트 (body 로 들어오는 값으로 업데이트 합니다. 들어오지 않는 property 대해서는 업데이트 하지 않습니다.)',
   )
   @UseGuards(JwtAuthGuard)
-  @SetResponse('member')
+  @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
     @UserLogin() member: MemberEntity,
@@ -137,6 +153,99 @@ export class MemberController {
     );
 
     return this.memberService.updateFromPatch(params.id, body);
+  }
+
+  @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
+  @MemberMajorSetMetadataGuard()
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @SetResponseSetMetadataInterceptor('member')
+  @Post(':id/majors/:majorId')
+  mappingMajor(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberMajorMappingRequestParamDto,
+  ) {
+    return this.memberService.mappingMajor(params.id, params.majorId);
+  }
+
+  @ApiMappingMajorSkill('해당 member 와 majorSkill 을 연결해줍니다.')
+  @AllowMemberStatusesSetMetadataGuard([
+    MemberStatus.Pending,
+    MemberStatus.Active,
+  ])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/majors/:majorId/major-skills/:majorSkillIds')
+  mappingMajorSkill(
+    @UserLogin() member: MemberEntity,
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberMajorSkillMappingRequestParamDto,
+  ): Promise<{ count: number }> {
+    return this.memberService.mappingMajorSkill(member, params);
+  }
+
+  @ApiMappingMemberSkills('해당 member 와 memberSkill 을 다중 연결합니다.')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-skills/:memberSkillIds')
+  mappingMemberSkills(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.mappingMemberSkills(params);
+  }
+
+  @ApiUnmappingMemberSkills(
+    '해당 member 와 memberSkill 을 다중 연결 제거합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/member-skills/:memberSkillIds')
+  unmappingMemberSkills(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberSkillsMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberSkills(params);
+  }
+
+  @ApiMappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 매핑합니다.',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/member-interests/:memberInterestIds')
+  mappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: CreateMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.mappingMemberInterests(params);
+  }
+
+  @ApiUnmappingMemberInterests(
+    '해당 member 와 memberInterest 를 다중 연결 제거합니다..',
+  )
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @OwnMemberSetMetadataGuard()
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/member-interests/:memberInterestIds')
+  unmappingMemberInterests(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: DeleteMemberInterestMappingRequestParamDto,
+  ): Promise<Prisma.BatchPayload> {
+    return this.memberService.unmappingMemberInterests(params);
   }
 
   /**

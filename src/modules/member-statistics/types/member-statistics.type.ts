@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-export type MemberStatisticsIncrementFieldName = keyof Pick<
+export type MemberStatisticsIncreaseFieldName = keyof Pick<
   Prisma.MemberStatisticsUpdateInput,
-  'lessonCount' | 'feedbackCount' | 'commentCount'
+  'lessonCount' | 'solutionCount' | 'feedbackCount' | 'commentCount'
 >;

@@ -80,6 +80,7 @@ describe('AuthService', () => {
       );
 
       expect(result).toBe(randomValue);
+      expect(mockAuthHelper.validateKakaoAccessTokenOrFail).toBeCalledTimes(1);
     });
 
     it('구글', async () => {
@@ -94,6 +95,7 @@ describe('AuthService', () => {
       );
 
       expect(result).toBe(randomValue);
+      expect(mockAuthHelper.validateGoogleAccessTokenOrFail).toBeCalledTimes(1);
     });
 
     it('애플', async () => {
@@ -108,6 +110,22 @@ describe('AuthService', () => {
       );
 
       expect(result).toBe(randomValue);
+      expect(mockAuthHelper.validateAppleAccessTokenOrFail).toBeCalledTimes(1);
+    });
+
+    it('깃허브', async () => {
+      mockAuthHelper.validateGitHubAccessTokenOrFail.mockReturnValue(
+        randomValue,
+      );
+      const oAuthProvider = MemberLoginType.GitHub;
+
+      const result = await authService.validateExternalAccessTokenOrFail(
+        oAuthToken,
+        oAuthProvider,
+      );
+
+      expect(result).toBe(randomValue);
+      expect(mockAuthHelper.validateGitHubAccessTokenOrFail).toBeCalledTimes(1);
     });
 
     it('혹시 나는 에러', async () => {

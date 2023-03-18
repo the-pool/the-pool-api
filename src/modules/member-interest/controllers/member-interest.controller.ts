@@ -4,7 +4,7 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { SetResponse } from '@src/decorators/set-response.decorator';
+import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import { ApiFindAll } from '@src/modules/member-interest/controllers/member-interest.swagger';
 import { FindMemberInterestListQueryDto } from '@src/modules/member-interest/dtos/find-member-interest-list-query.dto';
 import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
@@ -20,7 +20,7 @@ export class MemberInterestController {
   constructor(private readonly memberInterestService: MemberInterestService) {}
 
   @ApiFindAll('member 관심사 리스트 조회')
-  @SetResponse('memberInterests')
+  @SetResponseSetMetadataInterceptor('memberInterests')
   @Get()
   findAll(
     @Query() query: FindMemberInterestListQueryDto,

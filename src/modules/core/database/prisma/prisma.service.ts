@@ -7,7 +7,17 @@ import {
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
-import { Prisma, PrismaClient } from '@prisma/client';
+import {
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
+import {
+  LessonBookmark,
+  LessonHashtagMapping,
+  LessonLike,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import { NotFoundError } from '@prisma/client/runtime';
 import { PrismaModel, PrismaModelName } from '@src/types/type';
 
@@ -109,6 +119,46 @@ export class PrismaService
     if (prismaModel) {
       throw new ConflictException(`${modelName} is duplicated `);
     }
+    return;
+  }
+
+  /**
+   * 매핑테이블의 매핑된 데이터 정보 유효성 검사를 해주는 메서드
+   */
+  async validateMappedDataOrFail<
+    T extends LessonHashtagMapping | LessonBookmark | LessonLike,
+  >(
+    modelName: PrismaModelName,
+    where: {
+      [key in keyof Omit<T, 'id' | 'createdAt'>]: number | { in: number[] };
+    },
+    isShouldBeExist: boolean,
+  ): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const mappingModelRows: T[] = await this[modelName].findMany({
+      where,
+    });
+    const [mappedModelIds] = Object.values(where).filter((value) =>
+      value.hasOwnProperty('in'),
+    ) as [{ in: number[] }];
+
+    // 매핑 관계가 존재 하면 안되는 경우
+    if (!isShouldBeExist && mappingModelRows.length) {
+      throw new BadRequestException(
+        `${modelName}에 중복된 관계를 추가할 수 없습니다.`,
+      );
+    }
+
+    // 매핑 관계가 존재해야 하는 경우
+    if (
+      isShouldBeExist &&
+      mappingModelRows.length !== mappedModelIds.in.length
+    ) {
+      // 넘겨준 매핑 정보에 해당하는 id의 길이와 매핑테이블에서 뽑아온 row의 길이와 비교
+      throw new NotFoundException(`${modelName}에 존재하지 않는 관계 입니다.`);
+    }
+
     return;
   }
 }

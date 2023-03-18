@@ -9,6 +9,7 @@ export class IdRequestParamDto {
     description: '고유 ID',
     type: 'number',
     required: true,
+    minimum: 1,
   })
   @IsRecord({}, true)
   @Min(1)

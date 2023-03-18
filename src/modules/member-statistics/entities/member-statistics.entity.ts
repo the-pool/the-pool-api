@@ -8,10 +8,16 @@ export class MemberStatisticsEntity implements MemberStatistics {
   memberId: number;
 
   @ApiProperty({
-    description: '과제 제출 개수',
+    description: '문제 제출 개수',
     default: 0,
   })
   lessonCount: number;
+
+  @ApiProperty({
+    description: '문제 해결 개수',
+    default: 0,
+  })
+  solutionCount: number;
 
   @ApiProperty({
     description: '피드백 개수',

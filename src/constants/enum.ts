@@ -3,11 +3,18 @@ export enum ModelName {
   Post = 'post',
   Lesson = 'lesson',
   LessonHashtag = 'lessonHashtag',
+  LessonHashtagMapping = 'lessonHashtagMapping',
   LessonLevelEvaluation = 'lessonLevelEvaluation',
   LessonSolution = 'lessonSolution',
   LessonCategory = 'lessonCategory',
+  LessonBookmark = 'lessonBookmark',
+  LessonComment = 'lessonComment',
+  LessonLike = 'lessonLike',
   Member = 'member',
   MemberStatistics = 'memberStatistics',
+  MemberSkill = 'memberSkill',
+  MemberInterest = 'memberInterest',
+  MajorSkill = 'majorSkill',
 }
 
 export enum OrderBy {

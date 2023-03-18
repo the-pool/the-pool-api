@@ -23,8 +23,6 @@ import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { ReadSimilarLessonDto } from '../dtos/lesson/read-similar-lesson.dto';
-import { SimilarLessonQueryDto } from '../dtos/lesson/similar-lesson-query.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from '../services/lesson.service';
@@ -33,7 +31,6 @@ import {
   ApiDeleteLesson,
   ApiReadManyLesson,
   ApiReadOneLesson,
-  ApiReadSimilarLesson,
   ApiUpdateLesson,
 } from '../swaggers/lesson.swagger';
 
@@ -116,27 +113,6 @@ export class LessonController {
     const lesson = plainToInstance(ReadOneLessonDto, readOneLesson);
 
     return { lesson };
-  }
-
-  @ApiReadSimilarLesson('과제 상세 조회의 유사과제')
-  @BearerAuth(OptionalJwtAuthGuard)
-  @Get(':id/similarity')
-  async readSimilarLesson(
-    @Param()
-    @SetModelNameToParam(ModelName.Lesson)
-    param: IdRequestParamDto,
-    @Query() query: SimilarLessonQueryDto,
-    @UserLogin() member: Member | { id: null },
-  ): Promise<ReadSimilarLessonDto> {
-    const readSimilarLessons = await this.lessonService.readSimilarLesson(
-      param.id,
-      member.id,
-      query,
-    );
-
-    return plainToInstance(ReadSimilarLessonDto, {
-      lessons: readSimilarLessons,
-    });
   }
 
   @ApiReadManyLesson('과제 목록 조회')

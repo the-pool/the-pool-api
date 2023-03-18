@@ -1,8 +1,15 @@
 import { faker } from '@faker-js/faker';
+import {
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
+import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
@@ -125,6 +132,137 @@ describe('FriendshipService', () => {
         followings: [following],
         totalCount,
       });
+    });
+  });
+
+  describe('createFollowing', () => {
+    let followingMemberId: number;
+    let followerMemberId: number;
+
+    beforeEach(() => {
+      followingMemberId = faker.datatype.number();
+      followerMemberId = faker.datatype.number();
+    });
+
+    it('following 할 멤버가 없는 멤버일 경우', async () => {
+      mockPrismaService.member.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.createFollowing(followingMemberId, followerMemberId),
+      ).rejects.toThrowError(
+        new NotFoundException('following 할 멤버가 존재하지 않습니다.'),
+      );
+    });
+
+    it('following 할 멤버가 active 상태가 아닌 경우', async () => {
+      const followerMember = new MemberEntity();
+
+      followerMember.status = MemberStatus.Inactive;
+      mockPrismaService.member.findUnique.mockResolvedValue(followerMember);
+
+      await expect(
+        service.createFollowing(followingMemberId, followerMemberId),
+      ).rejects.toThrowError(
+        new ForbiddenException('following 할 멤버가 활성 상태가 아닙니다.'),
+      );
+    });
+
+    it('이미 팔로우하고 있는 경우', async () => {
+      const followerMember = new MemberEntity();
+      const memberFollow = new MemberFollowEntity();
+
+      followerMember.status = MemberStatus.Active;
+      mockPrismaService.member.findUnique.mockResolvedValue(followerMember);
+      mockPrismaService.memberFollow.findFirst.mockResolvedValue(memberFollow);
+
+      await expect(
+        service.createFollowing(followingMemberId, followerMemberId),
+      ).rejects.toThrowError(new ConflictException('이미 follow 중입니다.'));
+    });
+
+    it('팔로우 성공', async () => {
+      const followerMember = new MemberEntity();
+      const memberFollow = new MemberFollowEntity();
+
+      followerMember.status = MemberStatus.Active;
+      mockPrismaService.member.findUnique.mockResolvedValue(followerMember);
+      mockPrismaService.memberFollow.findFirst.mockResolvedValue(null);
+      mockPrismaService.memberFollow.create.mockResolvedValue(memberFollow);
+
+      await expect(
+        service.createFollowing(followingMemberId, followerMemberId),
+      ).resolves.toStrictEqual(memberFollow);
+    });
+
+    afterEach(() => {
+      mockPrismaService.member.findUnique.mockRestore();
+      mockPrismaService.member.findFirst.mockRestore();
+      mockPrismaService.memberFollow.create.mockRestore();
+    });
+  });
+
+  describe('deleteFollowing', () => {
+    let unfollowingMemberId: number;
+    let unfollowerMemberId: number;
+
+    beforeEach(() => {
+      unfollowingMemberId = faker.datatype.number();
+      unfollowerMemberId = faker.datatype.number();
+    });
+
+    it('unfollowing 할 멤버가 없는 멤버일 경우', async () => {
+      mockPrismaService.member.findUnique.mockResolvedValue(null);
+
+      await expect(
+        service.deleteFollowing(unfollowingMemberId, unfollowerMemberId),
+      ).rejects.toThrowError(
+        new NotFoundException('unfollowing 할 멤버가 존재하지 않습니다.'),
+      );
+    });
+
+    it('unfollowing 할 멤버가 active 상태가 아닌 경우', async () => {
+      const unfollowerMember = new MemberEntity();
+
+      unfollowerMember.status = MemberStatus.Inactive;
+      mockPrismaService.member.findUnique.mockResolvedValue(unfollowerMember);
+
+      await expect(
+        service.deleteFollowing(unfollowingMemberId, unfollowerMemberId),
+      ).rejects.toThrowError(
+        new ForbiddenException('unfollowing 할 멤버가 활성 상태가 아닙니다.'),
+      );
+    });
+
+    it('팔로우 하고있지 않은 경우', async () => {
+      const unfollowerMember = new MemberEntity();
+
+      unfollowerMember.status = MemberStatus.Active;
+      mockPrismaService.member.findUnique.mockResolvedValue(unfollowerMember);
+      mockPrismaService.memberFollow.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.deleteFollowing(unfollowingMemberId, unfollowerMemberId),
+      ).rejects.toThrowError(new ConflictException('follow 상태가 아닙니다.'));
+    });
+
+    it('unfollow 성공', async () => {
+      const unfollowerMember = new MemberEntity();
+      const memberFollow = new MemberFollowEntity();
+
+      unfollowerMember.status = MemberStatus.Active;
+      mockPrismaService.member.findUnique.mockResolvedValue(unfollowerMember);
+      mockPrismaService.memberFollow.findFirst.mockResolvedValue(memberFollow);
+      mockPrismaService.memberFollow.delete.mockResolvedValue(memberFollow);
+
+      await expect(
+        service.deleteFollowing(unfollowingMemberId, unfollowerMemberId),
+      ).resolves.toStrictEqual(memberFollow);
+    });
+
+    afterEach(() => {
+      mockPrismaService.member.findUnique.mockRestore();
+      mockPrismaService.member.findFirst.mockRestore();
+      mockPrismaService.memberFollow.delete.mockRestore();
     });
   });
 });

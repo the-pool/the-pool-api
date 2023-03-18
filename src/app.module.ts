@@ -6,6 +6,7 @@ import { IsRecordConstraint } from '@src/decorators/is-record.decorator';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { modules } from '@src/modules';
 import Joi from 'joi';
+import { IsRecordManyConstraint } from './decorators/is-record-many.decorator';
 
 @Module({
   imports: [
@@ -21,13 +22,16 @@ import Joi from 'joi';
         AWS_S3_BUCKET_NAME: Joi.string(),
         AWS_S3_EXPIRES: Joi.number(),
         AWS_S3_ACL: Joi.string(),
+        AWS_CLOUD_FRONT_URL: Joi.string(),
+        GITHUB_CLIENT_ID: Joi.string(),
+        GITHUB_CLIENT_SECRET: Joi.string(),
       }),
       isGlobal: true,
     }),
     ...modules,
   ],
   controllers: [AppController],
-  providers: [AppService, IsRecordConstraint],
+  providers: [AppService, IsRecordConstraint, IsRecordManyConstraint],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {

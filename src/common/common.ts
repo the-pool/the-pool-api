@@ -13,6 +13,31 @@ export const StringBooleanTransform = ({ value }) => {
 };
 
 /**
+ * class transformer CSV 형태를 array 로 변환해준다.
+ */
+export const transformCsvToArray = ({ value }: { value: string }): string[] => {
+  return value.split(',');
+};
+
+/**
+ * class transformer string[] 를 돌면서 앞뒤 공백을 제거한다.
+ */
+export const transformEachTrim = ({ value }: { value: string[] }): string[] => {
+  return value.map((str) => str.trim());
+};
+
+/**
+ * class transformer string[] 를 돌면서 number[] 로 변환한다.
+ */
+export const transformEachStrungToNumber = ({
+  value,
+}: {
+  value: string[];
+}): number[] => {
+  return value.map((str) => Number(str));
+};
+
+/**
  * swagger 상에 enum에 들어갈 value를 명시하기 위한 함수
  */
 export const getValueByEnum = <T extends string | number>(
@@ -25,18 +50,19 @@ export const getValueByEnum = <T extends string | number>(
 };
 
 /**
- * swagger 상에 enum에 들어갈 key,value를 명시하기 위한 함수
+ * swagger 상에 enum에 들어갈 key,value를 명시하기 위한 함수 "a" | "b"
  */
-export const getEntriesByEnum = <T>(Enum: {
-  [key in keyof T]: T[key];
-}): T => {
-  const entries = Object.entries(Enum);
+export const getEntriesByEnum = <T>(Enum: Record<keyof T, T[keyof T]>) => {
+  const entries = Object.entries<T[keyof T]>(Enum);
+
   entries.splice(0, entries.length / 2);
 
-  return entries.reduce((acc, cur) => {
-    acc[cur[0]] = cur[1];
-    return acc;
-  }, {}) as T;
+  return [
+    entries.reduce((acc, cur) => {
+      acc[cur[0]] = cur[1];
+      return acc;
+    }, {} as Record<keyof T, T[keyof T]>),
+  ];
 };
 
 /**
@@ -60,6 +86,16 @@ export const getStrMapByEnum = (Enum) => {
 
   for (const key in map) {
     mapStr += key + ': ' + map[key] + ', ';
+  }
+
+  return mapStr + ' }';
+};
+
+export const getStrMapByObject = (obj: Record<string, any>) => {
+  let mapStr = '{ ';
+
+  for (const key in obj) {
+    mapStr += key + ': ' + obj[key] + ', ';
   }
 
   return mapStr + ' }';

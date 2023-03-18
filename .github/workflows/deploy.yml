@@ -58,6 +58,10 @@ jobs:
           PROJECT_AWS_S3_BUCKET_NAME: ${{ secrets.PROJECT_AWS_S3_BUCKET_NAME }}
           PROJECT_AWS_S3_ACL: ${{ secrets.PROJECT_AWS_S3_ACL }}
           PROJECT_AWS_S3_EXPIRES: ${{ secrets.PROJECT_AWS_S3_EXPIRES }}
+          PROJECT_AWS_CLOUD_FRONT_URL: ${{ secrets.PROJECT_AWS_CLOUD_FRONT_URL }}
+          PROJECT_CLIENT_ID_GITHUB: ${{ secrets.PROJECT_CLIENT_ID_GITHUB }}
+          PROJECT_CLIENT_SECRET_GITHUB: ${{ secrets.PROJECT_CLIENT_SECRET_GITHUB }}
+          PROJECT_SERVER_EXCEPTION_CHANNEL_URL: ${{ secrets.PROJECT_SERVER_EXCEPTION_CHANNEL_URL }}
         run: |
           sudo rm .env
           touch .env
@@ -68,8 +72,12 @@ jobs:
           echo $PROJECT_AWS_S3_BUCKET_NAME >> .env
           echo $PROJECT_AWS_S3_ACL >> .env
           echo $PROJECT_AWS_S3_EXPIRES >> .env
+          echo $PROJECT_AWS_CLOUD_FRONT_URL >> .env
           echo $PROJECT_AWS_ACCESS_KEY >> .env
           echo $PROJECT_AWS_SECRET_KEY >> .env
+          echo $PROJECT_CLIENT_ID_GITHUB >> .env
+          echo $PROJECT_CLIENT_SECRET_GITHUB >> .env
+          echo $PROJECT_SERVER_EXCEPTION_CHANNEL_URL >> .env
           cat .env
       - name: Docker run
         env:
@@ -80,4 +88,4 @@ jobs:
           ENV_FILE: ${{ secrets.ENV_FILE }}
         run: |
           docker pull $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          sudo docker run --env-file ./.env -d -p 80:3000 --name $IMAGE_NAME --restart always --privileged=true $REGISTRY/$REPOSITORY:$IMAGE_TAG
