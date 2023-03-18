@@ -11,7 +11,7 @@ import { SolutionService } from '../services/solution.service';
 import { ApiCreateSolution } from './solution.controller.swagger';
 
 @ApiTags('문제 - 풀이')
-@Controller('api/solutions')
+@Controller()
 export class SolutionController {
   constructor(private readonly solutionService: SolutionService) {}
 
