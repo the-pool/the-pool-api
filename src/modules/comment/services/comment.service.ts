@@ -21,4 +21,11 @@ export class CommentService {
       data: { memberId, ...parentIdColumn, description },
     });
   }
+
+  deleteComment(commentModel: PrismaCommentModelName, commentId: number) {
+    // @ts-ignore
+    return this.prismaService[commentModel].delete({
+      where: { id: commentId },
+    });
+  }
 }

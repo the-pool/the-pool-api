@@ -145,6 +145,7 @@ export const mockLessonBookmarkService: MockClassType<LessonBookmarkService> = {
 
 export const mockCommentService: MockClassType<CommentService> = {
   createComment: jest.fn(),
+  deleteComment: jest.fn(),
 };
 export const mockLessonLikeService: MockClassType<LessonLikeService> = {
   createLike: jest.fn(),

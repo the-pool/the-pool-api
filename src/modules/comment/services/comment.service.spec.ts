@@ -2,7 +2,11 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { PrismaCommentModelName } from '@src/types/type';
+import {
+  PrismaCommentModelName,
+  PrismaCommentParentIdColumn,
+  PrismaModelName,
+} from '@src/types/type';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { CommentBaseEntity } from '../entities/comment.entity';
 import { CommentService } from './comment.service';
@@ -10,6 +14,7 @@ import { CommentService } from './comment.service';
 describe('CommentService', () => {
   let commentService: CommentService;
   let prismaService;
+  const commentModels: PrismaCommentModelName[] = ['lessonComment'];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -35,10 +40,13 @@ describe('CommentService', () => {
   });
 
   describe('createComment', () => {
-    let createCommentColumn = (commentModel: PrismaCommentModelName) => {
+    let createCommentColumn = (
+      commentModel: PrismaCommentModelName,
+    ): PrismaCommentParentIdColumn => {
       const commentColumnField = {
         [ModelName.LessonComment]: `${ModelName.Lesson}Id`,
-      }[commentModel];
+      }[commentModel] as `${Extract<PrismaModelName, 'lesson'>}Id`;
+
       return { [commentColumnField]: faker.datatype.number() };
     };
     let memberId: number;
@@ -52,24 +60,54 @@ describe('CommentService', () => {
     });
 
     describe('each model test', () => {
-      it.each(['lessonComment'])(
+      it.each(commentModels)(
         'success - commentModel: %s',
         async (commentModel: PrismaCommentModelName) => {
           prismaService[commentModel].create.mockReturnValue(createdComment);
 
-          const commentColumn = createCommentColumn(commentModel);
+          const parendIdColumn = createCommentColumn(commentModel);
           const returnValue = await commentService.createComment(
             commentModel,
-            commentColumn,
+            parendIdColumn,
             memberId,
             description,
           );
 
           expect(prismaService[commentModel].create).toBeCalledTimes(1);
           expect(prismaService[commentModel].create).toBeCalledWith({
-            data: { memberId: memberId, ...commentColumn, description },
+            data: { memberId, ...parendIdColumn, description },
           });
           expect(returnValue).toStrictEqual(createdComment);
+        },
+      );
+    });
+  });
+
+  describe('deleteComment', () => {
+    let commentId: number;
+    let deletedComment: CommentBaseEntity;
+
+    beforeEach(() => {
+      deletedComment = new CommentBaseEntity();
+      commentId = faker.datatype.number();
+    });
+
+    describe('each model test', () => {
+      it.each(commentModels)(
+        'success - commentModel: %s',
+        async (commentModel: PrismaCommentModelName) => {
+          prismaService[commentModel].delete.mockReturnValue(deletedComment);
+
+          const returnValue = await commentService.deleteComment(
+            commentModel,
+            commentId,
+          );
+
+          expect(prismaService[commentModel].delete).toBeCalledTimes(1);
+          expect(prismaService[commentModel].delete).toBeCalledWith({
+            where: { id: commentId },
+          });
+          expect(returnValue).toStrictEqual(deletedComment);
         },
       );
     });
