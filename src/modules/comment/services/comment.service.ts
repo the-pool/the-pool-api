@@ -28,4 +28,20 @@ export class CommentService {
       where: { id: commentId },
     });
   }
+
+  updateComment(
+    commentModel: PrismaCommentModelName,
+    commentId: number,
+    description: string,
+  ) {
+    // @ts-ignore
+    return this.prismaService[commentModel].update({
+      where: {
+        id: commentId,
+      },
+      data: {
+        description,
+      },
+    });
+  }
 }

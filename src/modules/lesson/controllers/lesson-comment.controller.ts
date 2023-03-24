@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
@@ -8,7 +8,8 @@ import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.dec
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment.dto';
+import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
@@ -17,6 +18,7 @@ import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 import {
   ApiCreateComment,
   ApiDeleteComment,
+  ApiUpdateComment,
 } from '../swaggers/lesson-comment.swagger';
 
 @ApiTags('과제 댓글')
@@ -75,5 +77,30 @@ export class LessonCommentController {
     );
 
     return { lessonComment: deletedComment };
+  }
+
+  @ApiUpdateComment('과제 댓글 수정')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @BearerAuth(JwtAuthGuard)
+  @Patch(':commentId')
+  async updateComment(
+    @Param()
+    @SetModelNameToParam(ModelName.Lesson)
+    param: LessonCommentParamDto,
+    @Body() { description }: UpdateCommentBaseDto,
+    @UserLogin('id') memberId: number,
+  ): Promise<{ lessonComment: LessonCommentEntity }> {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonComment, {
+      id: param.commentId,
+      memberId,
+    });
+
+    const updatedComment = await this.commentService.updateComment(
+      ModelName.LessonComment,
+      param.commentId,
+      description,
+    );
+
+    return { lessonComment: updatedComment };
   }
 }
