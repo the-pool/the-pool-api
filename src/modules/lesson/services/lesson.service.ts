@@ -60,8 +60,8 @@ export class LessonService {
   readOneLesson(
     lessonId: number,
     memberId: number | null,
-  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'>> {
-    let includeOption: Prisma.LessonInclude = {
+  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'> | null> {
+    const includeOption: Prisma.LessonInclude = {
       member: true,
       lessonCategory: true,
       lessonLevel: true,
@@ -78,12 +78,12 @@ export class LessonService {
       includeOption.lessonLikes = whereOption;
     }
 
-    return this.prismaService.lesson.findFirst({
+    return this.prismaService.lesson.findUnique({
       where: {
         id: lessonId,
       },
       include: includeOption,
-    }) as Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'>>;
+    });
   }
 
   /**
