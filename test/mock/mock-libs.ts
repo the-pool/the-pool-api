@@ -58,6 +58,6 @@ export class MockWebhookClient {
   constructor(option) {}
 
   send() {
-    return jest.fn();
+    return Promise.resolve(jest.fn());
   }
 }
