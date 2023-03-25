@@ -18,7 +18,7 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { plainToInstance } from 'class-transformer';
+import { plainToClass } from 'class-transformer';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
@@ -110,7 +110,7 @@ export class LessonController {
       param.id,
       member.id,
     );
-    const lesson = plainToInstance(ReadOneLessonDto, readOneLesson);
+    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
 
     return { lesson };
   }

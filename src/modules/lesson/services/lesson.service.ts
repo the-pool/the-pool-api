@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
+import { Prisma, PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
@@ -9,13 +9,11 @@ import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
-import { LessonRepository } from '../repositories/lesson.repository';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly lessonRepository: LessonRepository,
     private readonly queryHelper: QueryHelper,
   ) {}
 
@@ -57,13 +55,35 @@ export class LessonService {
   }
 
   /**
-   * 과제 상세 조회 메서드
+   * 과제 상세조회 메서드
    */
   readOneLesson(
     lessonId: number,
     memberId: number | null,
-  ): Promise<ReadOneLessonDto> {
-    return this.lessonRepository.readOneLesson(lessonId, memberId);
+  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'> | null> {
+    const includeOption: Prisma.LessonInclude = {
+      member: true,
+      lessonCategory: true,
+      lessonLevel: true,
+    };
+
+    if (memberId) {
+      const whereOption = {
+        where: {
+          lessonId,
+          memberId,
+        },
+      };
+      includeOption.lessonBookMarks = whereOption;
+      includeOption.lessonLikes = whereOption;
+    }
+
+    return this.prismaService.lesson.findUnique({
+      where: {
+        id: lessonId,
+      },
+      include: includeOption,
+    });
   }
 
   /**
