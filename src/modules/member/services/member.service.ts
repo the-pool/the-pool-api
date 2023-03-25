@@ -9,13 +9,14 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
-import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
-import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
+import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '../dtos/create-member-major-skill-mapping-request-param.dto';
@@ -33,9 +34,17 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  findOne(where: Prisma.MemberWhereInput): Promise<MemberEntity | null> {
+  findOne(where: Prisma.MemberWhereInput): Promise<
+    | (MemberEntity & {
+        memberSocialLinkMappings: MemberSocialLinkMappingEntity[];
+      })
+    | null
+  > {
     return this.prismaService.member.findFirst({
       where,
+      include: {
+        memberSocialLinkMappings: true,
+      },
     });
   }
 

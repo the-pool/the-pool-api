@@ -73,6 +73,9 @@ describe('MemberService', () => {
 
       expect(mockPrismaService.member.findFirst).toBeCalledWith({
         where,
+        include: {
+          memberSocialLinkMappings: true,
+        },
       });
       expect(result).toStrictEqual(member);
     });

@@ -10,6 +10,7 @@ import {
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
 export const ApiGetAccessTokenForDevelop = (summary: string) => {
@@ -25,9 +26,19 @@ export const ApiGetAccessTokenForDevelop = (summary: string) => {
 export const ApiFindOne = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      member: {
-        type: MemberEntity,
+    ApiExtraModels(MemberSocialLinkMappingEntity),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          member: {
+            $ref: getSchemaPath(MemberEntity),
+            properties: {
+              memberSocialLinkMappings: {
+                $ref: getSchemaPath(MemberSocialLinkMappingEntity),
+              },
+            },
+          },
+        },
       },
     }),
   );
