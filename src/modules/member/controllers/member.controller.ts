@@ -140,19 +140,25 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
-    @UserLogin() member: MemberEntity,
+    @UserLogin() oldMember: MemberEntity,
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,
-  ): Promise<MemberEntity> {
+  ): Promise<MemberEntity | any> {
+    const { memberSocialLinks, ...newMember } = body;
+
     await this.memberValidationService.canUpdateFromPatchOrFail(
       params.id,
-      body,
-      member,
+      newMember,
+      oldMember,
     );
 
-    return this.memberService.updateFromPatch(params.id, body);
+    return this.memberService.updateFromPatch(
+      params.id,
+      newMember,
+      memberSocialLinks,
+    );
   }
 
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')
