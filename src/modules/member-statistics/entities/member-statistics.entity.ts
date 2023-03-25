@@ -14,22 +14,28 @@ export class MemberStatisticsEntity implements MemberStatistics {
   lessonCount: number;
 
   @ApiProperty({
+    description: '문제 제출 댓글 개수',
+    default: 0,
+  })
+  lessonCommentCount: number;
+
+  @ApiProperty({
     description: '문제 해결 개수',
     default: 0,
   })
   solutionCount: number;
 
   @ApiProperty({
+    description: '문제 해결 댓글 개수',
+    default: 0,
+  })
+  solutionCommentCount: number;
+
+  @ApiProperty({
     description: '피드백 개수',
     default: 0,
   })
   feedbackCount: number;
-
-  @ApiProperty({
-    description: '댓글 개수',
-    default: 0,
-  })
-  commentCount: number;
 
   @ApiProperty({
     description: '팔로우 개수',
