@@ -24,7 +24,10 @@ export class SolutionCommentController {
   ) {}
 
   @ApiCreateComment('문제-풀이 댓글 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'increment')
+  @IncreaseMemberStatisticsSetMetadataInterceptor(
+    'solutionCommentCount',
+    'increment',
+  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post(':id/comments')
