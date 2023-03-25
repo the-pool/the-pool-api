@@ -281,4 +281,32 @@ describe('LessonService', () => {
       });
     });
   });
+
+  describe('increaseLessonHit', () => {
+    let lessonId: number;
+    let updatedLesson: LessonEntity;
+
+    beforeEach(() => {
+      lessonId = faker.datatype.number();
+      updatedLesson = new LessonEntity();
+
+      prismaService.lesson.update.mockReturnValue(updatedLesson);
+    });
+
+    it('success - check method called', () => {
+      lessonService.increaseLessonHit(lessonId);
+
+      expect(prismaService.lesson.update).toBeCalledTimes(1);
+      expect(prismaService.lesson.update).toBeCalledWith({
+        where: { id: lessonId },
+        data: { hit: { increment: 1 } },
+      });
+    });
+
+    it('success - check Input & Output', () => {
+      const returnValue = lessonService.increaseLessonHit(lessonId);
+
+      expect(returnValue).toStrictEqual(updatedLesson);
+    });
+  });
 });

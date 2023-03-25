@@ -78,7 +78,7 @@ export class LessonService {
       includeOption.lessonLikes = whereOption;
     }
 
-    return this.prismaService.lesson.findUnique({
+    return this.prismaService.lesson.findFirst({
       where: {
         id: lessonId,
       },
@@ -137,5 +137,12 @@ export class LessonService {
     ]);
 
     return { lessons, totalCount };
+  }
+
+  increaseLessonHit(lessonId: number): Promise<LessonEntity> {
+    return this.prismaService.lesson.update({
+      where: { id: lessonId },
+      data: { hit: { increment: 1 } },
+    });
   }
 }

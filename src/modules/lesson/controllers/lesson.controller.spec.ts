@@ -157,9 +157,11 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let readOneLesson: ReadOneLessonDto;
+    let updatedLesson: LessonEntity;
 
     beforeEach(() => {
       readOneLesson = new ReadOneLessonDto();
+      updatedLesson = new LessonEntity();
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
@@ -169,6 +171,7 @@ describe('LessonController', () => {
       };
 
       lessonService.readOneLesson.mockReturnValue(readOneLesson);
+      lessonService.increaseLessonHit.mockReturnValue(updatedLesson);
     });
 
     it('success - check method called', async () => {
@@ -176,6 +179,8 @@ describe('LessonController', () => {
 
       expect(lessonService.readOneLesson).toBeCalledTimes(1);
       expect(lessonService.readOneLesson).toBeCalledWith(param.id, member.id);
+      expect(lessonService.increaseLessonHit).toBeCalledTimes(1);
+      expect(lessonService.increaseLessonHit).toBeCalledWith(param.id);
     });
 
     it('success - check Input & Output', async () => {
