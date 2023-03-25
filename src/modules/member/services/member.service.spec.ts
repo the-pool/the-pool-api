@@ -14,6 +14,7 @@ import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
@@ -131,18 +132,29 @@ describe('MemberService', () => {
   describe('updateFromPatch', () => {
     let id: number;
     let member: PatchUpdateMemberRequestBodyDto;
+    let memberSocialLinks: MemberSocialLinkDto[];
 
     beforeEach(() => {
       id = faker.datatype.number();
       member = new PatchUpdateMemberRequestBodyDto();
     });
 
-    it('업데이트 성공', async () => {
-      mockPrismaService.member.update.mockResolvedValue(member as any);
+    it('memberSocialLinks 가 없는 경우', async () => {
+      mockPrismaService.$transaction.mockResolvedValue(member as any);
 
-      const result = await memberService.updateFromPatch(id, member);
+      await expect(
+        memberService.updateFromPatch(id, member),
+      ).resolves.toStrictEqual(member);
+    });
 
-      expect(result).toStrictEqual(member);
+    it('memberSocialLinks 가 있는 경우', async () => {
+      memberSocialLinks = [new MemberSocialLinkDto()];
+
+      mockPrismaService.$transaction.mockResolvedValue(member as any);
+
+      await expect(
+        memberService.updateFromPatch(id, member, memberSocialLinks),
+      ).resolves.toStrictEqual(member);
     });
   });
 
