@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
 import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
 import {
@@ -12,15 +12,11 @@ import {
 @Injectable()
 @ValidatorConstraint({ async: true })
 export class IsMemberSocialLinkConstraint
-  implements ValidatorConstraintInterface, OnModuleInit
+  implements ValidatorConstraintInterface
 {
   private readonly PROTOCOL = 'https://';
 
   constructor(private readonly thePoolCacheService: ThePoolCacheService) {}
-
-  async onModuleInit(): Promise<void> {
-    await this.thePoolCacheService.setMemberSocialLinks();
-  }
 
   async validate(
     _value: MemberSocialLinkDto,

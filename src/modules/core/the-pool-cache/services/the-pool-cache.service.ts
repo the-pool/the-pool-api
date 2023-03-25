@@ -1,16 +1,25 @@
-import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  Inject,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
 import { Cache } from 'cache-manager';
 
 @Injectable()
-export class ThePoolCacheService {
+export class ThePoolCacheService implements OnModuleInit {
   private readonly MEMBER_SOCIAL_LINKS = 'memberSocialLinks';
 
   constructor(
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
     private readonly prismaService: PrismaService,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    await this.setMemberSocialLinks();
+  }
 
   async getMemberSocialLinks() {
     const memberSocialLinks = await this.cacheManager.get<
