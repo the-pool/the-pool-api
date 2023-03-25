@@ -5,7 +5,6 @@ import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { Type } from 'class-transformer';
 import {
-  ArrayNotEmpty,
   ArrayUnique,
   IsArray,
   IsEnum,
@@ -70,10 +69,9 @@ export class PatchUpdateMemberRequestBodyDto implements Partial<MemberEntity> {
     type: [MemberSocialLinkDto],
   })
   @ArrayUnique()
-  @ArrayNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
   @IsOptional()
   @Type(() => MemberSocialLinkDto)
-  memberSocialLinks: MemberSocialLinkDto[];
+  memberSocialLinks?: MemberSocialLinkDto[];
 }

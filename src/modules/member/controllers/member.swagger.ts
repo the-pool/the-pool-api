@@ -69,6 +69,9 @@ export const ApiUpdateFromPatch = (summary: string) => {
       },
     }),
     ApiFailureResponse(HttpStatus.BAD_REQUEST, [
+      'memberSocialLinks 유효하지 않은 url 입니다.',
+      'memberSocialLinks url 은 공백이 존재할 수 없습니다.',
+      'memberSocialLinks 존재하지 않는 type 입니다.',
       '활성중인 유저거나 활성 상태로 변경하려는 유저만 업데이트 가능합니다.',
     ]),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['Unauthorized']),
