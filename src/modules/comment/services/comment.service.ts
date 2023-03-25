@@ -11,7 +11,7 @@ export class CommentService {
 
   createComment(
     commentModel: PrismaCommentModelName,
-    parentIdColumn: PrismaCommentParentIdColumn,
+    parentIdColumn: Partial<PrismaCommentParentIdColumn>,
     memberId: number,
     description: string,
   ) {

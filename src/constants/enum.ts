@@ -8,6 +8,7 @@ export enum ModelName {
   LessonSolution = 'lessonSolution',
   LessonSolutionHashtag = 'lessonSolutionHashtag',
   LessonSolutionHashtagMapping = 'lessonSolutionHashtagMapping',
+  LessonSolutionComment = 'lessonSolutionComment',
   LessonCategory = 'lessonCategory',
   LessonBookmark = 'lessonBookmark',
   LessonComment = 'lessonComment',
