@@ -97,6 +97,7 @@ export const mockLessonService: MockClassType<LessonService> = {
   readOneLesson: jest.fn(),
   deleteLesson: jest.fn(),
   readManyLesson: jest.fn(),
+  increaseLessonHit: jest.fn(),
 };
 
 export const mockLessonHashtagService: MockClassType<LessonHashtagService> = {

@@ -112,6 +112,8 @@ export class LessonController {
     );
     const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
 
+    await this.lessonService.increaseLessonHit(param.id);
+
     return { lesson };
   }
 
