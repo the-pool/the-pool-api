@@ -29,7 +29,7 @@ export type PrismaCommentModelName = Extract<
 
 // 댓글 기능을 추가할 때마다 댓글을 가지고 있는 부모 테이블이 Extract의 두번째 유니온으로 추가 되어야 함
 export type PrismaCommentParentIdColumn = Record<
-  `${Extract<PrismaModelName, 'lesson'>}Id`,
+  `${Extract<PrismaModelName, 'lesson' | 'lessonSolution'>}Id`,
   number
 >;
 /**

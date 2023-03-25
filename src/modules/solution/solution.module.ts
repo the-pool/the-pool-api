@@ -8,13 +8,24 @@ import { NotificationService } from '../core/notification/services/notification.
 import { SolutionController } from './controllers/solution.controller';
 import { SolutionHashtagService } from './services/solution-hashtag.service';
 import { SolutionService } from './services/solution.service';
+import { CommentService } from '../comment/services/comment.service';
+import { SolutionCommentController } from './controllers/solution-comment.controller';
 
 @Module({
   imports: [
     NotificationModule,
     RouterModule.register([{ path: 'api/solutions', module: SolutionModule }]),
   ],
-  providers: [SolutionService, SolutionHashtagService, PrismaService],
-  controllers: [SolutionController, SolutionHashtagController],
+  providers: [
+    CommentService,
+    PrismaService,
+    SolutionService,
+    SolutionHashtagService,
+  ],
+  controllers: [
+    SolutionController,
+    SolutionHashtagController,
+    SolutionCommentController,
+  ],
 })
 export class SolutionModule {}
