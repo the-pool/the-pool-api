@@ -50,6 +50,7 @@ import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dt
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
@@ -145,7 +146,9 @@ export class MemberController {
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,
-  ): Promise<MemberEntity | any> {
+  ): Promise<
+    MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
+  > {
     const { memberSocialLinks, ...newMember } = body;
 
     await this.memberValidationService.canUpdateFromPatchOrFail(
