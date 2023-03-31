@@ -15,6 +15,15 @@ describe('CommentService', () => {
   let commentService: CommentService;
   let prismaService;
   const commentModels: PrismaCommentModelName[] = ['lessonComment'];
+  let createCommentColumn = (
+    commentModel: PrismaCommentModelName,
+  ): Partial<PrismaCommentParentIdColumn> => {
+    const commentColumnField = {
+      [ModelName.LessonComment]: `${ModelName.Lesson}Id`,
+    }[commentModel] as `${Extract<PrismaModelName, 'lesson'>}Id`;
+
+    return { [commentColumnField]: faker.datatype.number() };
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -40,15 +49,6 @@ describe('CommentService', () => {
   });
 
   describe('createComment', () => {
-    let createCommentColumn = (
-      commentModel: PrismaCommentModelName,
-    ): Partial<PrismaCommentParentIdColumn> => {
-      const commentColumnField = {
-        [ModelName.LessonComment]: `${ModelName.Lesson}Id`,
-      }[commentModel] as `${Extract<PrismaModelName, 'lesson'>}Id`;
-
-      return { [commentColumnField]: faker.datatype.number() };
-    };
     let memberId: number;
     let description: string;
     let createdComment: CommentBaseEntity;
@@ -146,6 +146,35 @@ describe('CommentService', () => {
             },
           });
           expect(returnValue).toStrictEqual(updatedComment);
+        },
+      );
+    });
+  });
+
+  describe('readManyComment', () => {
+    let readManyComment: CommentBaseEntity[];
+
+    beforeEach(() => {
+      readManyComment = [new CommentBaseEntity()];
+    });
+
+    describe('each model test', () => {
+      it.each(commentModels)(
+        'success - commentModel: %s',
+        async (commentModel: PrismaCommentModelName) => {
+          prismaService[commentModel].findMany.mockReturnValue(readManyComment);
+
+          const parentIdColumn = createCommentColumn(commentModel);
+          const returnValue = await commentService.readManyComment(
+            commentModel,
+            parentIdColumn,
+          );
+
+          expect(prismaService[commentModel].findMany).toBeCalledTimes(1);
+          expect(prismaService[commentModel].findMany).toBeCalledWith({
+            where: parentIdColumn,
+          });
+          expect(returnValue).toStrictEqual(readManyComment);
         },
       );
     });
