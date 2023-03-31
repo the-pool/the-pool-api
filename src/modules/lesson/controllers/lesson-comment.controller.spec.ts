@@ -182,4 +182,32 @@ describe('LessonCommentController', () => {
       });
     });
   });
+
+  describe('readManyComment', () => {
+    let param: IdRequestParamDto;
+    let lessonComments: LessonCommentEntity[];
+
+    beforeEach(() => {
+      param = new IdRequestParamDto();
+      lessonComments = [new LessonCommentEntity()];
+
+      commentService.readManyComment.mockReturnValue(lessonComments);
+    });
+
+    it('success - check method called', async () => {
+      await lessonCommentController.readManyComment(param);
+
+      expect(commentService.readManyComment).toBeCalledTimes(1);
+      expect(commentService.readManyComment).toBeCalledWith(
+        ModelName.LessonComment,
+        { lessonId: param.id },
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonCommentController.readManyComment(param);
+
+      expect(returnValue).toStrictEqual({ lessonComments });
+    });
+  });
 });
