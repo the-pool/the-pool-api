@@ -44,4 +44,14 @@ export class CommentService {
       },
     });
   }
+
+  readManyComment(
+    commentModel: PrismaCommentModelName,
+    parentIdColumn: Partial<PrismaCommentParentIdColumn>,
+  ) {
+    // @ts-ignore
+    return this.prismaService[commentModel].findMany({
+      where: parentIdColumn,
+    });
+  }
 }

@@ -42,7 +42,7 @@ describe('CommentService', () => {
   describe('createComment', () => {
     let createCommentColumn = (
       commentModel: PrismaCommentModelName,
-    ): PrismaCommentParentIdColumn => {
+    ): Partial<PrismaCommentParentIdColumn> => {
       const commentColumnField = {
         [ModelName.LessonComment]: `${ModelName.Lesson}Id`,
       }[commentModel] as `${Extract<PrismaModelName, 'lesson'>}Id`;
@@ -65,17 +65,17 @@ describe('CommentService', () => {
         async (commentModel: PrismaCommentModelName) => {
           prismaService[commentModel].create.mockReturnValue(createdComment);
 
-          const parendIdColumn = createCommentColumn(commentModel);
+          const parentIdColumn = createCommentColumn(commentModel);
           const returnValue = await commentService.createComment(
             commentModel,
-            parendIdColumn,
+            parentIdColumn,
             memberId,
             description,
           );
 
           expect(prismaService[commentModel].create).toBeCalledTimes(1);
           expect(prismaService[commentModel].create).toBeCalledWith({
-            data: { memberId, ...parendIdColumn, description },
+            data: { memberId, ...parentIdColumn, description },
           });
           expect(returnValue).toStrictEqual(createdComment);
         },
