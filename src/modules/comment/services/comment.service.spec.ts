@@ -10,6 +10,7 @@ import {
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { CommentBaseEntity } from '../entities/comment.entity';
 import { CommentService } from './comment.service';
+import { ReadManyCommentQueryBaseDto } from '../dtos/read-many-comment-query-base.dto';
 
 describe('CommentService', () => {
   let commentService: CommentService;
@@ -153,9 +154,11 @@ describe('CommentService', () => {
 
   describe('readManyComment', () => {
     let readManyComment: CommentBaseEntity[];
+    let query: ReadManyCommentQueryBaseDto;
 
     beforeEach(() => {
       readManyComment = [new CommentBaseEntity()];
+      query = new ReadManyCommentQueryBaseDto();
     });
 
     describe('each model test', () => {
@@ -168,11 +171,16 @@ describe('CommentService', () => {
           const returnValue = await commentService.readManyComment(
             commentModel,
             parentIdColumn,
+            query,
           );
+          const { page, pageSize, orderBy } = query;
 
           expect(prismaService[commentModel].findMany).toBeCalledTimes(1);
           expect(prismaService[commentModel].findMany).toBeCalledWith({
             where: parentIdColumn,
+            orderBy: { id: orderBy },
+            skip: page * pageSize,
+            take: pageSize,
           });
           expect(returnValue).toStrictEqual(readManyComment);
         },

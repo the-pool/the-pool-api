@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { LessonComment } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import {
   PrismaCommentModelMapper,
   PrismaCommentModelName,
   PrismaCommentParentIdColumn,
-  PrismaModel,
 } from '@src/types/type';
+import { ReadManyCommentQueryBaseDto } from '../dtos/read-many-comment-query-base.dto';
 
 @Injectable()
 export class CommentService {
@@ -54,10 +53,15 @@ export class CommentService {
   readManyComment<T extends PrismaCommentModelName>(
     commentModel: T,
     parentIdColumn: Partial<PrismaCommentParentIdColumn>,
+    query: ReadManyCommentQueryBaseDto,
   ): Promise<PrismaCommentModelMapper[T][]> {
+    const { page, pageSize, orderBy } = query;
     // @ts-ignore
     return this.prismaService[commentModel].findMany({
       where: parentIdColumn,
+      orderBy: { id: orderBy },
+      skip: page * pageSize,
+      take: pageSize,
     });
   }
 }

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
@@ -30,6 +31,7 @@ import {
   ApiReadManyComment,
   ApiUpdateComment,
 } from '../swaggers/lesson-comment.swagger';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 
 @ApiTags('과제 댓글')
 @Controller(':id/comments')
@@ -114,13 +116,14 @@ export class LessonCommentController {
     return { lessonComment: updatedComment };
   }
 
-  @ApiReadManyComment('과제의 댓글 조회')
+  @ApiReadManyComment('과제의 댓글 목록 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   async readManyComment(
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
+    @Query() query: ReadManyCommentQueryBaseDto,
   ): Promise<{ lessonComments: LessonCommentEntity[] }> {
     const lessonIdColumn = {
       lessonId: param.id,
@@ -129,6 +132,7 @@ export class LessonCommentController {
     const lessonComments = await this.commentService.readManyComment(
       ModelName.LessonComment,
       lessonIdColumn,
+      query,
     );
 
     return { lessonComments };
