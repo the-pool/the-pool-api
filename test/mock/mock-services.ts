@@ -18,7 +18,6 @@ import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
 import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
-import { JestMockExtended } from 'jest-mock-extended';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -30,7 +29,7 @@ export const mockJwtService = {
 };
 
 export const mockMemberService: MockClassType<MemberService> = {
-  findOne: jest.fn(),
+  findOneOrFail: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),

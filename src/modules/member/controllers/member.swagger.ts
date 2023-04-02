@@ -41,6 +41,7 @@ export const ApiFindOne = (summary: string) => {
         },
       },
     }),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, '존재하지 않는 member 입니다.'),
   );
 };
 

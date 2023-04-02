@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
@@ -65,20 +64,20 @@ describe('MemberController', () => {
 
   describe('findOne', () => {
     let member: MemberEntity;
-    let params: IdRequestParamDto;
+    let id: number;
 
     beforeEach(() => {
       member = new MemberEntity();
-      params = new IdRequestParamDto();
+      id = faker.datatype.number();
     });
 
     it('조회 성공', async () => {
-      mockMemberService.findOne.mockReturnValue(member);
+      mockMemberService.findOneOrFail.mockReturnValue(member);
 
-      const result = memberController.findOne(params);
+      const result = memberController.findOne(id);
 
-      expect(mockMemberService.findOne).toBeCalledWith({
-        id: params.id,
+      expect(mockMemberService.findOneOrFail).toBeCalledWith({
+        id,
       });
       expect(result).toStrictEqual(member);
     });
@@ -98,7 +97,7 @@ describe('MemberController', () => {
 
     describe('로그인 하는 경우', () => {
       beforeEach(() => {
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOneOrFail.mockReturnValue(member);
       });
 
       it('로그인 성공', async () => {
@@ -108,7 +107,7 @@ describe('MemberController', () => {
       });
 
       afterEach(() => {
-        expect(mockMemberService.findOne).toBeCalledTimes(1);
+        expect(mockMemberService.findOneOrFail).toBeCalledTimes(1);
         expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
       });
     });
@@ -116,7 +115,7 @@ describe('MemberController', () => {
     describe('회원가입 하는 경우', () => {
       beforeEach(() => {
         member = null;
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOneOrFail.mockReturnValue(member);
       });
 
       it('회원가입 성공', async () => {
@@ -126,7 +125,7 @@ describe('MemberController', () => {
       });
 
       afterEach(() => {
-        expect(mockMemberService.findOne).toBeCalledTimes(1);
+        expect(mockMemberService.findOneOrFail).toBeCalledTimes(1);
       });
     });
   });

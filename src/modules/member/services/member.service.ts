@@ -34,18 +34,23 @@ export class MemberService {
   /**
    * member 단일 조회
    */
-  findOne(where: Prisma.MemberWhereInput): Promise<
-    | (MemberEntity & {
-        memberSocialLinkMappings: MemberSocialLinkMappingEntity[];
-      })
-    | null
+  async findOneOrFail(where: Prisma.MemberWhereInput): Promise<
+    MemberEntity & {
+      memberSocialLinkMappings: MemberSocialLinkMappingEntity[];
+    }
   > {
-    return this.prismaService.member.findFirst({
+    const member = await this.prismaService.member.findFirst({
       where,
       include: {
         memberSocialLinkMappings: true,
       },
     });
+
+    if (!member) {
+      throw new NotFoundException('존재하지 않는 member 입니다.');
+    }
+
+    return member;
   }
 
   /**

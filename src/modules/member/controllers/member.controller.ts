@@ -5,6 +5,7 @@ import {
   Get,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -87,19 +88,13 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
-    @SetModelNameToParam(ModelName.Member)
-    @Param()
-    params: IdRequestParamDto,
+    @Param('id', ParseIntPipe) id: number,
   ): Promise<
     MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
   > {
-    return this.memberService.findOne({
-      id: params.id,
-    }) as Promise<
-      MemberEntity & {
-        memberSocialLinkMappings: MemberSocialLinkMappingEntity[];
-      }
-    >;
+    return this.memberService.findOneOrFail({
+      id,
+    });
   }
 
   /**
@@ -119,7 +114,7 @@ export class MemberController {
     );
 
     // account 를 통해 member 가 있는지 조회한다.
-    const member = await this.memberService.findOne({
+    const member = await this.memberService.findOneOrFail({
       account,
     });
 
