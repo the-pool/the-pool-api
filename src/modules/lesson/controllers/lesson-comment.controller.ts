@@ -121,7 +121,7 @@ export class LessonCommentController {
     @Param()
     @SetModelNameToParam(ModelName.Lesson)
     param: IdRequestParamDto,
-  ) {
+  ): Promise<{ lessonComments: LessonCommentEntity[] }> {
     const lessonIdColumn = {
       lessonId: param.id,
     };

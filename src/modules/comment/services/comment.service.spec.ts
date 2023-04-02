@@ -15,7 +15,7 @@ describe('CommentService', () => {
   let commentService: CommentService;
   let prismaService;
   const commentModels: PrismaCommentModelName[] = ['lessonComment'];
-  let createCommentColumn = (
+  const createCommentColumn = (
     commentModel: PrismaCommentModelName,
   ): Partial<PrismaCommentParentIdColumn> => {
     const commentColumnField = {
