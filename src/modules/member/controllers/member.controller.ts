@@ -5,7 +5,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -54,6 +53,7 @@ import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -88,7 +88,7 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParsePositiveIntPipe) id: number,
   ): Promise<
     MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
   > {
