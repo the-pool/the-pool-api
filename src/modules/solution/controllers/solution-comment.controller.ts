@@ -56,13 +56,13 @@ export class SolutionCommentController {
     @Body() { description }: CreateCommentBaseDto,
     @UserLogin('id') memberId: number,
   ): Promise<{ solutionComment: SolutionCommentEntity }> {
-    const lessonSolutionId = {
+    const lessonSolutionIdColumn = {
       lessonSolutionId: param.id,
     };
     const solutionComment: SolutionCommentEntity =
       await this.commentService.createComment(
         ModelName.LessonSolutionComment,
-        lessonSolutionId,
+        lessonSolutionIdColumn,
         memberId,
         description,
       );
@@ -137,13 +137,13 @@ export class SolutionCommentController {
     param: IdRequestParamDto,
     @Query() query: ReadManyCommentQueryBaseDto,
   ): Promise<{ solutionComments: SolutionCommentEntity[] }> {
-    const lessonSolutionId = {
+    const lessonSolutionIdColumn = {
       lessonSolutionId: param.id,
     };
 
     const solutionComments = await this.commentService.readManyComment(
       ModelName.LessonSolutionComment,
-      lessonSolutionId,
+      lessonSolutionIdColumn,
       query,
     );
 
