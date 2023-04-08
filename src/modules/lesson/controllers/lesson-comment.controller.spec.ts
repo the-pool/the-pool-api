@@ -15,6 +15,7 @@ import {
 import { LessonCommentParamDto } from '../dtos/comment/lesson-comment-param.dto';
 import { LessonCommentEntity } from '../entities/lesson-comment.entity';
 import { LessonCommentController } from './lesson-comment.controller';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 
 describe('LessonCommentController', () => {
   let lessonCommentController: LessonCommentController;
@@ -180,6 +181,40 @@ describe('LessonCommentController', () => {
       expect(returnValue).toStrictEqual({
         lessonComment: updatedComment,
       });
+    });
+  });
+
+  describe('readManyComment', () => {
+    let param: IdRequestParamDto;
+    let lessonComments: LessonCommentEntity[];
+    let query: ReadManyCommentQueryBaseDto;
+
+    beforeEach(() => {
+      param = new IdRequestParamDto();
+      lessonComments = [new LessonCommentEntity()];
+      query = new ReadManyCommentQueryBaseDto();
+
+      commentService.readManyComment.mockReturnValue(lessonComments);
+    });
+
+    it('success - check method called', async () => {
+      await lessonCommentController.readManyComment(param, query);
+
+      expect(commentService.readManyComment).toBeCalledTimes(1);
+      expect(commentService.readManyComment).toBeCalledWith(
+        ModelName.LessonComment,
+        { lessonId: param.id },
+        query,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await lessonCommentController.readManyComment(
+        param,
+        query,
+      );
+
+      expect(returnValue).toStrictEqual({ lessonComments });
     });
   });
 });
