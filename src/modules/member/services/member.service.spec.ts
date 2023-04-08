@@ -59,6 +59,21 @@ describe('MemberService', () => {
     expect(memberService).toBeDefined();
   });
 
+  describe('findOne', () => {
+    let member: MemberEntity;
+    let where: Prisma.MemberWhereInput;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+    });
+
+    it('존재 여부 관계없이 return 한다.', async () => {
+      mockPrismaService.member.findFirst.mockResolvedValue(member);
+
+      await expect(memberService.findOne(where)).resolves.toStrictEqual(member);
+    });
+  });
+
   describe('findOneOrFail', () => {
     let member: MemberEntity;
     let where: Prisma.MemberWhereInput;

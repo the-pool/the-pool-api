@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
@@ -97,7 +98,7 @@ describe('MemberController', () => {
 
     describe('로그인 하는 경우', () => {
       beforeEach(() => {
-        mockMemberService.findOneOrFail.mockReturnValue(member);
+        mockMemberService.findOne.mockReturnValue(member);
       });
 
       it('로그인 성공', async () => {
@@ -107,7 +108,7 @@ describe('MemberController', () => {
       });
 
       afterEach(() => {
-        expect(mockMemberService.findOneOrFail).toBeCalledTimes(1);
+        expect(mockMemberService.findOne).toBeCalledTimes(1);
         expect(mockMemberValidationService.canLoginOrFail).toBeCalledTimes(1);
       });
     });
@@ -115,7 +116,7 @@ describe('MemberController', () => {
     describe('회원가입 하는 경우', () => {
       beforeEach(() => {
         member = null;
-        mockMemberService.findOneOrFail.mockReturnValue(member);
+        mockMemberService.findOne.mockReturnValue(member);
       });
 
       it('회원가입 성공', async () => {
@@ -125,7 +126,7 @@ describe('MemberController', () => {
       });
 
       afterEach(() => {
-        expect(mockMemberService.findOneOrFail).toBeCalledTimes(1);
+        expect(mockMemberService.findOne).toBeCalledTimes(1);
       });
     });
   });
