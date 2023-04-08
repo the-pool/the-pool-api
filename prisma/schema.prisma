@@ -92,16 +92,17 @@ model Member {
   memberSkillMappings      MemberSkillMapping[]
   memberInterestMappings   MemberInterestMapping[]
   memberSocialLinkMappings MemberSocialLinkMapping[]
-  lessonSolutions          LessonSolution[]
   lessonComments           LessonComment[]
   lessonLevelEvaluations   LessonLevelEvaluation[]
   lessonBookmarks          LessonBookmark[]
   lessonLikes              LessonLike[]
   questions                Question[]
-  questionAnswers          QuestionAnswer[]
   questionLikes            QuestionLike[]
+  questionAnswers          QuestionAnswer[]
   questionAnswerLikes      QuestionAnswerLike[]
+  lessonSolutions          LessonSolution[]
   lessonSolutionComment    LessonSolutionComment[]
+  lessonSolutionLike       LessonSolutionLike[]
 }
 
 /// member 의 sns 주소
@@ -421,7 +422,25 @@ model LessonSolution {
   member                        Member                         @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lesson                        Lesson                         @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   lessonSolutionHashtagMappings LessonSolutionHashtagMapping[]
-  lessonSolutionComment         LessonSolutionComment[]
+  lessonSolutionComments         LessonSolutionComment[]
+  lessonSolutionLikes            LessonSolutionLike[]
+}
+
+/// 풀이 좋아요에 대한 테이블
+model LessonSolutionLike {
+  /// 고유 ID
+  id               Int      @id @default(autoincrement())
+  /// 풀이 좋아요를 누른 멤버 고유 ID
+  memberId         Int
+  /// 좋아요 눌린 풀이 고유 ID
+  lessonSolutionId Int
+  /// 생성일자
+  createdAt        DateTime @default(now()) @db.Timestamp(6)
+
+  member         Member         @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lessonSolution LessonSolution @relation(fields: [lessonSolutionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([lessonSolutionId, memberId])
 }
 
 model LessonSolutionHashtag {
