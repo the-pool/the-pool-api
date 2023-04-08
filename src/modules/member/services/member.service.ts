@@ -33,7 +33,19 @@ export class MemberService {
   ) {}
 
   /**
-   * member 단일 조회
+   * member 단일조회
+   */
+  findOne(where: Prisma.MemberWhereInput) {
+    return this.prismaService.member.findFirst({
+      where,
+      include: {
+        memberSocialLinkMappings: true,
+      },
+    });
+  }
+
+  /**
+   * member 단일 조회 없을 때 실패를 반환홤
    */
   async findOneOrFail(where: Prisma.MemberWhereInput): Promise<
     MemberEntity & {

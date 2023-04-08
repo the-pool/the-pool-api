@@ -114,7 +114,7 @@ export class MemberController {
     );
 
     // account 를 통해 member 가 있는지 조회한다.
-    const member = await this.memberService.findOneOrFail({
+    const member = await this.memberService.findOne({
       account,
     });
 
