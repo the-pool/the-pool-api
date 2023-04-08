@@ -1,4 +1,12 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
@@ -8,7 +16,17 @@ import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
 import { SolutionEntity } from '../entities/solution.entity';
 import { SolutionService } from '../services/solution.service';
-import { ApiCreateSolution } from './solution.controller.swagger';
+import {
+  ApiCreateSolution,
+  ApiReadManySolution,
+  ApiReadOneSolution,
+} from './solution.controller.swagger';
+import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { Member } from '@prisma/client';
+import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
+import { plainToClass } from 'class-transformer';
 
 @ApiTags('문제 - 풀이')
 @Controller()
@@ -25,5 +43,28 @@ export class SolutionController {
     @UserLogin('id') memberId: number,
   ): Promise<SolutionEntity> {
     return this.solutionService.createSolution(requestDto, memberId);
+  }
+
+  @ApiReadOneSolution('문제-풀이 상세 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Get(':id')
+  async readOneLesson(
+    @Param('id') solutionId: number,
+    @UserLogin() member: Member | { id: null },
+  ): Promise<{ solution: ReadOneSolutionEntity }> {
+    const readOneSolution = await this.solutionService.readOneSolution(
+      solutionId,
+      member.id,
+    );
+    const solution = plainToClass(ReadOneSolutionEntity, readOneSolution);
+    return { solution };
+  }
+
+  @ApiReadManySolution('문제-풀이 목록 조회')
+  @Get()
+  readManySolution(
+    @Query() query: ReadManySolutionRequestQueryDto,
+  ): Promise<{ solutions: SolutionEntity[]; totalCount: number }> {
+    return this.solutionService.readManySolution(query);
   }
 }
