@@ -107,17 +107,19 @@ model Member {
 /// member 의 sns 주소
 model MemberSocialLink {
   /// 고유 ID (1: etc, 2: 인스타그램, 3: 비헨스, 4: 노션, 5: 링크드인, 6: 깃허브)
-  id        Int       @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
+  /// sns 의 기본 주소
+  socialDomain String    @unique @db.VarChar()
   /// 소셜 명
-  name      String    @unique @db.VarChar()
+  name         String    @unique @db.VarChar()
   /// url
-  iconPath  String    @unique @db.Text()
+  iconPath     String    @unique @db.Text()
   /// 생성일자
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
-  updatedAt DateTime  @default(now()) @updatedAt @db.Timestamp(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
-  deletedAt DateTime? @db.Timestamp(6)
+  deletedAt    DateTime? @db.Timestamp(6)
 
   memberSocialLinkMappings MemberSocialLinkMapping[]
 }

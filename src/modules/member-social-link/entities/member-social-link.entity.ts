@@ -8,6 +8,12 @@ export class MemberSocialLinkEntity
   implements MemberSocialLink
 {
   @ApiProperty({
+    example: 'https://github.com',
+    description: 'sns 기본 주소',
+  })
+  socialDomain: string;
+
+  @ApiProperty({
     example: 'github',
     description: 'sns 이름',
   })

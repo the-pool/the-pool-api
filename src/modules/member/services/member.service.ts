@@ -9,17 +9,19 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
-import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
+import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
-import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
+import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '../dtos/create-member-major-skill-mapping-request-param.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
+import { MemberSocialLinkDto } from '../dtos/member-social-link.dto';
 import { MemberMajorMappingEntity } from '../entities/member-major-mapping.entity';
 import { MemberEntity } from '../entities/member.entity';
 
@@ -84,15 +86,46 @@ export class MemberService {
   /**
    * member patch update
    */
-  updateFromPatch(
+  async updateFromPatch(
     id: number,
-    data: PatchUpdateMemberRequestBodyDto,
-  ): Promise<MemberEntity> {
-    return this.prismaService.member.update({
-      data,
-      where: {
-        id,
+    member: Omit<PatchUpdateMemberRequestBodyDto, 'memberSocialLinks'>,
+    memberSocialLinks: MemberSocialLinkDto[] = [],
+  ): Promise<
+    MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
+  > {
+    const memberSocialLinkMappings = memberSocialLinks.map(
+      (memberSocialLink) => {
+        return {
+          memberId: id,
+          memberSocialLinkId: memberSocialLink.type,
+          url: memberSocialLink.url,
+        };
       },
+    );
+
+    return this.prismaService.$transaction(async (tr) => {
+      if (memberSocialLinkMappings.length) {
+        await tr.memberSocialLinkMapping.deleteMany({
+          where: {
+            memberId: id,
+          },
+        });
+
+        await tr.memberSocialLinkMapping.createMany({
+          data: memberSocialLinkMappings,
+          skipDuplicates: true,
+        });
+      }
+
+      return tr.member.update({
+        data: member,
+        where: {
+          id,
+        },
+        include: {
+          memberSocialLinkMappings: true,
+        },
+      });
     });
   }
 

@@ -37,19 +37,20 @@ import {
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
-  ApiMappingMemberSkills,
-  ApiUnmappingMemberSkills,
   ApiMappingMemberInterests,
+  ApiMappingMemberSkills,
   ApiUnmappingMemberInterests,
+  ApiUnmappingMemberSkills,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
-import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
@@ -140,19 +141,27 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
-    @UserLogin() member: MemberEntity,
+    @UserLogin() oldMember: MemberEntity,
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,
-  ): Promise<MemberEntity> {
+  ): Promise<
+    MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
+  > {
+    const { memberSocialLinks, ...newMember } = body;
+
     await this.memberValidationService.canUpdateFromPatchOrFail(
       params.id,
-      body,
-      member,
+      newMember,
+      oldMember,
     );
 
-    return this.memberService.updateFromPatch(params.id, body);
+    return this.memberService.updateFromPatch(
+      params.id,
+      newMember,
+      memberSocialLinks,
+    );
   }
 
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')

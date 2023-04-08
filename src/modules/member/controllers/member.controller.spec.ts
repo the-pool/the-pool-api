@@ -9,6 +9,7 @@ import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/membe
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import {
@@ -56,7 +57,6 @@ describe('MemberController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // jest.clearAllTimers();
   });
 
   it('should be defined', () => {
@@ -128,6 +128,42 @@ describe('MemberController', () => {
       afterEach(() => {
         expect(mockMemberService.findOne).toBeCalledTimes(1);
       });
+    });
+  });
+
+  describe('updateFromPatch', () => {
+    let oldMember: MemberEntity;
+    let params: IdRequestParamDto;
+    let body: PatchUpdateMemberRequestBodyDto;
+    let newMember: MemberEntity;
+
+    beforeEach(() => {
+      oldMember = new MemberEntity();
+      params = new IdRequestParamDto();
+      body = new PatchUpdateMemberRequestBodyDto();
+      newMember = new MemberEntity();
+    });
+
+    it('업데이트 불가능한 유저', async () => {
+      mockMemberValidationService.canUpdateFromPatchOrFail.mockImplementationOnce(
+        () => {
+          throw new Error();
+        },
+      );
+
+      await expect(
+        memberController.updateFromPatch(oldMember, params, body),
+      ).rejects.toThrowError();
+      expect(mockMemberService.updateFromPatch).toBeCalledTimes(0);
+    });
+
+    it('업데이트 가능한 유저', async () => {
+      mockMemberService.updateFromPatch.mockResolvedValue(newMember);
+
+      await expect(
+        memberController.updateFromPatch(oldMember, params, body),
+      ).resolves.toStrictEqual(newMember);
+      expect(mockMemberService.updateFromPatch).toBeCalledTimes(1);
     });
   });
 
