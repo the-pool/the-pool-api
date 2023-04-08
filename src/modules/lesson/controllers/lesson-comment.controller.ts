@@ -42,7 +42,10 @@ export class LessonCommentController {
   ) {}
 
   @ApiCreateComment('과제 댓글 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'increment')
+  @IncreaseMemberStatisticsSetMetadataInterceptor(
+    'lessonCommentCount',
+    'increment',
+  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -68,7 +71,10 @@ export class LessonCommentController {
   }
 
   @ApiDeleteComment('과제 댓글 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('commentCount', 'decrement')
+  @IncreaseMemberStatisticsSetMetadataInterceptor(
+    'lessonCommentCount',
+    'decrement',
+  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':commentId')

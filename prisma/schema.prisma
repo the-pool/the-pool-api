@@ -197,23 +197,25 @@ model MemberInterestMapping {
 /// 멤버 활동 모델
 model MemberStatistics {
   /// member 고유 ID
-  memberId       Int  @id @unique
+  memberId             Int  @id @unique
   /// 문제 출제 개수
-  lessonCount    Int  @default(0)
+  lessonCount          Int  @default(0)
+  /// 문제 출제 댓글 개수
+  lessonCommentCount   Int  @default(0)
   /// 문제-해결 개수
-  solutionCount  Int  @default(0)
+  solutionCount        Int  @default(0)
+  /// 문제-해결 댓글 개수
+  solutionCommentCount Int  @default(0)
   /// 피드백 한 총 개수
-  feedbackCount  Int  @default(0)
-  /// 질문 개수
-  commentCount   Int  @default(0)
+  feedbackCount        Int  @default(0)
   /// 팔로워 개수
-  followerCount  Int  @default(0)
+  followerCount        Int  @default(0)
   /// 팔로윙 개수
-  followingCount Int  @default(0)
+  followingCount       Int  @default(0)
   /// 랭킹
-  rank           Int?
+  rank                 Int?
   /// 포인트
-  point          Int  @default(0)
+  point                Int  @default(0)
 
   member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
