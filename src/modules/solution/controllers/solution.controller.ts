@@ -9,6 +9,7 @@ import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-bo
 import { SolutionEntity } from '../entities/solution.entity';
 import { SolutionService } from '../services/solution.service';
 import { ApiCreateSolution } from './solution.controller.swagger';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 
 @ApiTags('문제 - 풀이')
 @Controller()
@@ -18,7 +19,7 @@ export class SolutionController {
   @ApiCreateSolution('문제 - 풀이 생성')
   @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
-  @UseGuards(JwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Post()
   createSolution(
     @Body() requestDto: CreateSolutionRequestBodyDto,
