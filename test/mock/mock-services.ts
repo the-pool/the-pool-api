@@ -31,6 +31,7 @@ export const mockJwtService = {
 
 export const mockMemberService: MockClassType<MemberService> = {
   findOne: jest.fn(),
+  findLessonSolutionStatisticsById: jest.fn(),
   findOneOrFail: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
@@ -131,6 +132,7 @@ export const mockQuestionService: MockClassType<QuestionService> = {
 };
 
 export const mockSolutionService: MockClassType<SolutionService> = {
+  findStatisticsByMemberId: jest.fn(),
   createSolution: jest.fn(),
 };
 

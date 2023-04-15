@@ -74,7 +74,7 @@ export class MemberService {
   /**
    * member 과제 통계 조회
    */
-  async findLessonStatistics(
+  async findLessonSolutionStatisticsById(
     memberId: number,
   ): Promise<LessonSolutionStatisticsResponseBodyDto> {
     return this.solutionService.findStatisticsByMemberId(memberId);

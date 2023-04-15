@@ -32,7 +32,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
-  ApiFindLessonStatistics,
+  ApiFindLessonSolutionStatistics,
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
@@ -99,15 +99,15 @@ export class MemberController {
     });
   }
 
-  @ApiFindLessonStatistics('member 의 과제 통계')
+  @ApiFindLessonSolutionStatistics('member 의 과제 통계')
   @Get(':id/lesson-solution-statistics')
-  async findLessonStatistics(
+  async findLessonSolutionStatistics(
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
   ): Promise<LessonSolutionStatisticsResponseBodyDto> {
     const lessonSolutionStatisticsResponseBodyDto =
-      await this.memberService.findLessonStatistics(params.id);
+      await this.memberService.findLessonSolutionStatisticsById(params.id);
 
     return new LessonSolutionStatisticsResponseBodyDto(
       lessonSolutionStatisticsResponseBodyDto,

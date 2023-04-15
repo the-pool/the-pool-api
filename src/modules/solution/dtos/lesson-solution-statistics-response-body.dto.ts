@@ -3,16 +3,16 @@ import { Exclude, Expose } from 'class-transformer';
 
 export class LessonSolutionStatisticsResponseBodyDto {
   @Exclude()
-  total_day: BigInteger;
+  total_day: bigint;
 
   @Exclude()
-  specific_month_day: BigInteger;
+  specific_month_day: bigint;
 
   @Exclude()
-  total_count: BigInteger;
+  total_count: bigint;
 
   @Exclude()
-  specific_month_count: BigInteger;
+  specific_month_count: bigint;
 
   constructor(partial?: Partial<LessonSolutionStatisticsResponseBodyDto>) {
     Object.assign(this, partial || {});

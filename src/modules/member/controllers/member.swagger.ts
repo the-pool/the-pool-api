@@ -47,7 +47,7 @@ export const ApiFindOne = (summary: string) => {
   );
 };
 
-export const ApiFindLessonStatistics = (summary: string) => {
+export const ApiFindLessonSolutionStatistics = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiOkResponse({
