@@ -5,7 +5,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Member, Prisma } from '@prisma/client';
-import { CommonHelper } from '@src/helpers/common.helper';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
@@ -34,7 +33,6 @@ export class MemberService {
     private readonly solutionService: SolutionService,
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
-    private readonly commonHelper: CommonHelper,
   ) {}
 
   /**

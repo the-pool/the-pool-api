@@ -4,7 +4,6 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { CommonHelper } from '@src/helpers/common.helper';
 import { UseDevelopmentMiddleware } from '@src/middlewares/use-development.middleware';
 import { IsMemberSocialLinkConstraint } from '@src/modules/member/decorators/is-member-social-link.decorator';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
@@ -22,7 +21,6 @@ import { MemberService } from './services/member.service';
     MemberService,
     MemberValidationService,
     IsMemberSocialLinkConstraint,
-    CommonHelper,
   ],
 })
 export class MemberModule implements NestModule {
