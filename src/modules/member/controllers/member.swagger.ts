@@ -45,6 +45,14 @@ export const ApiFindOne = (summary: string) => {
   );
 };
 
+export const ApiFindLessonStatistics = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiSuccessResponse(HttpStatus.OK, {}),
+    ApiFailureResponse(HttpStatus.BAD_REQUEST, []),
+  );
+};
+
 export const ApiLoginOrSignUp = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),

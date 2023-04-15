@@ -53,6 +53,7 @@ import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
@@ -95,6 +96,20 @@ export class MemberController {
     return this.memberService.findOneOrFail({
       id,
     });
+  }
+
+  @Get(':id/lesson-statistics')
+  async findLessonStatistics(
+    @SetModelNameToParam(ModelName.Member)
+    @Param()
+    params: IdRequestParamDto,
+  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
+    const lessonSolutionStatisticsResponseBodyDto =
+      await this.memberService.findLessonStatistics(params.id);
+
+    return new LessonSolutionStatisticsResponseBodyDto(
+      lessonSolutionStatisticsResponseBodyDto,
+    );
   }
 
   /**

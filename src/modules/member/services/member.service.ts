@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Member, Prisma } from '@prisma/client';
+import { CommonHelper } from '@src/helpers/common.helper';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
@@ -18,6 +19,8 @@ import { MemberInterestMappingEntity } from '@src/modules/member/entities/member
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '../dtos/create-member-major-skill-mapping-request-param.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
@@ -28,8 +31,10 @@ import { MemberEntity } from '../entities/member.entity';
 @Injectable()
 export class MemberService {
   constructor(
+    private readonly solutionService: SolutionService,
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
+    private readonly commonHelper: CommonHelper,
   ) {}
 
   /**
@@ -64,6 +69,15 @@ export class MemberService {
     }
 
     return member;
+  }
+
+  /**
+   * member 과제 통계 조회
+   */
+  async findLessonStatistics(
+    memberId: number,
+  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
+    return this.solutionService.findStatisticsByMemberId(memberId);
   }
 
   /**
