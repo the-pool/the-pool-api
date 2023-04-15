@@ -20,6 +20,7 @@ export class LessonSolutionStatisticsResponseBodyDto {
 
   @ApiProperty({
     description: '멤버의 풀이를 한 전체 일',
+    minimum: 0,
   })
   @Expose()
   get totalDay(): number {
@@ -29,12 +30,14 @@ export class LessonSolutionStatisticsResponseBodyDto {
   @Expose()
   @ApiProperty({
     description: '멤버의 이번달 풀이를 한 일',
+    minimum: 0,
   })
   get specificMonthDay(): number {
     return Number(this.specific_month_day);
   }
   @ApiProperty({
     description: '멤버의 전체 풀이 개수',
+    minimum: 0,
   })
   @Expose()
   get totalCount(): number {
@@ -42,6 +45,7 @@ export class LessonSolutionStatisticsResponseBodyDto {
   }
   @ApiProperty({
     description: '멤버의 이번달 풀이 개수',
+    minimum: 0,
   })
   @Expose()
   get specificMonthCount(): number {

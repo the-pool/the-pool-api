@@ -32,6 +32,7 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
+  ApiFindLessonStatistics,
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
@@ -98,7 +99,8 @@ export class MemberController {
     });
   }
 
-  @Get(':id/lesson-statistics')
+  @ApiFindLessonStatistics('member 의 과제 통계')
+  @Get(':id/lesson-solution-statistics')
   async findLessonStatistics(
     @SetModelNameToParam(ModelName.Member)
     @Param()
