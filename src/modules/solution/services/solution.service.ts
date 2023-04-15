@@ -66,8 +66,6 @@ export class SolutionService {
       [sortBy]: settledOrderBy,
     });
 
-    console.log('과연');
-
     // promise 한 lesson 목록
     const readManyLessonQuery: PrismaPromise<ReadManySolutionEntity[]> =
       this.prismaService.lessonSolution.findMany({
