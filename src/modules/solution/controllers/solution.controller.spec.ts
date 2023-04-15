@@ -11,10 +11,15 @@ import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-bo
 import { SolutionEntity } from '../entities/solution.entity';
 import { SolutionService } from '../services/solution.service';
 import { SolutionController } from './solution.controller';
+import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
+import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
+import { ReadManySolutionEntity } from '../entities/read-many-solution.entity';
+import { LessonService } from '@src/modules/lesson/services/lesson.service';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
   let solutionService;
+  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,6 +42,7 @@ describe('SolutionController', () => {
 
     solutionController = module.get<SolutionController>(SolutionController);
     solutionService = mockSolutionService;
+    prismaService = mockPrismaService;
   });
 
   afterEach(() => {
@@ -71,6 +77,62 @@ describe('SolutionController', () => {
 
       expect(solutionService.createSolution).toBeCalledTimes(1);
       expect(result).toStrictEqual(solutionEntity);
+    });
+  });
+
+  describe('readOneSolution', () => {
+    let solutionId: number;
+    let member: any;
+    let readOneSolution: ReadOneSolutionEntity;
+
+    beforeEach(() => {
+      readOneSolution = new ReadOneSolutionEntity();
+      solutionId = faker.datatype.number();
+      member = {
+        id: faker.datatype.number(),
+      };
+
+      solutionService.readOneSolution.mockReturnValue(readOneSolution);
+    });
+
+    it('SUCCESS - read solution', async () => {
+      const result = await solutionController.readOneSolution(
+        solutionId,
+        member,
+      );
+
+      expect(solutionService.readOneSolution).toBeCalledTimes(1);
+      expect(solutionService.readOneSolution).toBeCalledWith(
+        solutionId,
+        member.id,
+      );
+      expect(result).toStrictEqual({ solution: readOneSolution });
+    });
+  });
+
+  describe('readManySolution', () => {
+    let query: ReadManySolutionRequestQueryDto;
+    let readManySolution: {
+      solutions: ReadManySolutionEntity[];
+      totoalCount: number;
+    };
+
+    beforeEach(() => {
+      query = new ReadManySolutionRequestQueryDto();
+      readManySolution = {
+        solutions: [new ReadManySolutionEntity()],
+        totoalCount: faker.datatype.number(),
+      };
+
+      solutionService.readManySolution.mockReturnValue(readManySolution);
+    });
+
+    it('SUCCESS - read many solution', () => {
+      const result = solutionController.readManySolution(query);
+
+      expect(solutionService.readManySolution).toBeCalledTimes(1);
+      expect(solutionService.readManySolution).toBeCalledWith(query);
+      expect(result).toStrictEqual(readManySolution);
     });
   });
 });
