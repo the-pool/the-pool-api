@@ -186,15 +186,21 @@ describe('LessonCommentController', () => {
 
   describe('readManyComment', () => {
     let param: IdRequestParamDto;
-    let lessonComments: LessonCommentEntity[];
+    let readManyComment: {
+      comments: LessonCommentEntity[];
+      totalCount: number;
+    };
     let query: ReadManyCommentQueryBaseDto;
 
     beforeEach(() => {
       param = new IdRequestParamDto();
-      lessonComments = [new LessonCommentEntity()];
+      readManyComment = {
+        comments: [new LessonCommentEntity()],
+        totalCount: faker.datatype.number(),
+      };
       query = new ReadManyCommentQueryBaseDto();
 
-      commentService.readManyComment.mockReturnValue(lessonComments);
+      commentService.readManyComment.mockReturnValue(readManyComment);
     });
 
     it('success - check method called', async () => {
@@ -214,7 +220,10 @@ describe('LessonCommentController', () => {
         query,
       );
 
-      expect(returnValue).toStrictEqual({ lessonComments });
+      expect(returnValue).toStrictEqual({
+        lessonComments: readManyComment.comments,
+        totalCount: readManyComment.totalCount,
+      });
     });
   });
 });
