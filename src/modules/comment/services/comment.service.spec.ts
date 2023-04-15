@@ -180,11 +180,13 @@ describe('CommentService', () => {
     let totalCountQuery: Promise<number>;
 
     beforeEach(() => {
-      readManyCommentQuery = new Promise((resolve) => [
-        new CommentBaseEntity(),
-      ]);
+      readManyCommentQuery = new Promise((resolve) => {
+        resolve([new CommentBaseEntity()]);
+      });
       query = new ReadManyCommentQueryBaseDto();
-      totalCountQuery = new Promise((resolve) => faker.datatype.number());
+      totalCountQuery = new Promise((resolve) =>
+        resolve(faker.datatype.number()),
+      );
     });
 
     describe('each model test', () => {
