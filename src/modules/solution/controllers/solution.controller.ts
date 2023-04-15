@@ -36,7 +36,7 @@ export class SolutionController {
   @ApiCreateSolution('문제 - 풀이 생성')
   @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
-  @UseGuards(JwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Post()
   createSolution(
     @Body() requestDto: CreateSolutionRequestBodyDto,
@@ -48,7 +48,7 @@ export class SolutionController {
   @ApiReadOneSolution('문제-풀이 상세 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
-  async readOneLesson(
+  async readOneSolution(
     @Param('id') solutionId: number,
     @UserLogin() member: Member | { id: null },
   ): Promise<{ solution: ReadOneSolutionEntity }> {
