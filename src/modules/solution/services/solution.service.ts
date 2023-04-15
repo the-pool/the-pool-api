@@ -8,8 +8,8 @@ import { SolutionEntity } from '../entities/solution.entity';
 @Injectable()
 export class SolutionService {
   constructor(
-    private readonly lessonSolutionRepository: LessonSolutionRepository,
     private readonly prismaService: PrismaService,
+    private readonly lessonSolutionRepository: LessonSolutionRepository,
   ) {}
 
   createSolution(
