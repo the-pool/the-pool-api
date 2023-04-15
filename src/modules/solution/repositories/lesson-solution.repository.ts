@@ -6,8 +6,8 @@ import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/d
 export class LessonSolutionRepository extends PrismaService {
   findStatisticsByMemberId(
     memberId: number,
-  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
-    return this.$queryRaw<LessonSolutionStatisticsResponseBodyDto>`
+  ): Promise<LessonSolutionStatisticsResponseBodyDto[]> {
+    return this.$queryRaw<LessonSolutionStatisticsResponseBodyDto[]>`
     select
       SUM (
         case
