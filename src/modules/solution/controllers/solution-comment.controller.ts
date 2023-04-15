@@ -136,17 +136,20 @@ export class SolutionCommentController {
     @SetModelNameToParam(ModelName.LessonSolution)
     param: IdRequestParamDto,
     @Query() query: ReadManyCommentQueryBaseDto,
-  ): Promise<{ solutionComments: SolutionCommentEntity[] }> {
+  ): Promise<{
+    solutionComments: SolutionCommentEntity[];
+    totalCount: number;
+  }> {
     const lessonSolutionIdColumn = {
       lessonSolutionId: param.id,
     };
 
-    const solutionComments = await this.commentService.readManyComment(
+    const { comments, totalCount } = await this.commentService.readManyComment(
       ModelName.LessonSolutionComment,
       lessonSolutionIdColumn,
       query,
     );
 
-    return { solutionComments };
+    return { solutionComments: comments, totalCount };
   }
 }

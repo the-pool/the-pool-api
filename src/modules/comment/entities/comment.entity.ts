@@ -1,4 +1,6 @@
-import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, getSchemaPath } from '@nestjs/swagger';
+import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
@@ -18,4 +20,19 @@ export class CommentBaseEntity extends IntersectionType(
     example: 1,
   })
   memberId: number;
+
+  @ApiProperty({
+    description: '댓글을 작성한 멤버의 엔티티',
+    allOf: [
+      {
+        $ref: getSchemaPath(MemberEntity),
+        properties: {
+          major: {
+            $ref: getSchemaPath(MajorEntityV2),
+          },
+        },
+      },
+    ],
+  })
+  member: MemberEntity & { major: MajorEntityV2 };
 }
