@@ -33,6 +33,9 @@ import {
   ApiReadOneLesson,
   ApiUpdateLesson,
 } from '../swaggers/lesson.swagger';
+import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 
 @ApiTags('과제')
 @Controller()
@@ -43,6 +46,8 @@ export class LessonController {
   ) {}
 
   @ApiCreateLesson('과제 생성')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'increment')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
   async createLesson(
@@ -81,6 +86,8 @@ export class LessonController {
   }
 
   @ApiDeleteLesson('과제 삭제')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'decrement')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
   async deleteLesson(
@@ -111,6 +118,8 @@ export class LessonController {
       member.id,
     );
     const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
+
+    await this.lessonService.increaseLessonHit(param.id);
 
     return { lesson };
   }

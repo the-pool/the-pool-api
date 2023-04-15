@@ -21,7 +21,7 @@ export class CreateSolutionRequestBodyDto extends PickType(SolutionEntity, [
   'description',
   'relatedLink',
 ]) {
-  @IsRecord<Lesson>({ model: 'lesson', field: 'id' }, false)
+  @IsRecord<Lesson>({ model: 'lesson', field: 'id' }, true)
   @IsInt()
   @Min(1)
   @IsNotEmpty()

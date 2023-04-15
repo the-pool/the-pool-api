@@ -72,7 +72,8 @@ export type PrismaModel =
   | LessonHashtagMapping
   | LessonComment
   | MemberSkill
-  | LessonComment;
+  | LessonComment
+  | LessonSolutionComment;
 
 export type Target<M extends PrismaModel = PrismaModel> = {
   model?: PrismaModelName;
