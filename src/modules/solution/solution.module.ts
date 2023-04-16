@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
-import { JwtStrategy } from '../core/auth/jwt/jwt.strategy';
+import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
+import { CommentService } from '../comment/services/comment.service';
 import { PrismaService } from '../core/database/prisma/prisma.service';
 import { NotificationModule } from '../core/notification/notification.module';
+import { SolutionCommentController } from './controllers/solution-comment.controller';
 import { SolutionHashtagController } from './controllers/solution-hashtag.controller';
-import { NotificationService } from '../core/notification/services/notification.service';
 import { SolutionController } from './controllers/solution.controller';
 import { SolutionHashtagService } from './services/solution-hashtag.service';
 import { SolutionService } from './services/solution.service';
-import { CommentService } from '../comment/services/comment.service';
-import { SolutionCommentController } from './controllers/solution-comment.controller';
 
 @Module({
   imports: [
@@ -21,11 +20,13 @@ import { SolutionCommentController } from './controllers/solution-comment.contro
     PrismaService,
     SolutionService,
     SolutionHashtagService,
+    LessonSolutionRepository,
   ],
   controllers: [
     SolutionController,
     SolutionHashtagController,
     SolutionCommentController,
   ],
+  exports: [SolutionService],
 })
 export class SolutionModule {}

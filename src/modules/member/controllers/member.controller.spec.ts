@@ -12,6 +12,7 @@ import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-s
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import {
   mockAuthService,
   mockConfigService,
@@ -81,6 +82,35 @@ describe('MemberController', () => {
         id,
       });
       expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('findLessonSolutionStatistics', () => {
+    let lessonSolutionStatisticsResponseBodyDto: LessonSolutionStatisticsResponseBodyDto;
+    let param: IdRequestParamDto;
+
+    beforeEach(() => {
+      lessonSolutionStatisticsResponseBodyDto = {
+        specific_month_day: BigInt(1),
+        total_count: BigInt(1),
+        total_day: BigInt(1),
+        specific_month_count: BigInt(1),
+      } as LessonSolutionStatisticsResponseBodyDto;
+      param = new IdRequestParamDto();
+    });
+
+    it('조회 성공', async () => {
+      mockMemberService.findLessonSolutionStatisticsById.mockResolvedValue(
+        lessonSolutionStatisticsResponseBodyDto,
+      );
+
+      await expect(
+        memberController.findLessonSolutionStatistics(param),
+      ).resolves.toStrictEqual(
+        new LessonSolutionStatisticsResponseBodyDto(
+          lessonSolutionStatisticsResponseBodyDto,
+        ),
+      );
     });
   });
 

@@ -3,6 +3,7 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   getSchemaPath,
@@ -12,6 +13,7 @@ import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorat
 import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 
 export const ApiGetAccessTokenForDevelop = (summary: string) => {
   return applyDecorators(
@@ -42,6 +44,15 @@ export const ApiFindOne = (summary: string) => {
       },
     }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, '존재하지 않는 member 입니다.'),
+  );
+};
+
+export const ApiFindLessonSolutionStatistics = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiOkResponse({
+      type: LessonSolutionStatisticsResponseBodyDto,
+    }),
   );
 };
 

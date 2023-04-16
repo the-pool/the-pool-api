@@ -18,6 +18,8 @@ import { MemberInterestMappingEntity } from '@src/modules/member/entities/member
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { AccessToken } from '@src/modules/member/types/member.type';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '../dtos/create-member-major-skill-mapping-request-param.dto';
 import { LastStepLoginDto } from '../dtos/last-step-login.dto';
@@ -28,6 +30,7 @@ import { MemberEntity } from '../entities/member.entity';
 @Injectable()
 export class MemberService {
   constructor(
+    private readonly solutionService: SolutionService,
     private readonly prismaService: PrismaService,
     private readonly authService: AuthService,
   ) {}
@@ -64,6 +67,15 @@ export class MemberService {
     }
 
     return member;
+  }
+
+  /**
+   * member 과제 통계 조회
+   */
+  async findLessonSolutionStatisticsById(
+    memberId: number,
+  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
+    return this.solutionService.findStatisticsByMemberId(memberId);
   }
 
   /**

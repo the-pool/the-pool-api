@@ -20,8 +20,13 @@ import { MemberInterestMappingEntity } from '@src/modules/member/entities/member
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockAuthService } from '../../../../test/mock/mock-services';
+import {
+  mockAuthService,
+  mockSolutionService,
+} from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
 import { MemberService } from './member.service';
@@ -35,6 +40,10 @@ describe('MemberService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MemberService,
+        {
+          provide: SolutionService,
+          useValue: mockSolutionService,
+        },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -100,6 +109,31 @@ describe('MemberService', () => {
         },
       });
       expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('findLessonSolutionStatisticsById', () => {
+    let memberId: number;
+    let lessonSolutionStatisticsResponseBodyDto: LessonSolutionStatisticsResponseBodyDto;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      lessonSolutionStatisticsResponseBodyDto = {
+        specific_month_day: BigInt(1),
+        total_count: BigInt(1),
+        total_day: BigInt(1),
+        specific_month_count: BigInt(1),
+      } as LessonSolutionStatisticsResponseBodyDto;
+    });
+
+    it('조회 성공', async () => {
+      mockSolutionService.findStatisticsByMemberId.mockResolvedValue(
+        lessonSolutionStatisticsResponseBodyDto,
+      );
+
+      await expect(
+        memberService.findLessonSolutionStatisticsById(memberId),
+      ).resolves.toStrictEqual(lessonSolutionStatisticsResponseBodyDto);
     });
   });
 
