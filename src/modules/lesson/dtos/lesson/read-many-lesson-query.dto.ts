@@ -1,5 +1,5 @@
 import { ApiPropertyOptional, PickType } from '@nestjs/swagger';
-import { LessonCategory } from '@prisma/client';
+import { LessonCategory, Member } from '@prisma/client';
 import { getStrMapByEnum, getValueByEnum } from '@src/common/common';
 import {
   EntityDate,
@@ -33,6 +33,16 @@ export class ReadManyLessonQueryDto extends PickType(LessonDto, [
   categoryId?: number;
 
   @ApiPropertyOptional({
+    description: 'memberId 필터링',
+  })
+  @IsRecord<Member>({ model: ModelName.Member, field: 'id' }, true)
+  @Min(1)
+  @IsInt()
+  @Type(() => Number)
+  @IsOptional()
+  memberId?: number;
+
+  @ApiPropertyOptional({
     description: '과제 목록의 정렬에 사용될 필드',
     enum: getValueByEnum(
       {
@@ -49,5 +59,5 @@ export class ReadManyLessonQueryDto extends PickType(LessonDto, [
     [EntityDate.CreatedAt]: EntityDate.CreatedAt,
   })
   @IsOptional()
-  sortBy: string = 'id';
+  sortBy = 'id';
 }

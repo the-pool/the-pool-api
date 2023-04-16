@@ -81,7 +81,7 @@ export const getNumberEnumValues = (numberEnum: {
 };
 
 export const getStrMapByEnum = (Enum) => {
-  const map = getEntriesByEnum<typeof Enum>(Enum);
+  const map = getEntriesByEnum<typeof Enum>(Enum)[0];
   let mapStr = '{ ';
 
   for (const key in map) {
