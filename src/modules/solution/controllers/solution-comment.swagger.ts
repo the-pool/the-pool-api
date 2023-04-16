@@ -74,8 +74,12 @@ export const ApiReadManyComment = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiExtraModels(SolutionCommentEntity),
-    ApiSuccessResponse(HttpStatus.OK, {
-      solutionComments: { type: SolutionCommentEntity, isArray: true },
-    }),
+    ApiSuccessResponse(
+      HttpStatus.OK,
+      {
+        solutionComments: { type: SolutionCommentEntity, isArray: true },
+      },
+      { totalCount: { type: 'number' } },
+    ),
   );
 };

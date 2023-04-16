@@ -386,8 +386,8 @@ model LessonComment {
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
 
-  Member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  Lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model LessonCategory {

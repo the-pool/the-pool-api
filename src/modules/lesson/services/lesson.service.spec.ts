@@ -18,7 +18,6 @@ import { LessonService } from './lesson.service';
 describe('LessonService', () => {
   let lessonService: LessonService;
   let prismaService;
-  let lessonRepository;
   let queryHelper;
 
   beforeEach(async () => {

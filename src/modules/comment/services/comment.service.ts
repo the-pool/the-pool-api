@@ -6,6 +6,7 @@ import {
   PrismaCommentParentIdColumn,
 } from '@src/types/type';
 import { ReadManyCommentQueryBaseDto } from '../dtos/read-many-comment-query-base.dto';
+import { PrismaPromise } from '@prisma/client';
 
 @Injectable()
 export class CommentService {
@@ -21,6 +22,13 @@ export class CommentService {
     return this.prismaService[commentModel].create({
       // @ts-ignore
       data: { memberId, ...parentIdColumn, description },
+      include: {
+        member: {
+          include: {
+            major: true,
+          },
+        },
+      },
     });
   }
 
@@ -31,6 +39,13 @@ export class CommentService {
     // @ts-ignore
     return this.prismaService[commentModel].delete({
       where: { id: commentId },
+      include: {
+        member: {
+          include: {
+            major: true,
+          },
+        },
+      },
     });
   }
 
@@ -47,21 +62,49 @@ export class CommentService {
       data: {
         description,
       },
+      include: {
+        member: {
+          include: {
+            major: true,
+          },
+        },
+      },
     });
   }
 
-  readManyComment<T extends PrismaCommentModelName>(
+  async readManyComment<T extends PrismaCommentModelName>(
     commentModel: T,
     parentIdColumn: Partial<PrismaCommentParentIdColumn>,
     query: ReadManyCommentQueryBaseDto,
-  ): Promise<PrismaCommentModelMapper[T][]> {
+  ): Promise<{ comments: PrismaCommentModelMapper[T][]; totalCount: number }> {
     const { page, pageSize, orderBy } = query;
-    // @ts-ignore
-    return this.prismaService[commentModel].findMany({
-      where: parentIdColumn,
-      orderBy: { id: orderBy },
-      skip: page * pageSize,
-      take: pageSize,
-    });
+
+    const readManyCommentQuery: PrismaPromise<PrismaCommentModelMapper[T][]> =
+      // @ts-ignore
+      this.prismaService[commentModel].findMany({
+        include: {
+          member: {
+            include: { major: true },
+          },
+        },
+        where: parentIdColumn,
+        orderBy: { id: orderBy },
+        skip: page * pageSize,
+        take: pageSize,
+      });
+
+    const totalCountQuery: PrismaPromise<number> =
+      // @ts-ignore
+      this.prismaService[commentModel].count({
+        where: parentIdColumn,
+        orderBy: { id: orderBy },
+      });
+
+    const [comments, totalCount] = await this.prismaService.$transaction([
+      readManyCommentQuery,
+      totalCountQuery,
+    ]);
+
+    return { comments, totalCount };
   }
 }
