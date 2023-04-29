@@ -462,7 +462,7 @@ model LessonSolutionComment {
   /// 문제-풀이 고유 ID
   lessonSolutionId Int
   /// 댓글 설명
-  description      String    @db.Text()
+  description      String         @db.Text()
   /// 생성일자
   createdAt        DateTime       @default(now()) @db.Timestamp(6)
   /// 수정일자
