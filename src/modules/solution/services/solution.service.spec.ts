@@ -16,6 +16,7 @@ import { ReadManySolutionEntity } from '../entities/read-many-solution.entity';
 import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
 import { SolutionVirtualColumn } from '../constants/solution.enum';
 import { EntityId } from '@src/constants/enum';
+import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -76,6 +77,50 @@ describe('SolutionService', () => {
     });
   });
 
+  /// UPDATE Solution
+  describe('UPDATE Solution', () => {
+    let memberId: number | null;
+    let solutionId: number;
+    let updateRequestDto: UpdateSolutionRequestBodyDto;
+    let updatedSolution: SolutionEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      solutionId = faker.datatype.number();
+      updateRequestDto = new UpdateSolutionRequestBodyDto();
+      updatedSolution = new SolutionEntity();
+
+      prismaService.lessonSolution.update.mockResolvedValue(updatedSolution);
+    });
+
+    it('SUCCESS - Solution Created', () => {
+      expect(
+        solutionService.updateSolution(updateRequestDto, solutionId),
+      ).resolves.toStrictEqual(updatedSolution);
+      expect(prismaService.lessonSolution.update).toBeCalledTimes(1);
+    });
+  });
+
+  /// DELETE Solution
+  describe('DELETE Solution', () => {
+    let solutionId: number;
+    let deletedSolution: SolutionEntity;
+
+    beforeEach(() => {
+      solutionId = faker.datatype.number();
+      deletedSolution = new SolutionEntity();
+
+      prismaService.lessonSolution.delete.mockResolvedValue(deletedSolution);
+    });
+
+    it('SUCCESS - Soultion Delete', () => {
+      expect(solutionService.deleteSolution(solutionId)).resolves.toStrictEqual(
+        deletedSolution,
+      );
+      expect(prismaService.lessonSolution.delete).toBeCalledTimes(1);
+    });
+  });
+
   /// GET Solution  One
   describe('GET Solution One', () => {
     let memberId: number | null;
@@ -88,28 +133,26 @@ describe('SolutionService', () => {
       solution = new ReadOneSolutionEntity();
       delete solution.isLike;
 
-      prismaService.lessonSolution.findFirst.mockReturnValue(solution);
+      prismaService.lessonSolution.findFirst.mockResolvedValue(solution);
     });
 
     it('SUCCESS - memberId is Null', () => {
       delete solution.lessonSolutionLikes;
-      prismaService.lessonSolution.findFirst.mockReturnValue(solution);
+      prismaService.lessonSolution.findFirst.mockResolvedValue(solution);
 
-      const result = solutionService.readOneSolution(solutionId, null);
-      const includeOption = {
-        member: true,
-      };
-
-      expect(prismaService.lessonSolution.findFirst).toBeCalledTimes(1);
+      expect(
+        solutionService.readOneSolution(solutionId, null),
+      ).resolves.toStrictEqual(solution);
       expect(prismaService.lessonSolution.findFirst).toBeCalledWith({
         where: { id: solutionId },
-        include: includeOption,
+        include: {
+          member: true,
+        },
       });
-      expect(result).toStrictEqual(solution);
+      expect(prismaService.lessonSolution.findFirst).toBeCalledTimes(1);
     });
 
     it('SUCCESS - has memberId', () => {
-      const result = solutionService.readOneSolution(solutionId, memberId);
       const includeOption = {
         member: true,
         lessonSolutionLikes: {
@@ -117,12 +160,14 @@ describe('SolutionService', () => {
         },
       };
 
+      expect(
+        solutionService.readOneSolution(solutionId, memberId),
+      ).resolves.toStrictEqual(solution);
       expect(prismaService.lessonSolution.findFirst).toBeCalledTimes(1);
       expect(prismaService.lessonSolution.findFirst).toBeCalledWith({
         where: { id: solutionId },
         include: includeOption,
       });
-      expect(result).toStrictEqual(solution);
     });
   });
 

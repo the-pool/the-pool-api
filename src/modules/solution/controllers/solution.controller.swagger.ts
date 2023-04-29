@@ -16,6 +16,22 @@ export const ApiCreateSolution = (summary: string) =>
     ApiCreatedResponse({ type: SolutionEntity }),
   );
 
+export const ApiUpdateSolution = (summary: string) =>
+  applyDecorators(
+    ApiOperation({ summary }),
+    ApiOkResponse({ type: SolutionEntity }),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
+  );
+
+export const ApiDeleteSolution = (summary: string) =>
+  applyDecorators(
+    ApiOperation({ summary }),
+    ApiOkResponse({ type: SolutionEntity }),
+    ApiFailureResponse(HttpStatus.FORBIDDEN, HTTP_ERROR_MESSAGE.FORBIDDEN),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
+  );
+
 export const ApiReadOneSolution = (summary: string) =>
   applyDecorators(
     ApiOperation({ summary }),
