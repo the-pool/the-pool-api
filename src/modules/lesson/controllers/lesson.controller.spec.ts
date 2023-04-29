@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { mockLessonService } from '../../../../test/mock/mock-services';
+import {
+  mockLessonService,
+  mockNotificationService,
+} from '../../../../test/mock/mock-services';
 import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonService } from '../services/lesson.service';
@@ -12,6 +15,7 @@ import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
 import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
@@ -29,6 +33,10 @@ describe('LessonController', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: NotificationService,
+          useValue: mockNotificationService,
         },
       ],
     }).compile();
@@ -157,11 +165,9 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let readOneLesson: ReadOneLessonDto;
-    let updatedLesson: LessonEntity;
 
     beforeEach(() => {
       readOneLesson = new ReadOneLessonDto();
-      updatedLesson = new LessonEntity();
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
@@ -171,7 +177,6 @@ describe('LessonController', () => {
       };
 
       lessonService.readOneLesson.mockReturnValue(readOneLesson);
-      lessonService.increaseLessonHit.mockReturnValue(updatedLesson);
     });
 
     it('success - check method called', async () => {
@@ -179,8 +184,6 @@ describe('LessonController', () => {
 
       expect(lessonService.readOneLesson).toBeCalledTimes(1);
       expect(lessonService.readOneLesson).toBeCalledWith(param.id, member.id);
-      expect(lessonService.increaseLessonHit).toBeCalledTimes(1);
-      expect(lessonService.increaseLessonHit).toBeCalledWith(param.id);
     });
 
     it('success - check Input & Output', async () => {

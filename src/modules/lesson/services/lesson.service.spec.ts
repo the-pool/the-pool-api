@@ -14,6 +14,10 @@ import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { LessonService } from './lesson.service';
+import { mockEventEmitter } from '@test/mock/mock-libs';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
+import { LessonHitEvent } from '../events/lesson-hit.event';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
@@ -31,6 +35,10 @@ describe('LessonService', () => {
         {
           provide: QueryHelper,
           useValue: mockQueryHelper,
+        },
+        {
+          provide: EventEmitter2,
+          useValue: mockEventEmitter,
         },
       ],
     }).compile();
@@ -58,7 +66,7 @@ describe('LessonService', () => {
       memberId = 1;
       createdLesson = new LessonEntity();
 
-      prismaService.lesson.create.mockReturnValue(createdLesson);
+      prismaService.lesson.create.mockResolvedValue(createdLesson);
     });
 
     it('success - check method called', async () => {
@@ -89,7 +97,7 @@ describe('LessonService', () => {
       lessonId = faker.datatype.number();
       updatedLesson = new LessonEntity();
 
-      prismaService.lesson.update.mockReturnValue(updatedLesson);
+      prismaService.lesson.update.mockResolvedValue(updatedLesson);
     });
 
     it('success - check method called', async () => {
@@ -135,20 +143,24 @@ describe('LessonService', () => {
     let memberId: number | null;
     let lessonId: number;
     let lesson;
+    let lessonHitEvent: LessonHitEvent;
 
     describe('memberId is number', () => {
       beforeEach(() => {
         memberId = faker.datatype.number();
         lessonId = faker.datatype.number();
         lesson = new ReadOneLessonDto();
+        lessonHitEvent = new LessonHitEvent('increment', lessonId);
+
         delete lesson.isLike;
         delete lesson.isBookmark;
 
         prismaService.lesson.findFirst.mockReturnValue(lesson);
+        mockEventEmitter.emit.mockReturnValue(true);
       });
 
-      it('success - check method called', () => {
-        lessonService.readOneLesson(lessonId, memberId);
+      it('success - check method called', async () => {
+        await lessonService.readOneLesson(lessonId, memberId);
         const includeOption = {
           member: true,
           lessonCategory: true,
@@ -172,10 +184,18 @@ describe('LessonService', () => {
           where: { id: lessonId },
           include: includeOption,
         });
+        expect(mockEventEmitter.emit).toBeCalledTimes(1);
+        expect(mockEventEmitter.emit).toBeCalledWith(
+          LESSON_HIT_EVENT,
+          lessonHitEvent,
+        );
       });
 
-      it('success - check Input & Output', () => {
-        const returnValue = lessonService.readOneLesson(lessonId, memberId);
+      it('success - check Input & Output', async () => {
+        const returnValue = await lessonService.readOneLesson(
+          lessonId,
+          memberId,
+        );
 
         expect(returnValue).toStrictEqual(lesson);
       });
@@ -185,6 +205,7 @@ describe('LessonService', () => {
         memberId = null;
         lessonId = faker.datatype.number();
         lesson = new ReadOneLessonDto();
+        lessonHitEvent = new LessonHitEvent('increment', lessonId);
         delete lesson.isLike;
         delete lesson.isBookmark;
         delete lesson.lessonBookMarks;
@@ -193,8 +214,8 @@ describe('LessonService', () => {
         prismaService.lesson.findFirst.mockReturnValue(lesson);
       });
 
-      it('success - check method called', () => {
-        lessonService.readOneLesson(lessonId, memberId);
+      it('success - check method called', async () => {
+        await lessonService.readOneLesson(lessonId, memberId);
         const includeOption = {
           member: true,
           lessonCategory: true,
@@ -206,10 +227,18 @@ describe('LessonService', () => {
           where: { id: lessonId },
           include: includeOption,
         });
+        expect(mockEventEmitter.emit).toBeCalledTimes(1);
+        expect(mockEventEmitter.emit).toBeCalledWith(
+          LESSON_HIT_EVENT,
+          lessonHitEvent,
+        );
       });
 
-      it('success - check Input & Output', () => {
-        const returnValue = lessonService.readOneLesson(lessonId, memberId);
+      it('success - check Input & Output', async () => {
+        const returnValue = await lessonService.readOneLesson(
+          lessonId,
+          memberId,
+        );
 
         expect(returnValue).toStrictEqual(lesson);
       });
@@ -278,34 +307,6 @@ describe('LessonService', () => {
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
-    });
-  });
-
-  describe('increaseLessonHit', () => {
-    let lessonId: number;
-    let updatedLesson: LessonEntity;
-
-    beforeEach(() => {
-      lessonId = faker.datatype.number();
-      updatedLesson = new LessonEntity();
-
-      prismaService.lesson.update.mockReturnValue(updatedLesson);
-    });
-
-    it('success - check method called', () => {
-      lessonService.increaseLessonHit(lessonId);
-
-      expect(prismaService.lesson.update).toBeCalledTimes(1);
-      expect(prismaService.lesson.update).toBeCalledWith({
-        where: { id: lessonId },
-        data: { hit: { increment: 1 } },
-      });
-    });
-
-    it('success - check Input & Output', () => {
-      const returnValue = lessonService.increaseLessonHit(lessonId);
-
-      expect(returnValue).toStrictEqual(updatedLesson);
     });
   });
 });

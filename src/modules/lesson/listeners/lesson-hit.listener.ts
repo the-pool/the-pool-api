@@ -4,7 +4,7 @@ import { LessonHitEvent } from '../events/lesson-hit.event';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 
-export const LESSON_HIT = 'lesson.hit';
+export const LESSON_HIT_EVENT = 'lesson.hit';
 
 @Injectable()
 export class LessonHitListener {
@@ -13,8 +13,8 @@ export class LessonHitListener {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @OnEvent(LESSON_HIT)
-  updateLessonHit({ lessonId, action }: LessonHitEvent) {
+  @OnEvent(LESSON_HIT_EVENT)
+  increaseLessonHit({ lessonId, action }: LessonHitEvent) {
     this.prismaService.lesson
       .update({
         where: { id: lessonId },
@@ -22,7 +22,7 @@ export class LessonHitListener {
       })
       .catch((error) => {
         this.notificationService.warning({
-          description: 'temp',
+          description: 'increaseLessonHit 도중 발생한 에러',
           body: { lessonId, action },
           stack: error.stack,
         });

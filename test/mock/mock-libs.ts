@@ -32,6 +32,10 @@ export const mockContext = {
   },
 };
 
+export const mockEventEmitter = {
+  emit: jest.fn(),
+};
+
 export class MockEmbedBuilder {
   setTitle() {
     return this;

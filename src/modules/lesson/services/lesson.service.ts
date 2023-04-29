@@ -11,7 +11,7 @@ import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LessonHitEvent } from '../events/lesson-hit.event';
-import { LESSON_HIT } from '../listeners/lesson-hit.listener';
+import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
@@ -95,7 +95,7 @@ export class LessonService {
 
     const lessonHitEvent = new LessonHitEvent('increment', lessonId);
 
-    this.eventEmitter.emit(LESSON_HIT, lessonHitEvent);
+    this.eventEmitter.emit(LESSON_HIT_EVENT, lessonHitEvent);
 
     return lesson;
   }

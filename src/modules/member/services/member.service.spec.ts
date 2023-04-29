@@ -556,7 +556,7 @@ describe('MemberService', () => {
 
       loginByOAuthDto = {
         accessToken: '12345678910',
-        oAuthAgency: 0,
+        oAuthAgency: 1,
       };
     });
 
