@@ -32,26 +32,30 @@ import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
+  ApiFindLessonSolutionStatistics,
   ApiFindOne,
   ApiGetAccessTokenForDevelop,
   ApiLoginOrSignUp,
   ApiMappingMajor,
   ApiMappingMajorSkill,
-  ApiMappingMemberSkills,
-  ApiUnmappingMemberSkills,
   ApiMappingMemberInterests,
+  ApiMappingMemberSkills,
   ApiUnmappingMemberInterests,
+  ApiUnmappingMemberSkills,
   ApiUpdateFromPatch,
 } from '@src/modules/member/controllers/member.swagger';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
-import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
+import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
@@ -86,13 +90,28 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Get(':id')
   findOne(
+    @Param('id', ParsePositiveIntPipe) id: number,
+  ): Promise<
+    MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
+  > {
+    return this.memberService.findOneOrFail({
+      id,
+    });
+  }
+
+  @ApiFindLessonSolutionStatistics('member 의 과제 통계')
+  @Get(':id/lesson-solution-statistics')
+  async findLessonSolutionStatistics(
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
-  ): Promise<MemberEntity> {
-    return this.memberService.findOne({
-      id: params.id,
-    }) as Promise<MemberEntity>;
+  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
+    const lessonSolutionStatisticsResponseBodyDto =
+      await this.memberService.findLessonSolutionStatisticsById(params.id);
+
+    return new LessonSolutionStatisticsResponseBodyDto(
+      lessonSolutionStatisticsResponseBodyDto,
+    );
   }
 
   /**
@@ -140,19 +159,27 @@ export class MemberController {
   @SetResponseSetMetadataInterceptor('member')
   @Patch(':id')
   async updateFromPatch(
-    @UserLogin() member: MemberEntity,
+    @UserLogin() oldMember: MemberEntity,
     @SetModelNameToParam(ModelName.Member)
     @Param()
     params: IdRequestParamDto,
     @Body() body: PatchUpdateMemberRequestBodyDto,
-  ): Promise<MemberEntity> {
+  ): Promise<
+    MemberEntity & { memberSocialLinkMappings: MemberSocialLinkMappingEntity[] }
+  > {
+    const { memberSocialLinks, ...newMember } = body;
+
     await this.memberValidationService.canUpdateFromPatchOrFail(
       params.id,
-      body,
-      member,
+      newMember,
+      oldMember,
     );
 
-    return this.memberService.updateFromPatch(params.id, body);
+    return this.memberService.updateFromPatch(
+      params.id,
+      newMember,
+      memberSocialLinks,
+    );
   }
 
   @ApiMappingMajor('해당 member 와 major 를 연결해줍니다.')

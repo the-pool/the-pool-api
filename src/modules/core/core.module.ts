@@ -4,15 +4,17 @@ import { PrismaModule } from '@src/modules/core/database/prisma/prisma.module';
 import { HttpConfigModule } from './http/http-config.module';
 import { NotificationModule } from './notification/notification.module';
 import { PrivateStorageModule } from './private-storage/private-storage.module';
+import { ThePoolCacheModule } from './the-pool-cache/the-pool-cache.module';
 
 @Global()
 @Module({
   imports: [
     AuthModule,
-    PrismaModule, 
+    PrismaModule,
     HttpConfigModule,
     PrivateStorageModule,
     NotificationModule,
+    ThePoolCacheModule,
   ],
   exports: [
     AuthModule,
@@ -20,6 +22,7 @@ import { PrivateStorageModule } from './private-storage/private-storage.module';
     HttpConfigModule,
     PrivateStorageModule,
     NotificationModule,
+    ThePoolCacheModule,
   ],
 })
 export class CoreModule {}

@@ -13,6 +13,9 @@ import {
 } from '@test/mock/mock-services';
 import { SolutionCommentEntity } from '../entities/solution-comment.entity';
 import { SolutionCommentController } from './solution-comment.controller';
+import { SolutionCommentParamDto } from '../dtos/solution-comment-param.dto';
+import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 
 describe('SolutionCommentController', () => {
   let solutionCommentController: SolutionCommentController;
@@ -50,15 +53,15 @@ describe('SolutionCommentController', () => {
     let param: IdRequestParamDto;
     let memberId: number;
     let createCommentDto: CreateCommentBaseDto;
-    let createdComment: SolutionCommentEntity;
+    let solutionComment: SolutionCommentEntity;
 
     beforeEach(() => {
       param = new IdRequestParamDto();
       memberId = faker.datatype.number();
       createCommentDto = new CreateCommentBaseDto();
-      createdComment = new SolutionCommentEntity();
+      solutionComment = new SolutionCommentEntity();
 
-      commentService.createComment.mockReturnValue(createdComment);
+      commentService.createComment.mockReturnValue(solutionComment);
     });
 
     it('SUCCESS - check method called', async () => {
@@ -86,7 +89,141 @@ describe('SolutionCommentController', () => {
         memberId,
       );
 
-      expect(returnValue).toStrictEqual(createdComment);
+      expect(returnValue).toStrictEqual({ solutionComment });
+    });
+  });
+  describe('deleteComment', () => {
+    let param: SolutionCommentParamDto;
+    let memberId: number;
+    let deletedComment: SolutionCommentEntity;
+
+    beforeEach(() => {
+      param = new SolutionCommentParamDto();
+      memberId = faker.datatype.number();
+      deletedComment = new SolutionCommentEntity();
+
+      commentService.deleteComment.mockReturnValue(deletedComment);
+    });
+
+    it('success - check method called', async () => {
+      await solutionCommentController.deleteComment(param, memberId);
+
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledWith(
+        ModelName.LessonSolutionComment,
+        {
+          id: param.commentId,
+          memberId,
+        },
+      );
+      expect(commentService.deleteComment).toBeCalledTimes(1);
+      expect(commentService.deleteComment).toBeCalledWith(
+        ModelName.LessonSolutionComment,
+        param.commentId,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await solutionCommentController.deleteComment(
+        param,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual({ solutionComment: deletedComment });
+    });
+  });
+
+  describe('updateComment', () => {
+    let param: SolutionCommentParamDto;
+    let memberId: number;
+    let updatedComment: SolutionCommentEntity;
+    let updateCommentDto: UpdateCommentBaseDto;
+
+    beforeEach(() => {
+      param = new SolutionCommentParamDto();
+      memberId = faker.datatype.number();
+      updatedComment = new SolutionCommentEntity();
+      updateCommentDto = new UpdateCommentBaseDto();
+
+      commentService.updateComment.mockReturnValue(updatedComment);
+    });
+
+    it('success - check method called', async () => {
+      await solutionCommentController.updateComment(
+        param,
+        updateCommentDto,
+        memberId,
+      );
+
+      expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
+      expect(prismaService.validateOwnerOrFail).toBeCalledWith(
+        ModelName.LessonSolutionComment,
+        {
+          id: param.commentId,
+          memberId,
+        },
+      );
+      expect(commentService.updateComment).toBeCalledTimes(1);
+      expect(commentService.updateComment).toBeCalledWith(
+        ModelName.LessonSolutionComment,
+        param.commentId,
+        updateCommentDto.description,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await solutionCommentController.updateComment(
+        param,
+        updateCommentDto,
+        memberId,
+      );
+
+      expect(returnValue).toStrictEqual({
+        solutionComment: updatedComment,
+      });
+    });
+  });
+
+  describe('readManyComment', () => {
+    let param: IdRequestParamDto;
+    let readManyComment: {
+      comments: SolutionCommentEntity[];
+      totalCount: number;
+    };
+    let query: ReadManyCommentQueryBaseDto;
+
+    beforeEach(() => {
+      param = new IdRequestParamDto();
+      readManyComment = {
+        comments: [new SolutionCommentEntity()],
+        totalCount: faker.datatype.number(),
+      };
+      query = new ReadManyCommentQueryBaseDto();
+
+      commentService.readManyComment.mockReturnValue(readManyComment);
+    });
+
+    it('success - check method called', async () => {
+      await solutionCommentController.readManyComment(param, query);
+
+      expect(commentService.readManyComment).toBeCalledTimes(1);
+      expect(commentService.readManyComment).toBeCalledWith(
+        ModelName.LessonSolutionComment,
+        { lessonId: param.id },
+        query,
+      );
+    });
+
+    it('success - check Input & Output', async () => {
+      const returnValue = await solutionCommentController.readManyComment(
+        param,
+        query,
+      );
+
+      expect(returnValue).toStrictEqual({
+        solutionComments: readManyComment.comments,
+        totalCount: readManyComment.totalCount,
+      });
     });
   });
 });

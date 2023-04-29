@@ -3,14 +3,17 @@ import {
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiExtraModels,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
+import { MajorEntity } from '@src/modules/major/entities/major.entity';
+import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 
 export const ApiGetAccessTokenForDevelop = (summary: string) => {
   return applyDecorators(
@@ -25,10 +28,30 @@ export const ApiGetAccessTokenForDevelop = (summary: string) => {
 export const ApiFindOne = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
-    ApiSuccessResponse(HttpStatus.OK, {
-      member: {
-        type: MemberEntity,
+    ApiExtraModels(MemberSocialLinkMappingEntity),
+    ApiCreatedResponse({
+      schema: {
+        properties: {
+          member: {
+            $ref: getSchemaPath(MemberEntity),
+            properties: {
+              memberSocialLinkMappings: {
+                $ref: getSchemaPath(MemberSocialLinkMappingEntity),
+              },
+            },
+          },
+        },
       },
+    }),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, '존재하지 않는 member 입니다.'),
+  );
+};
+
+export const ApiFindLessonSolutionStatistics = (summary: string) => {
+  return applyDecorators(
+    ApiOperation({ summary }),
+    ApiOkResponse({
+      type: LessonSolutionStatisticsResponseBodyDto,
     }),
   );
 };
@@ -69,6 +92,9 @@ export const ApiUpdateFromPatch = (summary: string) => {
       },
     }),
     ApiFailureResponse(HttpStatus.BAD_REQUEST, [
+      'memberSocialLinks 유효하지 않은 url 입니다.',
+      'memberSocialLinks url 은 공백이 존재할 수 없습니다.',
+      'memberSocialLinks 존재하지 않는 type 입니다.',
       '활성중인 유저거나 활성 상태로 변경하려는 유저만 업데이트 가능합니다.',
     ]),
     ApiFailureResponse(HttpStatus.UNAUTHORIZED, ['Unauthorized']),
@@ -84,7 +110,7 @@ export const ApiMappingMajor = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiBearerAuth(),
-    ApiExtraModels(MajorEntityV2),
+    ApiExtraModels(MajorEntity),
     ApiCreatedResponse({
       schema: {
         properties: {
@@ -92,7 +118,7 @@ export const ApiMappingMajor = (summary: string) => {
             $ref: getSchemaPath(MemberEntity),
             properties: {
               major: {
-                $ref: getSchemaPath(MajorEntityV2),
+                $ref: getSchemaPath(MajorEntity),
               },
             },
           },

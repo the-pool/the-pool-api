@@ -2,6 +2,7 @@ import { CommentService } from '@src/modules/comment/services/comment.service';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
 import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
@@ -18,7 +19,6 @@ import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
 import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
-import { JestMockExtended } from 'jest-mock-extended';
 import { MockClassType } from './mock.type';
 
 export const mockConfigService = {
@@ -31,6 +31,8 @@ export const mockJwtService = {
 
 export const mockMemberService: MockClassType<MemberService> = {
   findOne: jest.fn(),
+  findLessonSolutionStatisticsById: jest.fn(),
+  findOneOrFail: jest.fn(),
   signUp: jest.fn(),
   login: jest.fn(),
   updateFromPatch: jest.fn(),
@@ -119,10 +121,10 @@ export const mockLessonEvaluationService: MockClassType<LessonEvaluationService>
   };
 
 export const mockMajorService: MockClassType<MajorService> = {
-  findMajors: jest.fn(),
-  findMajor: jest.fn(),
-  findMajorSkills: jest.fn(),
-  findMajorSkill: jest.fn(),
+  findAllMajor: jest.fn(),
+  findOneMajorOrThrow: jest.fn(),
+  findAllMajorSkill: jest.fn(),
+  findOneMajorSkillOrThrow: jest.fn(),
 };
 
 export const mockQuestionService: MockClassType<QuestionService> = {
@@ -130,6 +132,7 @@ export const mockQuestionService: MockClassType<QuestionService> = {
 };
 
 export const mockSolutionService: MockClassType<SolutionService> = {
+  findStatisticsByMemberId: jest.fn(),
   createSolution: jest.fn(),
   readOneSolution: jest.fn(),
   readManySolution: jest.fn(),
@@ -150,6 +153,7 @@ export const mockCommentService: MockClassType<CommentService> = {
   createComment: jest.fn(),
   deleteComment: jest.fn(),
   updateComment: jest.fn(),
+  readManyComment: jest.fn(),
 };
 export const mockLessonLikeService: MockClassType<LessonLikeService> = {
   createLike: jest.fn(),
@@ -159,4 +163,10 @@ export const mockLessonLikeService: MockClassType<LessonLikeService> = {
 export const mockNotificationService: MockClassType<NotificationService> = {
   error: jest.fn(),
   warning: jest.fn(),
+};
+
+export const mockThePoolCacheService: MockClassType<ThePoolCacheService> = {
+  onModuleInit: jest.fn(),
+  getMemberSocialLinks: jest.fn(),
+  setMemberSocialLinks: jest.fn(),
 };

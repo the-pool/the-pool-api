@@ -48,7 +48,7 @@ export class MemberValidationService {
    */
   async canUpdateFromPatchOrFail(
     updateId: number,
-    updateInfo: PatchUpdateMemberRequestBodyDto,
+    updateInfo: Omit<PatchUpdateMemberRequestBodyDto, 'memberSocialLinks'>,
     oldMember: MemberEntity,
   ): Promise<void> {
     // 본인에 대해 업데이트 하는게 아니라면 에러

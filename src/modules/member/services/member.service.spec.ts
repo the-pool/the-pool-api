@@ -14,13 +14,19 @@ import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockAuthService } from '../../../../test/mock/mock-services';
+import {
+  mockAuthService,
+  mockSolutionService,
+} from '../../../../test/mock/mock-services';
 import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
 import { MemberService } from './member.service';
@@ -34,6 +40,10 @@ describe('MemberService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MemberService,
+        {
+          provide: SolutionService,
+          useValue: mockSolutionService,
+        },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -66,15 +76,64 @@ describe('MemberService', () => {
       member = new MemberEntity();
     });
 
+    it('존재 여부 관계없이 return 한다.', async () => {
+      mockPrismaService.member.findFirst.mockResolvedValue(member);
+
+      await expect(memberService.findOne(where)).resolves.toStrictEqual(member);
+    });
+  });
+
+  describe('findOneOrFail', () => {
+    let member: MemberEntity;
+    let where: Prisma.MemberWhereInput;
+
+    beforeEach(() => {
+      member = new MemberEntity();
+    });
+
+    it('존재하지 않는 member', async () => {
+      mockPrismaService.member.findFirst.mockReturnValue(null as any);
+
+      await expect(memberService.findOneOrFail(where)).rejects.toThrowError();
+    });
+
     it('조회 성공', async () => {
       mockPrismaService.member.findFirst.mockReturnValue(member as any);
 
-      const result = await memberService.findOne(where);
+      const result = await memberService.findOneOrFail(where);
 
       expect(mockPrismaService.member.findFirst).toBeCalledWith({
         where,
+        include: {
+          memberSocialLinkMappings: true,
+        },
       });
       expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('findLessonSolutionStatisticsById', () => {
+    let memberId: number;
+    let lessonSolutionStatisticsResponseBodyDto: LessonSolutionStatisticsResponseBodyDto;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      lessonSolutionStatisticsResponseBodyDto = {
+        specific_month_day: BigInt(1),
+        total_count: BigInt(1),
+        total_day: BigInt(1),
+        specific_month_count: BigInt(1),
+      } as LessonSolutionStatisticsResponseBodyDto;
+    });
+
+    it('조회 성공', async () => {
+      mockSolutionService.findStatisticsByMemberId.mockResolvedValue(
+        lessonSolutionStatisticsResponseBodyDto,
+      );
+
+      await expect(
+        memberService.findLessonSolutionStatisticsById(memberId),
+      ).resolves.toStrictEqual(lessonSolutionStatisticsResponseBodyDto);
     });
   });
 
@@ -131,18 +190,29 @@ describe('MemberService', () => {
   describe('updateFromPatch', () => {
     let id: number;
     let member: PatchUpdateMemberRequestBodyDto;
+    let memberSocialLinks: MemberSocialLinkDto[];
 
     beforeEach(() => {
       id = faker.datatype.number();
       member = new PatchUpdateMemberRequestBodyDto();
     });
 
-    it('업데이트 성공', async () => {
-      mockPrismaService.member.update.mockResolvedValue(member as any);
+    it('memberSocialLinks 가 없는 경우', async () => {
+      mockPrismaService.$transaction.mockResolvedValue(member as any);
 
-      const result = await memberService.updateFromPatch(id, member);
+      await expect(
+        memberService.updateFromPatch(id, member),
+      ).resolves.toStrictEqual(member);
+    });
 
-      expect(result).toStrictEqual(member);
+    it('memberSocialLinks 가 있는 경우', async () => {
+      memberSocialLinks = [new MemberSocialLinkDto()];
+
+      mockPrismaService.$transaction.mockResolvedValue(member as any);
+
+      await expect(
+        memberService.updateFromPatch(id, member, memberSocialLinks),
+      ).resolves.toStrictEqual(member);
     });
   });
 

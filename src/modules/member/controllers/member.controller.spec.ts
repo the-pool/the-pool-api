@@ -9,8 +9,10 @@ import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/membe
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
+import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import {
   mockAuthService,
   mockConfigService,
@@ -56,7 +58,6 @@ describe('MemberController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // jest.clearAllTimers();
   });
 
   it('should be defined', () => {
@@ -65,22 +66,51 @@ describe('MemberController', () => {
 
   describe('findOne', () => {
     let member: MemberEntity;
-    let params: IdRequestParamDto;
+    let id: number;
 
     beforeEach(() => {
       member = new MemberEntity();
-      params = new IdRequestParamDto();
+      id = faker.datatype.number();
     });
 
     it('조회 성공', async () => {
-      mockMemberService.findOne.mockReturnValue(member);
+      mockMemberService.findOneOrFail.mockReturnValue(member);
 
-      const result = memberController.findOne(params);
+      const result = memberController.findOne(id);
 
-      expect(mockMemberService.findOne).toBeCalledWith({
-        id: params.id,
+      expect(mockMemberService.findOneOrFail).toBeCalledWith({
+        id,
       });
       expect(result).toStrictEqual(member);
+    });
+  });
+
+  describe('findLessonSolutionStatistics', () => {
+    let lessonSolutionStatisticsResponseBodyDto: LessonSolutionStatisticsResponseBodyDto;
+    let param: IdRequestParamDto;
+
+    beforeEach(() => {
+      lessonSolutionStatisticsResponseBodyDto = {
+        specific_month_day: BigInt(1),
+        total_count: BigInt(1),
+        total_day: BigInt(1),
+        specific_month_count: BigInt(1),
+      } as LessonSolutionStatisticsResponseBodyDto;
+      param = new IdRequestParamDto();
+    });
+
+    it('조회 성공', async () => {
+      mockMemberService.findLessonSolutionStatisticsById.mockResolvedValue(
+        lessonSolutionStatisticsResponseBodyDto,
+      );
+
+      await expect(
+        memberController.findLessonSolutionStatistics(param),
+      ).resolves.toStrictEqual(
+        new LessonSolutionStatisticsResponseBodyDto(
+          lessonSolutionStatisticsResponseBodyDto,
+        ),
+      );
     });
   });
 
@@ -128,6 +158,42 @@ describe('MemberController', () => {
       afterEach(() => {
         expect(mockMemberService.findOne).toBeCalledTimes(1);
       });
+    });
+  });
+
+  describe('updateFromPatch', () => {
+    let oldMember: MemberEntity;
+    let params: IdRequestParamDto;
+    let body: PatchUpdateMemberRequestBodyDto;
+    let newMember: MemberEntity;
+
+    beforeEach(() => {
+      oldMember = new MemberEntity();
+      params = new IdRequestParamDto();
+      body = new PatchUpdateMemberRequestBodyDto();
+      newMember = new MemberEntity();
+    });
+
+    it('업데이트 불가능한 유저', async () => {
+      mockMemberValidationService.canUpdateFromPatchOrFail.mockImplementationOnce(
+        () => {
+          throw new Error();
+        },
+      );
+
+      await expect(
+        memberController.updateFromPatch(oldMember, params, body),
+      ).rejects.toThrowError();
+      expect(mockMemberService.updateFromPatch).toBeCalledTimes(0);
+    });
+
+    it('업데이트 가능한 유저', async () => {
+      mockMemberService.updateFromPatch.mockResolvedValue(newMember);
+
+      await expect(
+        memberController.updateFromPatch(oldMember, params, body),
+      ).resolves.toStrictEqual(newMember);
+      expect(mockMemberService.updateFromPatch).toBeCalledTimes(1);
     });
   });
 

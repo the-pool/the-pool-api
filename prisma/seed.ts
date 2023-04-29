@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { getValueByEnum } from '../src/common/common';
 import { lessonCategorySeed } from './functions/lesson-category.seed';
 import { lessonHashtagSeed } from './functions/lesson-hashtag.seed';
 import { lessonLevelSeed } from './functions/lesson-level.seed';
@@ -23,9 +22,13 @@ export const createDataForSeed = (
   type: 'number' | 'string',
   fieldName: string,
 ): { id: number; [fieldName: string]: string | number }[] => {
-  return getValueByEnum(Enum, type).map((fieldValue, idx) => {
-    return { id: ++idx, [fieldName]: fieldValue };
-  });
+  return Object.values(Enum)
+    .filter((el) => {
+      return typeof el === type;
+    })
+    .map((fieldValue, idx) => {
+      return { id: ++idx, [fieldName]: fieldValue };
+    });
 };
 
 /**

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
 import { SolutionEntity } from '../entities/solution.entity';
 import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
@@ -14,6 +16,7 @@ export class SolutionService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
+    private readonly lessonSolutionRepository: LessonSolutionRepository,
   ) {}
 
   createSolution(
@@ -94,5 +97,14 @@ export class SolutionService {
     ]);
 
     return { solutions, totalCount };
+  }
+
+  async findStatisticsByMemberId(
+    memberId: number,
+  ): Promise<LessonSolutionStatisticsResponseBodyDto> {
+    const statisticsList =
+      await this.lessonSolutionRepository.findStatisticsByMemberId(memberId);
+
+    return statisticsList[0];
   }
 }

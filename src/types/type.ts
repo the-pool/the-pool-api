@@ -15,9 +15,12 @@ import {
   MemberStatistics,
   Prisma,
   LessonHashtagMapping,
+  LessonSolutionComment,
 } from '@prisma/client';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { LessonCommentEntity } from '@src/modules/lesson/entities/lesson-comment.entity';
+import { SolutionCommentEntity } from '@src/modules/solution/entities/solution-comment.entity';
 
 export type PrismaModelName = Uncapitalize<Prisma.ModelName>;
 
@@ -26,6 +29,12 @@ export type PrismaCommentModelName = Extract<
   PrismaModelName,
   `${string}Comment`
 >;
+
+// 댓글 기능을 추가할 때마다 댓글 테이블과 prisma에서 생성해주는 댓글 모델의 매핑관계를 만들어 주어야 함
+export type PrismaCommentModelMapper = {
+  lessonComment: LessonCommentEntity;
+  lessonSolutionComment: SolutionCommentEntity;
+};
 
 // 댓글 기능을 추가할 때마다 댓글을 가지고 있는 부모 테이블이 Extract의 두번째 유니온으로 추가 되어야 함
 export type PrismaCommentParentIdColumn = Record<
@@ -64,7 +73,9 @@ export type PrismaModel =
   | LessonHashtag
   | LessonHashtagMapping
   | LessonComment
-  | MemberSkill;
+  | MemberSkill
+  | LessonComment
+  | LessonSolutionComment;
 
 export type Target<M extends PrismaModel = PrismaModel> = {
   model?: PrismaModelName;

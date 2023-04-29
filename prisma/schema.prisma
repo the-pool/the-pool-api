@@ -104,17 +104,20 @@ model Member {
 /// member 의 sns 주소
 model MemberSocialLink {
   /// 고유 ID (1: etc, 2: 인스타그램, 3: 비헨스, 4: 노션, 5: 링크드인, 6: 깃허브)
-  id                       Int                       @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
+  /// sns 의 기본 주소
+  socialDomain String    @unique @db.VarChar()
   /// 소셜 명
-  name                     String                    @unique @db.VarChar
+  name         String    @unique @db.VarChar()
   /// url
-  iconPath                 String                    @unique
+  iconPath     String    @unique @db.Text()
   /// 생성일자
-  createdAt                DateTime                  @default(now()) @db.Timestamp(6)
+  createdAt    DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
-  updatedAt                DateTime                  @default(now()) @updatedAt @db.Timestamp(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
-  deletedAt                DateTime?                 @db.Timestamp(6)
+  deletedAt    DateTime? @db.Timestamp(6)
+
   memberSocialLinkMappings MemberSocialLinkMapping[]
 }
 
@@ -186,24 +189,27 @@ model MemberInterestMapping {
 /// 멤버 활동 모델
 model MemberStatistics {
   /// member 고유 ID
-  memberId       Int    @id @unique
+  memberId             Int  @id @unique
   /// 문제 출제 개수
-  lessonCount    Int    @default(0)
-  /// 피드백 한 총 개수
-  feedbackCount  Int    @default(0)
-  /// 질문 개수
-  commentCount   Int    @default(0)
-  /// 팔로워 개수
-  followerCount  Int    @default(0)
-  /// 팔로윙 개수
-  followingCount Int    @default(0)
-  /// 랭킹
-  rank           Int?
-  /// 포인트
-  point          Int    @default(0)
+  lessonCount          Int  @default(0)
+  /// 문제 출제 댓글 개수
+  lessonCommentCount   Int  @default(0)
   /// 문제-해결 개수
-  solutionCount  Int    @default(0)
-  member         Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  solutionCount        Int  @default(0)
+  /// 문제-해결 댓글 개수
+  solutionCommentCount Int  @default(0)
+  /// 피드백 한 총 개수
+  feedbackCount        Int  @default(0)
+  /// 팔로워 개수
+  followerCount        Int  @default(0)
+  /// 팔로윙 개수
+  followingCount       Int  @default(0)
+  /// 랭킹
+  rank                 Int?
+  /// 포인트
+  point                Int  @default(0)
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
 }
 
 /// 멤버 팔로우 팔로잉 모델 
@@ -356,15 +362,16 @@ model LessonComment {
   /// 과제 고유 ID
   lessonId    Int
   /// 댓글 설명
-  description String    @db.VarChar(255)
+  description String    @db.Text()
   /// 생성일자  
   createdAt   DateTime  @default(now()) @db.Timestamp(6)
   /// 수정일자
   updatedAt   DateTime  @default(now()) @updatedAt @db.Timestamp(6)
   /// 삭제일자
   deletedAt   DateTime? @db.Timestamp(6)
-  Lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  Member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  member Member @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model LessonCategory {
@@ -455,7 +462,7 @@ model LessonSolutionComment {
   /// 문제-풀이 고유 ID
   lessonSolutionId Int
   /// 댓글 설명
-  description      String         @db.VarChar(255)
+  description      String    @db.Text()
   /// 생성일자
   createdAt        DateTime       @default(now()) @db.Timestamp(6)
   /// 수정일자

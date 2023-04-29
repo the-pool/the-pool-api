@@ -96,5 +96,6 @@ export const ApiReadLessonHashtags = (summary: string) => {
     ApiSuccessResponse(HttpStatus.OK, {
       lessonHashtags: { type: LessonHashtagEntity, isArray: true },
     }),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
