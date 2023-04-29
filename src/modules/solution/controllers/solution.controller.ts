@@ -64,7 +64,7 @@ export class SolutionController {
     @Body() requestDto: UpdateSolutionRequestBodyDto,
     @UserLogin('id') memberId: number,
   ): Promise<SolutionEntity> {
-    this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
       id: solutionId,
       memberId,
     });
@@ -73,7 +73,6 @@ export class SolutionController {
   }
 
   @ApiDeleteSolution('문제 - 풀이 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
@@ -81,7 +80,7 @@ export class SolutionController {
     @Param('id') solutionId: number,
     @UserLogin('id') memberId: number,
   ): Promise<SolutionEntity> {
-    this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
+    await this.prismaService.validateOwnerOrFail(ModelName.LessonSolution, {
       id: solutionId,
       memberId,
     });
