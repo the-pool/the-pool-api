@@ -1,13 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
+import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
-import { SolutionEntity } from '../entities/solution.entity';
-import { SolutionService } from './solution.service';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -24,6 +26,10 @@ describe('SolutionService', () => {
         {
           provide: LessonSolutionRepository,
           useValue: mockLessonSolutionRepository,
+        },
+        {
+          provide: MemberStatisticsEvent,
+          useValue: mockMemberStatisticsEvent,
         },
       ],
     }).compile();
@@ -61,6 +67,10 @@ describe('SolutionService', () => {
 
       expect(prismaService.lessonSolution.create).toBeCalledTimes(1);
       expect(result).toStrictEqual(createdSolution);
+      expect(mockMemberStatisticsEvent.register).toBeCalledWith(memberId, {
+        fieldName: 'solutionCount',
+        action: 'increment',
+      });
     });
   });
 
