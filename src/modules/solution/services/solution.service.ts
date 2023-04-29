@@ -32,9 +32,7 @@ export class SolutionService {
     solutionId: number,
     memberId: number | null,
   ): Promise<Omit<ReadOneSolutionEntity, 'isLike'> | null> {
-    const includeOption: Prisma.LessonSolutionInclude = {
-      member: true,
-    };
+    const includeOption: Prisma.LessonSolutionInclude = {};
 
     if (memberId) {
       includeOption.lessonSolutionLikes = {
@@ -46,7 +44,10 @@ export class SolutionService {
       where: {
         id: solutionId,
       },
-      include: includeOption,
+      include: {
+        member: true,
+        ...includeOption,
+      },
     });
   }
 
@@ -67,7 +68,7 @@ export class SolutionService {
     });
 
     // promise 한 lesson 목록
-    const readManyLessonQuery: PrismaPromise<ReadManySolutionEntity[]> =
+    const readManySolutionQuery: PrismaPromise<ReadManySolutionEntity[]> =
       this.prismaService.lessonSolution.findMany({
         where,
         orderBy: order,
@@ -88,7 +89,7 @@ export class SolutionService {
       this.prismaService.lessonSolution.count({ where, orderBy: order });
 
     const [solutions, totalCount] = await this.prismaService.$transaction([
-      readManyLessonQuery,
+      readManySolutionQuery,
       totalCountQuery,
     ]);
 

@@ -14,8 +14,9 @@ export class ReadOneSolutionEntity extends SolutionEntity {
   @ApiProperty({
     description: '문제-풀이 정보',
     type: MemberEntity,
+    required: true,
   })
-  member?: MemberEntity;
+  member: MemberEntity;
 
   @ApiProperty({
     example: true,

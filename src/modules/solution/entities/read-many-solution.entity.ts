@@ -8,8 +8,9 @@ export class ReadManySolutionEntity extends SolutionEntity {
   @ApiProperty({
     description: '문제-풀이자',
     type: MemberEntity,
+    required: true,
   })
-  member?: MemberEntity;
+  member: MemberEntity;
 
   @ApiProperty({
     description: '문제-풀이의 좋아요, 댓글',
