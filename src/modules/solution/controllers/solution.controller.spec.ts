@@ -15,6 +15,7 @@ import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
 import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
 import { ReadManySolutionEntity } from '../entities/read-many-solution.entity';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
+import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
@@ -77,6 +78,52 @@ describe('SolutionController', () => {
 
       expect(solutionService.createSolution).toBeCalledTimes(1);
       expect(result).toStrictEqual(solutionEntity);
+    });
+  });
+
+  describe('update Solution', () => {
+    let updateSolutionDto: UpdateSolutionRequestBodyDto;
+    let memberId: number;
+    let solutionId: number;
+    let updatedSolution: SolutionEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      solutionId = faker.datatype.number();
+      updateSolutionDto = new UpdateSolutionRequestBodyDto();
+      updatedSolution = new SolutionEntity();
+
+      solutionService.updateSolution.mockResolvedValue(updatedSolution);
+    });
+
+    it('SUCCESS - Update Solution', () => {
+      expect(
+        solutionController.updateSolution(
+          solutionId,
+          updateSolutionDto,
+          memberId,
+        ),
+      ).resolves.toStrictEqual(updatedSolution);
+    });
+  });
+
+  describe('delete Solution', () => {
+    let memberId: number;
+    let solutionId: number;
+    let deletedSolution: SolutionEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      solutionId = faker.datatype.number();
+      deletedSolution = new SolutionEntity();
+
+      solutionService.deleteSolution.mockResolvedValue(deletedSolution);
+    });
+
+    it('SUCCESS - Delete Solution', () => {
+      expect(
+        solutionController.deleteSolution(solutionId, memberId),
+      ).resolves.toStrictEqual(deletedSolution);
     });
   });
 

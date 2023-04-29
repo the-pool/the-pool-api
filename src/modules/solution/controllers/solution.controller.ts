@@ -20,8 +20,10 @@ import { SolutionEntity } from '../entities/solution.entity';
 import { SolutionService } from '../services/solution.service';
 import {
   ApiCreateSolution,
+  ApiDeleteSolution,
   ApiReadManySolution,
   ApiReadOneSolution,
+  ApiUpdateSolution,
 } from './solution.controller.swagger';
 import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
@@ -53,6 +55,7 @@ export class SolutionController {
     return this.solutionService.createSolution(requestDto, memberId);
   }
 
+  @ApiUpdateSolution('문제 - 풀이 수정')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Put(':id')
@@ -69,6 +72,8 @@ export class SolutionController {
     return this.solutionService.updateSolution(requestDto, solutionId);
   }
 
+  @ApiDeleteSolution('문제 - 풀이 삭제')
+  @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
