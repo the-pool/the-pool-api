@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { MajorEntityV2 } from '@src/modules/major/entities/major.entity.v2';
+import { MajorEntity } from '@src/modules/major/entities/major.entity';
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
@@ -110,7 +110,7 @@ export const ApiMappingMajor = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
     ApiBearerAuth(),
-    ApiExtraModels(MajorEntityV2),
+    ApiExtraModels(MajorEntity),
     ApiCreatedResponse({
       schema: {
         properties: {
@@ -118,7 +118,7 @@ export const ApiMappingMajor = (summary: string) => {
             $ref: getSchemaPath(MemberEntity),
             properties: {
               major: {
-                $ref: getSchemaPath(MajorEntityV2),
+                $ref: getSchemaPath(MajorEntity),
               },
             },
           },

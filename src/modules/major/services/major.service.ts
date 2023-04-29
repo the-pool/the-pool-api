@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
-import { MajorEntity } from '@src/modules/major/entities/major.entity';
+import { MajorSkillDto } from '@src/modules/major/dtos/major-skill-dto';
+import { MajorDto } from '@src/modules/major/dtos/major.dto';
 import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class MajorService {
    * major 전체조회
    * 클라언트에게 받은 majorSKills: boolean 를 가지고 MajorSkills 도 함께 가져온다.
    */
-  findMajors(query: MajorRelationFieldRequestQueryDto): Promise<MajorEntity[]> {
+  findAllMajor(query: MajorRelationFieldRequestQueryDto): Promise<MajorDto[]> {
     const { majorSkills } = query;
 
     return this.prismaService.major.findMany({
@@ -26,27 +26,27 @@ export class MajorService {
    * major 단일 조회
    * 클라언트에게 받은 majorSKills: boolean 를 가지고 MajorSkills 도 함께 가져온다.
    */
-  findMajor(
+  findOneMajorOrThrow(
     majorId: number,
     query: MajorRelationFieldRequestQueryDto,
-  ): Promise<MajorEntity> {
+  ): Promise<MajorDto> {
     const { majorSkills } = query;
 
-    return this.prismaService.major.findUnique({
+    return this.prismaService.major.findUniqueOrThrow({
       where: {
         id: majorId,
       },
       include: {
         majorSkills,
       },
-    }) as Promise<MajorEntity>;
+    });
   }
 
   /**
    * mainSkill 전체 조회
    * majorId 를 기준으로 MajorSkill 을 가져온다.
    */
-  findMajorSkills(majorId: number): Promise<MajorSkillEntity[]> {
+  findAllMajorSkill(majorId: number): Promise<MajorSkillDto[]> {
     return this.prismaService.majorSkill.findMany({
       where: {
         majorId,
@@ -58,15 +58,15 @@ export class MajorService {
    * mainSkill 단일 조회
    * majorId 를 기준으로 MajorSkill 을 가져온다.
    */
-  findMajorSkill(
+  findOneMajorSkillOrThrow(
     majorId: number,
     mainSkillId: number,
-  ): Promise<MajorSkillEntity> {
-    return this.prismaService.majorSkill.findUnique({
+  ): Promise<MajorSkillDto> {
+    return this.prismaService.majorSkill.findUniqueOrThrow({
       where: {
         majorId,
         id: mainSkillId,
       },
-    }) as Promise<MajorSkillEntity>;
+    });
   }
 }
