@@ -3,6 +3,7 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
+import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
 import { SolutionEntity } from '../entities/solution.entity';
 import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
 import { QueryHelper } from '@src/helpers/query.helper';
@@ -27,6 +28,26 @@ export class SolutionService {
       data: {
         ...requestDto,
         memberId,
+      },
+    });
+  }
+
+  updateSolution(
+    requestDto: UpdateSolutionRequestBodyDto,
+    solutionId: number,
+  ): Promise<SolutionEntity> {
+    return this.prismaService.lessonSolution.update({
+      where: { id: solutionId },
+      data: {
+        ...requestDto,
+      },
+    });
+  }
+
+  deleteSolution(solutionId: number): Promise<SolutionEntity> {
+    return this.prismaService.lessonSolution.delete({
+      where: {
+        id: solutionId,
       },
     });
   }
