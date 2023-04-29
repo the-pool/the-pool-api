@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
@@ -65,17 +64,15 @@ describe('SolutionService', () => {
       memberId = 1;
       createdSolution = new SolutionEntity();
 
-      prismaService.lessonSolution.create.mockReturnValue(createdSolution);
+      prismaService.lessonSolution.create.mockResolvedValue(createdSolution);
     });
 
     it('SUCCESS - Solution Created', async () => {
-      const result = await solutionService.createSolution(
-        createSolutionDto,
-        memberId,
-      );
+      expect(
+        solutionService.createSolution(createSolutionDto, memberId),
+      ).resolves.toStrictEqual(createdSolution);
 
       expect(prismaService.lessonSolution.create).toBeCalledTimes(1);
-      expect(result).toStrictEqual(createdSolution);
     });
   });
 
@@ -156,8 +153,7 @@ describe('SolutionService', () => {
         ? { _count: orderBy }
         : orderBy;
 
-      await solutionService.readManySolution(query);
-
+      expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
@@ -171,8 +167,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is virtualColumn', async () => {
       query.sortBy = SolutionVirtualColumn.LessonSolutionComments;
 
-      await solutionService.readManySolution(query);
-
+      expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: { _count: query.orderBy },
       });
@@ -181,8 +176,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is not virtualColumn', async () => {
       query.sortBy = EntityId.Id;
 
-      await solutionService.readManySolution(query);
-
+      expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
