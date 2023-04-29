@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
@@ -31,7 +31,7 @@ export class SolutionService {
     });
   }
 
-  readOneSolution(
+  async readOneSolution(
     solutionId: number,
     memberId: number | null,
   ): Promise<Omit<ReadOneSolutionEntity, 'isLike'> | null> {
@@ -43,7 +43,7 @@ export class SolutionService {
       };
     }
 
-    return this.prismaService.lessonSolution.findFirst({
+    const solution = await this.prismaService.lessonSolution.findFirst({
       where: {
         id: solutionId,
       },
@@ -52,6 +52,12 @@ export class SolutionService {
         ...includeOption,
       },
     });
+
+    if (!solution) {
+      throw new NotFoundException('존재하지 않는 solution입니다.');
+    }
+
+    return solution;
   }
 
   async readManySolution(
