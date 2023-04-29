@@ -34,7 +34,7 @@ export class SolutionService {
   async readOneSolution(
     solutionId: number,
     memberId: number | null,
-  ): Promise<Omit<ReadOneSolutionEntity, 'isLike'> | null> {
+  ): Promise<Omit<ReadOneSolutionEntity, 'isLike'>> {
     const includeOption: Prisma.LessonSolutionInclude = {};
 
     if (memberId) {

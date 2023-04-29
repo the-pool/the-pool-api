@@ -23,6 +23,7 @@ export const ApiReadOneSolution = (summary: string) =>
       solution: { type: ReadOneSolutionEntity },
     }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
+    ApiFailureResponse(HttpStatus.NOT_FOUND, '존재하지 않는 solution입니다.'),
   );
 
 export const ApiReadManySolution = (summary: string) =>
