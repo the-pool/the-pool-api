@@ -9,8 +9,6 @@ import { SolutionHashtagController } from './controllers/solution-hashtag.contro
 import { SolutionController } from './controllers/solution.controller';
 import { SolutionHashtagService } from './services/solution-hashtag.service';
 import { SolutionService } from './services/solution.service';
-import { CommentService } from '../comment/services/comment.service';
-import { SolutionCommentController } from './controllers/solution-comment.controller';
 import { QueryHelper } from '@src/helpers/query.helper';
 
 @Module({
