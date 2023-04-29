@@ -17,6 +17,7 @@ import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.con
 import { SolutionVirtualColumn } from '../constants/solution.enum';
 import { EntityId } from '@src/constants/enum';
 import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
+import exp from 'constants';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -110,9 +111,14 @@ describe('SolutionService', () => {
       solutionId = faker.datatype.number();
       deletedSolution = new SolutionEntity();
 
-      mockPrismaService.lessonSolution.delete.mockResolvedValue(
+      prismaService.lessonSolution.delete.mockResolvedValue(deletedSolution);
+    });
+
+    it('SUCCESS - Soultion Delete', () => {
+      expect(solutionService.deleteSolution(solutionId)).resolves.toStrictEqual(
         deletedSolution,
       );
+      expect(prismaService.lessonSolution.delete).toBeCalledTimes(1);
     });
   });
 
