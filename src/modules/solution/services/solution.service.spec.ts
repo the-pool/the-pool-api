@@ -17,7 +17,6 @@ import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.con
 import { SolutionVirtualColumn } from '../constants/solution.enum';
 import { EntityId } from '@src/constants/enum';
 import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
-import exp from 'constants';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
