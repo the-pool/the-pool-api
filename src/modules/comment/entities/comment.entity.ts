@@ -12,6 +12,7 @@ export class CommentBaseEntity extends IntersectionType(
   @ApiProperty({
     description: '특정 도메인 게시글에 달린 댓글',
     example: '댓글입니다.',
+    maxLength: 500,
   })
   description: string;
 
