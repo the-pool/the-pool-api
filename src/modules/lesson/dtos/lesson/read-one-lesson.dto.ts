@@ -24,7 +24,7 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
     description: '과제 출제자 정보',
     type: MemberEntity,
   })
-  member?: MemberEntity;
+  member: MemberEntity;
 
   @Exclude()
   categoryId: number;
@@ -33,7 +33,7 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
     description: '과제의 카테고리',
     type: LessonCategoryEntity,
   })
-  lessonCategory?: LessonCategoryEntity;
+  lessonCategory: LessonCategoryEntity;
 
   @Exclude()
   levelId: LessonLevelId;
@@ -42,7 +42,7 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
     description: '과제의 난이도',
     type: LessonLevelEntity,
   })
-  lessonLevel?: LessonLevelEntity;
+  lessonLevel: LessonLevelEntity;
 
   @Exclude({ toPlainOnly: true })
   lessonBookMarks?: LessonBookmarkEntity[] | null;

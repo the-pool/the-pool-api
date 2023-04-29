@@ -34,6 +34,7 @@
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/elasticsearch": "^9.0.0",
+    "@nestjs/event-emitter": "^1.4.1",
     "@nestjs/jwt": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",

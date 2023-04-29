@@ -15,6 +15,7 @@ import { LessonEvaluationService } from './services/lesson-evaluation.service';
 import { LessonHashtagService } from './services/lesson-hashtag.service';
 import { LessonLikeService } from './services/lesson-like.service';
 import { LessonService } from './services/lesson.service';
+import { LessonHitListener } from './listeners/lesson-hit.listener';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { LessonService } from './services/lesson.service';
     LessonEvaluationService,
     DataStructureHelper,
     QueryHelper,
+    LessonHitListener,
   ],
   controllers: [
     LessonHashtagController,

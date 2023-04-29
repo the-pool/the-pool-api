@@ -9,12 +9,17 @@ import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
 import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '../entities/lesson.entity';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { LessonHitEvent } from '../events/lesson-hit.event';
+import { LESSON_HIT } from '../listeners/lesson-hit.listener';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -57,15 +62,11 @@ export class LessonService {
   /**
    * 과제 상세조회 메서드
    */
-  readOneLesson(
+  async readOneLesson(
     lessonId: number,
     memberId: number | null,
-  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'> | null> {
-    const includeOption: Prisma.LessonInclude = {
-      member: true,
-      lessonCategory: true,
-      lessonLevel: true,
-    };
+  ): Promise<ReadOneLessonDto> {
+    const includeOption = <Prisma.LessonInclude>{};
 
     if (memberId) {
       const whereOption = {
@@ -78,12 +79,25 @@ export class LessonService {
       includeOption.lessonLikes = whereOption;
     }
 
-    return this.prismaService.lesson.findFirst({
+    const readOneLesson = await this.prismaService.lesson.findFirst({
       where: {
         id: lessonId,
       },
-      include: includeOption,
+      include: {
+        member: true,
+        lessonCategory: true,
+        lessonLevel: true,
+        ...includeOption,
+      },
     });
+
+    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
+
+    const lessonHitEvent = new LessonHitEvent('increment', lessonId);
+
+    this.eventEmitter.emit(LESSON_HIT, lessonHitEvent);
+
+    return lesson;
   }
 
   /**
@@ -137,12 +151,5 @@ export class LessonService {
     ]);
 
     return { lessons, totalCount };
-  }
-
-  increaseLessonHit(lessonId: number): Promise<LessonEntity> {
-    return this.prismaService.lesson.update({
-      where: { id: lessonId },
-      data: { hit: { increment: 1 } },
-    });
   }
 }
