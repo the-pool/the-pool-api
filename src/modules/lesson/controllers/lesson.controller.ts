@@ -107,7 +107,7 @@ export class LessonController {
   }
 
   @ApiReadOneLesson('과제 상세 조회')
-  @BearerAuth(OptionalJwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Get(':id')
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
