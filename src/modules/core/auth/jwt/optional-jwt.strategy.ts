@@ -24,7 +24,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
   }
   async validate(request: any) {
     const token = this.getToken(request);
-
+    console.log('token', token);
     if (token === null) {
       return { id: null };
     }
@@ -37,6 +37,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
   // request 객체로부터 토큰을 가져오는 메서드
   getToken(request: any) {
     const extractToken = ExtractJwt.fromAuthHeaderAsBearerToken();
+    console.log('여기!', extractToken(request));
     return extractToken(request);
   }
 
