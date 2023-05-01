@@ -117,7 +117,7 @@ export class LessonController {
 
   @ApiReadOneLesson('과제 상세 조회')
   @BearerAuth(OptionalJwtAuthGuard)
-  @Get(':id')
+  @Post('test/:id')
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
@@ -131,12 +131,5 @@ export class LessonController {
     await this.lessonService.increaseLessonHit(param.id);
 
     return { lesson };
-  }
-
-  @ApiReadOneLesson('과제 상세 조회')
-  @BearerAuth(OptionalJwtAuthGuard)
-  @Post('testing')
-  test(@UserLogin() member: Member | { id: null }) {
-    return member;
   }
 }
