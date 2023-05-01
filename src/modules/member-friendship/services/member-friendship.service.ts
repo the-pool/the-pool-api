@@ -130,7 +130,7 @@ export class MemberFriendshipService {
       },
     });
 
-    this.memberFriendshipsEvent.follow(followerMemberId, followerMemberId);
+    this.memberFriendshipsEvent.follow(followerMemberId, followingMemberId);
 
     return newFollow;
   }
@@ -187,8 +187,8 @@ export class MemberFriendshipService {
     });
 
     this.memberFriendshipsEvent.unfollow(
-      unfollowingMemberId,
       unfollowerMemberId,
+      unfollowingMemberId,
     );
 
     return deletedFollow;

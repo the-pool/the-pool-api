@@ -101,7 +101,7 @@ export class MemberFriendshipController {
     );
   }
 
-  @ApiDeleteFollowing('member follow (해당 member 를 팔로우 합니다.)')
+  @ApiDeleteFollowing('member unfollow (해당 member 를 팔로우 합니다.)')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OtherMemberSetMetadataGuard('memberId')
   @UseGuards(JwtAuthGuard)
