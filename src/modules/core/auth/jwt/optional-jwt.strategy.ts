@@ -38,7 +38,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
   // request 객체로부터 토큰을 가져오는 메서드
   getToken(request: any) {
     const extractToken = ExtractJwt.fromAuthHeaderAsBearerToken();
-    console.log('여기!', extractToken(request));
+    console.log('여기!', ExtractJwt.fromAuthHeaderAsBearerToken());
     return extractToken(request);
   }
 
