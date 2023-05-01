@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { SolutionController } from '@src/modules/solution/controllers/solution.controller';
 import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
 import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
@@ -8,6 +9,7 @@ import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionService } from '@test/mock/mock-services';
 
 describe('SolutionController', () => {
@@ -18,6 +20,10 @@ describe('SolutionController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [SolutionController],
       providers: [
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
+        },
         {
           provide: SolutionService,
           useValue: mockSolutionService,

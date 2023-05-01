@@ -75,7 +75,7 @@ describe('SolutionService', () => {
     });
 
     it('SUCCESS - Solution Created', async () => {
-      expect(
+      await expect(
         solutionService.createSolution(createSolutionDto, memberId),
       ).resolves.toStrictEqual(createdSolution);
 
