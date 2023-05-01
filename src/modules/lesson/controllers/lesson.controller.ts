@@ -132,4 +132,11 @@ export class LessonController {
 
     return { lesson };
   }
+
+  @ApiReadOneLesson('과제 상세 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
+  @Post('testing')
+  test(@UserLogin() member: Member | { id: null }) {
+    return member;
+  }
 }
