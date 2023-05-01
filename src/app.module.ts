@@ -1,35 +1,13 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
 import { IsRecordConstraint } from '@src/decorators/is-record.decorator';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { modules } from '@src/modules';
-import Joi from 'joi';
 import { IsRecordManyConstraint } from './decorators/is-record-many.decorator';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: ['.env.local', '.env'],
-      validationSchema: Joi.object({
-        PORT: Joi.number().default(3000),
-        SECRET_KEY: Joi.string(),
-        DATABASE_URL: Joi.string(),
-        AWS_S3_ACCESS_KEY: Joi.string(),
-        AWS_S3_SECRET_KEY: Joi.string(),
-        AWS_S3_REGION: Joi.string(),
-        AWS_S3_BUCKET_NAME: Joi.string(),
-        AWS_S3_EXPIRES: Joi.number(),
-        AWS_S3_ACL: Joi.string(),
-        AWS_CLOUD_FRONT_URL: Joi.string(),
-        GITHUB_CLIENT_ID: Joi.string(),
-        GITHUB_CLIENT_SECRET: Joi.string(),
-      }),
-      isGlobal: true,
-    }),
-    ...modules,
-  ],
+  imports: [...modules],
   controllers: [AppController],
   providers: [AppService, IsRecordConstraint, IsRecordManyConstraint],
 })
