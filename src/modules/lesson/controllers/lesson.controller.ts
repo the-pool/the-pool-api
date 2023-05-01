@@ -105,6 +105,14 @@ export class LessonController {
     return { lesson: deletedLesson };
   }
 
+  @ApiReadManyLesson('과제 목록 조회')
+  @Get()
+  readManyLesson(
+    @Query() query: ReadManyLessonQueryDto,
+  ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
+    return this.lessonService.readManyLesson(query);
+  }
+
   @ApiReadOneLesson('과제 상세 조회')
   @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
@@ -115,13 +123,5 @@ export class LessonController {
     const lesson = await this.lessonService.readOneLesson(param.id, member.id);
 
     return { lesson };
-  }
-
-  @ApiReadManyLesson('과제 목록 조회')
-  @Get()
-  readManyLesson(
-    @Query() query: ReadManyLessonQueryDto,
-  ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    return this.lessonService.readManyLesson(query);
   }
 }
