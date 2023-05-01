@@ -23,6 +23,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
     super();
   }
   async validate(request: any) {
+    console.log('request', request);
     const token = this.getToken(request);
     console.log('token', token);
     if (token === null) {
@@ -31,7 +32,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
 
     const validatedToken = this.validateToken(token);
 
-    return this.validateMember(validatedToken.id);
+    return await this.validateMember(validatedToken.id);
   }
 
   // request 객체로부터 토큰을 가져오는 메서드
