@@ -54,12 +54,23 @@ export class SolutionService {
     });
   }
 
-  deleteSolution(solutionId: number): Promise<SolutionEntity> {
-    return this.prismaService.lessonSolution.delete({
+  async deleteSolution(
+    solutionId: number,
+    memberId: number,
+  ): Promise<SolutionEntity> {
+    const deletedSolution = await this.prismaService.lessonSolution.delete({
       where: {
         id: solutionId,
       },
     });
+
+    // member 의 lessonSolutionCount 감소 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'solutionCount',
+      action: 'decrement',
+    });
+
+    return deletedSolution;
   }
 
   async readOneSolution(

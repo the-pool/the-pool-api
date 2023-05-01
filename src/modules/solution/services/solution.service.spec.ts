@@ -114,19 +114,21 @@ describe('SolutionService', () => {
   /// DELETE Solution
   describe('DELETE Solution', () => {
     let solutionId: number;
+    let memberId: number;
     let deletedSolution: SolutionEntity;
 
     beforeEach(() => {
       solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
       deletedSolution = new SolutionEntity();
 
       prismaService.lessonSolution.delete.mockResolvedValue(deletedSolution);
     });
 
     it('SUCCESS - Soultion Delete', () => {
-      expect(solutionService.deleteSolution(solutionId)).resolves.toStrictEqual(
-        deletedSolution,
-      );
+      expect(
+        solutionService.deleteSolution(solutionId, memberId),
+      ).resolves.toStrictEqual(deletedSolution);
       expect(prismaService.lessonSolution.delete).toBeCalledTimes(1);
     });
   });

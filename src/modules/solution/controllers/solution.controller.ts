@@ -82,7 +82,7 @@ export class SolutionController {
       memberId,
     });
 
-    return this.solutionService.deleteSolution(solutionId);
+    return this.solutionService.deleteSolution(solutionId, memberId);
   }
 
   @ApiReadOneSolution('문제-풀이 상세 조회')
