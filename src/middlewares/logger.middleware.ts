@@ -10,7 +10,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const userAgent = request.get('user-agent') || '';
     const startTime = new Date().getTime();
 
-    this.logger.log(`헤더${headers}`);
+    this.logger.log(`헤더${headers.authorization}`);
 
     this.logger.log(`${method} ${originalUrl} - ${userAgent} ${ip}`);
 
