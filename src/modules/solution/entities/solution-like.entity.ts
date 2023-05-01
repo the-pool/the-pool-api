@@ -1,22 +1,24 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
-import { MajorSkill } from '@prisma/client';
+import { LessonSolutionLike } from '@prisma/client';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
-export class MajorSkillEntity
+export class SolutionLikeEntity
   extends IntersectionType(
     IdResponseType,
     PickType(DateResponseType, ['createdAt']),
   )
-  implements MajorSkill
+  implements LessonSolutionLike
 {
   @ApiProperty({
-    description: '스킬의 분야 고유 ID',
+    description: '과제를 좋아요한 멤버 고유 ID',
+    example: 1,
   })
-  majorId: number;
+  memberId: number;
 
   @ApiProperty({
-    description: '스킬 명',
+    example: 1,
+    description: 'lesson의 고유 ID',
   })
-  name: string;
+  lessonSolutionId: number;
 }

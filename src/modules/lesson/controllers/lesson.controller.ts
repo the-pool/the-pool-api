@@ -107,18 +107,20 @@ export class LessonController {
   }
 
   @ApiReadOneLesson('과제 상세 조회')
-  @BearerAuth(OptionalJwtAuthGuard)
+  @BearerAuth(JwtAuthGuard)
   @Get(':id')
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<{ lesson: ReadOneLessonDto }> {
+    console.log(1, member);
     const readOneLesson = await this.lessonService.readOneLesson(
       param.id,
       member.id,
     );
+    console.log(4, readOneLesson);
     const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
-
+    console.log(5, lesson);
     await this.lessonService.increaseLessonHit(param.id);
 
     return { lesson };

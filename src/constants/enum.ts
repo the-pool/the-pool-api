@@ -18,6 +18,7 @@ export enum ModelName {
   MemberSkill = 'memberSkill',
   MemberInterest = 'memberInterest',
   MajorSkill = 'majorSkill',
+  Major = 'major',
 }
 
 export enum OrderBy {

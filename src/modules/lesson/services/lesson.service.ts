@@ -84,7 +84,7 @@ export class LessonService {
       lessonCategory: true,
       lessonLevel: true,
     };
-
+    console.log(2, memberId);
     if (memberId) {
       const whereOption = {
         where: {
@@ -95,6 +95,7 @@ export class LessonService {
       includeOption.lessonBookMarks = whereOption;
       includeOption.lessonLikes = whereOption;
     }
+    console.log(3, includeOption);
 
     return this.prismaService.lesson.findFirst({
       where: {

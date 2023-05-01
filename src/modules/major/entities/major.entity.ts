@@ -1,13 +1,16 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { Major } from '@prisma/client';
 import { MajorText } from '@src/constants/enum';
+import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { MajorSkillEntity } from './major-skill.entity';
 
-/**
- * @deprecated https://github.com/the-pool/the-pool-api/issues/76 수행 시 제거하면서 V2 를 사용
- */
-export class MajorEntity extends IdResponseType implements Major {
+export class MajorEntity
+  extends IntersectionType(
+    IdResponseType,
+    PickType(DateResponseType, ['createdAt']),
+  )
+  implements Major
+{
   @ApiProperty({
     description: '분야 명',
     enum: MajorText,
@@ -19,10 +22,4 @@ export class MajorEntity extends IdResponseType implements Major {
     description: '생성일자',
   })
   createdAt: Date;
-
-  @ApiPropertyOptional({
-    description: '분야 의 메인스킬들',
-    type: [MajorSkillEntity],
-  })
-  majorSkills?: MajorSkillEntity[];
 }

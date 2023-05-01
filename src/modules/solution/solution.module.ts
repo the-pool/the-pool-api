@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
+import { QueryHelper } from '@src/helpers/query.helper';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatisticsModule } from '@src/modules/member-statistics/member-statistics.module';
@@ -20,6 +21,7 @@ import { SolutionService } from '@src/modules/solution/services/solution.service
     PrismaService,
     SolutionService,
     SolutionHashtagService,
+    QueryHelper,
     LessonSolutionRepository,
   ],
   controllers: [
