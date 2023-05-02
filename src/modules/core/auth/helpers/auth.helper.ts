@@ -6,7 +6,6 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { AxiosRequestConfig } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { CommonHelper } from '@src/helpers/common.helper';
 import {
@@ -18,6 +17,8 @@ import {
   GitHubAccessTokenResponse,
   KakaoAccessTokenResponse,
 } from '@src/modules/core/auth/type/auth.type';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { OAuth2Client, TokenInfo } from 'google-auth-library';
@@ -36,7 +37,7 @@ export class AuthHelper {
     private readonly googleAuth: OAuth2Client,
     @Inject(JWKS_CLIENT_TOKEN)
     private readonly jwksClient: JwksRsa.JwksClient,
-    private readonly configService: ConfigService,
+    private readonly thePoolConfigService: ThePoolConfigService,
   ) {}
 
   /**
@@ -182,8 +183,10 @@ export class AuthHelper {
         .post<Record<string, string>>(
           getAccessTokenUrl,
           {
-            client_id: this.configService.get('CLIENT_ID_GITHUB'),
-            client_secret: this.configService.get('CLIENT_SECRET_GITHUB'),
+            client_id: this.thePoolConfigService.get(ENV_KEY.CLIENT_ID_GITHUB),
+            client_secret: this.thePoolConfigService.get(
+              ENV_KEY.CLIENT_SECRET_GITHUB,
+            ),
             code,
           },
           {

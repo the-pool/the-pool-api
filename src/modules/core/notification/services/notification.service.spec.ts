@@ -1,21 +1,18 @@
 import { faker } from '@faker-js/faker';
 import { HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
   EMBED_BUILDER_TOKEN,
   WEBHOOK_CLIENT_TOKEN,
 } from '@src/modules/core/notification/constants/notification.constant';
+import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import {
   ServerExceptionField,
   WarningExceptionFiled,
 } from '@src/modules/core/notification/type/notification.type';
-import {
-  MockEmbedBuilder,
-  MockWebhookClient,
-} from '../../../../../test/mock/mock-libs';
-import { mockConfigService } from '../../../../../test/mock/mock-services';
-import { NotificationService } from './notification.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
+import { MockEmbedBuilder, MockWebhookClient } from '@test/mock/mock-libs';
+import { mockThePoolConfigService } from '@test/mock/mock-services';
 
 describe('NotificationService', () => {
   let service: NotificationService;
@@ -33,8 +30,8 @@ describe('NotificationService', () => {
           useValue: MockWebhookClient,
         },
         {
-          provide: ConfigService,
-          useValue: mockConfigService,
+          provide: ThePoolConfigService,
+          useValue: mockThePoolConfigService,
         },
       ],
     }).compile();

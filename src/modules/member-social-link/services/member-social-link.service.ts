@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
-import path from 'path';
 
 @Injectable()
 export class MemberSocialLinkService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly thePoolConfigService: ThePoolConfigService,
   ) {}
 
   /**
@@ -31,7 +31,7 @@ export class MemberSocialLinkService {
    */
   private setIconUrl(iconPath: string): string {
     return (
-      (this.configService.get<string>('AWS_CLOUD_FRONT_URL') as string) +
+      this.thePoolConfigService.get<string>(ENV_KEY.AWS_CLOUD_FRONT_URL) +
       '/' +
       iconPath
     );

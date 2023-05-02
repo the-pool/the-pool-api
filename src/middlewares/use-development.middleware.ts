@@ -1,5 +1,5 @@
 import { Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { NextFunction, Request, Response } from 'express';
 
 /**
@@ -7,11 +7,10 @@ import { NextFunction, Request, Response } from 'express';
  */
 @Injectable()
 export class UseDevelopmentMiddleware implements NestMiddleware {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly thePoolConfigService: ThePoolConfigService) {}
 
   use(request: Request, response: Response, next: NextFunction) {
-    const isProduction =
-      this.configService.get<string>('NODE_ENV') === 'production';
+    const isProduction = this.thePoolConfigService.isProduction();
     const { path, method } = request;
 
     if (isProduction) {

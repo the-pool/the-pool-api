@@ -1,5 +1,4 @@
 import { Inject, Injectable, Type } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import {
   EMBED_BUILDER_TOKEN,
   WEBHOOK_CLIENT_TOKEN,
@@ -8,6 +7,8 @@ import {
   ServerExceptionField,
   WarningExceptionFiled,
 } from '@src/modules/core/notification/type/notification.type';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { bold, EmbedBuilder, WebhookClient } from 'discord.js';
 
 /**
@@ -36,7 +37,7 @@ export class NotificationService {
     private readonly embedBuilder: Type<EmbedBuilder>,
     @Inject(WEBHOOK_CLIENT_TOKEN)
     private readonly webhookClient: Type<WebhookClient>,
-    private readonly configService: ConfigService,
+    private readonly thePoolConfigService: ThePoolConfigService,
   ) {}
 
   /**
@@ -45,23 +46,29 @@ export class NotificationService {
   async warning(exceptionField: WarningExceptionFiled): Promise<void> {
     const { description, ...serverExceptionField } = exceptionField;
 
-    await this.send(this.configService.get('SERVER_EXCEPTION_CHANNEL_URL'), {
-      description,
-      color: '#FFA500', // 주황
-      title: 'server warning exception',
-      fields: this.buildServerExceptionField(serverExceptionField),
-    });
+    await this.send(
+      this.thePoolConfigService.get(ENV_KEY.SERVER_EXCEPTION_CHANNEL_URL),
+      {
+        description,
+        color: '#FFA500', // 주황
+        title: 'server warning exception',
+        fields: this.buildServerExceptionField(serverExceptionField),
+      },
+    );
   }
 
   /**
    * 500번대 에러 시
    */
   async error(exceptionField: ServerExceptionField): Promise<void> {
-    await this.send(this.configService.get('SERVER_EXCEPTION_CHANNEL_URL'), {
-      color: '#a63641', // 빨강
-      title: 'server error exception',
-      fields: this.buildServerExceptionField(exceptionField),
-    });
+    await this.send(
+      this.thePoolConfigService.get(ENV_KEY.SERVER_EXCEPTION_CHANNEL_URL),
+      {
+        color: '#a63641', // 빨강
+        title: 'server error exception',
+        fields: this.buildServerExceptionField(exceptionField),
+      },
+    );
   }
 
   private buildServerExceptionField(

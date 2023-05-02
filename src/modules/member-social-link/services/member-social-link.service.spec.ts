@@ -1,10 +1,10 @@
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockConfigService } from '../../../../test/mock/mock-services';
-import { MemberSocialLinkService } from './member-social-link.service';
+import { MemberSocialLinkService } from '@src/modules/member-social-link/services/member-social-link.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockThePoolConfigService } from '@test/mock/mock-services';
 
 describe('MemberSocialLinkService', () => {
   let service: MemberSocialLinkService;
@@ -18,8 +18,8 @@ describe('MemberSocialLinkService', () => {
           useValue: mockPrismaService,
         },
         {
-          provide: ConfigService,
-          useValue: mockConfigService,
+          provide: ThePoolConfigService,
+          useValue: mockThePoolConfigService,
         },
       ],
     }).compile();
@@ -33,14 +33,14 @@ describe('MemberSocialLinkService', () => {
 
   describe('findAll', () => {
     let memberSocialLinkEntities: MemberSocialLinkEntity[];
-    const CF_RUL = 'cfURL';
+    const CF_URL = 'cfURL';
 
     beforeEach(() => {
       memberSocialLinkEntities = [new MemberSocialLinkEntity()];
       memberSocialLinkEntities[0].iconPath = 'path';
 
       mockPrismaService.memberSocialLink.findMany.mockRestore();
-      mockConfigService.get.mockReturnValue(CF_RUL);
+      mockThePoolConfigService.get.mockReturnValue(CF_URL);
     });
 
     it('findAll', async () => {
@@ -51,7 +51,7 @@ describe('MemberSocialLinkService', () => {
       await expect(service.findAll()).resolves.toStrictEqual([
         {
           ...memberSocialLinkEntities[0],
-          iconUrl: CF_RUL + '/' + memberSocialLinkEntities[0].iconPath,
+          iconUrl: CF_URL + '/' + memberSocialLinkEntities[0].iconPath,
         },
       ]);
     });

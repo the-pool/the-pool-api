@@ -1,29 +1,29 @@
 import { faker } from '@faker-js/faker';
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
+import { MemberController } from '@src/modules/member/controllers/member.controller';
+import { LoginByOAuthDto } from '@src/modules/member/dtos/create-member-by-oauth.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
+import { LastStepLoginDto } from '@src/modules/member/dtos/last-step-login.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
+import { MemberService } from '@src/modules/member/services/member.service';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import {
   mockAuthService,
-  mockConfigService,
   mockMemberService,
   mockMemberValidationService,
-} from '../../../../test/mock/mock-services';
-import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
-import { LastStepLoginDto } from '../dtos/last-step-login.dto';
-import { MemberService } from '../services/member.service';
-import { MemberController } from './member.controller';
+  mockThePoolConfigService,
+} from '@test/mock/mock-services';
 
 describe('MemberController', () => {
   let memberController: MemberController;
@@ -34,8 +34,8 @@ describe('MemberController', () => {
       controllers: [MemberController],
       providers: [
         {
-          provide: ConfigService,
-          useValue: mockConfigService,
+          provide: ThePoolConfigService,
+          useValue: mockThePoolConfigService,
         },
         {
           provide: MemberService,

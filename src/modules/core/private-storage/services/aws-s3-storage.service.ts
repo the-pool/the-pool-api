@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { GetSignedUrlDto } from '@src/modules/core/private-storage/dtos/get-signed-url.dto';
+import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import AWS from 'aws-sdk';
-import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
-import { PrivateStorageService } from '../interfaces/private-storage-service.interface';
 
 @Injectable()
 export class AwsS3StorageService implements PrivateStorageService {
@@ -11,15 +12,19 @@ export class AwsS3StorageService implements PrivateStorageService {
   private readonly awsS3ACL: string | undefined;
   private readonly awsS3Expires: number | undefined;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly thePoolConfigService: ThePoolConfigService) {
     this.awsS3 = new AWS.S3({
-      accessKeyId: this.configService.get('AWS_ACCESS_KEY'),
-      secretAccessKey: this.configService.get('AWS_SECRET_KEY'),
-      region: this.configService.get('AWS_S3_REGION'),
+      accessKeyId: this.thePoolConfigService.get(ENV_KEY.AWS_ACCESS_KEY),
+      secretAccessKey: this.thePoolConfigService.get(ENV_KEY.AWS_SECRET_KEY),
+      region: this.thePoolConfigService.get(ENV_KEY.AWS_S3_REGION),
     });
-    this.awsS3Bucket = this.configService.get<string>('AWS_S3_BUCKET_NAME');
-    this.awsS3ACL = this.configService.get<string>('AWS_S3_ACL');
-    this.awsS3Expires = this.configService.get<number>('AWS_S3_EXPIRES');
+    this.awsS3Bucket = this.thePoolConfigService.get<string>(
+      ENV_KEY.AWS_S3_BUCKET_NAME,
+    );
+    this.awsS3ACL = this.thePoolConfigService.get<string>(ENV_KEY.AWS_S3_ACL);
+    this.awsS3Expires = this.thePoolConfigService.get<number>(
+      ENV_KEY.AWS_S3_EXPIRES,
+    );
   }
 
   async getSignedUrl({
