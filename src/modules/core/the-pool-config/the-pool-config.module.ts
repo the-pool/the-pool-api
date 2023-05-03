@@ -11,7 +11,7 @@ import Joi from 'joi';
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
         SECRET_KEY: Joi.string().required(),
-        NODE_ENV: Joi.string().required(),
+        NODE_ENV: Joi.string().required().default('local'),
         DATABASE_URL: Joi.string().required(),
         AWS_ACCESS_KEY: Joi.string().required(),
         AWS_SECRET_KEY: Joi.string().required(),
@@ -23,6 +23,7 @@ import Joi from 'joi';
         CLIENT_ID_GITHUB: Joi.string().required(),
         CLIENT_SECRET_GITHUB: Joi.string().required(),
         SERVER_EXCEPTION_CHANNEL_URL: Joi.required(),
+        NORMAL_NOTIFICATION_CHANNEL_URL: Joi.required(),
       }),
     }),
   ],

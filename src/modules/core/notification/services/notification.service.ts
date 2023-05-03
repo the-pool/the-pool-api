@@ -71,6 +71,41 @@ export class NotificationService {
     );
   }
 
+  /**
+   * 실제 webhook 을 통해 보내는 메서드
+   */
+  async send(url, option: NotificationOption): Promise<void> {
+    const { title, color, description, fields } = option;
+
+    const webhookClient = new this.webhookClient({
+      url,
+    });
+
+    const embed = new this.embedBuilder()
+      .setTitle(title)
+      .setColor(color)
+      .setTimestamp();
+
+    if (fields && fields.length) {
+      embed.setFields(...fields);
+    }
+
+    if (description) {
+      embed.setDescription(description);
+    }
+
+    await webhookClient
+      .send({
+        username: 'thePool',
+        content: bold('the pool server notification'),
+        avatarURL: 'https://avatars.githubusercontent.com/u/113972423',
+        embeds: [embed],
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  }
+
   private buildServerExceptionField(
     exceptionField: Partial<ServerExceptionField>,
   ): Field[] {
@@ -126,40 +161,5 @@ export class NotificationService {
     }
 
     return fields;
-  }
-
-  /**
-   * 실제 webhook 을 통해 보내는 메서드
-   */
-  private async send(url, option: NotificationOption): Promise<void> {
-    const { title, color, description, fields } = option;
-
-    const webhookClient = new this.webhookClient({
-      url,
-    });
-
-    const embed = new this.embedBuilder()
-      .setTitle(title)
-      .setColor(color)
-      .setTimestamp();
-
-    if (fields && fields.length) {
-      embed.setFields(...fields);
-    }
-
-    if (description) {
-      embed.setDescription(description);
-    }
-
-    await webhookClient
-      .send({
-        username: 'thePool',
-        content: bold('the pool server notification'),
-        avatarURL: 'https://avatars.githubusercontent.com/u/113972423',
-        embeds: [embed],
-      })
-      .catch((e) => {
-        console.error(e);
-      });
   }
 }

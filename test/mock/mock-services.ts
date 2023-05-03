@@ -164,6 +164,7 @@ export const mockLessonLikeService: MockClassType<LessonLikeService> = {
 };
 
 export const mockNotificationService: MockClassType<NotificationService> = {
+  send: jest.fn(),
   error: jest.fn(),
   warning: jest.fn(),
 };
