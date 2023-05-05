@@ -1,10 +1,28 @@
 {
-  "name": "nestjs-v9-prisma-boiler-plate",
+  "name": "the-pool-server",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
+  "description": "주니어들의 성장을 도모하는 교육 플랫폼 the pool 의 서버입니다.",
+  "author": "team the pool <https://github.com/the-pool>",
+  "homepage": "https://thepool.kr",
+  "license": "MIT",
+  "contributors": [
+    "Seok Ho Lee <rrgks@naver.com>",
+    "Rok Wonk Kim <rokwon79@gmail.com>",
+    "Su Hyung Lee <clark9810@naver.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the-pool/the-pool-api"
+  },
+  "keywords": [
+    "nestjs",
+    "prisma",
+    "restful api",
+    "clean architecture",
+    "test driven development",
+    "backend",
+    "postgresql"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
