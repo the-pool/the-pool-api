@@ -7,4 +7,5 @@ export const LESSON_VIRTUAL_COLUMN_FOR_READ_MANY = {
   [LessonVirtualColumn.LessonSolutions]: LessonVirtualColumn.LessonSolutions,
   [LessonVirtualColumn.LessonComments]: LessonVirtualColumn.LessonComments,
   [LessonVirtualColumn.LessonLikes]: LessonVirtualColumn.LessonLikes,
+  [LessonVirtualColumn.LessonBookmarks]: LessonVirtualColumn.LessonBookmarks,
 } as const;

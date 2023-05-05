@@ -159,6 +159,7 @@ export class LessonService {
               lessonLikes: true,
               lessonComments: true,
               lessonSolutions: true,
+              lessonBookMarks: true,
             },
           },
         },
