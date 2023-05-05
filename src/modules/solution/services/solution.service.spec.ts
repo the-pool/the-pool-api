@@ -241,7 +241,7 @@ describe('SolutionService', () => {
       });
     });
 
-    it('SUCCESS - filtering isLike on loggedIn user', async () => {
+    it('SUCCESS - isLike filtering by logged in user', async () => {
       query.isLike = true;
       memberId = 1;
 
@@ -276,7 +276,7 @@ describe('SolutionService', () => {
       );
     });
 
-    it('SUCCESS - filtering isLike on not loggedIn user', async () => {
+    it('SUCCESS - isLike filtering by not logged in user', async () => {
       query.isLike = true;
       memberId = null;
 
