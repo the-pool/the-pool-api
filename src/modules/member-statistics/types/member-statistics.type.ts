@@ -1,4 +1,5 @@
 import { Prisma } from '@prisma/client';
+import { IncreaseAction } from '@src/types/type';
 
 export type MemberStatisticsIncreaseFieldName = keyof Pick<
   Prisma.MemberStatisticsUpdateInput,
@@ -8,3 +9,9 @@ export type MemberStatisticsIncreaseFieldName = keyof Pick<
   | 'solutionCommentCount'
   | 'feedbackCount'
 >;
+
+export interface IMemberStatisticsEvent {
+  fieldName: MemberStatisticsIncreaseFieldName;
+  action: IncreaseAction;
+  count?: number;
+}

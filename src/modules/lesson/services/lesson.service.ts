@@ -2,34 +2,44 @@ import { Injectable } from '@nestjs/common';
 import { Prisma, PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
+    private readonly memberStatisticsEvent: MemberStatisticsEvent,
   ) {}
 
   /**
    * 과제 생성 메서드
    */
-  createLesson(
+  async createLesson(
     lesson: CreateLessonDto,
     memberId: number,
   ): Promise<LessonEntity> {
-    return this.prismaService.lesson.create({
+    const newLesson = await this.prismaService.lesson.create({
       data: {
         ...lesson,
         memberId,
       },
     });
+
+    // member 의 lessonCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'lessonCount',
+      action: 'increment',
+    });
+
+    return newLesson;
   }
 
   /**
@@ -48,10 +58,18 @@ export class LessonService {
   /**
    * 과제 삭제 메서드
    */
-  deleteLesson(lessonId: number) {
-    return this.prismaService.lesson.delete({
+  async deleteLesson(memberId: number, lessonId: number) {
+    const deletedLesson = await this.prismaService.lesson.delete({
       where: { id: lessonId },
     });
+
+    // member 의 lessonCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'lessonCount',
+      action: 'decrement',
+    });
+
+    return deletedLesson;
   }
 
   /**

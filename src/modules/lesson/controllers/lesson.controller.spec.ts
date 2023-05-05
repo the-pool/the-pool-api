@@ -1,17 +1,17 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { mockLessonService } from '../../../../test/mock/mock-services';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonService } from '../services/lesson.service';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { LessonController } from './lesson.controller';
-import { LessonEntity } from '../entities/lesson.entity';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
+import { LessonController } from '@src/modules/lesson/controllers/lesson.controller';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { LessonService } from '@src/modules/lesson/services/lesson.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonService } from '@test/mock/mock-services';
 
 describe('LessonController', () => {
   let lessonController: LessonController;
@@ -143,7 +143,7 @@ describe('LessonController', () => {
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.deleteLesson).toBeCalledTimes(1);
-      expect(lessonService.deleteLesson).toBeCalledWith(param.id);
+      expect(lessonService.deleteLesson).toBeCalledWith(memberId, param.id);
     });
 
     it('success - check Input & Output', async () => {

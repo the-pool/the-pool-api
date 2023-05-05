@@ -12,7 +12,6 @@ import {
   ApiNotFoundResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { IncreaseMemberFollowSetMetadataInterceptor } from '@src/decorators/increase-member-follow-set-metadata.interceptor.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { OtherMemberSetMetadataGuard } from '@src/decorators/other-member-set-metadata.guard-decorator';
 import { SetDefaultPageSize } from '@src/decorators/set-default-pageSize.decorator';
@@ -90,7 +89,6 @@ export class MemberFriendshipController {
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OtherMemberSetMetadataGuard('memberId')
   @UseGuards(JwtAuthGuard)
-  @IncreaseMemberFollowSetMetadataInterceptor('memberId', 'increment')
   @SetResponseSetMetadataInterceptor('memberFollow')
   @Post('followings/:memberId')
   createFollowing(
@@ -103,11 +101,10 @@ export class MemberFriendshipController {
     );
   }
 
-  @ApiDeleteFollowing('member follow (해당 member 를 팔로우 합니다.)')
+  @ApiDeleteFollowing('member unfollow (해당 member 를 팔로우 합니다.)')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @OtherMemberSetMetadataGuard('memberId')
   @UseGuards(JwtAuthGuard)
-  @IncreaseMemberFollowSetMetadataInterceptor('memberId', 'decrement')
   @SetResponseSetMetadataInterceptor('memberFollow')
   @Delete('followings/:memberId')
   deleteFollowing(

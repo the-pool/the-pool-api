@@ -1,25 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma, PrismaPromise } from '@prisma/client';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 import {
   PrismaCommentModelMapper,
   PrismaCommentModelName,
   PrismaCommentParentIdColumn,
 } from '@src/types/type';
-import { ReadManyCommentQueryBaseDto } from '../dtos/read-many-comment-query-base.dto';
-import { PrismaPromise } from '@prisma/client';
 
 @Injectable()
 export class CommentService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly memberStatisticsEvent: MemberStatisticsEvent,
+  ) {}
 
-  createComment<T extends PrismaCommentModelName>(
+  async createComment<T extends PrismaCommentModelName>(
     commentModel: T,
     parentIdColumn: Partial<PrismaCommentParentIdColumn>,
     memberId: number,
     description: string,
   ): Promise<PrismaCommentModelMapper[T]> {
     // @ts-ignore
-    return this.prismaService[commentModel].create({
+    const newComment = await this.prismaService[commentModel].create({
       // @ts-ignore
       data: { memberId, ...parentIdColumn, description },
       include: {
@@ -30,14 +34,23 @@ export class CommentService {
         },
       },
     });
+
+    // member 의 lessonCommentCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: this.getMemberStatisticsFieldName(commentModel),
+      action: 'increment',
+    });
+
+    return newComment;
   }
 
-  deleteComment<T extends PrismaCommentModelName>(
+  async deleteComment<T extends PrismaCommentModelName>(
+    memberId: number,
     commentModel: T,
     commentId: number,
   ): Promise<PrismaCommentModelMapper[T]> {
     // @ts-ignore
-    return this.prismaService[commentModel].delete({
+    const deletedComment = await this.prismaService[commentModel].delete({
       where: { id: commentId },
       include: {
         member: {
@@ -47,6 +60,14 @@ export class CommentService {
         },
       },
     });
+
+    // member 의 lessonComment 감소 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: this.getMemberStatisticsFieldName(commentModel),
+      action: 'decrement',
+    });
+
+    return deletedComment;
   }
 
   updateComment<T extends PrismaCommentModelName>(
@@ -106,5 +127,18 @@ export class CommentService {
     ]);
 
     return { comments, totalCount };
+  }
+
+  private getMemberStatisticsFieldName<T extends PrismaCommentModelName>(
+    commentModel: T,
+  ): keyof Pick<
+    Prisma.MemberStatisticsUpdateInput,
+    'lessonCommentCount' | 'solutionCommentCount'
+  > {
+    if (commentModel === 'lessonComment') {
+      return 'lessonCommentCount';
+    }
+
+    return 'solutionCommentCount';
   }
 }

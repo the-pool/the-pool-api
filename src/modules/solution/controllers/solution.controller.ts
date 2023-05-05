@@ -7,33 +7,31 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
+import { Member } from '@prisma/client';
+import { ModelName } from '@src/constants/enum';
+import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
-import { SolutionEntity } from '../entities/solution.entity';
-import { SolutionService } from '../services/solution.service';
 import {
   ApiCreateSolution,
   ApiDeleteSolution,
   ApiReadManySolution,
   ApiReadOneSolution,
   ApiUpdateSolution,
-} from './solution.controller.swagger';
-import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
-import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { Member } from '@prisma/client';
-import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
+} from '@src/modules/solution/controllers/solution.controller.swagger';
+import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
+import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
+import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
+import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { plainToClass } from 'class-transformer';
-import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { ModelName } from '@src/constants/enum';
 
 @ApiTags('문제 - 풀이')
 @Controller()
@@ -44,7 +42,6 @@ export class SolutionController {
   ) {}
 
   @ApiCreateSolution('문제 - 풀이 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('solutionCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -85,7 +82,7 @@ export class SolutionController {
       memberId,
     });
 
-    return this.solutionService.deleteSolution(solutionId);
+    return this.solutionService.deleteSolution(solutionId, memberId);
   }
 
   @ApiReadOneSolution('문제-풀이 상세 조회')

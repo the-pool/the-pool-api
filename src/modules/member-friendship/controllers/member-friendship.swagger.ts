@@ -71,6 +71,7 @@ export const ApiCreateFollowing = (summary: string) => {
 export const ApiDeleteFollowing = (summary: string) => {
   return applyDecorators(
     ApiOperation({ summary }),
+    ApiBearerAuth(),
     ApiSuccessResponse(HttpStatus.OK, {
       memberFollow: {
         type: MemberFollowEntity,
