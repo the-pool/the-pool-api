@@ -109,11 +109,27 @@ export class LessonService {
    */
   async readManyLesson(
     query: ReadManyLessonQueryDto,
+    memberId: number | null,
   ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy, ...filter } = query;
+    const { page, pageSize, orderBy, sortBy, isBookMark, ...filter } = query;
 
     // search 조건 build
     const where = this.queryHelper.buildWherePropForFind(filter);
+    let lessonBookMarksWhere:
+      | {
+          lessonBookMarks: Prisma.LessonBookmarkListRelationFilter;
+        }
+      | undefined;
+
+    if (memberId && isBookMark) {
+      lessonBookMarksWhere = {
+        lessonBookMarks: {
+          some: {
+            memberId,
+          },
+        },
+      };
+    }
 
     // sortBy가 가상 컬럼인 경우 { _count: orderBy } 형식으로 orderBy 세팅
     const settledOrderBy = LESSON_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
@@ -128,7 +144,10 @@ export class LessonService {
     // promise 한 lesson 목록
     const readManyLessonQuery: PrismaPromise<ReadManyLessonDto[]> =
       this.prismaService.lesson.findMany({
-        where,
+        where: {
+          ...where,
+          ...lessonBookMarksWhere,
+        },
         orderBy: order,
         skip: page * pageSize,
         take: pageSize,
@@ -147,7 +166,13 @@ export class LessonService {
 
     // promise 한 count
     const totalCountQuery: PrismaPromise<number> =
-      this.prismaService.lesson.count({ where, orderBy: order });
+      this.prismaService.lesson.count({
+        where: {
+          ...where,
+          ...lessonBookMarksWhere,
+        },
+        orderBy: order,
+      });
 
     const [lessons, totalCount] = await this.prismaService.$transaction([
       readManyLessonQuery,

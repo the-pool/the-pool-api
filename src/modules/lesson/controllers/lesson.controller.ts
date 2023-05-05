@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
@@ -108,11 +107,13 @@ export class LessonController {
   }
 
   @ApiReadManyLesson('과제 목록 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   readManyLesson(
     @Query() query: ReadManyLessonQueryDto,
+    @UserLogin() member: Member | { id: null },
   ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    return this.lessonService.readManyLesson(query);
+    return this.lessonService.readManyLesson(query, member.id);
   }
 
   @ApiReadOneLesson('과제 상세 조회')
