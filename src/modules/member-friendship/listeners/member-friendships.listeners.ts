@@ -14,7 +14,7 @@ export class MemberFriendshipsListeners {
   ) {}
 
   @OnEvent(MEMBER_FOLLOW_CREATE)
-  handleMemberFollowCreateEvent(toMemberId: number, fromMemberId: number) {
+  handleMemberFollowCreateEvent(fromMemberId: number, toMemberId: number) {
     this.prismaService
       .$transaction([
         this.prismaService.memberStatistics.update({
@@ -24,7 +24,7 @@ export class MemberFriendshipsListeners {
             },
           },
           where: {
-            memberId: fromMemberId,
+            memberId: toMemberId,
           },
         }),
         this.prismaService.memberStatistics.update({
@@ -34,7 +34,7 @@ export class MemberFriendshipsListeners {
             },
           },
           where: {
-            memberId: toMemberId,
+            memberId: fromMemberId,
           },
         }),
       ])
@@ -55,7 +55,7 @@ export class MemberFriendshipsListeners {
   }
 
   @OnEvent(MEMBER_FOLLOW_DELETE)
-  handleMemberFollowDeleteEvent(toMemberId: number, fromMemberId: number) {
+  handleMemberFollowDeleteEvent(fromMemberId: number, toMemberId: number) {
     this.prismaService
       .$transaction([
         this.prismaService.memberStatistics.update({
@@ -65,7 +65,7 @@ export class MemberFriendshipsListeners {
             },
           },
           where: {
-            memberId: fromMemberId,
+            memberId: toMemberId,
           },
         }),
         this.prismaService.memberStatistics.update({
@@ -75,7 +75,7 @@ export class MemberFriendshipsListeners {
             },
           },
           where: {
-            memberId: toMemberId,
+            memberId: fromMemberId,
           },
         }),
       ])
