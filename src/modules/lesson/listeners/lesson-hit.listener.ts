@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { LessonHitEvent } from '../events/lesson-hit.event';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 

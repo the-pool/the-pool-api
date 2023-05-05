@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LessonHitListener } from './lesson-hit.listener';
+import { LessonHitListener } from '@src/modules/lesson/listeners/lesson-hit.listener';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { mockNotificationService } from '@test/mock/mock-services';
-import { LessonHitEvent } from '../events/lesson-hit.event';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
 import { faker } from '@faker-js/faker';
-import { LessonEntity } from '../entities/lesson.entity';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 
 describe('LessonHitListener', () => {
   let lessonHitListener: LessonHitListener;

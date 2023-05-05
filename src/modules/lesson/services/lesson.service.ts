@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { LessonHitEvent } from '../events/lesson-hit.event';
-import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
-import { plainToClass } from 'class-transformer';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class LessonService {

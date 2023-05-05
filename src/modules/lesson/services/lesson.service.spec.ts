@@ -1,25 +1,25 @@
 import { faker } from '@faker-js/faker';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EntityId } from '@src/constants/enum';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/lesson.const';
-import { LessonVirtualColumn } from '../constants/lesson.enum';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
-import { LessonService } from './lesson.service';
-import { mockEventEmitter } from '@test/mock/mock-libs';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
-import { LessonHitEvent } from '../events/lesson-hit.event';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
+import { LessonVirtualColumn } from '@src/modules/lesson/constants/lesson.enum';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
+import { mockQueryHelper } from '@test/mock/mock-helpers';
+import { mockEventEmitter2 } from '@test/mock/mock-libs';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
+import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
@@ -40,7 +40,7 @@ describe('LessonService', () => {
         },
         {
           provide: EventEmitter2,
-          useValue: mockEventEmitter,
+          useValue: mockEventEmitter2,
         },
         {
           provide: MemberStatisticsEvent,
@@ -170,7 +170,7 @@ describe('LessonService', () => {
         delete lesson.isBookmark;
 
         prismaService.lesson.findFirst.mockReturnValue(lesson);
-        mockEventEmitter.emit.mockReturnValue(true);
+        mockEventEmitter2.emit.mockReturnValue(true);
       });
 
       it('success - check method called', async () => {
@@ -198,8 +198,8 @@ describe('LessonService', () => {
           where: { id: lessonId },
           include: includeOption,
         });
-        expect(mockEventEmitter.emit).toBeCalledTimes(1);
-        expect(mockEventEmitter.emit).toBeCalledWith(
+        expect(mockEventEmitter2.emit).toBeCalledTimes(1);
+        expect(mockEventEmitter2.emit).toBeCalledWith(
           LESSON_HIT_EVENT,
           lessonHitEvent,
         );
@@ -241,8 +241,8 @@ describe('LessonService', () => {
           where: { id: lessonId },
           include: includeOption,
         });
-        expect(mockEventEmitter.emit).toBeCalledTimes(1);
-        expect(mockEventEmitter.emit).toBeCalledWith(
+        expect(mockEventEmitter2.emit).toBeCalledTimes(1);
+        expect(mockEventEmitter2.emit).toBeCalledWith(
           LESSON_HIT_EVENT,
           lessonHitEvent,
         );
