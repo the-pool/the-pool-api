@@ -1,17 +1,18 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+import { CommentBaseEntity } from '@src/modules/comment/entities/comment.entity';
+import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 import {
   PrismaCommentModelName,
   PrismaCommentParentIdColumn,
   PrismaModelName,
 } from '@src/types/type';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { CommentBaseEntity } from '../entities/comment.entity';
-import { CommentService } from './comment.service';
-import { ReadManyCommentQueryBaseDto } from '../dtos/read-many-comment-query-base.dto';
-import { PrismaPromise, prisma } from '@prisma/client';
+import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('CommentService', () => {
   let commentService: CommentService;
@@ -34,6 +35,10 @@ describe('CommentService', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: MemberStatisticsEvent,
+          useValue: mockMemberStatisticsEvent,
         },
       ],
     }).compile();
@@ -87,16 +92,25 @@ describe('CommentService', () => {
             },
           });
           expect(returnValue).toStrictEqual(createdComment);
+          expect(mockMemberStatisticsEvent.register).toBeCalledWith(
+            memberId,
+            expect.objectContaining({
+              fieldName: expect.stringContaining('CommentCount'),
+              action: 'increment',
+            }),
+          );
         },
       );
     });
   });
 
   describe('deleteComment', () => {
+    let memberId: number;
     let commentId: number;
     let deletedComment: CommentBaseEntity;
 
     beforeEach(() => {
+      memberId = faker.datatype.number();
       deletedComment = new CommentBaseEntity();
       commentId = faker.datatype.number();
     });
@@ -108,6 +122,7 @@ describe('CommentService', () => {
           prismaService[commentModel].delete.mockReturnValue(deletedComment);
 
           const returnValue = await commentService.deleteComment(
+            memberId,
             commentModel,
             commentId,
           );
@@ -124,6 +139,13 @@ describe('CommentService', () => {
             },
           });
           expect(returnValue).toStrictEqual(deletedComment);
+          expect(mockMemberStatisticsEvent.register).toBeCalledWith(
+            memberId,
+            expect.objectContaining({
+              fieldName: expect.stringContaining('CommentCount'),
+              action: 'decrement',
+            }),
+          );
         },
       );
     });

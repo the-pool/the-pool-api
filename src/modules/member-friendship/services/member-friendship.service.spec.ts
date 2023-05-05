@@ -9,10 +9,13 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
+import { MemberFriendshipsEvent } from '@src/modules/member-friendship/events/member-friendships.event';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { mockMemberFriendshipsEvent } from '@test/mock/mock-event';
+import { mockQueryHelper } from '@test/mock/mock-helpers';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+
 import { MemberFriendshipService } from './member-friendship.service';
 
 describe('FriendshipService', () => {
@@ -29,6 +32,10 @@ describe('FriendshipService', () => {
         {
           provide: QueryHelper,
           useValue: mockQueryHelper,
+        },
+        {
+          provide: MemberFriendshipsEvent,
+          useValue: mockMemberFriendshipsEvent,
         },
       ],
     }).compile();
@@ -192,12 +199,8 @@ describe('FriendshipService', () => {
       await expect(
         service.createFollowing(followingMemberId, followerMemberId),
       ).resolves.toStrictEqual(memberFollow);
-    });
 
-    afterEach(() => {
-      mockPrismaService.member.findUnique.mockRestore();
-      mockPrismaService.member.findFirst.mockRestore();
-      mockPrismaService.memberFollow.create.mockRestore();
+      expect(mockMemberFriendshipsEvent.follow).toBeCalled();
     });
   });
 
@@ -257,12 +260,12 @@ describe('FriendshipService', () => {
       await expect(
         service.deleteFollowing(unfollowingMemberId, unfollowerMemberId),
       ).resolves.toStrictEqual(memberFollow);
-    });
 
-    afterEach(() => {
-      mockPrismaService.member.findUnique.mockRestore();
-      mockPrismaService.member.findFirst.mockRestore();
-      mockPrismaService.memberFollow.delete.mockRestore();
+      expect(mockMemberFriendshipsEvent.unfollow).toBeCalled();
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });

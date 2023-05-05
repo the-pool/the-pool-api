@@ -1,14 +1,14 @@
-import { HttpStatus, applyDecorators } from '@nestjs/common';
+import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { SolutionEntity } from '../entities/solution.entity';
-import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
-import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
+import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
+import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 
 export const ApiCreateSolution = (summary: string) =>
   applyDecorators(

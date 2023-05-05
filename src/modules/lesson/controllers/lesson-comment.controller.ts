@@ -11,7 +11,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
@@ -19,19 +18,19 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { LessonCommentParamDto } from '../dtos/comment/lesson-comment-param.dto';
-import { LessonCommentEntity } from '../entities/lesson-comment.entity';
+import { LessonCommentParamDto } from '@src/modules/lesson/dtos/comment/lesson-comment-param.dto';
+import { LessonCommentEntity } from '@src/modules/lesson/entities/lesson-comment.entity';
 import {
   ApiCreateComment,
   ApiDeleteComment,
   ApiReadManyComment,
   ApiUpdateComment,
-} from '../swaggers/lesson-comment.swagger';
-import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+} from '@src/modules/lesson/swaggers/lesson-comment.swagger';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 
 @ApiTags('과제 댓글')
 @Controller(':id/comments')
@@ -42,10 +41,6 @@ export class LessonCommentController {
   ) {}
 
   @ApiCreateComment('과제 댓글 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor(
-    'lessonCommentCount',
-    'increment',
-  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -71,10 +66,6 @@ export class LessonCommentController {
   }
 
   @ApiDeleteComment('과제 댓글 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor(
-    'lessonCommentCount',
-    'decrement',
-  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':commentId')
@@ -90,6 +81,7 @@ export class LessonCommentController {
     });
 
     const deletedComment = await this.commentService.deleteComment(
+      memberId,
       ModelName.LessonComment,
       param.commentId,
     );

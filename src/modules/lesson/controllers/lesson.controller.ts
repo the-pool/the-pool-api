@@ -13,30 +13,29 @@ import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { plainToClass } from 'class-transformer';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
-import { LessonService } from '../services/lesson.service';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import {
   ApiCreateLesson,
   ApiDeleteLesson,
   ApiReadManyLesson,
   ApiReadOneLesson,
   ApiUpdateLesson,
-} from '../swaggers/lesson.swagger';
-import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
-import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+} from '@src/modules/lesson/swaggers/lesson.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
+import { plainToClass } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller()
@@ -47,7 +46,6 @@ export class LessonController {
   ) {}
 
   @ApiCreateLesson('과제 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -87,7 +85,6 @@ export class LessonController {
   }
 
   @ApiDeleteLesson('과제 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
@@ -102,7 +99,10 @@ export class LessonController {
       memberId,
     });
 
-    const deletedLesson = await this.lessonService.deleteLesson(param.id);
+    const deletedLesson = await this.lessonService.deleteLesson(
+      memberId,
+      param.id,
+    );
 
     return { lesson: deletedLesson };
   }
@@ -116,8 +116,7 @@ export class LessonController {
   }
 
   @ApiReadOneLesson('과제 상세 조회')
-  // @BearerAuth()
-  @UseGuards(JwtAuthGuard)
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get(':id')
   async readOneLesson(
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,

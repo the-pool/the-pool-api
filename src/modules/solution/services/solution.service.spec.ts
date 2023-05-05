@@ -1,22 +1,24 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
-import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
-import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
-import { SolutionEntity } from '../entities/solution.entity';
-import { SolutionService } from './solution.service';
 import { faker } from '@faker-js/faker';
-import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
-import { mockQueryHelper } from '@test/mock/mock-helpers';
-import { QueryHelper } from '@src/helpers/query.helper';
-import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
-import { ReadManySolutionEntity } from '../entities/read-many-solution.entity';
-import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
-import { SolutionVirtualColumn } from '../constants/solution.enum';
+import { Test, TestingModule } from '@nestjs/testing';
 import { EntityId } from '@src/constants/enum';
-import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/solution/constants/solution.const';
+import { SolutionVirtualColumn } from '@src/modules/solution/constants/solution.enum';
+import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
+import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
+import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
+import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
+import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
+import { SolutionService } from '@src/modules/solution/services/solution.service';
+import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
+import { mockQueryHelper } from '@test/mock/mock-helpers';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -38,6 +40,10 @@ describe('SolutionService', () => {
         {
           provide: LessonSolutionRepository,
           useValue: mockLessonSolutionRepository,
+        },
+        {
+          provide: MemberStatisticsEvent,
+          useValue: mockMemberStatisticsEvent,
         },
       ],
     }).compile();
@@ -69,11 +75,15 @@ describe('SolutionService', () => {
     });
 
     it('SUCCESS - Solution Created', async () => {
-      expect(
+      await expect(
         solutionService.createSolution(createSolutionDto, memberId),
       ).resolves.toStrictEqual(createdSolution);
 
       expect(prismaService.lessonSolution.create).toBeCalledTimes(1);
+      expect(mockMemberStatisticsEvent.register).toBeCalledWith(memberId, {
+        fieldName: 'solutionCount',
+        action: 'increment',
+      });
     });
   });
 
@@ -104,19 +114,21 @@ describe('SolutionService', () => {
   /// DELETE Solution
   describe('DELETE Solution', () => {
     let solutionId: number;
+    let memberId: number;
     let deletedSolution: SolutionEntity;
 
     beforeEach(() => {
       solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
       deletedSolution = new SolutionEntity();
 
       prismaService.lessonSolution.delete.mockResolvedValue(deletedSolution);
     });
 
     it('SUCCESS - Soultion Delete', () => {
-      expect(solutionService.deleteSolution(solutionId)).resolves.toStrictEqual(
-        deletedSolution,
-      );
+      expect(
+        solutionService.deleteSolution(solutionId, memberId),
+      ).resolves.toStrictEqual(deletedSolution);
       expect(prismaService.lessonSolution.delete).toBeCalledTimes(1);
     });
   });

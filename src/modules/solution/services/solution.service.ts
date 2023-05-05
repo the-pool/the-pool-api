@@ -1,16 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
-import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
-import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
-import { UpdateSolutionRequestBodyDto } from '../dtos/update-solution-request-body.dto';
-import { SolutionEntity } from '../entities/solution.entity';
-import { ReadManySolutionRequestQueryDto } from '../dtos/read-many-solution-request-query.dto';
-import { QueryHelper } from '@src/helpers/query.helper';
-import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
 import { Prisma, PrismaPromise } from '@prisma/client';
-import { ReadManySolutionEntity } from '../entities/read-many-solution.entity';
-import { ReadOneSolutionEntity } from '../entities/read-one-solution.entity';
+import { QueryHelper } from '@src/helpers/query.helper';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/solution/constants/solution.const';
+import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
+import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
+import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
+import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
+import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
+import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
+import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 
 @Injectable()
 export class SolutionService {
@@ -18,18 +19,27 @@ export class SolutionService {
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
     private readonly lessonSolutionRepository: LessonSolutionRepository,
+    private readonly memberStatisticsEvent: MemberStatisticsEvent,
   ) {}
 
-  createSolution(
+  async createSolution(
     requestDto: CreateSolutionRequestBodyDto,
     memberId: number,
   ): Promise<SolutionEntity> {
-    return this.prismaService.lessonSolution.create({
+    const newSolution = await this.prismaService.lessonSolution.create({
       data: {
         ...requestDto,
         memberId,
       },
     });
+
+    // member 의 lessonSolutionCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'solutionCount',
+      action: 'increment',
+    });
+
+    return newSolution;
   }
 
   updateSolution(
@@ -44,12 +54,23 @@ export class SolutionService {
     });
   }
 
-  deleteSolution(solutionId: number): Promise<SolutionEntity> {
-    return this.prismaService.lessonSolution.delete({
+  async deleteSolution(
+    solutionId: number,
+    memberId: number,
+  ): Promise<SolutionEntity> {
+    const deletedSolution = await this.prismaService.lessonSolution.delete({
       where: {
         id: solutionId,
       },
     });
+
+    // member 의 lessonSolutionCount 감소 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'solutionCount',
+      action: 'decrement',
+    });
+
+    return deletedSolution;
   }
 
   async readOneSolution(

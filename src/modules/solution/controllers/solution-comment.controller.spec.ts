@@ -3,19 +3,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { NotificationService } from '@src/modules/core/notification/services/notification.service';
+import { SolutionCommentController } from '@src/modules/solution/controllers/solution-comment.controller';
+import { SolutionCommentParamDto } from '@src/modules/solution/dtos/solution-comment-param.dto';
+import { SolutionCommentEntity } from '@src/modules/solution/entities/solution-comment.entity';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
-import {
-  mockCommentService,
-  mockNotificationService,
-} from '@test/mock/mock-services';
-import { SolutionCommentEntity } from '../entities/solution-comment.entity';
-import { SolutionCommentController } from './solution-comment.controller';
-import { SolutionCommentParamDto } from '../dtos/solution-comment-param.dto';
-import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
-import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+import { mockCommentService } from '@test/mock/mock-services';
 
 describe('SolutionCommentController', () => {
   let solutionCommentController: SolutionCommentController;
@@ -27,7 +23,6 @@ describe('SolutionCommentController', () => {
       controllers: [SolutionCommentController],
       providers: [
         { provide: CommentService, useValue: mockCommentService },
-        { provide: NotificationService, useValue: mockNotificationService },
         {
           provide: PrismaService,
           useValue: mockPrismaService,
@@ -118,6 +113,7 @@ describe('SolutionCommentController', () => {
       );
       expect(commentService.deleteComment).toBeCalledTimes(1);
       expect(commentService.deleteComment).toBeCalledWith(
+        memberId,
         ModelName.LessonSolutionComment,
         param.commentId,
       );

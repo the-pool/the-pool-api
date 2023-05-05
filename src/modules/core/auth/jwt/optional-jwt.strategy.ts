@@ -26,7 +26,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
 
   async validate(request: any) {
     const token = this.getToken(request);
-    console.log(request);
+
     if (token === null) {
       return { id: null };
     }
