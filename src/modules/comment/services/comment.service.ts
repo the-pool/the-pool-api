@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaPromise } from '@prisma/client';
+import { Prisma, PrismaPromise } from '@prisma/client';
 import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
-import { MemberStatisticsIncreaseFieldName } from '@src/modules/member-statistics/types/member-statistics.type';
 import {
   PrismaCommentModelMapper,
   PrismaCommentModelName,
@@ -38,7 +37,7 @@ export class CommentService {
 
     // member 의 lessonCommentCount 증가 이벤트 등록
     this.memberStatisticsEvent.register(memberId, {
-      fieldName: (commentModel + 'Count') as MemberStatisticsIncreaseFieldName,
+      fieldName: this.getMemberStatisticsFieldName(commentModel),
       action: 'increment',
     });
 
@@ -64,7 +63,7 @@ export class CommentService {
 
     // member 의 lessonComment 감소 이벤트 등록
     this.memberStatisticsEvent.register(memberId, {
-      fieldName: (commentModel + 'Count') as MemberStatisticsIncreaseFieldName,
+      fieldName: this.getMemberStatisticsFieldName(commentModel),
       action: 'decrement',
     });
 
@@ -128,5 +127,18 @@ export class CommentService {
     ]);
 
     return { comments, totalCount };
+  }
+
+  private getMemberStatisticsFieldName<T extends PrismaCommentModelName>(
+    commentModel: T,
+  ): keyof Pick<
+    Prisma.MemberStatisticsUpdateInput,
+    'lessonCommentCount' | 'solutionCommentCount'
+  > {
+    if (commentModel === 'lessonComment') {
+      return 'lessonCommentCount';
+    }
+
+    return 'solutionCommentCount';
   }
 }
