@@ -36,10 +36,10 @@ describe('LessonHitListener', () => {
 
   describe('increaseLessonHit', () => {
     it('success - When the action is increase', () => {
-      const lessonHitEvent = new LessonHitEvent(
-        'increment',
-        faker.datatype.number(),
-      );
+      const lessonHitEvent = new LessonHitEvent({
+        action: 'increment',
+        lessonId: faker.datatype.number(),
+      });
 
       mockPrismaService.lesson.update.mockResolvedValue(new LessonEntity());
 
@@ -54,10 +54,10 @@ describe('LessonHitListener', () => {
     });
 
     it('false', async () => {
-      const lessonHitEvent = new LessonHitEvent(
-        'increment',
-        faker.datatype.number(),
-      );
+      const lessonHitEvent = new LessonHitEvent({
+        action: 'increment',
+        lessonId: faker.datatype.number(),
+      });
       const error = new Error();
 
       mockPrismaService.lesson.update.mockRejectedValue(error);

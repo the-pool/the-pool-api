@@ -111,7 +111,10 @@ export class LessonService {
 
     const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
 
-    const lessonHitEvent = new LessonHitEvent('increment', lessonId);
+    const lessonHitEvent = new LessonHitEvent({
+      action: 'increment',
+      lessonId,
+    });
 
     this.eventEmitter.emit(LESSON_HIT_EVENT, lessonHitEvent);
 

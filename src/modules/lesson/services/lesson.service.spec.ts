@@ -164,7 +164,10 @@ describe('LessonService', () => {
         memberId = faker.datatype.number();
         lessonId = faker.datatype.number();
         lesson = new ReadOneLessonDto();
-        lessonHitEvent = new LessonHitEvent('increment', lessonId);
+        lessonHitEvent = new LessonHitEvent({
+          action: 'increment',
+          lessonId,
+        });
 
         delete lesson.isLike;
         delete lesson.isBookmark;
@@ -219,7 +222,10 @@ describe('LessonService', () => {
         memberId = null;
         lessonId = faker.datatype.number();
         lesson = new ReadOneLessonDto();
-        lessonHitEvent = new LessonHitEvent('increment', lessonId);
+        lessonHitEvent = new LessonHitEvent({
+          action: 'increment',
+          lessonId,
+        });
         delete lesson.isLike;
         delete lesson.isBookmark;
         delete lesson.lessonBookMarks;
