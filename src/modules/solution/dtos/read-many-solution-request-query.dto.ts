@@ -1,10 +1,11 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
+import { StringBooleanTransform } from '@src/common/common';
+import { EntityId } from '@src/constants/enum';
 import { PageDto } from '@src/dtos/page.dto';
 import { SortDto } from '@src/dtos/sort.dto';
-import { IsEnum, IsInt, IsOptional } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator';
 import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
-import { EntityId } from '@src/constants/enum';
-import { Type } from 'class-transformer';
 
 export class ReadManySolutionRequestQueryDto extends IntersectionType(
   PageDto,
@@ -29,6 +30,19 @@ export class ReadManySolutionRequestQueryDto extends IntersectionType(
   @Type(() => Number)
   @IsOptional()
   memberId?: number;
+
+  @ApiProperty({
+    description:
+      '좋아요 여부 필터링 <br />' +
+      'true 일 경우 로그인 한 사용자 기준으로 좋아요한 목록만 불러옵니다.<br />' +
+      '로그인 하지 않았다면 해당 필드를 무시합니다.',
+    required: false,
+    type: Boolean,
+  })
+  @IsOptional()
+  @IsBoolean()
+  @Transform(StringBooleanTransform)
+  isLike = false;
 
   @IsEnum({
     ...SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY,
