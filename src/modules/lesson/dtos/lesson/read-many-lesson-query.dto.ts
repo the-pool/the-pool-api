@@ -49,7 +49,7 @@ export class ReadManyLessonQueryDto extends PickType(LessonDto, [
   @ApiPropertyOptional({
     description:
       '북마크 여부 필터링 <br />' +
-      'true 일 경우 로그인 한 사용자 기준으로 좋아요한 목록만 불러옵니다.<br />' +
+      'true 일 경우 로그인 한 사용자 기준으로 북마크한 목록만 불러옵니다.<br />' +
       '로그인 하지 않았다면 해당 필드를 무시합니다.',
     type: Boolean,
   })
