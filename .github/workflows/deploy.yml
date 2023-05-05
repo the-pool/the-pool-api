@@ -2,7 +2,7 @@ name: deploy
 
 on:
   push:
-    branches: [develop]
+    branches: [ develop ]
   workflow_dispatch:
 
 jobs:
@@ -31,7 +31,7 @@ jobs:
   deploy:
     needs: dockerBuild
     name: Deploy
-    runs-on: [self-hosted, api-server]
+    runs-on: [ self-hosted, api-server ]
     steps:
       - name: Login to Docker
         env:
@@ -62,6 +62,7 @@ jobs:
           PROJECT_CLIENT_ID_GITHUB: ${{ secrets.PROJECT_CLIENT_ID_GITHUB }}
           PROJECT_CLIENT_SECRET_GITHUB: ${{ secrets.PROJECT_CLIENT_SECRET_GITHUB }}
           PROJECT_SERVER_EXCEPTION_CHANNEL_URL: ${{ secrets.PROJECT_SERVER_EXCEPTION_CHANNEL_URL }}
+          PROJECT_NORMAL_NOTIFICATION_CHANNEL_URL: ${{ secrets.PROJECT_NORMAL_NOTIFICATION_CHANNEL_URL }}
         run: |
           sudo rm .env
           touch .env
@@ -78,6 +79,7 @@ jobs:
           echo $PROJECT_CLIENT_ID_GITHUB >> .env
           echo $PROJECT_CLIENT_SECRET_GITHUB >> .env
           echo $PROJECT_SERVER_EXCEPTION_CHANNEL_URL >> .env
+          echo $PROJECT_NORMAL_NOTIFICATION_CHANNEL_URL >> .env
           cat .env
       - name: Docker run
         env:
