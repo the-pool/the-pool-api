@@ -9,6 +9,7 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
+import { MemberFriendshipsEvent } from '@src/modules/member-friendship/events/member-friendships.event';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 
@@ -17,6 +18,7 @@ export class MemberFriendshipService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
+    private readonly memberFriendshipsEvent: MemberFriendshipsEvent,
   ) {}
 
   async findAll(
@@ -121,12 +123,16 @@ export class MemberFriendshipService {
     }
 
     // member 팔로우
-    return this.prismaService.memberFollow.create({
+    const newFollow = await this.prismaService.memberFollow.create({
       data: {
         followerId: followerMemberId,
         followingId: followingMemberId,
       },
     });
+
+    this.memberFriendshipsEvent.follow(followerMemberId, followingMemberId);
+
+    return newFollow;
   }
 
   /**
@@ -171,7 +177,7 @@ export class MemberFriendshipService {
     }
 
     // member unfollow
-    return this.prismaService.memberFollow.delete({
+    const deletedFollow = await this.prismaService.memberFollow.delete({
       where: {
         followerId_followingId: {
           followerId: unfollowerMemberId,
@@ -179,5 +185,12 @@ export class MemberFriendshipService {
         },
       },
     });
+
+    this.memberFriendshipsEvent.unfollow(
+      unfollowerMemberId,
+      unfollowingMemberId,
+    );
+
+    return deletedFollow;
   }
 }

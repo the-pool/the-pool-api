@@ -9,29 +9,28 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
-import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
+import { UserLogin } from '@src/decorators/user-login.decorator';
+import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
+import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
-import { ModelName } from '@src/constants/enum';
-import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
-import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
-import { UserLogin } from '@src/decorators/user-login.decorator';
-import { SolutionCommentEntity } from '../entities/solution-comment.entity';
 import {
   ApiCreateComment,
   ApiDeleteComment,
   ApiReadManyComment,
   ApiUpdateComment,
-} from './solution-comment.swagger';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
-import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
-import { SolutionCommentParamDto } from '../dtos/solution-comment-param.dto';
+} from '@src/modules/solution/controllers/solution-comment.swagger';
+import { SolutionCommentParamDto } from '@src/modules/solution/dtos/solution-comment-param.dto';
+import { SolutionCommentEntity } from '@src/modules/solution/entities/solution-comment.entity';
 
 @ApiTags('문제-풀이의 댓글')
 @Controller(':id/comments')
@@ -42,10 +41,6 @@ export class SolutionCommentController {
   ) {}
 
   @ApiCreateComment('풀이 댓글 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor(
-    'solutionCommentCount',
-    'increment',
-  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -71,10 +66,6 @@ export class SolutionCommentController {
   }
 
   @ApiDeleteComment('풀이 댓글 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor(
-    'solutionCommentCount',
-    'decrement',
-  )
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':commentId')
@@ -93,6 +84,7 @@ export class SolutionCommentController {
     );
 
     const deletedComment = await this.commentService.deleteComment(
+      memberId,
       ModelName.LessonSolutionComment,
       param.commentId,
     );

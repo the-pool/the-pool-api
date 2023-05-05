@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { MajorSkill } from '@prisma/client';
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { Type } from 'class-transformer';
-import { Min } from 'class-validator';
+import { IsInt, Min } from 'class-validator';
 
 export class MajorSkillIdRequestParamDto {
   @ApiProperty({
@@ -10,8 +10,9 @@ export class MajorSkillIdRequestParamDto {
     type: 'number',
     required: true,
   })
-  @Min(1)
   @IsRecord<MajorSkill>({ model: 'majorSkill', field: 'id' }, true)
+  @Min(1)
+  @IsInt()
   @Type(() => Number)
   majorSkillId: number;
 }

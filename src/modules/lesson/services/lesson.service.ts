@@ -13,6 +13,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LessonHitEvent } from '../events/lesson-hit.event';
 import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
 import { plainToClass } from 'class-transformer';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 
 @Injectable()
 export class LessonService {
@@ -20,21 +21,30 @@ export class LessonService {
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
     private eventEmitter: EventEmitter2,
+    private readonly memberStatisticsEvent: MemberStatisticsEvent,
   ) {}
 
   /**
    * 과제 생성 메서드
    */
-  createLesson(
+  async createLesson(
     lesson: CreateLessonDto,
     memberId: number,
   ): Promise<LessonEntity> {
-    return this.prismaService.lesson.create({
+    const newLesson = await this.prismaService.lesson.create({
       data: {
         ...lesson,
         memberId,
       },
     });
+
+    // member 의 lessonCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'lessonCount',
+      action: 'increment',
+    });
+
+    return newLesson;
   }
 
   /**
@@ -53,10 +63,18 @@ export class LessonService {
   /**
    * 과제 삭제 메서드
    */
-  deleteLesson(lessonId: number) {
-    return this.prismaService.lesson.delete({
+  async deleteLesson(memberId: number, lessonId: number) {
+    const deletedLesson = await this.prismaService.lesson.delete({
       where: { id: lessonId },
     });
+
+    // member 의 lessonCount 증가 이벤트 등록
+    this.memberStatisticsEvent.register(memberId, {
+      fieldName: 'lessonCount',
+      action: 'decrement',
+    });
+
+    return deletedLesson;
   }
 
   /**

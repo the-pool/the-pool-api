@@ -151,7 +151,7 @@ describe('LessonController', () => {
 
       expect(prismaService.validateOwnerOrFail).toBeCalledTimes(1);
       expect(lessonService.deleteLesson).toBeCalledTimes(1);
-      expect(lessonService.deleteLesson).toBeCalledWith(param.id);
+      expect(lessonService.deleteLesson).toBeCalledWith(memberId, param.id);
     });
 
     it('success - check Input & Output', async () => {

@@ -1,12 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { MajorEntity } from '@src/modules/major/entities/major.entity';
-import { Type } from 'class-transformer';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  IntersectionType,
+  PickType,
+} from '@nestjs/swagger';
+import { MajorText } from '@src/constants/enum';
+import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
+import { DateResponseType } from '@src/types/date-response.type';
+import { IdResponseType } from '@src/types/id-response-type';
 
-export class MajorDto {
+export class MajorDto extends IntersectionType(
+  IdResponseType,
+  PickType(DateResponseType, ['createdAt']),
+) {
   @ApiProperty({
-    description: '분야',
-    type: MajorEntity,
+    description: '분야 명',
+    enum: MajorText,
   })
-  @Type(() => MajorEntity)
-  major: MajorEntity;
+  name: MajorText | string;
+
+  @ApiPropertyOptional({
+    description: '분야 의 메인스킬들',
+    type: [MajorSkillEntity],
+  })
+  majorSkills?: MajorSkillEntity[];
 }

@@ -1,17 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { NotificationService } from '@src/modules/core/notification/services/notification.service';
+import { MemberFriendshipController } from '@src/modules/member-friendship/controllers/member-friendship.controller';
 import { CreateMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/create-member-following-request-param.dto';
 import { DeleteMemberFollowingRequestParamDto } from '@src/modules/member-friendship/dtos/delete-member-following-request-param.dto';
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import {
-  mockMemberFriendshipService,
-  mockNotificationService,
-} from '../../../../test/mock/mock-services';
-import { MemberFriendshipController } from './member-friendship.controller';
+import { mockMemberFriendshipService } from '@test/mock/mock-services';
 
 describe('FriendshipController', () => {
   let controller: MemberFriendshipController;
@@ -21,16 +16,8 @@ describe('FriendshipController', () => {
       controllers: [MemberFriendshipController],
       providers: [
         {
-          provide: PrismaService,
-          useValue: {},
-        },
-        {
           provide: MemberFriendshipService,
           useValue: mockMemberFriendshipService,
-        },
-        {
-          provide: NotificationService,
-          useValue: mockNotificationService,
         },
       ],
     }).compile();

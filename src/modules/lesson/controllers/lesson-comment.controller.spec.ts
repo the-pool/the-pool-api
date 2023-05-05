@@ -3,19 +3,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { CreateCommentBaseDto } from '@src/modules/comment/dtos/create-comment-base.dto';
+import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
 import { UpdateCommentBaseDto } from '@src/modules/comment/dtos/update-comment-base.dto';
 import { CommentService } from '@src/modules/comment/services/comment.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { NotificationService } from '@src/modules/core/notification/services/notification.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import {
-  mockCommentService,
-  mockNotificationService,
-} from '../../../../test/mock/mock-services';
-import { LessonCommentParamDto } from '../dtos/comment/lesson-comment-param.dto';
-import { LessonCommentEntity } from '../entities/lesson-comment.entity';
-import { LessonCommentController } from './lesson-comment.controller';
-import { ReadManyCommentQueryBaseDto } from '@src/modules/comment/dtos/read-many-comment-query-base.dto';
+import { LessonCommentController } from '@src/modules/lesson/controllers/lesson-comment.controller';
+import { LessonCommentParamDto } from '@src/modules/lesson/dtos/comment/lesson-comment-param.dto';
+import { LessonCommentEntity } from '@src/modules/lesson/entities/lesson-comment.entity';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockCommentService } from '@test/mock/mock-services';
 
 describe('LessonCommentController', () => {
   let lessonCommentController: LessonCommentController;
@@ -26,7 +22,6 @@ describe('LessonCommentController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LessonCommentController],
       providers: [
-        { provide: NotificationService, useValue: mockNotificationService },
         { provide: CommentService, useValue: mockCommentService },
         {
           provide: PrismaService,
@@ -118,6 +113,7 @@ describe('LessonCommentController', () => {
       );
       expect(commentService.deleteComment).toBeCalledTimes(1);
       expect(commentService.deleteComment).toBeCalledWith(
+        memberId,
         ModelName.LessonComment,
         param.commentId,
       );

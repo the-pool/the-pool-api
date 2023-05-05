@@ -16,10 +16,12 @@ import { LessonHashtagService } from './services/lesson-hashtag.service';
 import { LessonLikeService } from './services/lesson-like.service';
 import { LessonService } from './services/lesson.service';
 import { LessonHitListener } from './listeners/lesson-hit.listener';
+import { MemberStatisticsModule } from '../member-statistics/member-statistics.module';
 
 @Module({
   imports: [
     PrismaModule,
+    MemberStatisticsModule,
     RouterModule.register([{ path: 'api/lessons', module: LessonModule }]),
   ],
   providers: [

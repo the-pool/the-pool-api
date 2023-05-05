@@ -7,7 +7,8 @@ import { IsInt, Min } from 'class-validator';
 
 export class DeleteMemberFollowingRequestParamDto {
   @ApiProperty({
-    description: 'follow 당하는 member id (member 고유 id 와 같은 id 입니다.)',
+    description:
+      'unfollow 당하는 member id (member 고유 id 와 같은 id 입니다.)',
     minimum: 1,
   })
   @IsRecord<MemberEntity>({ model: ModelName.Member, field: 'id' }, true)

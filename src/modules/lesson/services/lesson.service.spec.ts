@@ -18,6 +18,8 @@ import { mockEventEmitter } from '@test/mock/mock-libs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { LESSON_HIT_EVENT } from '../listeners/lesson-hit.listener';
 import { LessonHitEvent } from '../events/lesson-hit.event';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
@@ -39,6 +41,10 @@ describe('LessonService', () => {
         {
           provide: EventEmitter2,
           useValue: mockEventEmitter,
+        },
+        {
+          provide: MemberStatisticsEvent,
+          useValue: mockMemberStatisticsEvent,
         },
       ],
     }).compile();
@@ -73,6 +79,10 @@ describe('LessonService', () => {
       await lessonService.createLesson(createLessonDto, memberId);
 
       expect(prismaService.lesson.create).toBeCalledTimes(1);
+      expect(mockMemberStatisticsEvent.register).toBeCalledWith(memberId, {
+        fieldName: 'lessonCount',
+        action: 'increment',
+      });
     });
 
     it('success - check Input & Output', async () => {
@@ -127,13 +137,17 @@ describe('LessonService', () => {
     });
 
     it('success - check method called', async () => {
-      await lessonService.deleteLesson(lessonId);
+      await lessonService.deleteLesson(memberId, lessonId);
 
       expect(mockPrismaService.lesson.delete).toBeCalledTimes(1);
+      expect(mockMemberStatisticsEvent.register).toBeCalledWith(memberId, {
+        fieldName: 'lessonCount',
+        action: 'decrement',
+      });
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonService.deleteLesson(lessonId);
+      const returnValue = await lessonService.deleteLesson(memberId, lessonId);
 
       expect(returnValue).toStrictEqual(deletedLesson);
     });

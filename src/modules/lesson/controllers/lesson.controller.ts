@@ -7,11 +7,13 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
+import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
@@ -31,10 +33,9 @@ import {
   ApiReadManyLesson,
   ApiReadOneLesson,
   ApiUpdateLesson,
-} from '../swaggers/lesson.swagger';
-import { IncreaseMemberStatisticsSetMetadataInterceptor } from '@src/decorators/increase-member-statistics-set-metadata.interceptor-decorator';
-import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
+} from '@src/modules/lesson/swaggers/lesson.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
+import { plainToClass } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller()
@@ -45,7 +46,6 @@ export class LessonController {
   ) {}
 
   @ApiCreateLesson('과제 생성')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'increment')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Post()
@@ -85,7 +85,6 @@ export class LessonController {
   }
 
   @ApiDeleteLesson('과제 삭제')
-  @IncreaseMemberStatisticsSetMetadataInterceptor('lessonCount', 'decrement')
   @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
   @BearerAuth(JwtAuthGuard)
   @Delete(':id')
@@ -100,7 +99,10 @@ export class LessonController {
       memberId,
     });
 
-    const deletedLesson = await this.lessonService.deleteLesson(param.id);
+    const deletedLesson = await this.lessonService.deleteLesson(
+      memberId,
+      param.id,
+    );
 
     return { lesson: deletedLesson };
   }
