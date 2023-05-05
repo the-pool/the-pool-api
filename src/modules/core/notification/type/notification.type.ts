@@ -12,3 +12,16 @@ export type ServerExceptionField = {
 export type WarningExceptionFiled = Partial<ServerExceptionField> & {
   description: string;
 };
+
+export interface Field {
+  name: string;
+  value: string;
+  inline: boolean;
+}
+
+export interface NotificationOption {
+  color: `#${string}`;
+  title: string;
+  fields?: Field[];
+  description?: any;
+}

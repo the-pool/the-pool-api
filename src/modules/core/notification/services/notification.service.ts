@@ -4,31 +4,14 @@ import {
   WEBHOOK_CLIENT_TOKEN,
 } from '@src/modules/core/notification/constants/notification.constant';
 import {
+  Field,
+  NotificationOption,
   ServerExceptionField,
   WarningExceptionFiled,
 } from '@src/modules/core/notification/type/notification.type';
 import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
 import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { bold, EmbedBuilder, WebhookClient } from 'discord.js';
-
-/**
- * 해당 파일에서만 쓰이는 타입
- */
-interface Field {
-  name: string;
-  value: string;
-  inline: boolean;
-}
-
-/**
- * 해당 파일에서만 쓰이는 타입
- */
-interface NotificationOption {
-  color: `#${string}`;
-  title: string;
-  fields?: Field[];
-  description?: any;
-}
 
 @Injectable()
 export class NotificationService {
