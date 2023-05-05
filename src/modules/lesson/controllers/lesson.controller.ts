@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
@@ -20,13 +19,13 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { CreateLessonDto } from '../dtos/lesson/create-lesson.dto';
-import { ReadManyLessonQueryDto } from '../dtos/lesson/read-many-lesson-query.dto';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { UpdateLessonDto } from '../dtos/lesson/update-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
-import { LessonService } from '../services/lesson.service';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
+import { ReadManyLessonQueryDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson-query.dto';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import {
   ApiCreateLesson,
   ApiDeleteLesson,
@@ -35,7 +34,6 @@ import {
   ApiUpdateLesson,
 } from '@src/modules/lesson/swaggers/lesson.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { plainToClass } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller()
