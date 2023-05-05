@@ -21,11 +21,15 @@ export class LessonHitListener {
         data: { hit: { [action]: 1 } },
       })
       .catch((error) => {
-        this.notificationService.warning({
-          description: 'increaseLessonHit 도중 발생한 에러',
-          body: { lessonId, action },
-          stack: error.stack,
-        });
+        this.notificationService
+          .warning({
+            description: 'increaseLessonHit 도중 발생한 에러',
+            body: { lessonId, action },
+            stack: error.stack,
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       });
   }
 }

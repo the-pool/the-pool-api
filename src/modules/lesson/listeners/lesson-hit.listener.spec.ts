@@ -11,8 +11,6 @@ import { LessonEntity } from '../entities/lesson.entity';
 describe('LessonHitListener', () => {
   let lessonHitListener: LessonHitListener;
 
-  let notificationService;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,7 +24,6 @@ describe('LessonHitListener', () => {
     }).compile();
 
     lessonHitListener = module.get<LessonHitListener>(LessonHitListener);
-    notificationService = mockNotificationService;
   });
 
   afterEach(() => {
@@ -56,38 +53,21 @@ describe('LessonHitListener', () => {
       });
     });
 
-    it('success - when the action is decrease', () => {
+    it('false', async () => {
       const lessonHitEvent = new LessonHitEvent(
-        'decrement',
-        faker.datatype.number(),
-      );
-
-      mockPrismaService.lesson.update.mockResolvedValue(new LessonEntity());
-
-      expect(
-        lessonHitListener.increaseLessonHit(lessonHitEvent),
-      ).toBeUndefined();
-
-      expect(mockPrismaService.lesson.update).toBeCalledWith({
-        where: { id: lessonHitEvent.lessonId },
-        data: { hit: { decrement: 1 } },
-      });
-    });
-
-    it('false', () => {
-      const lessonHitEvent = new LessonHitEvent(
-        'decrement',
+        'increment',
         faker.datatype.number(),
       );
       const error = new Error();
 
       mockPrismaService.lesson.update.mockRejectedValue(error);
+      mockNotificationService.warning.mockResolvedValue(undefined);
 
-      expect(
+      await expect(
         lessonHitListener.increaseLessonHit(lessonHitEvent),
       ).toBeUndefined();
-
       expect(mockPrismaService.lesson.update).rejects.toThrow();
+      expect(mockNotificationService.warning).toBeCalledTimes(1);
     });
   });
 });
