@@ -116,8 +116,6 @@ export class SolutionService {
         }
       | undefined;
 
-    console.log(memberId, isLike);
-
     if (memberId && isLike) {
       lessonSolutionLikesWhere = {
         lessonSolutionLikes: {
@@ -127,8 +125,6 @@ export class SolutionService {
         },
       };
     }
-
-    console.log(lessonSolutionLikesWhere);
 
     // sort기준 셋팅
     const settledOrderBy = SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
