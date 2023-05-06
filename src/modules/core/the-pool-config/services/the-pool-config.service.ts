@@ -4,7 +4,6 @@ import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-co
 
 @Injectable()
 export class ThePoolConfigService {
-  private readonly NODE_ENV: string;
   private readonly PRODUCTION = 'production';
   private readonly DEVELOPMENT = 'development';
   private readonly LOCAL = 'local';
@@ -35,14 +34,14 @@ export class ThePoolConfigService {
   }
 
   isLocal(): boolean {
-    return this.get<string>('NODE_ENV') === this.LOCAL;
+    return this.get<string>(ENV_KEY.NODE_ENV) === this.LOCAL;
   }
 
   isDevelopment(): boolean {
-    return this.get<string>('NODE_ENV') === this.DEVELOPMENT;
+    return this.get<string>(ENV_KEY.NODE_ENV) === this.DEVELOPMENT;
   }
 
   isProduction(): boolean {
-    return this.get<string>('NODE_ENV') === this.PRODUCTION;
+    return this.get<string>(ENV_KEY.NODE_ENV) === this.PRODUCTION;
   }
 }
