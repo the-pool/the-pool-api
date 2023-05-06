@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, PrismaPromise } from '@prisma/client';
 import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
@@ -10,12 +11,16 @@ import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesso
 import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class LessonService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly queryHelper: QueryHelper,
+    private eventEmitter: EventEmitter2,
     private readonly memberStatisticsEvent: MemberStatisticsEvent,
   ) {}
 
@@ -75,15 +80,11 @@ export class LessonService {
   /**
    * 과제 상세조회 메서드
    */
-  readOneLesson(
+  async readOneLesson(
     lessonId: number,
     memberId: number | null,
-  ): Promise<Omit<ReadOneLessonDto, 'isLike' | 'isBookmark'> | null> {
-    const includeOption: Prisma.LessonInclude = {
-      member: true,
-      lessonCategory: true,
-      lessonLevel: true,
-    };
+  ): Promise<ReadOneLessonDto> {
+    const includeOption = <Prisma.LessonInclude>{};
 
     if (memberId) {
       const whereOption = {
@@ -96,12 +97,28 @@ export class LessonService {
       includeOption.lessonLikes = whereOption;
     }
 
-    return this.prismaService.lesson.findFirst({
+    const readOneLesson = await this.prismaService.lesson.findFirst({
       where: {
         id: lessonId,
       },
-      include: includeOption,
+      include: {
+        member: true,
+        lessonCategory: true,
+        lessonLevel: true,
+        ...includeOption,
+      },
     });
+
+    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
+
+    const lessonHitEvent = new LessonHitEvent({
+      action: 'increment',
+      lessonId,
+    });
+
+    this.eventEmitter.emit(LESSON_HIT_EVENT, lessonHitEvent);
+
+    return lesson;
   }
 
   /**
@@ -181,12 +198,5 @@ export class LessonService {
     ]);
 
     return { lessons, totalCount };
-  }
-
-  increaseLessonHit(lessonId: number): Promise<LessonEntity> {
-    return this.prismaService.lesson.update({
-      where: { id: lessonId },
-      data: { hit: { increment: 1 } },
-    });
   }
 }

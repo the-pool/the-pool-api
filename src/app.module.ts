@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
 import { IsRecordConstraint } from '@src/decorators/is-record.decorator';
@@ -8,6 +7,7 @@ import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { modules } from '@src/modules';
 import Joi from 'joi';
 import { IsRecordManyConstraint } from './decorators/is-record-many.decorator';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [

@@ -34,7 +34,6 @@ import {
   ApiUpdateLesson,
 } from '@src/modules/lesson/swaggers/lesson.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { plainToClass } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller()
@@ -123,13 +122,7 @@ export class LessonController {
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<{ lesson: ReadOneLessonDto }> {
-    const readOneLesson = await this.lessonService.readOneLesson(
-      param.id,
-      member.id,
-    );
-    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
-
-    await this.lessonService.increaseLessonHit(param.id);
+    const lesson = await this.lessonService.readOneLesson(param.id, member.id);
 
     return { lesson };
   }

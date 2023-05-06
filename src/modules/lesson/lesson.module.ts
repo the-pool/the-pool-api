@@ -16,6 +16,7 @@ import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashta
 import { LessonLikeService } from '@src/modules/lesson/services/lesson-like.service';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MemberStatisticsModule } from '@src/modules/member-statistics/member-statistics.module';
+import { LessonHitListener } from '@src/modules/lesson/listeners/lesson-hit.listener';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { MemberStatisticsModule } from '@src/modules/member-statistics/member-st
     LessonEvaluationService,
     DataStructureHelper,
     QueryHelper,
+    LessonHitListener,
   ],
   controllers: [
     LessonHashtagController,
