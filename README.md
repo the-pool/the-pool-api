@@ -12,6 +12,8 @@
 
 - [Script](#script)
 
+- [Related Projects](#related-projects)
+
 - [Contributors](#contributors)
 
 - [License](#license)
@@ -195,6 +197,16 @@ $ npx prisma db seed
 # ex) npm run swagger -- -m "lesson" -c "lesson-hashtag"
 $ npm run swagger
 ```
+
+<br/>
+
+## **Related Projects**
+
+---
+
+- [the-pool-infra](https://github.com/the-pool/the-pool-infra)
+- [the-pool-pull-request-reminder-action](https://github.com/the-pool/the-pool-pull-request-reminder-action)
+- [the-pool-web](https://github.com/the-pool/the-pool-web)
 
 </br>
 
