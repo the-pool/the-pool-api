@@ -186,11 +186,13 @@ describe('SolutionService', () => {
   /// GET Solution Many
   describe('GET Solution Many', () => {
     let query: ReadManySolutionRequestQueryDto;
+    let memberId: number | null;
     let readManySolution: ReadManySolutionEntity[];
     let totalCount: number;
 
     beforeEach(() => {
       query = new ReadManySolutionRequestQueryDto();
+      memberId = null;
       readManySolution = [new ReadManySolutionEntity()];
       totalCount = faker.datatype.number();
 
@@ -205,12 +207,12 @@ describe('SolutionService', () => {
     });
 
     it('SUCCESS - check call', async () => {
-      const { page, pageSize, orderBy, sortBy, ...filter } = query;
+      const { page, pageSize, orderBy, sortBy, isLike, ...filter } = query;
       const settledOrderBy = SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
         ? { _count: orderBy }
         : orderBy;
 
-      expect(solutionService.readManySolution(query)).resolves;
+      expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
@@ -224,7 +226,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is virtualColumn', async () => {
       query.sortBy = SolutionVirtualColumn.LessonSolutionComments;
 
-      expect(solutionService.readManySolution(query)).resolves;
+      expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: { _count: query.orderBy },
       });
@@ -233,10 +235,65 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is not virtualColumn', async () => {
       query.sortBy = EntityId.Id;
 
-      expect(solutionService.readManySolution(query)).resolves;
+      expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
+    });
+
+    it('SUCCESS - isLike filtering by logged in user', async () => {
+      query.isLike = true;
+      memberId = 1;
+
+      await expect(
+        solutionService.readManySolution(query, memberId),
+      ).resolves.toBeDefined();
+
+      expect(mockPrismaService.lessonSolution.findMany).toBeCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            lessonSolutionLikes: {
+              some: {
+                memberId,
+              },
+            },
+          }),
+          skip: expect.anything(),
+          take: expect.anything(),
+          include: expect.anything(),
+        }),
+      );
+      expect(mockPrismaService.lessonSolution.count).toBeCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            lessonSolutionLikes: {
+              some: {
+                memberId,
+              },
+            },
+          }),
+        }),
+      );
+    });
+
+    it('SUCCESS - isLike filtering by not logged in user', async () => {
+      query.isLike = true;
+      memberId = null;
+
+      await expect(
+        solutionService.readManySolution(query, memberId),
+      ).resolves.toBeDefined();
+
+      expect(mockPrismaService.lessonSolution.findMany).toBeCalledWith(
+        expect.objectContaining({
+          skip: expect.anything(),
+          take: expect.anything(),
+          include: expect.anything(),
+        }),
+      );
+      expect(mockPrismaService.lessonSolution.count).toBeCalledWith(
+        expect.objectContaining({}),
+      );
     });
   });
 

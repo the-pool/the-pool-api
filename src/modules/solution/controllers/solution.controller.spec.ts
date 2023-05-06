@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Member } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { SolutionController } from '@src/modules/solution/controllers/solution.controller';
 import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
 import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
@@ -147,6 +149,7 @@ describe('SolutionController', () => {
   });
 
   describe('readManySolution', () => {
+    let member: Member;
     let query: ReadManySolutionRequestQueryDto;
     let readManySolution: {
       solutions: ReadManySolutionEntity[];
@@ -154,6 +157,8 @@ describe('SolutionController', () => {
     };
 
     beforeEach(() => {
+      member = new MemberEntity();
+      member.id = 1;
       query = new ReadManySolutionRequestQueryDto();
       readManySolution = {
         solutions: [new ReadManySolutionEntity()],
@@ -164,10 +169,10 @@ describe('SolutionController', () => {
     });
 
     it('SUCCESS - read many solution', () => {
-      const result = solutionController.readManySolution(query);
+      const result = solutionController.readManySolution(query, member);
 
       expect(solutionService.readManySolution).toBeCalledTimes(1);
-      expect(solutionService.readManySolution).toBeCalledWith(query);
+      expect(solutionService.readManySolution).toBeCalledWith(query, 1);
       expect(result).toStrictEqual(readManySolution);
     });
   });
