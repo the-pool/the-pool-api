@@ -25,25 +25,25 @@
 ## **Tech Stack**
 
 <p align="center">  
-  <img src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=Node.js&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat&logo=Typescript&logoColor=white"/>
-  <img src="https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=NestJS&logoColor=white"/>
-  <img src="https://img.shields.io/badge/RestFul-EF2D5E?style=flat&logoColor=white"/>
-  <img src="https://img.shields.io/badge/TDD-EF2D5E?style=flat&logoColor=white"/>
+  <img class="img" src="https://img.shields.io/badge/Node.js-339933?style=flat&logo=Node.js&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/Typescript-3178C6?style=flat&logo=Typescript&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/NestJS-E0234E?style=flat&logo=NestJS&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/RestFul-EF2D5E?style=flat&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/TDD-EF2D5E?style=flat&logoColor=white" height="40"/>
 </p>
   
 <br/>
 <p align="center">  
-  <img src="https://img.shields.io/badge/postgresql-4169E1?style=flat-the-badge&logo=PostgreSQL&logoColor=white">
-  <img src="https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=Prisma&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Jest-C21325?style=flat&logo=Jest&logoColor=white"/>
+  <img src="https://img.shields.io/badge/postgresql-4169E1?style=flat-the-badge&logo=PostgreSQL&logoColor=white" height="40">
+  <img src="https://img.shields.io/badge/Prisma-2D3748?style=flat&logo=Prisma&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/Jest-C21325?style=flat&logo=Jest&logoColor=white" height="40"/>
 </p>
  
 <br/>
 <p align="center">  
-  <img src="https://img.shields.io/badge/AWS-232F3E?style=flat&logo=Amazon%20AWS&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=Terraform&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white"/>
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=flat&logo=Amazon%20AWS&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/Terraform-7B42BC?style=flat&logo=Terraform&logoColor=white" height="40"/>
+  <img src="https://img.shields.io/badge/Docker-2496ED?style=flat&logo=Docker&logoColor=white" height="40"/>
 </p>
 
 </br>
