@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Member } from '@prisma/client';
@@ -35,7 +34,6 @@ import {
   ApiUpdateLesson,
 } from '@src/modules/lesson/swaggers/lesson.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { plainToClass } from 'class-transformer';
 
 @ApiTags('과제')
 @Controller()
@@ -108,11 +106,13 @@ export class LessonController {
   }
 
   @ApiReadManyLesson('과제 목록 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   readManyLesson(
     @Query() query: ReadManyLessonQueryDto,
+    @UserLogin() member: Member | { id: null },
   ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    return this.lessonService.readManyLesson(query);
+    return this.lessonService.readManyLesson(query, member.id);
   }
 
   @ApiReadOneLesson('과제 상세 조회')
@@ -122,13 +122,7 @@ export class LessonController {
     @Param() @SetModelNameToParam(ModelName.Lesson) param: IdRequestParamDto,
     @UserLogin() member: Member | { id: null },
   ): Promise<{ lesson: ReadOneLessonDto }> {
-    const readOneLesson = await this.lessonService.readOneLesson(
-      param.id,
-      member.id,
-    );
-    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
-
-    await this.lessonService.increaseLessonHit(param.id);
+    const lesson = await this.lessonService.readOneLesson(param.id, member.id);
 
     return { lesson };
   }

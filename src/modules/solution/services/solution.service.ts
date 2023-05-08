@@ -104,11 +104,27 @@ export class SolutionService {
 
   async readManySolution(
     query: ReadManySolutionRequestQueryDto,
+    memberId: number | null,
   ): Promise<{ solutions: ReadManySolutionEntity[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy, ...filter } = query;
+    const { page, pageSize, orderBy, sortBy, isLike, ...filter } = query;
 
     // filter 셋팅
     const where = this.queryHelper.buildWherePropForFind(filter);
+    let lessonSolutionLikesWhere:
+      | {
+          lessonSolutionLikes: Prisma.LessonSolutionLikeListRelationFilter;
+        }
+      | undefined;
+
+    if (memberId && isLike) {
+      lessonSolutionLikesWhere = {
+        lessonSolutionLikes: {
+          some: {
+            memberId,
+          },
+        },
+      };
+    }
 
     // sort기준 셋팅
     const settledOrderBy = SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
@@ -121,7 +137,10 @@ export class SolutionService {
     // promise 한 lesson 목록
     const readManySolutionQuery: PrismaPromise<ReadManySolutionEntity[]> =
       this.prismaService.lessonSolution.findMany({
-        where,
+        where: {
+          ...where,
+          ...lessonSolutionLikesWhere,
+        },
         orderBy: order,
         skip: page * pageSize,
         take: pageSize,
@@ -137,7 +156,13 @@ export class SolutionService {
       });
 
     const totalCountQuery: PrismaPromise<number> =
-      this.prismaService.lessonSolution.count({ where, orderBy: order });
+      this.prismaService.lessonSolution.count({
+        where: {
+          ...where,
+          ...lessonSolutionLikesWhere,
+        },
+        orderBy: order,
+      });
 
     const [solutions, totalCount] = await this.prismaService.$transaction([
       readManySolutionQuery,

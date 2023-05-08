@@ -10,6 +10,7 @@ import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesso
 import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockLessonService } from '@test/mock/mock-services';
 
@@ -157,11 +158,9 @@ describe('LessonController', () => {
     let param: IdRequestParamDto;
     let member: any;
     let readOneLesson: ReadOneLessonDto;
-    let updatedLesson: LessonEntity;
 
     beforeEach(() => {
       readOneLesson = new ReadOneLessonDto();
-      updatedLesson = new LessonEntity();
       param = {
         id: faker.datatype.number(),
         model: 'lesson',
@@ -171,7 +170,6 @@ describe('LessonController', () => {
       };
 
       lessonService.readOneLesson.mockReturnValue(readOneLesson);
-      lessonService.increaseLessonHit.mockReturnValue(updatedLesson);
     });
 
     it('success - check method called', async () => {
@@ -179,8 +177,6 @@ describe('LessonController', () => {
 
       expect(lessonService.readOneLesson).toBeCalledTimes(1);
       expect(lessonService.readOneLesson).toBeCalledWith(param.id, member.id);
-      expect(lessonService.increaseLessonHit).toBeCalledTimes(1);
-      expect(lessonService.increaseLessonHit).toBeCalledWith(param.id);
     });
 
     it('success - check Input & Output', async () => {
@@ -192,10 +188,12 @@ describe('LessonController', () => {
 
   describe('readManyLesson', () => {
     let query: ReadManyLessonQueryDto;
+    let member: MemberEntity;
     let readManyLesson: { lessons: ReadManyLessonDto[]; totalCount: number };
 
     beforeEach(() => {
       query = new ReadManyLessonQueryDto();
+      member = new MemberEntity();
       readManyLesson = {
         lessons: [new ReadManyLessonDto()],
         totalCount: faker.datatype.number(),
@@ -204,14 +202,14 @@ describe('LessonController', () => {
     });
 
     it('success - check method called', () => {
-      lessonController.readManyLesson(query);
+      lessonController.readManyLesson(query, member);
 
-      expect(lessonService.readManyLesson).toBeCalledWith(query);
+      expect(lessonService.readManyLesson).toBeCalledWith(query, member.id);
       expect(lessonService.readManyLesson).toBeCalledTimes(1);
     });
 
     it('success - check Input & Output', () => {
-      const returnValue = lessonController.readManyLesson(query);
+      const returnValue = lessonController.readManyLesson(query, member);
 
       expect(returnValue).toStrictEqual(readManyLesson);
     });

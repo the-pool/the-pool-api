@@ -101,10 +101,12 @@ export class SolutionController {
   }
 
   @ApiReadManySolution('문제-풀이 목록 조회')
+  @BearerAuth(OptionalJwtAuthGuard)
   @Get()
   readManySolution(
     @Query() query: ReadManySolutionRequestQueryDto,
+    @UserLogin() member: Member | { id: null },
   ): Promise<{ solutions: SolutionEntity[]; totalCount: number }> {
-    return this.solutionService.readManySolution(query);
+    return this.solutionService.readManySolution(query, member.id);
   }
 }
