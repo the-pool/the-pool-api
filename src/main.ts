@@ -29,6 +29,7 @@ async function bootstrap() {
   await prismaService.enableShutdownHooks(app);
 
   app.use(helmet());
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -36,6 +37,7 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
+
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(
