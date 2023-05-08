@@ -1,18 +1,16 @@
 import { faker } from '@faker-js/faker';
 import { UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtModule, JwtSecretRequestType, JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtSecretRequestType } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { Test, TestingModule } from '@nestjs/testing';
+import { OptionalJwtStrategy } from '@src/modules/core/auth/jwt/optional-jwt.strategy';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import jwt from 'jsonwebtoken';
-import { mockPrismaService } from '../../../../../test/mock/mock-prisma-service';
-import { PrismaService } from '../../database/prisma/prisma.service';
-import { OptionalJwtStrategy } from './optional-jwt.strategy';
 
 describe('OptionalJwtStrategy', () => {
-  let configService: ConfigService;
   let prismaService;
-  let jwtService: JwtService;
   let optionalJwtStrategy: OptionalJwtStrategy;
 
   beforeEach(async () => {
@@ -25,7 +23,7 @@ describe('OptionalJwtStrategy', () => {
       providers: [
         OptionalJwtStrategy,
         {
-          provide: ConfigService,
+          provide: ThePoolConfigService,
           useValue: {
             get: jest.fn((key: string) => {
               return 'secret';

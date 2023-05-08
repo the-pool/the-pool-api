@@ -3,7 +3,6 @@ import {
   INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '@src/app.module';
@@ -15,35 +14,19 @@ import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-except
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
-import Joi from 'joi';
 
 export const setTestingApp = async (): Promise<INestApplication> => {
   const moduleFixture: TestingModule = await Test.createTestingModule({
-    imports: [
-      AppModule,
-      ConfigModule.forRoot({
-        envFilePath: ['.env.local', '.env'],
-        validationSchema: Joi.object({
-          PORT: Joi.number().default(3000),
-          SECRET_KEY: Joi.string(),
-          DATABASE_URL: Joi.string(),
-          AWS_S3_ACCESS_KEY: Joi.string(),
-          AWS_S3_SECRET_KEY: Joi.string(),
-          AWS_S3_REGION: Joi.string(),
-          AWS_S3_BUCKET_NAME: Joi.string(),
-          AWS_S3_EXPIRES: Joi.number(),
-          AWS_S3_ACL: Joi.string(),
-        }),
-        isGlobal: true,
-      }),
-    ],
+    imports: [AppModule],
   }).compile();
 
   const app = moduleFixture.createNestApplication<INestApplication>();
-  const configService = app.get<ConfigService>(ConfigService);
-  const isProduction = configService.get<string>('NODE_ENV') === 'production';
+  const thePoolConfigService =
+    app.get<ThePoolConfigService>(ThePoolConfigService);
+  const isProduction = thePoolConfigService.isProduction();
 
   const notificationService = app.get<NotificationService>(NotificationService);
   const prismaService = app.get(PrismaService);

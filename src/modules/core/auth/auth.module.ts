@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { CommonHelper } from '@src/helpers/common.helper';
@@ -9,27 +8,29 @@ import {
 } from '@src/modules/core/auth/constants/auth.constant';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
 import { JwtStrategy } from '@src/modules/core/auth/jwt/jwt.strategy';
+import { OptionalJwtStrategy } from '@src/modules/core/auth/jwt/optional-jwt.strategy';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { HttpConfigModule } from '@src/modules/core/http/http-config.module';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { OAuth2Client } from 'google-auth-library';
 import jwksClient from 'jwks-rsa';
-import { HttpConfigModule } from '../http/http-config.module';
-import { OptionalJwtStrategy } from './jwt/optional-jwt.strategy';
 
 @Module({
   imports: [
     HttpConfigModule,
     PassportModule,
     JwtModule.registerAsync({
-      useFactory: (configService: ConfigService) => {
+      useFactory: (thePoolConfigService: ThePoolConfigService) => {
         return {
-          secret: configService.get<string>('SECRET_KEY'),
+          secret: thePoolConfigService.get<string>(ENV_KEY.SECRET_KEY),
           signOptions: {
             expiresIn: '10y',
           },
         };
       },
-      inject: [ConfigService],
+      inject: [ThePoolConfigService],
     }),
   ],
   providers: [

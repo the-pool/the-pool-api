@@ -1,7 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { AxiosResponse } from '@nestjs/terminus/dist/health-indicator/http/axios.interfaces';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CommonHelper } from '@src/helpers/common.helper';
@@ -11,15 +10,13 @@ import {
 } from '@src/modules/core/auth/constants/auth.constant';
 import { KakaoErrorCode } from '@src/modules/core/auth/constants/auth.enum';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
+import { mockCommonHelper } from '@test/mock/mock-helpers';
+import { mockGoogleAuth, mockJwksClient } from '@test/mock/mock-libs';
 import jwt from 'jsonwebtoken';
 import { of, throwError } from 'rxjs';
-import { mockCommonHelper } from '../../../../../test/mock/mock-helpers';
-import {
-  mockGoogleAuth,
-  mockJwksClient,
-} from '../../../../../test/mock/mock-libs';
 
 jest.mock('jsonwebtoken');
 
@@ -45,7 +42,7 @@ describe('AuthHelper', () => {
           useValue: mockJwksClient,
         },
         {
-          provide: ConfigService,
+          provide: ThePoolConfigService,
           useValue: {
             get: jest.fn(),
           },

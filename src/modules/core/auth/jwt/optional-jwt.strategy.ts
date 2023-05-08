@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Member } from '@prisma/client';
+import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { Strategy } from 'passport-custom';
 import { ExtractJwt } from 'passport-jwt';
-import { PrismaService } from '../../database/prisma/prisma.service';
 
 /**
  * 회원, 비회원 공통으로 사용되는 api를 위한 가드 (단! 비회원일시 member id를 null로 할당)
@@ -16,12 +17,13 @@ export class OptionalJwtStrategy extends PassportStrategy(
   'optional',
 ) {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly thePoolConfigService: ThePoolConfigService,
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
   ) {
     super();
   }
+
   async validate(request: any) {
     const token = this.getToken(request);
 
@@ -44,7 +46,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
   // 토큰의 검증을 위한 메서드
   validateToken(token: string): { id: number } {
     return this.jwtService.verify(token, {
-      secret: this.configService.get('SECRET_KEY'),
+      secret: this.thePoolConfigService.get(ENV_KEY.SECRET_KEY),
     });
   }
 

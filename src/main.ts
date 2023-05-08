@@ -1,5 +1,4 @@
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from '@src/app.module';
@@ -8,19 +7,22 @@ import { HttpNestInternalServerErrorExceptionFilter } from '@src/filters/http-ne
 import { HttpNodeInternalServerErrorExceptionFilter } from '@src/filters/http-node-internal-server-error-exception.filter';
 import { HttpNotFoundExceptionFilter } from '@src/filters/http-not-found-exception.filter';
 import { HttpRemainderExceptionFilter } from '@src/filters/http-remainder-exception.filter';
+import { JwtExceptionFilter } from '@src/filters/jwt-exception.filter';
 import { SuccessInterceptor } from '@src/interceptors/success.interceptor';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
+import { ENV_KEY } from '@src/modules/core/the-pool-config/constants/the-pool-config.constant';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
-import { JwtExceptionFilter } from './filters/jwt-exception.filter';
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get<ConfigService>(ConfigService);
-  const isProduction = configService.get<string>('NODE_ENV') === 'production';
+  const thePoolConfigService =
+    app.get<ThePoolConfigService>(ThePoolConfigService);
+  const isProduction = thePoolConfigService.isProduction();
 
   const notificationService = app.get<NotificationService>(NotificationService);
   const prismaService = app.get(PrismaService);
@@ -89,7 +91,7 @@ async function bootstrap() {
     SwaggerModule.setup('api-docs', app, document);
   }
 
-  const PORT = configService.get<number>('PORT') || 3000;
+  const PORT = thePoolConfigService.get<number>(ENV_KEY.PORT) || 3000;
 
   await app.listen(PORT);
   console.info(`server listening on port ${PORT}`);

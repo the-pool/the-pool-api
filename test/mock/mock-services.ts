@@ -3,6 +3,7 @@ import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { NotificationService } from '@src/modules/core/notification/services/notification.service';
 import { PrivateStorageService } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
 import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
@@ -19,7 +20,7 @@ import { MemberService } from '@src/modules/member/services/member.service';
 import { QuestionService } from '@src/modules/question/services/question.service';
 import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
-import { MockClassType } from './mock.type';
+import { MockClassType } from '@test/mock/mock.type';
 
 export const mockConfigService = {
   get: jest.fn(),
@@ -162,6 +163,7 @@ export const mockLessonLikeService: MockClassType<LessonLikeService> = {
 };
 
 export const mockNotificationService: MockClassType<NotificationService> = {
+  send: jest.fn(),
   error: jest.fn(),
   warning: jest.fn(),
 };
@@ -170,4 +172,13 @@ export const mockThePoolCacheService: MockClassType<ThePoolCacheService> = {
   onModuleInit: jest.fn(),
   getMemberSocialLinks: jest.fn(),
   setMemberSocialLinks: jest.fn(),
+};
+
+export const mockThePoolConfigService: MockClassType<ThePoolConfigService> = {
+  get: jest.fn(),
+  getAll: jest.fn(),
+  getAllMap: jest.fn(),
+  isDevelopment: jest.fn(),
+  isLocal: jest.fn(),
+  isProduction: jest.fn(),
 };

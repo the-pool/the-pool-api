@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
-import { AwsS3StorageService } from './aws-s3-storage.service';
+import { GetSignedUrlDto } from '@src/modules/core/private-storage/dtos/get-signed-url.dto';
+import { AwsS3StorageService } from '@src/modules/core/private-storage/services/aws-s3-storage.service';
+import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 
 describe('AwsS3StorageService', () => {
   let awsS3StorageService: AwsS3StorageService;
@@ -19,7 +19,7 @@ describe('AwsS3StorageService', () => {
       providers: [
         AwsS3StorageService,
         {
-          provide: ConfigService,
+          provide: ThePoolConfigService,
           useValue: {
             get: jest.fn((key: string) => {
               return ConfigKeyMap[key];
