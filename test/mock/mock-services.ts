@@ -43,8 +43,6 @@ export const mockMemberService: MockClassType<MemberService> = {
   unmappingMemberSkills: jest.fn(),
   mappingMemberInterests: jest.fn(),
   unmappingMemberInterests: jest.fn(),
-  loginByOAuth: jest.fn(),
-  updateMember: jest.fn(),
 };
 
 export const mockMemberFriendshipService: MockClassType<MemberFriendshipService> =

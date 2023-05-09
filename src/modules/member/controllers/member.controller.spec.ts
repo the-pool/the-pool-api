@@ -4,14 +4,12 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MemberController } from '@src/modules/member/controllers/member.controller';
-import { LoginByOAuthDto } from '@src/modules/member/dtos/create-member-by-oauth.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
-import { LastStepLoginDto } from '@src/modules/member/dtos/last-step-login.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -322,66 +320,6 @@ describe('MemberController', () => {
       expect(mockMemberService.unmappingMemberInterests).toBeCalledTimes(1);
       expect(mockMemberService.unmappingMemberInterests).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
-    });
-  });
-
-  describe('loginByOAuth', () => {
-    let loginByOAuthDto: LoginByOAuthDto;
-
-    beforeEach(async () => {
-      loginByOAuthDto = {
-        accessToken: '12345678910',
-        oAuthAgency: 0,
-      };
-    });
-
-    it('success', async () => {
-      memberService.loginByOAuth.mockReturnValue({
-        accessToken: '1234',
-        status: 0,
-      });
-      const returnValue = await memberController.loginByOAuth(loginByOAuthDto);
-
-      expect(returnValue).toStrictEqual({
-        accessToken: '1234',
-        status: 0,
-      });
-    });
-  });
-
-  describe('lastStepLogin', () => {
-    let lastStepLoginDto: LastStepLoginDto;
-
-    beforeEach(async () => {
-      lastStepLoginDto = {
-        nickname: 'the-pool',
-        majorId: 1,
-        memberSkill: [1, 2, 3],
-      };
-    });
-
-    it('success', async () => {
-      const memberId = 1;
-
-      const member = {
-        id: 1,
-        majorId: 1,
-        account: 'k123456',
-        nickname: 'the-pool',
-        status: 1,
-        loginType: 1,
-        createdAt: '2022-10-03T09:54:50.563Z',
-        updatedAt: '2022-10-03T09:54:50.563Z',
-        deletedAt: null,
-      };
-      memberService.updateMember.mockReturnValue(member);
-
-      const returnValue = await memberController.lastStepLogin(
-        memberId,
-        lastStepLoginDto,
-      );
-
-      expect(returnValue).toStrictEqual(member);
     });
   });
 });
