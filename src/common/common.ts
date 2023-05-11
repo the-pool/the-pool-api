@@ -71,7 +71,7 @@ export const getEntriesByEnum = <T>(Enum: Record<keyof T, T[keyof T]>) => {
 export const customValidate = async <T>(property: {
   [key in keyof T]: any;
 }): Promise<ValidationError[]> => {
-  return await validate(property, { skipUndefinedProperties: true });
+  return validate(property, { skipUndefinedProperties: true });
 };
 
 export const getNumberEnumValues = (numberEnum: {

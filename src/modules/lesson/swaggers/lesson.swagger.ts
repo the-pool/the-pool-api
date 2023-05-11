@@ -57,10 +57,3 @@ export const ApiReadManyLesson = (summary: string) => {
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };
-
-export const APiTest = () => {
-  return applyDecorators(
-    ApiOperation({ summary: '테스트' }),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-  );
-};

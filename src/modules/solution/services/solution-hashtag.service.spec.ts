@@ -92,7 +92,7 @@ describe('SolutionHashtagService', () => {
         faker.datatype.string(),
       );
 
-      expect(
+      await expect(
         solutionHashtagService.createManyHashtag(
           createSolutionHashtagsDto,
           solutionId,

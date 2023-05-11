@@ -10,10 +10,10 @@ import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-les
 import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
-import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
-import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
 import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
-import { plainToClass } from 'class-transformer';
+import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
+import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LessonService {
@@ -109,7 +109,7 @@ export class LessonService {
       },
     });
 
-    const lesson = plainToClass(ReadOneLessonDto, readOneLesson);
+    const lesson = plainToInstance(ReadOneLessonDto, readOneLesson);
 
     const lessonHitEvent = new LessonHitEvent({
       action: 'increment',

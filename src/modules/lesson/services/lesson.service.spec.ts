@@ -167,9 +167,6 @@ describe('LessonService', () => {
           lessonId,
         });
 
-        delete lesson.isLike;
-        delete lesson.isBookmark;
-
         prismaService.lesson.findFirst.mockReturnValue(lesson);
         mockEventEmitter2.emit.mockReturnValue(true);
       });
@@ -224,8 +221,6 @@ describe('LessonService', () => {
           action: 'increment',
           lessonId,
         });
-        delete lesson.isLike;
-        delete lesson.isBookmark;
         delete lesson.lessonBookMarks;
         delete lesson.lessonLikes;
 

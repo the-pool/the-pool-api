@@ -41,18 +41,6 @@ export enum MajorText {
   Design = '디자인',
 }
 
-export enum MajorSkillId {
-  Backend = 1,
-  WebFrontend = 2,
-  Ios = 3,
-  Android = 4,
-  EtcDev = 5,
-  WebDesign = 6,
-  UiUx = 7,
-  Bx = 8,
-  EtcDesign = 9,
-}
-
 export enum LessonLevelId {
   // 상
   Top = 1,

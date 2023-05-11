@@ -33,7 +33,7 @@ export class OptionalJwtStrategy extends PassportStrategy(
 
     const validatedToken = this.validateToken(token);
 
-    return await this.validateMember(validatedToken.id);
+    return this.validateMember(validatedToken.id);
   }
 
   // request 객체로부터 토큰을 가져오는 메서드

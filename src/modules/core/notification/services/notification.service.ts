@@ -24,7 +24,7 @@ export class NotificationService {
   ) {}
 
   /**
-   * 400번대 에러 또는 인지해야하는 사항
+   * 400번대 에러 또는 인지해야하는 상황
    */
   async warning(exceptionField: WarningExceptionFiled): Promise<void> {
     const { description, ...serverExceptionField } = exceptionField;

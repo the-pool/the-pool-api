@@ -83,11 +83,6 @@ export const mockAuthService: MockClassType<AuthService> = {
   validateExternalAccessTokenOrFail: jest.fn(),
 };
 
-export const mockHttpService = {
-  get: jest.fn(() => mockAuthService),
-  pipe: jest.fn(),
-};
-
 export const mockPrivateStorageService: MockClassType<PrivateStorageService> = {
   getSignedUrl: jest.fn(),
 };

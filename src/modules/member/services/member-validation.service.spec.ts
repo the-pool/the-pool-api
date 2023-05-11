@@ -78,14 +78,14 @@ describe('MemberValidationService', () => {
       member.loginType = loginType;
       member.status = memberStatus;
 
-      const result = memberValidationService.canLoginOrFail(
-        account,
-        loginType,
-        memberStatus,
-        member,
-      );
-
-      expect(result).toBeUndefined();
+      expect(
+        memberValidationService.canLoginOrFail(
+          account,
+          loginType,
+          memberStatus,
+          member,
+        ),
+      ).toBeUndefined();
     });
   });
 

@@ -1,9 +1,3 @@
-export type Errors = {
-  error: string;
-  statusCode: number;
-  message?: string[];
-};
-
 export type ExceptionError = {
   error?: string;
   statusCode: number;

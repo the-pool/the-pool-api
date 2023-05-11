@@ -210,7 +210,7 @@ describe('SolutionService', () => {
         ? { _count: orderBy }
         : orderBy;
 
-      expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
@@ -224,7 +224,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is virtualColumn', async () => {
       query.sortBy = SolutionVirtualColumn.LessonSolutionComments;
 
-      expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: { _count: query.orderBy },
       });
@@ -233,7 +233,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is not virtualColumn', async () => {
       query.sortBy = EntityId.Id;
 
-      expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query, memberId)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
