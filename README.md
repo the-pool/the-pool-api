@@ -214,9 +214,9 @@ $ npm run swagger
 
 ---
 
-- [**SeokHo Lee**](https:github.com/rrgks6221) - <rrgks@naver.com>
-- [**RokWonk Kim**](https:github.com/Rokwonk) - <rokwon79@gmail.com>
-- [**SuHyung Lee**](https:github.com/subroooo) - <clark9810@naver.com>
+- [**SeokHo Lee**](https://github.com/rrgks6221) - <rrgks@naver.com>
+- [**RokWonk Kim**](https://github.com/Rokwonk) - <rokwon79@gmail.com>
+- [**SuHyung Lee**](https://github.com/subroooo) - <clark9810@naver.com>
 
 <br/>
 
