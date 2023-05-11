@@ -20,7 +20,8 @@
     "restful api",
     "clean architecture",
     "backend",
-    "postgresql"
+    "postgresql",
+    "test code"
   ],
   "scripts": {
     "prebuild": "rimraf dist",
