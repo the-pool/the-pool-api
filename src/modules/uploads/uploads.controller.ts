@@ -1,13 +1,11 @@
-import { Body, Controller, Post, Redirect, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiConsumes,
   ApiOkResponse,
   ApiProperty,
   ApiTags,
 } from '@nestjs/swagger';
-import { binary } from 'joi';
 
 class UploadRequestEntity {
   @ApiProperty({
@@ -33,5 +31,7 @@ export class UploadsController {
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @Post('post/:name')
-  createUploads(@Body() body: UploadRequestEntity): void {}
+  createUploads(@Body() body: UploadRequestEntity): void {
+    return;
+  }
 }

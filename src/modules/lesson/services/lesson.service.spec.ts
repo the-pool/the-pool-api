@@ -12,14 +12,14 @@ import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-les
 import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
 import { UpdateLessonDto } from '@src/modules/lesson/dtos/lesson/update-lesson.dto';
 import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
+import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
+import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
 import { LessonService } from '@src/modules/lesson/services/lesson.service';
 import { MemberStatisticsEvent } from '@src/modules/member-statistics/events/member-statistics.event';
 import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
 import { mockQueryHelper } from '@test/mock/mock-helpers';
 import { mockEventEmitter2 } from '@test/mock/mock-libs';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
-import { LessonHitEvent } from '@src/modules/lesson/events/lesson-hit.event';
-import { LESSON_HIT_EVENT } from '@src/modules/lesson/listeners/lesson-hit.listener';
 
 describe('LessonService', () => {
   let lessonService: LessonService;
@@ -97,13 +97,11 @@ describe('LessonService', () => {
 
   describe('updateLesson', () => {
     let lesson: UpdateLessonDto;
-    let memberId: number;
     let lessonId: number;
     let updatedLesson: LessonEntity;
 
     beforeEach(() => {
       lesson = new UpdateLessonDto();
-      memberId = faker.datatype.number();
       lessonId = faker.datatype.number();
       updatedLesson = new LessonEntity();
 

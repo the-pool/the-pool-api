@@ -64,12 +64,13 @@ export class IsRecordManyConstraint implements ValidatorConstraintInterface {
     } in ${modelName}`;
   }
 }
+
 export function IsRecordMany<M extends PrismaModel = PrismaModel>(
   target: Target<M>,
   isShouldBeExist: boolean,
   validationOptions?: ValidationOptions,
 ) {
-  return function (object: Object, propertyName: string) {
+  return function (object: Record<string, any>, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,

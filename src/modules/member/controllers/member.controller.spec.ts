@@ -25,7 +25,6 @@ import {
 
 describe('MemberController', () => {
   let memberController: MemberController;
-  let memberService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -51,11 +50,6 @@ describe('MemberController', () => {
     }).compile();
 
     memberController = module.get<MemberController>(MemberController);
-    memberService = mockMemberService;
-  });
-
-  beforeEach(() => {
-    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -72,14 +66,12 @@ describe('MemberController', () => {
     });
 
     it('조회 성공', async () => {
-      mockMemberService.findOneOrFail.mockReturnValue(member);
+      mockMemberService.findOneOrFail.mockResolvedValue(member);
 
-      const result = memberController.findOne(id);
-
+      await expect(memberController.findOne(id)).resolves.toStrictEqual(member);
       expect(mockMemberService.findOneOrFail).toBeCalledWith({
         id,
       });
-      expect(result).toStrictEqual(member);
     });
   });
 
@@ -126,12 +118,14 @@ describe('MemberController', () => {
 
     describe('로그인 하는 경우', () => {
       beforeEach(() => {
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOne.mockResolvedValue(member);
+        mockMemberService.login.mockResolvedValue(member);
       });
 
       it('로그인 성공', async () => {
-        const result = await memberController.loginOrSignUp(body);
-
+        await expect(
+          memberController.loginOrSignUp(body),
+        ).resolves.toStrictEqual(member);
         expect(mockMemberService.login).toBeCalledTimes(1);
       });
 
@@ -144,12 +138,14 @@ describe('MemberController', () => {
     describe('회원가입 하는 경우', () => {
       beforeEach(() => {
         member = null;
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOne.mockResolvedValue(member);
+        mockMemberService.signUp.mockResolvedValue(member);
       });
 
       it('회원가입 성공', async () => {
-        const result = await memberController.loginOrSignUp(body);
-
+        await expect(
+          memberController.loginOrSignUp(body),
+        ).resolves.toStrictEqual(member);
         expect(mockMemberService.signUp).toBeCalledTimes(1);
       });
 
@@ -321,5 +317,9 @@ describe('MemberController', () => {
       expect(mockMemberService.unmappingMemberInterests).toBeCalledWith(params);
       expect(result).toStrictEqual(returnValue);
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });

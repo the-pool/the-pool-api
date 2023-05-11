@@ -89,13 +89,11 @@ describe('SolutionService', () => {
 
   /// UPDATE Solution
   describe('UPDATE Solution', () => {
-    let memberId: number | null;
     let solutionId: number;
     let updateRequestDto: UpdateSolutionRequestBodyDto;
     let updatedSolution: SolutionEntity;
 
     beforeEach(() => {
-      memberId = faker.datatype.number();
       solutionId = faker.datatype.number();
       updateRequestDto = new UpdateSolutionRequestBodyDto();
       updatedSolution = new SolutionEntity();

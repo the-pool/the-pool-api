@@ -56,7 +56,9 @@ export class MockEmbedBuilder {
 }
 
 export class MockWebhookClient {
-  constructor(option) {}
+  constructor(option) {
+    return;
+  }
 
   send() {
     return Promise.resolve(jest.fn());

@@ -3,13 +3,8 @@ import {
   LessonSolutionHashtag,
   LessonSolutionHashtagMapping,
 } from '@prisma/client';
-import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { exist } from 'joi';
-import { CreateSolutionHashtagsRequestBodyDto } from '../dtos/create-solution-hashtags-request-body.dto';
-import { CreateSolutionRequestBodyDto } from '../dtos/create-solution-request-body.dto';
-import { SolutionHashtagEntity } from '../entities/solution-hashtag.entity';
-import { SolutionEntity } from '../entities/solution.entity';
+import { CreateSolutionHashtagsRequestBodyDto } from '@src/modules/solution/dtos/create-solution-hashtags-request-body.dto';
 
 @Injectable()
 export class SolutionHashtagService {

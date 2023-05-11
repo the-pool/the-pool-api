@@ -14,8 +14,8 @@ describe('QuestionService', () => {
         QuestionService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService
-        }
+          useValue: mockPrismaService,
+        },
       ],
     }).compile();
 
@@ -37,11 +37,14 @@ describe('QuestionService', () => {
 
     beforeEach(() => {
       categoryList = [new QuestionCategoryEntity()];
-      prismaService.questionCategory.findMany.mockResolvedValueOnce(categoryList);
-    })
+      prismaService.questionCategory.findMany.mockResolvedValueOnce(
+        categoryList,
+      );
+    });
 
     it('SUCCESS - get question category list', async () => {
-      const result: QuestionCategoryEntity[] = await service.findQuestionCategoryList();
+      const result: QuestionCategoryEntity[] =
+        await service.findQuestionCategoryList();
 
       expect(prismaService.questionCategory.findMany).toBeCalledTimes(1);
       expect(result).toStrictEqual(categoryList);

@@ -1,8 +1,5 @@
-import { isNil } from '@nestjs/common/utils/shared.utils';
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { Lesson, LessonSolution } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
 import { SOLUTION_HASHTAG_LENGTH } from '@src/constants/constant';
-import { IsRecord } from '@src/decorators/is-record.decorator';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,

@@ -10,7 +10,7 @@ export function IsNotEmptyString(
       propertyName: propertyName,
       options: validationOptions,
       validator: {
-        validate(value: string, args: any) {
+        validate(value: unknown, args: any) {
           if (typeof value === 'string') return value.trim().length > 0;
           return true;
         },

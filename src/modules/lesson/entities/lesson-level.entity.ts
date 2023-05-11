@@ -1,6 +1,5 @@
 import { ApiProperty, IntersectionType, PickType } from '@nestjs/swagger';
 import { LessonLevel } from '@prisma/client';
-import { LessonLevelId } from '@src/constants/enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 

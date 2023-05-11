@@ -5,6 +5,6 @@ import { QuestionService } from './services/question.service';
 
 @Module({
   controllers: [QuestionController],
-  providers: [QuestionService, PrismaService]
+  providers: [QuestionService, PrismaService],
 })
-export class QuestionModule { }
+export class QuestionModule {}

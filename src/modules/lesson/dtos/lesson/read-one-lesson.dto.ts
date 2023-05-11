@@ -1,13 +1,12 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { LessonLevelId } from '@src/constants/enum';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
+import { LessonCategoryEntity } from '@src/modules/lesson/entities/lesson-category.entity';
+import { LessonLevelEntity } from '@src/modules/lesson/entities/lesson-level.entity';
+import { LessonLikeEntity } from '@src/modules/lesson/entities/lesson-like.entity';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { Exclude, Expose, Transform } from 'class-transformer';
-import { object } from 'joi';
-import { LessonBookmarkEntity } from '../../entities/lesson-bookmark.entity';
-import { LessonCategoryEntity } from '../../entities/lesson-category.entity';
-import { LessonLevelEntity } from '../../entities/lesson-level.entity';
-import { LessonLikeEntity } from '../../entities/lesson-like.entity';
-import { LessonEntity } from '../../entities/lesson.entity';
+import { Exclude, Expose } from 'class-transformer';
 
 export class ReadOneLessonDto extends PickType(LessonEntity, [
   'title',
@@ -46,6 +45,8 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
 
   @Exclude({ toPlainOnly: true })
   lessonBookMarks?: LessonBookmarkEntity[] | null;
+  @Exclude({ toPlainOnly: true })
+  lessonLikes?: LessonLikeEntity[] | null;
 
   @ApiProperty({
     example: true,
@@ -55,9 +56,6 @@ export class ReadOneLessonDto extends PickType(LessonEntity, [
   get isBookmark(): boolean {
     return !!this.lessonBookMarks?.length;
   }
-
-  @Exclude({ toPlainOnly: true })
-  lessonLikes?: LessonLikeEntity[] | null;
 
   @ApiProperty({
     example: true,

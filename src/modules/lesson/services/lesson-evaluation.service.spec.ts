@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LessonLevelId } from '@src/constants/enum';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
-import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
-import { LessonEvaluationService } from './lesson-evaluation.service';
+import { LessonEvaluationQueryDto } from '@src/modules/lesson/dtos/evaluation/lesson-evaluation-query.dto';
+import { LessonEvaluationEntity } from '@src/modules/lesson/entities/lesson-evaluation.entity';
+import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('LessonEvaluationService', () => {
   let lessonEvaluationService: LessonEvaluationService;
@@ -71,7 +71,6 @@ describe('LessonEvaluationService', () => {
     let levelId: number | null;
     let memberId: number;
     let createdEvaluation: LessonEvaluationEntity;
-    let spyCreateEvaluation: jest.SpyInstance;
 
     beforeEach(async () => {
       lessonId = faker.datatype.number();
@@ -82,10 +81,7 @@ describe('LessonEvaluationService', () => {
       prismaService.lessonLevelEvaluation.create.mockReturnValue(
         createdEvaluation,
       );
-      spyCreateEvaluation = jest.spyOn(
-        lessonEvaluationService,
-        'createEvaluation',
-      );
+      jest.spyOn(lessonEvaluationService, 'createEvaluation');
     });
 
     describe('levelId !== null', () => {

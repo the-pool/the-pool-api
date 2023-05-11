@@ -29,8 +29,6 @@ import { mockAuthService, mockSolutionService } from '@test/mock/mock-services';
 
 describe('MemberService', () => {
   let memberService: MemberService;
-  let authService;
-  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -52,8 +50,6 @@ describe('MemberService', () => {
     }).compile();
 
     memberService = module.get<MemberService>(MemberService);
-    authService = mockAuthService;
-    prismaService = mockPrismaService;
   });
 
   beforeEach(() => {
@@ -160,12 +156,10 @@ describe('MemberService', () => {
     });
 
     describe('login', () => {
-      let account: string;
       let member: MemberEntity;
       let accessToken: string;
 
       beforeEach(() => {
-        account = faker.datatype.string();
         member = new MemberEntity();
       });
 
