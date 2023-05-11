@@ -1,8 +1,8 @@
-import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { SolutionEntity } from './solution.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { setObjectValuesToNumber } from '@src/common/common';
-import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/solution/constants/solution.const';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 
 export class ReadManySolutionEntity extends SolutionEntity {
   @ApiProperty({

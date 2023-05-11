@@ -8,7 +8,7 @@ import {
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('MemberValidationService', () => {
   let memberValidationService: MemberValidationService;

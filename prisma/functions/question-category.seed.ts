@@ -4,12 +4,14 @@ export const questionCategorySeed = async (prisma) => {
     Design = '디자인',
     Career = '커리어',
     WorkLife = '직장생활',
-    Etc = '기타'
+    Etc = '기타',
   }
 
   await prisma.questionCategory.createMany({
-    data: Object.values(CategoryName)
-      .map((value, idx) => ({ id: ++idx, name: value })),
+    data: Object.values(CategoryName).map((value, idx) => ({
+      id: ++idx,
+      name: value,
+    })),
     skipDuplicates: true,
   });
 };

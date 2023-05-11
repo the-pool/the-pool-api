@@ -3,8 +3,8 @@ import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
-import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
+import { ReadEvaluationDto } from '@src/modules/lesson/dtos/evaluation/read-evaluation.dto';
+import { LessonEvaluationEntity } from '@src/modules/lesson/entities/lesson-evaluation.entity';
 
 export const ApiCreateEvaluation = (summary: string) => {
   return applyDecorators(

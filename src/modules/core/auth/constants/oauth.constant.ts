@@ -1,4 +1,4 @@
-import { OAuthAgency } from './oauth.enums';
+import { OAuthAgency } from '@src/modules/core/auth/constants/oauth.enums';
 
 /**
  * @deprecated loginByOAuth 삭제되면 같이 삭제

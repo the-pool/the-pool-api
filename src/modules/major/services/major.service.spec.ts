@@ -4,8 +4,8 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
 import { MajorSkillDto } from '@src/modules/major/dtos/major-skill-dto';
 import { MajorDto } from '@src/modules/major/dtos/major.dto';
+import { MajorService } from '@src/modules/major/services/major.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
-import { MajorService } from './major.service';
 
 describe('MajorService', () => {
   let service: MajorService;

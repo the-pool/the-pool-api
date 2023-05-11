@@ -1,6 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { Transform, Type } from 'class-transformer';
-import { LessonEntity } from './lesson.entity';
 
 export class SimilarLessonEntity extends PickType(LessonEntity, [
   'title',

@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MemberSkillController } from '@src/modules/member-skill/controllers/member-skill.controller';
 import { FindMemberSkillListQueryDto } from '@src/modules/member-skill/dtos/find-member-skill-list-query.dto';
 import { MemberSkillEntity } from '@src/modules/member-skill/entities/member-skill.entity';
 import { MemberSkillService } from '@src/modules/member-skill/services/member-skill.service';
-import { mockMemberSkillService } from '../../../../test/mock/mock-services';
-import { MemberSkillController } from './member-skill.controller';
+import { mockMemberSkillService } from '@test/mock/mock-services';
 
 describe('MemberSkillController', () => {
   let controller: MemberSkillController;

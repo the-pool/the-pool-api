@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataStructureHelper } from './data-structure.helper';
+import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 
 describe('DataStructureHelper', () => {
   let dataStructureHelper: DataStructureHelper;

@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { customValidate, getValueByEnum } from '@src/common/common';
 import { LessonCategoryId, LessonLevelId } from '@src/constants/enum';
-import { CreateLessonDto } from './create-lesson.dto';
+import { CreateLessonDto } from '@src/modules/lesson/dtos/lesson/create-lesson.dto';
 
 describe('CreateLessonDto', () => {
   let createLessonDto: { [key in keyof CreateLessonDto]: any };

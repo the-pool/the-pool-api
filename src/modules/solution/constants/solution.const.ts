@@ -1,4 +1,4 @@
-import { SolutionVirtualColumn } from './solution.enum';
+import { SolutionVirtualColumn } from '@src/modules/solution/constants/solution.enum';
 
 export const SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY = {
   [SolutionVirtualColumn.LessonSolutionComments]:

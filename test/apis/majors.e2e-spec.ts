@@ -2,9 +2,9 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MajorDto } from '@src/modules/major/dtos/major.dto';
 import { MajorSkillEntity } from '@src/modules/major/entities/major-skill.entity';
+import { setTestingApp } from '@test/utils/setTestingApp';
 import path from 'path';
 import request from 'supertest';
-import { setTestingApp } from '../utils/setTestingApp';
 
 describe('MajorsController (e2e)', () => {
   const basicPath = '/api/majors';

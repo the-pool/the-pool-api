@@ -1,25 +1,25 @@
 import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { LessonHashtagMapping } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { SetModelNameToParam } from '@src/decorators/set-model-name-to-param.decorator';
 import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { LessonHashtagService } from '../services/lesson-hashtag.service';
+import { LessonHashtagMappingEntity } from '@src/modules/lesson/entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
+import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
 import {
   ApiCreateManyHashtag,
   APiDeleteManyHashtag,
   ApiReadLessonHashtags,
   ApiReadManyHashtag,
   ApiUpdateManyHashtag,
-} from '../swaggers/lesson-hashtag.swagger';
-import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
-import { LessonHashtagMapping } from '@prisma/client';
-import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+} from '@src/modules/lesson/swaggers/lesson-hashtag.swagger';
 
 @ApiTags('과제의 해시태그')
 @Controller()

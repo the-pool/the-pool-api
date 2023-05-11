@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
+import { CommentBaseEntity } from '@src/modules/comment/entities/comment.entity';
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { CommentBaseEntity } from '../entities/comment.entity';
 
 export class CreateCommentBaseDto extends PickType(CommentBaseEntity, [
   'description',

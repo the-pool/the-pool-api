@@ -3,11 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockLessonLikeService } from '../../../../test/mock/mock-services';
-import { LessonLikeEntity } from '../entities/lesson-like.entity';
-import { LessonLikeService } from '../services/lesson-like.service';
-import { LessonLikeController } from './lesson-like.controller';
+import { LessonLikeController } from '@src/modules/lesson/controllers/lesson-like.controller';
+import { LessonLikeEntity } from '@src/modules/lesson/entities/lesson-like.entity';
+import { LessonLikeService } from '@src/modules/lesson/services/lesson-like.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonLikeService } from '@test/mock/mock-services';
 
 describe('LessonLikeController', () => {
   let lessonLikeController: LessonLikeController;

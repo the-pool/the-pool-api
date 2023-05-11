@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MemberSocialLinkController } from '@src/modules/member-social-link/controllers/member-social-link.controller';
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
-import { mockMemberSocialLinkService } from '../../../../test/mock/mock-services';
-import { MemberSocialLinkService } from '../services/member-social-link.service';
-import { MemberSocialLinkController } from './member-social-link.controller';
+import { MemberSocialLinkService } from '@src/modules/member-social-link/services/member-social-link.service';
+import { mockMemberSocialLinkService } from '@test/mock/mock-services';
 
 describe('MemberSocialLinkController', () => {
   let controller: MemberSocialLinkController;

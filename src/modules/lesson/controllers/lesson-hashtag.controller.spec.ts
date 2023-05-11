@@ -1,15 +1,15 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonHashtagController } from '@src/modules/lesson/controllers/lesson-hashtag.controller';
 import { LessonHashtagParamDto } from '@src/modules/lesson/dtos/hashtag/lesson-hashtag-param.dto';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockLessonHashtagService } from '../../../../test/mock/mock-services';
-import { LessonHashtagService } from '../services/lesson-hashtag.service';
-import { LessonHashtagController } from './lesson-hashtag.controller';
-import { ModelName } from '@src/constants/enum';
-import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonHashtagMappingEntity } from '@src/modules/lesson/entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
+import { LessonHashtagService } from '@src/modules/lesson/services/lesson-hashtag.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonHashtagService } from '@test/mock/mock-services';
 
 describe('LessonHashtagController', () => {
   let lessonHashtagController: LessonHashtagController;

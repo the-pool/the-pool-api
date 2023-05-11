@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
 import { MajorSkillDto } from '@src/modules/major/dtos/major-skill-dto';
 import { MajorDto } from '@src/modules/major/dtos/major.dto';
-import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
 
 @Injectable()
 export class MajorService {

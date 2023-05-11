@@ -8,8 +8,8 @@ import {
 } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { SolutionCommentEntity } from '../entities/solution-comment.entity';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
+import { SolutionCommentEntity } from '@src/modules/solution/entities/solution-comment.entity';
 
 export const ApiCreateComment = (summary: string) => {
   return applyDecorators(

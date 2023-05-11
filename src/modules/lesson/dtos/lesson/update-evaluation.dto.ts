@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LessonLevelId } from '@src/constants/enum';
+import { CreateEvaluationDto } from '@src/modules/lesson/dtos/evaluation/create-evaluation.dto';
 import { IsOptional } from 'class-validator';
-import { CreateEvaluationDto } from '../evaluation/create-evaluation.dto';
 
 export class UpdateEvaluationDto extends CreateEvaluationDto {
   @ApiProperty({

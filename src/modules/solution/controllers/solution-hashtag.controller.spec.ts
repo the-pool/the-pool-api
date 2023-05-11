@@ -5,13 +5,13 @@ import {
   LessonSolutionHashtagMapping,
 } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { SolutionHashtagController } from '@src/modules/solution/controllers/solution-hashtag.controller';
+import { CreateSolutionHashtagsRequestBodyDto } from '@src/modules/solution/dtos/create-solution-hashtags-request-body.dto';
+import { SolutionHashtagMappingEntity } from '@src/modules/solution/entities/solution-hashtag-mapping.entity';
+import { SolutionHashtagEntity } from '@src/modules/solution/entities/solution-hashtag.entity';
+import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionHashtagService } from '@test/mock/mock-services';
-import { CreateSolutionHashtagsRequestBodyDto } from '../dtos/create-solution-hashtags-request-body.dto';
-import { SolutionHashtagMappingEntity } from '../entities/solution-hashtag-mapping.entity';
-import { SolutionHashtagEntity } from '../entities/solution-hashtag.entity';
-import { SolutionHashtagService } from '../services/solution-hashtag.service';
-import { SolutionHashtagController } from './solution-hashtag.controller';
 
 describe('LessonHashtagController', () => {
   let solutionHashtagController: SolutionHashtagController;

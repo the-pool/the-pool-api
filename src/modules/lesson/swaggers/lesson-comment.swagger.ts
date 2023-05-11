@@ -9,7 +9,7 @@ import {
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { LessonCommentEntity } from '../entities/lesson-comment.entity';
+import { LessonCommentEntity } from '@src/modules/lesson/entities/lesson-comment.entity';
 
 export const ApiCreateComment = (summary: string) => {
   return applyDecorators(

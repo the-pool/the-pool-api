@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { LessonLikeEntity } from '../entities/lesson-like.entity';
+import { LessonLikeEntity } from '@src/modules/lesson/entities/lesson-like.entity';
 
 export const ApiCreateLike = (summary: string) => {
   return applyDecorators(

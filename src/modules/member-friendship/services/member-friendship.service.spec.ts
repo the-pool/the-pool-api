@@ -10,13 +10,12 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { FindMemberFriendshipListQueryDto } from '@src/modules/member-friendship/dtos/find-member-friendship-list-query.dto';
 import { MemberFollowEntity } from '@src/modules/member-friendship/entities/member-follow.entity';
 import { MemberFriendshipsEvent } from '@src/modules/member-friendship/events/member-friendships.event';
+import { MemberFriendshipService } from '@src/modules/member-friendship/services/member-friendship.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { mockMemberFriendshipsEvent } from '@test/mock/mock-event';
 import { mockQueryHelper } from '@test/mock/mock-helpers';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
-
-import { MemberFriendshipService } from './member-friendship.service';
 
 describe('FriendshipService', () => {
   let service: MemberFriendshipService;

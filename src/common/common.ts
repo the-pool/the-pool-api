@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { BooleanString } from '../constants/enum';
+import { BooleanString } from '@src/constants/enum';
 import { validate, ValidationError } from 'class-validator';
 
 export const pageTransform = ({ value }) => {

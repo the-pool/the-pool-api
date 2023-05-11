@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { QuestionCategoryEntity } from '../entities/question-category.entity';
-import { QuestionService } from './question.service';
+import { QuestionCategoryEntity } from '@src/modules/question/entities/question-category.entity';
+import { QuestionService } from '@src/modules/question/services/question.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('QuestionService', () => {
   let service: QuestionService;

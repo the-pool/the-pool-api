@@ -1,5 +1,5 @@
 import { ArgumentMetadata } from '@nestjs/common';
-import { ParsePositiveIntPipe } from './parse-positive-int.pipe';
+import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 
 describe('ParsePositiveIntPipe', () => {
   let pipe: ParsePositiveIntPipe;

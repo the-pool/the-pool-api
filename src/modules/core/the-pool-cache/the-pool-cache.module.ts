@@ -1,5 +1,5 @@
 import { CacheModule, Global, Module } from '@nestjs/common';
-import { ThePoolCacheService } from './services/the-pool-cache.service';
+import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
 
 @Global()
 @Module({

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CountEvaluationDto } from '@src/modules/lesson/dtos/evaluation/count-evaluation.dto';
+import { LessonEvaluationEntity } from '@src/modules/lesson/entities/lesson-evaluation.entity';
 import { Type } from 'class-transformer';
-import { LessonEvaluationEntity } from '../../entities/lesson-evaluation.entity';
-import { CountEvaluationDto } from './count-evaluation.dto';
 
 export class ReadEvaluationDto {
   @ApiProperty({

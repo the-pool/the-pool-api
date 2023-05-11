@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockPrivateStorageService } from '../../../../../test/mock/mock-services';
-import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
-import { PRIVATE_STORAGE_SERVICE } from '../interfaces/private-storage-service.interface';
-import { PrivateStorageController } from './private-storage.controller';
+import { PrivateStorageController } from '@src/modules/core/private-storage/controllers/private-storage.controller';
+import { GetSignedUrlDto } from '@src/modules/core/private-storage/dtos/get-signed-url.dto';
+import { PRIVATE_STORAGE_SERVICE } from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { mockPrivateStorageService } from '@test/mock/mock-services';
 
 describe('PrivateStorageController', () => {
   let privateStorageController: PrivateStorageController;

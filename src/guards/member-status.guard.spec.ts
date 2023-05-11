@@ -4,12 +4,8 @@ import { MemberStatusGuard } from '@src/guards/member-status.guard';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberStatuses } from '@src/modules/member/types/member.type';
-import {
-  mockContext,
-  mockReflector,
-  mockRequest,
-} from '../../test/mock/mock-libs';
-import { MockGuardType } from '../../test/mock/mock.type';
+import { mockContext, mockReflector, mockRequest } from '@test/mock/mock-libs';
+import { MockGuardType } from '@test/mock/mock.type';
 
 describe('MemberStatusGuard', () => {
   let memberStatusGuard: MockGuardType;
