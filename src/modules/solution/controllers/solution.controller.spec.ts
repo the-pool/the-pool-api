@@ -13,6 +13,8 @@ import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionService } from '@test/mock/mock-services';
+import { SolutionLikeEntity } from '../entities/solution-like.entity';
+import { SolutionDefaultEntity } from '../entities/solution-default.entity';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
@@ -174,6 +176,52 @@ describe('SolutionController', () => {
       expect(solutionService.readManySolution).toBeCalledTimes(1);
       expect(solutionService.readManySolution).toBeCalledWith(query, 1);
       expect(result).toStrictEqual(readManySolution);
+    });
+  });
+
+  describe('문제-풀이 좋아요', () => {
+    let solutionId: number;
+    let memberId: number;
+    let solutionLike: SolutionLikeEntity;
+
+    beforeEach(() => {
+      solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      solutionLike = new SolutionLikeEntity();
+
+      solutionService.createLike.mockReturnValue(solutionLike);
+    });
+
+    it('SUCCESS - 좋아요', async () => {
+      const likeEntity = await solutionController.createSolutionLike(
+        solutionId,
+        memberId,
+      );
+
+      expect(likeEntity).toStrictEqual({ solutionLike });
+    });
+  });
+
+  describe('문제-풀이 좋아요 취소', () => {
+    let solutionId: number;
+    let memberId: number;
+    let defaultEntity: SolutionDefaultEntity;
+
+    beforeEach(() => {
+      solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      defaultEntity = new SolutionDefaultEntity();
+
+      solutionService.deleteLike.mockReturnValue(defaultEntity);
+    });
+
+    it('SUCCESS - 좋아요 취소', async () => {
+      const returnEntity = await solutionController.deleteSolutionLike(
+        solutionId,
+        memberId,
+      );
+
+      expect(returnEntity).toStrictEqual({ message: 'delete like success' });
     });
   });
 });

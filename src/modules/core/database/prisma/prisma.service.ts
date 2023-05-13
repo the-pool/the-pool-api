@@ -15,6 +15,7 @@ import {
   LessonBookmark,
   LessonHashtagMapping,
   LessonLike,
+  LessonSolutionLike,
   Prisma,
   PrismaClient,
 } from '@prisma/client';
