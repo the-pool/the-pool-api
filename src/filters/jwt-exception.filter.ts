@@ -5,13 +5,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpExceptionHelper } from '@src/filters/http-exception.helper';
+import { ResponseJson } from '@src/filters/type';
 import { Response } from 'express';
 import {
   JsonWebTokenError,
   NotBeforeError,
   TokenExpiredError,
 } from 'jsonwebtoken';
-import { ResponseJson } from './type';
 
 /**
  * jwt 토큰을 validate했을 때 나오는 에러를 관리하기 위한 filter

@@ -3,9 +3,9 @@ import { StringBooleanTransform } from '@src/common/common';
 import { EntityId } from '@src/constants/enum';
 import { PageDto } from '@src/dtos/page.dto';
 import { SortDto } from '@src/dtos/sort.dto';
+import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/solution/constants/solution.const';
 import { Transform, Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsInt, IsOptional } from 'class-validator';
-import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '../constants/solution.const';
 
 export class ReadManySolutionRequestQueryDto extends IntersectionType(
   PageDto,

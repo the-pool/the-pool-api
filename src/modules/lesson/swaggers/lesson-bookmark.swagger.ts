@@ -2,14 +2,13 @@ import { applyDecorators, HttpStatus } from '@nestjs/common';
 import {
   ApiCreatedResponse,
   ApiExtraModels,
-  ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
   getSchemaPath,
 } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
-import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
 
 export const ApiCreateBookmark = (summary: string) => {
   return applyDecorators(

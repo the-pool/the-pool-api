@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
-import { LessonBookmarkService } from './lesson-bookmark.service';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
+import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('LessonBookmarkService', () => {
   let lessonBookmarkService: LessonBookmarkService;

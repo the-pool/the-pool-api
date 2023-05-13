@@ -3,9 +3,9 @@ import { ApiOperation } from '@nestjs/swagger';
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { ReadManyLessonDto } from '../dtos/lesson/read-many-lesson.dto';
-import { ReadOneLessonDto } from '../dtos/lesson/read-one-lesson.dto';
-import { LessonEntity } from '../entities/lesson.entity';
+import { ReadManyLessonDto } from '@src/modules/lesson/dtos/lesson/read-many-lesson.dto';
+import { ReadOneLessonDto } from '@src/modules/lesson/dtos/lesson/read-one-lesson.dto';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 
 export const ApiCreateLesson = (summary: string) => {
   return applyDecorators(
@@ -54,13 +54,6 @@ export const ApiReadManyLesson = (summary: string) => {
       },
       { totalCount: { type: 'number', example: 1 } },
     ),
-    ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
-  );
-};
-
-export const APiTest = () => {
-  return applyDecorators(
-    ApiOperation({ summary: '테스트' }),
     ApiFailureResponse(HttpStatus.NOT_FOUND, HTTP_ERROR_MESSAGE.NOT_FOUND),
   );
 };

@@ -2,17 +2,17 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonEvaluationController } from '@src/modules/lesson/controllers/lesson-evaluation.controller';
+import { CountEvaluationDto } from '@src/modules/lesson/dtos/evaluation/count-evaluation.dto';
+import { CreateEvaluationDto } from '@src/modules/lesson/dtos/evaluation/create-evaluation.dto';
+import { LessonEvaluationQueryDto } from '@src/modules/lesson/dtos/evaluation/lesson-evaluation-query.dto';
+import { ReadEvaluationDto } from '@src/modules/lesson/dtos/evaluation/read-evaluation.dto';
+import { UpdateEvaluationDto } from '@src/modules/lesson/dtos/evaluation/update-evaluation.dto';
+import { LessonEvaluationEntity } from '@src/modules/lesson/entities/lesson-evaluation.entity';
+import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockLessonEvaluationService } from '../../../../test/mock/mock-services';
-import { CountEvaluationDto } from '../dtos/evaluation/count-evaluation.dto';
-import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
-import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
-import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
-import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
-import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
-import { LessonEvaluationService } from '../services/lesson-evaluation.service';
-import { LessonEvaluationController } from './lesson-evaluation.controller';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonEvaluationService } from '@test/mock/mock-services';
 
 describe('LessonEvaluationController', () => {
   let lessonEvaluationController: LessonEvaluationController;

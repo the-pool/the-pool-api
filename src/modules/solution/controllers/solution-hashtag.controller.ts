@@ -6,10 +6,10 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { CreateSolutionHashtagsRequestBodyDto } from '../dtos/create-solution-hashtags-request-body.dto';
-import { SolutionHashtagEntity } from '../entities/solution-hashtag.entity';
-import { SolutionHashtagService } from '../services/solution-hashtag.service';
-import { ApiCreateManySolutionHashtag } from './solution-hashtag.controller.swagger';
+import { ApiCreateManySolutionHashtag } from '@src/modules/solution/controllers/solution-hashtag.controller.swagger';
+import { CreateSolutionHashtagsRequestBodyDto } from '@src/modules/solution/dtos/create-solution-hashtags-request-body.dto';
+import { SolutionHashtagEntity } from '@src/modules/solution/entities/solution-hashtag.entity';
+import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 
 @ApiTags('문제-풀이의 해시태그')
 @Controller()

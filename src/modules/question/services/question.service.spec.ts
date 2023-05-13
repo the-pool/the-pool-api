@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { QuestionCategoryEntity } from '../entities/question-category.entity';
-import { QuestionService } from './question.service';
+import { QuestionCategoryEntity } from '@src/modules/question/entities/question-category.entity';
+import { QuestionService } from '@src/modules/question/services/question.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('QuestionService', () => {
   let service: QuestionService;
@@ -14,8 +14,8 @@ describe('QuestionService', () => {
         QuestionService,
         {
           provide: PrismaService,
-          useValue: mockPrismaService
-        }
+          useValue: mockPrismaService,
+        },
       ],
     }).compile();
 
@@ -37,11 +37,14 @@ describe('QuestionService', () => {
 
     beforeEach(() => {
       categoryList = [new QuestionCategoryEntity()];
-      prismaService.questionCategory.findMany.mockResolvedValueOnce(categoryList);
-    })
+      prismaService.questionCategory.findMany.mockResolvedValueOnce(
+        categoryList,
+      );
+    });
 
     it('SUCCESS - get question category list', async () => {
-      const result: QuestionCategoryEntity[] = await service.findQuestionCategoryList();
+      const result: QuestionCategoryEntity[] =
+        await service.findQuestionCategoryList();
 
       expect(prismaService.questionCategory.findMany).toBeCalledTimes(1);
       expect(result).toStrictEqual(categoryList);

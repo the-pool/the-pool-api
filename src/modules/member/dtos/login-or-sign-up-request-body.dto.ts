@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { getEntriesByEnum, getStrMapByEnum } from '@src/common/common';
+import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { IsEnum, IsString } from 'class-validator';
-import { MemberLoginType } from '../constants/member.enum';
 
 export class LoginOrSignUpRequestBodyDto {
   @ApiProperty({

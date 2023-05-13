@@ -53,7 +53,7 @@ describe('MemberStatisticsListeners', () => {
           memberId,
           memberStatisticsEvent,
         ),
-      ).toBe(undefined);
+      ).toBeUndefined();
       expect(mockNotificationService.warning).not.toBeCalled();
     });
 

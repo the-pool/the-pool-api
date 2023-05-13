@@ -1,4 +1,4 @@
-import { LessonVirtualColumn } from './lesson.enum';
+import { LessonVirtualColumn } from '@src/modules/lesson/constants/lesson.enum';
 
 /**
  * 과제 목록 조회중 가상 컬럼으로 sorting을 위한 객체

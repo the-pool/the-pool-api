@@ -4,9 +4,11 @@ import {
   LessonBookmark,
   LessonComment,
   LessonHashtag,
+  LessonHashtagMapping,
   LessonLevel,
   LessonLevelEvaluation,
   LessonSolution,
+  LessonSolutionComment,
   Major,
   MajorSkill,
   Member,
@@ -14,8 +16,6 @@ import {
   MemberSkill,
   MemberStatistics,
   Prisma,
-  LessonHashtagMapping,
-  LessonSolutionComment,
 } from '@prisma/client';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
@@ -72,7 +72,6 @@ export type PrismaModel =
   | LessonLevel
   | LessonHashtag
   | LessonHashtagMapping
-  | LessonComment
   | MemberSkill
   | LessonComment
   | LessonSolutionComment;
@@ -83,8 +82,6 @@ export type Target<M extends PrismaModel = PrismaModel> = {
 };
 
 export type IncreaseAction = 'increment' | 'decrement';
-
-export type MajorText = '개발' | '디자인';
 
 export type JwtGuard = typeof JwtAuthGuard | typeof OptionalJwtAuthGuard;
 

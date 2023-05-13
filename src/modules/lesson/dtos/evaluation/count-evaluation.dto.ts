@@ -7,19 +7,19 @@ export class CountEvaluationDto {
     description: '난이도 상',
   })
   @Type(() => Number)
-  top: number = 0;
+  top = 0;
 
   @ApiProperty({
     example: 5,
     description: '난이도 중',
   })
   @Type(() => Number)
-  middle: number = 0;
+  middle = 0;
 
   @ApiProperty({
     example: 10,
     description: '평가된 갯수',
   })
   @Type(() => Number)
-  bottom: number = 0;
+  bottom = 0;
 }

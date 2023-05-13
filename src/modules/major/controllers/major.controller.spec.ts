@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
+import { MajorController } from '@src/modules/major/controllers/major.controller';
 import { MajorIdRequestParamDto } from '@src/modules/major/dtos/major-id-request-param.dto';
 import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
 import { MajorRequestParamDto } from '@src/modules/major/dtos/major-request-param.dto';
 import { MajorSkillDto } from '@src/modules/major/dtos/major-skill-dto';
 import { MajorDto } from '@src/modules/major/dtos/major.dto';
+import { MajorService } from '@src/modules/major/services/major.service';
 import { mockMajorService } from '@test/mock/mock-services';
-import { MajorService } from '../services/major.service';
-import { MajorController } from './major.controller';
 
 describe('MajorController', () => {
   let controller: MajorController;

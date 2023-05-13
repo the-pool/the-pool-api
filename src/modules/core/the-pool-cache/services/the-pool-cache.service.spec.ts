@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker';
 import { CACHE_MANAGER } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/the-pool-cache.service';
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
-import { mockCacheManager } from '../../../../../test/mock/mock-managers';
-import { mockPrismaService } from '../../../../../test/mock/mock-prisma-service';
-import { ThePoolCacheService } from './the-pool-cache.service';
+import { mockCacheManager } from '@test/mock/mock-managers';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('ThePoolCacheService', () => {
   let service: ThePoolCacheService;

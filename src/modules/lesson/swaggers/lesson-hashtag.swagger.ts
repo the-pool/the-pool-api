@@ -9,8 +9,8 @@ import {
 import { HTTP_ERROR_MESSAGE } from '@src/constants/constant';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
-import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonHashtagMappingEntity } from '@src/modules/lesson/entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
 
 export const ApiCreateManyHashtag = (summary: string) => {
   return applyDecorators(

@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { setObjectValuesToNumber } from '@src/common/common';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
+import { LessonCategoryEntity } from '@src/modules/lesson/entities/lesson-category.entity';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../../constants/lesson.const';
-import { LessonCategoryEntity } from '../../entities/lesson-category.entity';
-import { LessonEntity } from '../../entities/lesson.entity';
 
 export class ReadManyLessonDto extends LessonEntity {
   @ApiProperty({

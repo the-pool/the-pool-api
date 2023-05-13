@@ -43,8 +43,6 @@ export const mockMemberService: MockClassType<MemberService> = {
   unmappingMemberSkills: jest.fn(),
   mappingMemberInterests: jest.fn(),
   unmappingMemberInterests: jest.fn(),
-  loginByOAuth: jest.fn(),
-  updateMember: jest.fn(),
 };
 
 export const mockMemberFriendshipService: MockClassType<MemberFriendshipService> =
@@ -83,11 +81,6 @@ export const mockAuthService: MockClassType<AuthService> = {
   createAccessToken: jest.fn(),
   validateOAuth: jest.fn(),
   validateExternalAccessTokenOrFail: jest.fn(),
-};
-
-export const mockHttpService = {
-  get: jest.fn(() => mockAuthService),
-  pipe: jest.fn(),
 };
 
 export const mockPrivateStorageService: MockClassType<PrivateStorageService> = {

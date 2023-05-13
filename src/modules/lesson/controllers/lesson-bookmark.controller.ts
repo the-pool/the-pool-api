@@ -9,13 +9,13 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
-import { LessonBookmarkService } from '../services/lesson-bookmark.service';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
+import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
 import {
   ApiCreateBookmark,
   ApiDeleteBookmark,
-} from '../swaggers/lesson-bookmark.swagger';
+} from '@src/modules/lesson/swaggers/lesson-bookmark.swagger';
+import { MemberStatus } from '@src/modules/member/constants/member.enum';
 
 @ApiTags('과제 북마크')
 @Controller(':id/bookmarks')

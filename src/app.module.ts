@@ -2,10 +2,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from '@src/app.controller';
 import { AppService } from '@src/app.service';
+import { IsRecordManyConstraint } from '@src/decorators/is-record-many.decorator';
 import { IsRecordConstraint } from '@src/decorators/is-record.decorator';
 import { LoggerMiddleware } from '@src/middlewares/logger.middleware';
 import { modules } from '@src/modules';
-import { IsRecordManyConstraint } from './decorators/is-record-many.decorator';
 
 @Module({
   imports: [

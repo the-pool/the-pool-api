@@ -3,10 +3,10 @@ import { HttpService } from '@nestjs/axios';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
+import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
-import { mockAuthHelper } from '../../../../../test/mock/mock-helpers';
-import { mockJwtService } from '../../../../../test/mock/mock-services';
-import { AuthService } from './auth.service';
+import { mockAuthHelper } from '@test/mock/mock-helpers';
+import { mockJwtService } from '@test/mock/mock-services';
 
 describe('AuthService', () => {
   let authService: AuthService;

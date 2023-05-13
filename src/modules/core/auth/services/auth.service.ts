@@ -5,10 +5,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { OAUTH_AGENCY_COLUMN } from '@src/modules/core/auth/constants/oauth.constant';
 import { AuthHelper } from '@src/modules/core/auth/helpers/auth.helper';
 import { MemberLoginType } from '@src/modules/member/constants/member.enum';
 import { lastValueFrom, map } from 'rxjs';
-import { OAUTH_AGENCY_COLUMN } from '../constants/oauth.constant';
 
 @Injectable()
 export class AuthService {

@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MemberStatisticsController } from '@src/modules/member-statistics/controllers/member-statistics.controller';
 import { FindMemberStatisticsListQueryDto } from '@src/modules/member-statistics/dtos/find-member-statistics-list-query.dto';
+import { FindMemberStatisticsRequestParamDto } from '@src/modules/member-statistics/dtos/find-member-statistics-request-param.dto';
 import { MemberStatisticsEntity } from '@src/modules/member-statistics/entities/member-statistics.entity';
 import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
-import { mockMemberStatisticsService } from '../../../../test/mock/mock-services';
-import { FindMemberStatisticsRequestParamDto } from '../dtos/find-member-statistics-request-param.dto';
-import { MemberStatisticsController } from './member-statistics.controller';
+import { mockMemberStatisticsService } from '@test/mock/mock-services';
 
 describe('MemberMemberStatisticsController', () => {
   let controller: MemberStatisticsController;

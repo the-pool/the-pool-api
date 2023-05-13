@@ -3,12 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OtherMemberGuard } from '@src/guards/other-member.guard';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import {
-  mockContext,
-  mockReflector,
-  mockRequest,
-} from '../../test/mock/mock-libs';
-import { MockGuardType } from '../../test/mock/mock.type';
+import { mockContext, mockReflector, mockRequest } from '@test/mock/mock-libs';
+import { MockGuardType } from '@test/mock/mock.type';
 
 describe('OtherMemberGuard', () => {
   let unOwnMemberGuard: MockGuardType;

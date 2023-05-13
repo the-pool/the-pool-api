@@ -9,19 +9,19 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { OptionalJwtAuthGuard } from '@src/guards/optional-auth-guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { plainToInstance } from 'class-transformer';
-import { CreateEvaluationDto } from '../dtos/evaluation/create-evaluation.dto';
-import { LessonEvaluationQueryDto } from '../dtos/evaluation/lesson-evaluation-query.dto';
-import { ReadEvaluationDto } from '../dtos/evaluation/read-evaluation.dto';
-import { UpdateEvaluationDto } from '../dtos/evaluation/update-evaluation.dto';
-import { LessonEvaluationEntity } from '../entities/lesson-evaluation.entity';
-import { LessonEvaluationService } from '../services/lesson-evaluation.service';
+import { CreateEvaluationDto } from '@src/modules/lesson/dtos/evaluation/create-evaluation.dto';
+import { LessonEvaluationQueryDto } from '@src/modules/lesson/dtos/evaluation/lesson-evaluation-query.dto';
+import { ReadEvaluationDto } from '@src/modules/lesson/dtos/evaluation/read-evaluation.dto';
+import { UpdateEvaluationDto } from '@src/modules/lesson/dtos/evaluation/update-evaluation.dto';
+import { LessonEvaluationEntity } from '@src/modules/lesson/entities/lesson-evaluation.entity';
+import { LessonEvaluationService } from '@src/modules/lesson/services/lesson-evaluation.service';
 import {
   ApiCreateEvaluation,
   ApiReadCountedEvaluation,
   ApiReadManyEvaluation,
   ApiUpdateEvaluation,
-} from '../swaggers/lesson-evaluation.swagger';
+} from '@src/modules/lesson/swaggers/lesson-evaluation.swagger';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('남들이 평가하는 과제 난이도')
 @Controller(':id/evaluations')

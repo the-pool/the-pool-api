@@ -3,11 +3,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ModelName } from '@src/constants/enum';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { mockLessonBookmarkService } from '../../../../test/mock/mock-services';
-import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
-import { LessonBookmarkService } from '../services/lesson-bookmark.service';
-import { LessonBookmarkController } from './lesson-bookmark.controller';
+import { LessonBookmarkController } from '@src/modules/lesson/controllers/lesson-bookmark.controller';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
+import { LessonBookmarkService } from '@src/modules/lesson/services/lesson-bookmark.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockLessonBookmarkService } from '@test/mock/mock-services';
 
 describe('LessonBookmarkController', () => {
   let lessonBookmarkController: LessonBookmarkController;

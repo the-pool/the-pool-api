@@ -2,17 +2,17 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SetResponseSetMetadataInterceptor } from '@src/decorators/set-response-set-metadata.interceptor-decorator';
 import {
-  ApiFindOneMajor,
   ApiFindAllMajor,
-  ApiFindOneMajorSkill,
   ApiFindAllMajorSkill,
+  ApiFindOneMajor,
+  ApiFindOneMajorSkill,
 } from '@src/modules/major/controllers/major.swagger';
+import { MajorIdRequestParamDto } from '@src/modules/major/dtos/major-id-request-param.dto';
+import { MajorRelationFieldRequestQueryDto } from '@src/modules/major/dtos/major-relation-field-request-query.dto';
+import { MajorRequestParamDto } from '@src/modules/major/dtos/major-request-param.dto';
 import { MajorSkillDto } from '@src/modules/major/dtos/major-skill-dto';
 import { MajorDto } from '@src/modules/major/dtos/major.dto';
-import { MajorIdRequestParamDto } from '../dtos/major-id-request-param.dto';
-import { MajorRelationFieldRequestQueryDto } from '../dtos/major-relation-field-request-query.dto';
-import { MajorRequestParamDto } from '../dtos/major-request-param.dto';
-import { MajorService } from '../services/major.service';
+import { MajorService } from '@src/modules/major/services/major.service';
 
 @ApiTags('분야')
 @Controller('api/majors')

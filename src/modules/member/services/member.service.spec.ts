@@ -14,27 +14,21 @@ import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
+import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
 import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberInterestMappingEntity } from '@src/modules/member/entities/member-interest-mapping.entity';
 import { MemberMajorMappingEntity } from '@src/modules/member/entities/member-major-mapping.entity';
 import { MemberSkillMappingEntity } from '@src/modules/member/entities/member-skill-mapping.entity';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
+import { MemberService } from '@src/modules/member/services/member.service';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import {
-  mockAuthService,
-  mockSolutionService,
-} from '../../../../test/mock/mock-services';
-import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { DeleteMemberSkillsMappingRequestParamDto } from '../dtos/delete-member-skills-mapping-request-param.dto';
-import { MemberService } from './member.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
+import { mockAuthService, mockSolutionService } from '@test/mock/mock-services';
 
 describe('MemberService', () => {
   let memberService: MemberService;
-  let authService;
-  let prismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -56,8 +50,6 @@ describe('MemberService', () => {
     }).compile();
 
     memberService = module.get<MemberService>(MemberService);
-    authService = mockAuthService;
-    prismaService = mockPrismaService;
   });
 
   beforeEach(() => {
@@ -164,12 +156,10 @@ describe('MemberService', () => {
     });
 
     describe('login', () => {
-      let account: string;
       let member: MemberEntity;
       let accessToken: string;
 
       beforeEach(() => {
-        account = faker.datatype.string();
         member = new MemberEntity();
       });
 
@@ -544,143 +534,6 @@ describe('MemberService', () => {
     afterEach(() => {
       mockPrismaService.memberInterestMapping.count.mockRestore();
       mockPrismaService.memberInterestMapping.deleteMany.mockRestore();
-    });
-  });
-
-  describe('loginByOAuth', () => {
-    let loginByOAuthDto: LoginByOAuthDto;
-
-    beforeEach(async () => {
-      authService.validateOAuth.mockReturnValue('k1234');
-      authService.createAccessToken.mockReturnValue('abcdefg');
-
-      loginByOAuthDto = {
-        accessToken: '12345678910',
-        oAuthAgency: 1,
-      };
-    });
-
-    it('이미 등록되어 있는 member이면서 추가 정보를 받은 member인 경우', async () => {
-      prismaService.member.findUnique.mockReturnValue({
-        status: 1,
-      });
-      const returnValue = await memberService.loginByOAuth(loginByOAuthDto);
-
-      expect(returnValue).toStrictEqual({
-        token: 'abcdefg',
-        status: 1,
-      });
-    });
-
-    it('이미 등록 되어 있는 member이면서 추가정보를 받아야 하는 member인 경우', async () => {
-      prismaService.member.findUnique.mockReturnValue({
-        status: 0,
-      });
-      const returnValue = await memberService.loginByOAuth(loginByOAuthDto);
-
-      expect(returnValue).toStrictEqual({
-        token: 'abcdefg',
-        status: 0,
-      });
-    });
-
-    it('등록되어 있지 않은 member인 경우', async () => {
-      const newMember = {
-        id: 3,
-        majorId: null,
-        account: 'k12345',
-        nickname: null,
-        status: 0,
-        loginType: 1,
-        createdAt: '2022-10-23T18:59:25.161Z',
-        updatedAt: '2022-10-23T18:59:25.161Z',
-        deletedAt: null,
-      };
-
-      prismaService.member.findUnique.mockReturnValue(null);
-      prismaService.member.create.mockReturnValue(newMember);
-      const returnValue = await memberService.loginByOAuth(loginByOAuthDto);
-
-      expect(returnValue).toStrictEqual({
-        token: 'abcdefg',
-        ...newMember,
-      });
-    });
-  });
-
-  describe('updateMember', () => {
-    let member;
-    let memberId: number;
-    let lastStepLoginDto;
-    let memberMajorSkillMappingDeleteManySpy: jest.SpyInstance;
-    let memberMajorSkillMappingCreateManySpy: jest.SpyInstance;
-    let memberUpdateSpy: jest.SpyInstance;
-
-    beforeEach(async () => {
-      member = {
-        id: 1,
-        majorId: 1,
-        account: 'k123456',
-        nickname: 'the-pool',
-        status: 1,
-        loginType: 1,
-        createdAt: '2022-10-03T09:54:50.563Z',
-        updatedAt: '2022-10-03T09:54:50.563Z',
-        deletedAt: null,
-      };
-      memberId = 1;
-      lastStepLoginDto = {
-        nickname: 'the-pool',
-        majorId: 1,
-        memberSkill: [1, 2, 3],
-      };
-
-      memberMajorSkillMappingDeleteManySpy = jest.spyOn(
-        prismaService.memberMajorSkillMapping,
-        'deleteMany',
-      );
-      memberMajorSkillMappingCreateManySpy = jest.spyOn(
-        prismaService.memberMajorSkillMapping,
-        'createMany',
-      );
-      memberUpdateSpy = jest.spyOn(prismaService.member, 'update');
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('success - memberMajorSkillMapping이 있을 때', async () => {
-      prismaService.memberMajorSkillMapping.deleteMany.mockReturnValue({
-        count: 0,
-      });
-      prismaService.memberMajorSkillMapping.createMany.mockReturnValue({
-        count: 3,
-      });
-      prismaService.member.update.mockReturnValue(member);
-
-      const returnValue = await memberService.updateMember(
-        memberId,
-        lastStepLoginDto,
-      );
-      expect(memberMajorSkillMappingDeleteManySpy).toBeCalledTimes(1);
-      expect(memberMajorSkillMappingCreateManySpy).toBeCalledTimes(1);
-      expect(memberUpdateSpy).toBeCalledTimes(1);
-      expect(returnValue).toStrictEqual(member);
-    });
-
-    it('success - memberMajorSkillMapping이 없을 때', async () => {
-      lastStepLoginDto.memberSkill = [];
-      prismaService.member.update.mockReturnValue(member);
-
-      const returnValue = await memberService.updateMember(
-        memberId,
-        lastStepLoginDto,
-      );
-      expect(memberMajorSkillMappingDeleteManySpy).toBeCalledTimes(0);
-      expect(memberMajorSkillMappingCreateManySpy).toBeCalledTimes(0);
-      expect(memberUpdateSpy).toBeCalledTimes(1);
-      expect(returnValue).toStrictEqual(member);
     });
   });
 });

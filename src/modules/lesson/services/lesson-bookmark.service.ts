@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonBookmarkEntity } from '../entities/lesson-bookmark.entity';
+import { LessonBookmarkEntity } from '@src/modules/lesson/entities/lesson-bookmark.entity';
 
 @Injectable()
 export class LessonBookmarkService {

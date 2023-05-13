@@ -1,11 +1,8 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
-import { SolutionEntity } from './solution.entity';
-import { Exclude, Expose } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
-import { SolutionCommentEntity } from './solution-comment.entity';
-import { SolutionHashtagMappingEntity } from './solution-hashtag-mapping.entity';
-import { SolutionLikeEntity } from './solution-like.entity';
-import { SolutionHashtagEntity } from './solution-hashtag.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
+import { Exclude, Expose } from 'class-transformer';
 
 export class ReadOneSolutionEntity extends SolutionEntity {
   @Exclude()
@@ -17,6 +14,8 @@ export class ReadOneSolutionEntity extends SolutionEntity {
     required: true,
   })
   member: MemberEntity;
+  @Exclude({ toPlainOnly: true })
+  lessonSolutionLikes?: SolutionLikeEntity[] | null;
 
   @ApiProperty({
     example: true,
@@ -26,7 +25,4 @@ export class ReadOneSolutionEntity extends SolutionEntity {
   get isLike(): boolean {
     return !!this.lessonSolutionLikes?.length;
   }
-
-  @Exclude({ toPlainOnly: true })
-  lessonSolutionLikes?: SolutionLikeEntity[] | null;
 }

@@ -8,7 +8,7 @@ export class SortDto {
     required: false,
   })
   @IsOptional()
-  sortBy: string = 'id';
+  sortBy = 'id';
 
   @ApiProperty({
     description: '정렬순서 ASC : 오름차순, DESC : 내림차순',

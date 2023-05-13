@@ -104,9 +104,7 @@ describe('OptionalJwtStrategy', () => {
     it('success - token이 존재하는 경우 (회원)', async () => {
       const returnValue = optionalJwtStrategy.getToken(request);
 
-      expect(returnValue).toStrictEqual(
-        request.headers.authorization.substr(7),
-      );
+      expect(returnValue).toStrictEqual(request.headers.authorization.slice(7));
     });
 
     it('success - token이 존재하지 않는 경우 (비회원)', async () => {
@@ -138,9 +136,9 @@ describe('OptionalJwtStrategy', () => {
     it('false - 유효하지 않은 토큰인 경우', async () => {
       token = faker.datatype.uuid();
 
-      expect(async () => {
-        await optionalJwtStrategy.validateToken(token);
-      }).rejects.toThrowError('jwt malformed');
+      expect(() => {
+        optionalJwtStrategy.validateToken(token);
+      }).toThrowError('jwt malformed');
     });
   });
 
@@ -160,11 +158,11 @@ describe('OptionalJwtStrategy', () => {
     });
 
     it('false - 토큰에서 얻어낸 memberId가 존재하지 않는 멤버일 때', async () => {
-      prismaService.member.findFirst.mockReturnValue(null);
+      prismaService.member.findFirst.mockResolvedValue(null);
 
-      expect(async () => {
-        await optionalJwtStrategy.validateMember(memberId);
-      }).rejects.toThrowError(new UnauthorizedException());
+      await expect(
+        optionalJwtStrategy.validateMember(memberId),
+      ).rejects.toThrowError(new UnauthorizedException());
     });
   });
 });

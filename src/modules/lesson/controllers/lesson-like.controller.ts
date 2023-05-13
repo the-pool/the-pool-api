@@ -9,10 +9,13 @@ import { UserLogin } from '@src/decorators/user-login.decorator';
 import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { LessonLikeEntity } from '@src/modules/lesson/entities/lesson-like.entity';
+import { LessonLikeService } from '@src/modules/lesson/services/lesson-like.service';
+import {
+  ApiCreateLike,
+  ApiDeleteLike,
+} from '@src/modules/lesson/swaggers/lesson-like.swagger';
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
-import { LessonLikeEntity } from '../entities/lesson-like.entity';
-import { LessonLikeService } from '../services/lesson-like.service';
-import { ApiCreateLike, ApiDeleteLike } from '../swaggers/lesson-like.swagger';
 
 @ApiTags('과제 좋아요')
 @Controller(':id/likes')

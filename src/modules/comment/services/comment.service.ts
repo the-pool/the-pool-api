@@ -22,8 +22,10 @@ export class CommentService {
     memberId: number,
     description: string,
   ): Promise<PrismaCommentModelMapper[T]> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const newComment = await this.prismaService[commentModel].create({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       data: { memberId, ...parentIdColumn, description },
       include: {
@@ -49,6 +51,7 @@ export class CommentService {
     commentModel: T,
     commentId: number,
   ): Promise<PrismaCommentModelMapper[T]> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const deletedComment = await this.prismaService[commentModel].delete({
       where: { id: commentId },
@@ -75,6 +78,7 @@ export class CommentService {
     commentId: number,
     description: string,
   ): Promise<PrismaCommentModelMapper[T]> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return this.prismaService[commentModel].update({
       where: {
@@ -101,6 +105,7 @@ export class CommentService {
     const { page, pageSize, orderBy } = query;
 
     const readManyCommentQuery: PrismaPromise<PrismaCommentModelMapper[T][]> =
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       this.prismaService[commentModel].findMany({
         include: {
@@ -115,6 +120,7 @@ export class CommentService {
       });
 
     const totalCountQuery: PrismaPromise<number> =
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       this.prismaService[commentModel].count({
         where: parentIdColumn,

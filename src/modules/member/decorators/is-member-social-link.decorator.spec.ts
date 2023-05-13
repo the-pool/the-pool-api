@@ -3,8 +3,8 @@ import { ThePoolCacheService } from '@src/modules/core/the-pool-cache/services/t
 import { MemberSocialLinkEntity } from '@src/modules/member-social-link/entities/member-social-link.entity';
 import { IsMemberSocialLinkConstraint } from '@src/modules/member/decorators/is-member-social-link.decorator';
 import { MemberSocialLinkDto } from '@src/modules/member/dtos/member-social-link.dto';
+import { mockThePoolCacheService } from '@test/mock/mock-services';
 import { ValidationArguments } from 'class-validator';
-import { mockThePoolCacheService } from '../../../../test/mock/mock-services';
 
 describe('IsMemberSocialLinkConstraint', () => {
   let constraint: IsMemberSocialLinkConstraint;

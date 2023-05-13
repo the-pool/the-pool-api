@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { customValidate } from '@src/common/common';
-import { GetSignedUrlDto } from './get-signed-url.dto';
+import { GetSignedUrlDto } from '@src/modules/core/private-storage/dtos/get-signed-url.dto';
 
 describe('GetSignedUrlDto', () => {
   let getSignedUrlDto: { [key in keyof GetSignedUrlDto]: any };

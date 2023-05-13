@@ -10,11 +10,11 @@ import {
   ApiFindOne,
 } from '@src/modules/member-statistics/controllers/member-statistics.swagger';
 import { FindMemberStatisticsListQueryDto } from '@src/modules/member-statistics/dtos/find-member-statistics-list-query.dto';
+import { FindMemberStatisticsRequestParamDto } from '@src/modules/member-statistics/dtos/find-member-statistics-request-param.dto';
 import { MemberStatisticsEntity } from '@src/modules/member-statistics/entities/member-statistics.entity';
 import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
-import { FindMemberStatisticsRequestParamDto } from '../dtos/find-member-statistics-request-param.dto';
 
 @ApiTags('멤버 statistics (유저)')
 @ApiNotFoundResponse({ type: NotFoundResponseType })

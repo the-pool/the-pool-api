@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { LessonHashtag, LessonHashtagMapping } from '@prisma/client';
 import { DataStructureHelper } from '@src/helpers/data-structure.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { LessonHashtagMappingEntity } from '../entities/lesson-hashtag-mapping.entity';
-import { LessonHashtagEntity } from '../entities/lesson-hashtag.entity';
+import { LessonHashtagMappingEntity } from '@src/modules/lesson/entities/lesson-hashtag-mapping.entity';
+import { LessonHashtagEntity } from '@src/modules/lesson/entities/lesson-hashtag.entity';
 
 @Injectable()
 export class LessonHashtagService {

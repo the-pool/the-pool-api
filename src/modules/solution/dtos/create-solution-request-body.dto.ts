@@ -1,20 +1,16 @@
 import { isNil } from '@nestjs/common/utils/shared.utils';
-import { PartialType, PickType } from '@nestjs/swagger';
-import { Lesson, LessonSolution } from '@prisma/client';
+import { PickType } from '@nestjs/swagger';
+import { Lesson } from '@prisma/client';
 import { IsRecord } from '@src/decorators/is-record.decorator';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import {
-  IsDataURI,
   IsInt,
   IsNotEmpty,
-  IsNumber,
-  IsOptional,
   IsString,
   IsUrl,
   Min,
-  MinLength,
   ValidateIf,
 } from 'class-validator';
-import { SolutionEntity } from '../entities/solution.entity';
 
 export class CreateSolutionRequestBodyDto extends PickType(SolutionEntity, [
   'lessonId',

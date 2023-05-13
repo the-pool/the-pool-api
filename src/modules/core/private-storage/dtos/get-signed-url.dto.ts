@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { FileSignedUrl } from '@src/modules/core/private-storage/interfaces/file-signed-url.interface';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { FileSignedUrl } from '../interfaces/file-signed-url.interface';
 
 export class GetSignedUrlDto implements FileSignedUrl {
   @ApiProperty({

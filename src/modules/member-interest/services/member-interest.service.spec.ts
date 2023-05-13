@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { MemberInterestService } from './member-interest.service';
+import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('MemberInterestService', () => {
   let service: MemberInterestService;

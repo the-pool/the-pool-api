@@ -4,12 +4,8 @@ import { MajorId } from '@src/constants/enum';
 import { MemberMajorGuard } from '@src/guards/member-major.guard';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberMajors } from '@src/modules/member/types/member.type';
-import {
-  mockContext,
-  mockReflector,
-  mockRequest,
-} from '../../test/mock/mock-libs';
-import { MockGuardType } from '../../test/mock/mock.type';
+import { mockContext, mockReflector, mockRequest } from '@test/mock/mock-libs';
+import { MockGuardType } from '@test/mock/mock.type';
 
 describe('MemberMajorGuard', () => {
   let memberMajorGuard: MockGuardType;

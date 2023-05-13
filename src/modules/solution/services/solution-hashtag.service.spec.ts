@@ -6,11 +6,11 @@ import {
   LessonSolutionHashtagMapping,
 } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
+import { CreateSolutionHashtagsRequestBodyDto } from '@src/modules/solution/dtos/create-solution-hashtags-request-body.dto';
+import { SolutionHashtagMappingEntity } from '@src/modules/solution/entities/solution-hashtag-mapping.entity';
+import { SolutionHashtagEntity } from '@src/modules/solution/entities/solution-hashtag.entity';
+import { SolutionHashtagService } from '@src/modules/solution/services/solution-hashtag.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
-import { CreateSolutionHashtagsRequestBodyDto } from '../dtos/create-solution-hashtags-request-body.dto';
-import { SolutionHashtagMappingEntity } from '../entities/solution-hashtag-mapping.entity';
-import { SolutionHashtagEntity } from '../entities/solution-hashtag.entity';
-import { SolutionHashtagService } from './solution-hashtag.service';
 
 describe('SolutionHashtagService', () => {
   let solutionHashtagService: SolutionHashtagService;
@@ -92,7 +92,7 @@ describe('SolutionHashtagService', () => {
         faker.datatype.string(),
       );
 
-      expect(
+      await expect(
         solutionHashtagService.createManyHashtag(
           createSolutionHashtagsDto,
           solutionId,

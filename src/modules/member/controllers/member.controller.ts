@@ -3,24 +3,18 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
-  ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { Prisma } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
-import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { MemberMajorSetMetadataGuard } from '@src/decorators/member-major-set-metadata.guard-decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
 import { OwnMemberSetMetadataGuard } from '@src/decorators/own-member-set-metadata.guard-decorator';
@@ -50,21 +44,17 @@ import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/membe
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
+import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberSocialLinkMappingEntity } from '@src/modules/member/entities/member-social-link-mapping.entity';
+import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { MemberValidationService } from '@src/modules/member/services/member-validation.service';
+import { MemberService } from '@src/modules/member/services/member.service';
 import { AccessToken } from '@src/modules/member/types/member.type';
 import { LessonSolutionStatisticsResponseBodyDto } from '@src/modules/solution/dtos/lesson-solution-statistics-response-body.dto';
 import { ParsePositiveIntPipe } from '@src/pipes/parse-positive-int.pipe';
 import { InternalServerErrorResponseType } from '@src/types/internal-server-error-response.type';
 import { NotFoundResponseType } from '@src/types/not-found-response.type';
-import { LoginByOAuthDto } from '../dtos/create-member-by-oauth.dto';
-import { LastStepLoginDto } from '../dtos/last-step-login.dto';
-import { LoginOrSignUpRequestBodyDto } from '../dtos/login-or-sign-up-request-body.dto';
-import { MemberEntity } from '../entities/member.entity';
-import { MemberService } from '../services/member.service';
-import { MemberLastStepLoginResponseType } from '../types/response/member-last-step-login-response.type';
-import { MemberLoginByOAuthResponseType } from '../types/response/member-login-by-oauth-response.type';
 
 /**
  * @todo member 과제 통계 api 설명 한번 다시 듣고 구현
@@ -273,44 +263,5 @@ export class MemberController {
     params: DeleteMemberInterestMappingRequestParamDto,
   ): Promise<Prisma.BatchPayload> {
     return this.memberService.unmappingMemberInterests(params);
-  }
-
-  /**
-   * @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거
-   */
-  @Post('/social')
-  @ApiOperation({
-    summary: '소셜 로그인',
-    deprecated: true,
-    description: '클라이언트에서 해당 api 호출 걷어내면 삭제 예정',
-  })
-  @ApiCreatedResponse({ type: MemberLoginByOAuthResponseType })
-  @ApiFailureResponse(HttpStatus.UNAUTHORIZED, '소셜 로그인에 실패하였습니다.')
-  loginByOAuth(
-    @Body()
-    loginByOAuthDto: LoginByOAuthDto,
-  ) {
-    return this.memberService.loginByOAuth(loginByOAuthDto);
-  }
-
-  /**
-   * @deprecated 클라이언트에서 해당 패스 다 걷어내면 제거
-   */
-  @Patch()
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({
-    summary: '입수 마지막 단계에서 받는 추가정보 api',
-    deprecated: true,
-    description: '클라이언트에서 해당 api 호출 걷어내면 삭제 예정',
-  })
-  @ApiOkResponse({ type: MemberLastStepLoginResponseType })
-  @ApiFailureResponse(HttpStatus.UNAUTHORIZED, 'Unauthorized')
-  @UseGuards(JwtAuthGuard)
-  lastStepLogin(
-    @UserLogin('id') memberId: number,
-    @Body() lastStepLoginDto: LastStepLoginDto,
-  ) {
-    return this.memberService.updateMember(memberId, lastStepLoginDto);
   }
 }

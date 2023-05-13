@@ -5,9 +5,9 @@ import { QueryHelper } from '@src/helpers/query.helper';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
 import { FindMemberStatisticsListQueryDto } from '@src/modules/member-statistics/dtos/find-member-statistics-list-query.dto';
 import { MemberStatisticsEntity } from '@src/modules/member-statistics/entities/member-statistics.entity';
-import { mockQueryHelper } from '../../../../test/mock/mock-helpers';
-import { mockPrismaService } from '../../../../test/mock/mock-prisma-service';
-import { MemberStatisticsService } from './member-statistics.service';
+import { MemberStatisticsService } from '@src/modules/member-statistics/services/member-statistics.service';
+import { mockQueryHelper } from '@test/mock/mock-helpers';
+import { mockPrismaService } from '@test/mock/mock-prisma-service';
 
 describe('MemberStatisticsService', () => {
   let service: MemberStatisticsService;

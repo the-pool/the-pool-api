@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { MemberInterestController } from '@src/modules/member-interest/controllers/member-interest.controller';
 import { FindMemberInterestListQueryDto } from '@src/modules/member-interest/dtos/find-member-interest-list-query.dto';
 import { MemberInterestEntity } from '@src/modules/member-interest/entities/member-interest.entity';
 import { MemberInterestService } from '@src/modules/member-interest/services/member-interest.service';
-import { mockMemberInterestService } from '../../../../test/mock/mock-services';
-import { MemberInterestController } from './member-interest.controller';
+import { mockMemberInterestService } from '@test/mock/mock-services';
 
 describe('MemberInterestController', () => {
   let controller: MemberInterestController;

@@ -12,10 +12,10 @@ import {
   ModelName,
 } from '@src/constants/enum';
 import { IsRecord } from '@src/decorators/is-record.decorator';
+import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
+import { LessonDto } from '@src/modules/lesson/dtos/lesson/lesson.dto';
 import { Transform, Type } from 'class-transformer';
 import { IsBoolean, IsEnum, IsInt, IsOptional, Min } from 'class-validator';
-import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '../../constants/lesson.const';
-import { LessonDto } from './lesson.dto';
 
 export class ReadManyLessonQueryDto extends PickType(LessonDto, [
   'page',

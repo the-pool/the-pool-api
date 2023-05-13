@@ -7,9 +7,12 @@ import { Member } from '@prisma/client';
 import { getEntriesByEnum, getStrMapByObject } from '@src/common/common';
 import { MajorId } from '@src/constants/enum';
 import { MEMBER_ACCOUNT_PREFIX } from '@src/modules/member/constants/member.const';
+import {
+  MemberLoginType,
+  MemberStatus,
+} from '@src/modules/member/constants/member.enum';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
-import { MemberLoginType, MemberStatus } from '../constants/member.enum';
 
 export class MemberEntity
   extends IntersectionType(IdResponseType, DateResponseType)

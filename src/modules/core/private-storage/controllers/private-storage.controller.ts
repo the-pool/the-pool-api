@@ -14,12 +14,12 @@ import {
 } from '@nestjs/swagger';
 import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorator';
 import { JwtAuthGuard } from '@src/guards/jwt-auth.guard';
-import { GetSignedUrlDto } from '../dtos/get-signed-url.dto';
+import { GetSignedUrlDto } from '@src/modules/core/private-storage/dtos/get-signed-url.dto';
 import {
   PRIVATE_STORAGE_SERVICE,
   PrivateStorageService,
-} from '../interfaces/private-storage-service.interface';
-import { GetSignedUrlResponseType } from '../types/response/get-signed-url-response.type';
+} from '@src/modules/core/private-storage/interfaces/private-storage-service.interface';
+import { GetSignedUrlResponseType } from '@src/modules/core/private-storage/types/response/get-signed-url-response.type';
 
 @ApiTags('PrivateStorage')
 @Controller('api/private-storage')

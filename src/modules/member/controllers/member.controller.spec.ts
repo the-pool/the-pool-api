@@ -4,14 +4,12 @@ import { IdRequestParamDto } from '@src/dtos/id-request-param.dto';
 import { AuthService } from '@src/modules/core/auth/services/auth.service';
 import { ThePoolConfigService } from '@src/modules/core/the-pool-config/services/the-pool-config.service';
 import { MemberController } from '@src/modules/member/controllers/member.controller';
-import { LoginByOAuthDto } from '@src/modules/member/dtos/create-member-by-oauth.dto';
 import { CreateMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/create-member-interest-mapping.request-param.dto';
 import { CreateMemberMajorMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-mapping-request-param.dto';
 import { CreateMemberMajorSkillMappingRequestParamDto } from '@src/modules/member/dtos/create-member-major-skill-mapping-request-param.dto';
 import { CreateMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/create-member-skills-mapping-request-param.dto';
 import { DeleteMemberInterestMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-interest-mapping.request-param.dto';
 import { DeleteMemberSkillsMappingRequestParamDto } from '@src/modules/member/dtos/delete-member-skills-mapping-request-param.dto';
-import { LastStepLoginDto } from '@src/modules/member/dtos/last-step-login.dto';
 import { LoginOrSignUpRequestBodyDto } from '@src/modules/member/dtos/login-or-sign-up-request-body.dto';
 import { PatchUpdateMemberRequestBodyDto } from '@src/modules/member/dtos/patch-update-member-request-body.dto';
 import { MemberEntity } from '@src/modules/member/entities/member.entity';
@@ -27,7 +25,6 @@ import {
 
 describe('MemberController', () => {
   let memberController: MemberController;
-  let memberService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,11 +50,6 @@ describe('MemberController', () => {
     }).compile();
 
     memberController = module.get<MemberController>(MemberController);
-    memberService = mockMemberService;
-  });
-
-  beforeEach(() => {
-    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -74,14 +66,12 @@ describe('MemberController', () => {
     });
 
     it('조회 성공', async () => {
-      mockMemberService.findOneOrFail.mockReturnValue(member);
+      mockMemberService.findOneOrFail.mockResolvedValue(member);
 
-      const result = memberController.findOne(id);
-
+      await expect(memberController.findOne(id)).resolves.toStrictEqual(member);
       expect(mockMemberService.findOneOrFail).toBeCalledWith({
         id,
       });
-      expect(result).toStrictEqual(member);
     });
   });
 
@@ -128,12 +118,14 @@ describe('MemberController', () => {
 
     describe('로그인 하는 경우', () => {
       beforeEach(() => {
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOne.mockResolvedValue(member);
+        mockMemberService.login.mockResolvedValue(member);
       });
 
       it('로그인 성공', async () => {
-        const result = await memberController.loginOrSignUp(body);
-
+        await expect(
+          memberController.loginOrSignUp(body),
+        ).resolves.toStrictEqual(member);
         expect(mockMemberService.login).toBeCalledTimes(1);
       });
 
@@ -146,12 +138,14 @@ describe('MemberController', () => {
     describe('회원가입 하는 경우', () => {
       beforeEach(() => {
         member = null;
-        mockMemberService.findOne.mockReturnValue(member);
+        mockMemberService.findOne.mockResolvedValue(member);
+        mockMemberService.signUp.mockResolvedValue(member);
       });
 
       it('회원가입 성공', async () => {
-        const result = await memberController.loginOrSignUp(body);
-
+        await expect(
+          memberController.loginOrSignUp(body),
+        ).resolves.toStrictEqual(member);
         expect(mockMemberService.signUp).toBeCalledTimes(1);
       });
 
@@ -325,63 +319,7 @@ describe('MemberController', () => {
     });
   });
 
-  describe('loginByOAuth', () => {
-    let loginByOAuthDto: LoginByOAuthDto;
-
-    beforeEach(async () => {
-      loginByOAuthDto = {
-        accessToken: '12345678910',
-        oAuthAgency: 0,
-      };
-    });
-
-    it('success', async () => {
-      memberService.loginByOAuth.mockReturnValue({
-        accessToken: '1234',
-        status: 0,
-      });
-      const returnValue = await memberController.loginByOAuth(loginByOAuthDto);
-
-      expect(returnValue).toStrictEqual({
-        accessToken: '1234',
-        status: 0,
-      });
-    });
-  });
-
-  describe('lastStepLogin', () => {
-    let lastStepLoginDto: LastStepLoginDto;
-
-    beforeEach(async () => {
-      lastStepLoginDto = {
-        nickname: 'the-pool',
-        majorId: 1,
-        memberSkill: [1, 2, 3],
-      };
-    });
-
-    it('success', async () => {
-      const memberId = 1;
-
-      const member = {
-        id: 1,
-        majorId: 1,
-        account: 'k123456',
-        nickname: 'the-pool',
-        status: 1,
-        loginType: 1,
-        createdAt: '2022-10-03T09:54:50.563Z',
-        updatedAt: '2022-10-03T09:54:50.563Z',
-        deletedAt: null,
-      };
-      memberService.updateMember.mockReturnValue(member);
-
-      const returnValue = await memberController.lastStepLogin(
-        memberId,
-        lastStepLoginDto,
-      );
-
-      expect(returnValue).toStrictEqual(member);
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });
