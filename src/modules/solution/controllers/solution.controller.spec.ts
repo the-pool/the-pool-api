@@ -13,8 +13,8 @@ import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionService } from '@test/mock/mock-services';
-import { SolutionLikeEntity } from '../entities/solution-like.entity';
-import { SolutionDefaultEntity } from '../entities/solution-default.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
@@ -189,16 +189,13 @@ describe('SolutionController', () => {
       memberId = faker.datatype.number();
       solutionLike = new SolutionLikeEntity();
 
-      solutionService.createLike.mockReturnValue(solutionLike);
+      solutionService.createLike.mockResolvedValue(solutionLike);
     });
 
     it('SUCCESS - 좋아요', async () => {
-      const likeEntity = await solutionController.createSolutionLike(
-        solutionId,
-        memberId,
-      );
-
-      expect(likeEntity).toStrictEqual({ solutionLike });
+      expect(
+        solutionController.createSolutionLike(solutionId, memberId),
+      ).resolves.toStrictEqual({ solutionLike });
     });
   });
 
@@ -212,16 +209,13 @@ describe('SolutionController', () => {
       memberId = faker.datatype.number();
       defaultEntity = new SolutionDefaultEntity();
 
-      solutionService.deleteLike.mockReturnValue(defaultEntity);
+      solutionService.deleteLike.mockResolvedValue(defaultEntity);
     });
 
     it('SUCCESS - 좋아요 취소', async () => {
-      const returnEntity = await solutionController.deleteSolutionLike(
-        solutionId,
-        memberId,
-      );
-
-      expect(returnEntity).toStrictEqual({ message: 'delete like success' });
+      expect(
+        solutionController.deleteSolutionLike(solutionId, memberId),
+      ).resolves.toStrictEqual({ message: 'delete like success' });
     });
   });
 });

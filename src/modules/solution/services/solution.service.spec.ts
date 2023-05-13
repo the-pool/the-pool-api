@@ -19,7 +19,7 @@ import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
 import { mockQueryHelper } from '@test/mock/mock-helpers';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
-import { SolutionLikeEntity } from '../entities/solution-like.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;

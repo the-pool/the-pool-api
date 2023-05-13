@@ -11,8 +11,8 @@ import { ApiFailureResponse } from '@src/decorators/api-failure-response.decorat
 import { ApiSuccessResponse } from '@src/decorators/api-success-response.decorator';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
-import { SolutionLikeEntity } from '../entities/solution-like.entity';
-import { SolutionDefaultEntity } from '../entities/solution-default.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 export const ApiCreateSolution = (summary: string) =>
   applyDecorators(

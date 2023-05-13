@@ -34,8 +34,8 @@ import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-s
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { plainToClass } from 'class-transformer';
-import { SolutionLikeEntity } from '../entities/solution-like.entity';
-import { SolutionDefaultEntity } from '../entities/solution-default.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 @ApiTags('문제 - 풀이')
 @Controller()
