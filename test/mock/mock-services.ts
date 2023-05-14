@@ -131,6 +131,8 @@ export const mockSolutionService: MockClassType<SolutionService> = {
   deleteSolution: jest.fn(),
   readOneSolution: jest.fn(),
   readManySolution: jest.fn(),
+  createLike: jest.fn(),
+  deleteLike: jest.fn(),
 };
 
 export const mockSolutionHashtagService: MockClassType<SolutionHashtagService> =

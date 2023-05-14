@@ -19,6 +19,7 @@ import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
 import { mockQueryHelper } from '@test/mock/mock-helpers';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -292,6 +293,48 @@ describe('SolutionService', () => {
       expect(mockPrismaService.lessonSolution.count).toBeCalledWith(
         expect.objectContaining({}),
       );
+    });
+  });
+
+  describe('Solution Like Create', () => {
+    let memberId: number;
+    let solutionId: number;
+    let likeEntity: SolutionLikeEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      solutionId = faker.datatype.number();
+      likeEntity = new SolutionLikeEntity();
+
+      prismaService.lessonSolutionLike.create.mockResolvedValue(likeEntity);
+    });
+
+    it('SUCCESS - 좋아요 성공', () => {
+      expect(
+        solutionService.createLike(solutionId, memberId),
+      ).resolves.toStrictEqual(likeEntity);
+      expect(prismaService.lessonSolutionLike.create).toBeCalledTimes(1);
+    });
+  });
+
+  describe('Solution Like Delete', () => {
+    let memberId: number;
+    let solutionId: number;
+    let likeEntity: SolutionLikeEntity;
+
+    beforeEach(() => {
+      memberId = faker.datatype.number();
+      solutionId = faker.datatype.number();
+      likeEntity = new SolutionLikeEntity();
+
+      prismaService.lessonSolutionLike.delete.mockResolvedValue(likeEntity);
+    });
+
+    it('SUCCESS - 좋아요 취소', () => {
+      expect(
+        solutionService.deleteLike(solutionId, memberId),
+      ).resolves.toStrictEqual(likeEntity);
+      expect(prismaService.lessonSolutionLike.delete).toBeCalledTimes(1);
     });
   });
 

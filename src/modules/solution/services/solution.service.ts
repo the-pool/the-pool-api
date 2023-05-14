@@ -11,6 +11,7 @@ import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-
 import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 
 @Injectable()
@@ -170,6 +171,32 @@ export class SolutionService {
     ]);
 
     return { solutions, totalCount };
+  }
+
+  createLike(
+    solutionId: number,
+    memberId: number,
+  ): Promise<SolutionLikeEntity> {
+    return this.prismaService.lessonSolutionLike.create({
+      data: {
+        lessonSolutionId: solutionId,
+        memberId,
+      },
+    });
+  }
+
+  deleteLike(
+    solutionId: number,
+    memberId: number,
+  ): Promise<SolutionLikeEntity> {
+    return this.prismaService.lessonSolutionLike.delete({
+      where: {
+        lessonSolutionId_memberId: {
+          lessonSolutionId: solutionId,
+          memberId,
+        },
+      },
+    });
   }
 
   async findStatisticsByMemberId(

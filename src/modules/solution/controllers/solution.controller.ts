@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { Member } from '@prisma/client';
+import { LessonSolutionLike, Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
@@ -20,7 +20,9 @@ import { PrismaService } from '@src/modules/core/database/prisma/prisma.service'
 import { MemberStatus } from '@src/modules/member/constants/member.enum';
 import {
   ApiCreateSolution,
+  ApiCreateSolutionLike,
   ApiDeleteSolution,
+  ApiDeleteSolutionLike,
   ApiReadManySolution,
   ApiReadOneSolution,
   ApiUpdateSolution,
@@ -32,6 +34,8 @@ import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-s
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { plainToClass } from 'class-transformer';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 @ApiTags('문제 - 풀이')
 @Controller()
@@ -108,5 +112,48 @@ export class SolutionController {
     @UserLogin() member: Member | { id: null },
   ): Promise<{ solutions: SolutionEntity[]; totalCount: number }> {
     return this.solutionService.readManySolution(query, member.id);
+  }
+
+  @ApiCreateSolutionLike('문제-풀이 좋아요')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @BearerAuth(JwtAuthGuard)
+  @Post(':id/likes')
+  async createSolutionLike(
+    @Param('id') solutionId: number,
+    @UserLogin('id') memberId: number,
+  ): Promise<{ solutionLike: SolutionLikeEntity }> {
+    const existLike = await this.prismaService.lessonSolutionLike.findFirst({
+      where: {
+        memberId,
+        lessonSolutionId: solutionId,
+      },
+    });
+
+    if (existLike) return { solutionLike: existLike };
+
+    return {
+      solutionLike: await this.solutionService.createLike(solutionId, memberId),
+    };
+  }
+
+  @ApiDeleteSolutionLike('문제-풀이 좋아요 취소')
+  @AllowMemberStatusesSetMetadataGuard([MemberStatus.Active])
+  @BearerAuth(JwtAuthGuard)
+  @Delete(':id/likes')
+  async deleteSolutionLike(
+    @Param('id') solutionId: number,
+    @UserLogin('id') memberId: number,
+  ): Promise<SolutionDefaultEntity> {
+    const existLike = await this.prismaService.lessonSolutionLike.findFirst({
+      where: {
+        memberId,
+        lessonSolutionId: solutionId,
+      },
+    });
+
+    if (!existLike) return { message: 'delete like success' };
+
+    await this.solutionService.deleteLike(solutionId, memberId);
+    return { message: 'delete like success' };
   }
 }

@@ -13,6 +13,8 @@ import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionService } from '@test/mock/mock-services';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
@@ -174,6 +176,46 @@ describe('SolutionController', () => {
       expect(solutionService.readManySolution).toBeCalledTimes(1);
       expect(solutionService.readManySolution).toBeCalledWith(query, 1);
       expect(result).toStrictEqual(readManySolution);
+    });
+  });
+
+  describe('문제-풀이 좋아요', () => {
+    let solutionId: number;
+    let memberId: number;
+    let solutionLike: SolutionLikeEntity;
+
+    beforeEach(() => {
+      solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      solutionLike = new SolutionLikeEntity();
+
+      solutionService.createLike.mockResolvedValue(solutionLike);
+    });
+
+    it('SUCCESS - 좋아요', async () => {
+      expect(
+        solutionController.createSolutionLike(solutionId, memberId),
+      ).resolves.toStrictEqual({ solutionLike });
+    });
+  });
+
+  describe('문제-풀이 좋아요 취소', () => {
+    let solutionId: number;
+    let memberId: number;
+    let defaultEntity: SolutionDefaultEntity;
+
+    beforeEach(() => {
+      solutionId = faker.datatype.number();
+      memberId = faker.datatype.number();
+      defaultEntity = new SolutionDefaultEntity();
+
+      solutionService.deleteLike.mockResolvedValue(defaultEntity);
+    });
+
+    it('SUCCESS - 좋아요 취소', async () => {
+      expect(
+        solutionController.deleteSolutionLike(solutionId, memberId),
+      ).resolves.toStrictEqual({ message: 'delete like success' });
     });
   });
 });
