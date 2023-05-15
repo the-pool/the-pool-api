@@ -10,6 +10,8 @@ export class SolutionEntity
 {
   @ApiProperty({
     description: '풀이 제목',
+    minLength: 1,
+    maxLength: 30,
   })
   title: string;
 
