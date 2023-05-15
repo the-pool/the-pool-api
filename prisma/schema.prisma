@@ -390,6 +390,8 @@ model LessonCategory {
 model LessonSolution {
   /// 고유 ID
   id                            Int                            @id @default(autoincrement())
+  /// 제목
+  title                         String                         @db.VarChar(255)
   /// 멤버 고유 ID
   memberId                      Int
   /// 과제 고유 ID

@@ -1,5 +1,6 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
 import { LessonSolution } from '@prisma/client';
+import { LessonEntity } from '@src/modules/lesson/entities/lesson.entity';
 import { DateResponseType } from '@src/types/date-response.type';
 import { IdResponseType } from '@src/types/id-response-type';
 
@@ -8,12 +9,19 @@ export class SolutionEntity
   implements LessonSolution
 {
   @ApiProperty({
+    description: '풀이 제목',
+    minLength: 1,
+    maxLength: 30,
+  })
+  title: string;
+
+  @ApiProperty({
     description: '유저 고유 Id',
   })
   memberId: number;
 
   @ApiProperty({
-    description: '연관된 문제 고유 Id',
+    description: '연관된 문제의 Id',
   })
   lessonId: number;
 
