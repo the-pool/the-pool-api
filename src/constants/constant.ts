@@ -8,6 +8,14 @@ export const LESSON_TITLE_LENGTH = {
   MAX: 30,
 } as const;
 
+// 레슨 제목 길이 제한
+export const SOLUTION_TITLE_LENGTH = {
+  // 1
+  MIN: 1,
+  // 30
+  MAX: 30,
+} as const;
+
 // 문제=풀이 해시태그 길이 제한
 export const SOLUTION_HASHTAG_LENGTH = {
   // 1

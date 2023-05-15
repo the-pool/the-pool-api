@@ -1,6 +1,6 @@
 import { ApiProperty, IntersectionType } from '@nestjs/swagger';
-import { StringBooleanTransform } from '@src/common/common';
-import { EntityId } from '@src/constants/enum';
+import { StringBooleanTransform, getValueByEnum } from '@src/common/common';
+import { EntityDate, EntityId } from '@src/constants/enum';
 import { PageDto } from '@src/dtos/page.dto';
 import { SortDto } from '@src/dtos/sort.dto';
 import { SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/solution/constants/solution.const';
@@ -44,6 +44,16 @@ export class ReadManySolutionRequestQueryDto extends IntersectionType(
   @Transform(StringBooleanTransform)
   isLike = false;
 
+  @ApiProperty({
+    description: '풀이 정렬 조건',
+    enum: getValueByEnum(
+      {
+        ...SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY,
+        ...EntityId,
+      },
+      'string',
+    ),
+  })
   @IsEnum({
     ...SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY,
     ...EntityId,
