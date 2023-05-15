@@ -21,6 +21,7 @@ export class CreateSolutionRequestBodyDto extends PickType(SolutionEntity, [
   'lessonId',
   'description',
   'relatedLink',
+  'title',
 ]) {
   @Length(SOLUTION_TITLE_LENGTH.MIN, SOLUTION_TITLE_LENGTH.MAX)
   @IsString()
