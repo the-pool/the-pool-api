@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { LessonSolutionLike, Member } from '@prisma/client';
+import { Member } from '@prisma/client';
 import { ModelName } from '@src/constants/enum';
 import { BearerAuth } from '@src/decorators/bearer-auth.decorator';
 import { AllowMemberStatusesSetMetadataGuard } from '@src/decorators/member-statuses-set-metadata.guard-decorator';
@@ -31,11 +31,11 @@ import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-
 import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
 import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { plainToClass } from 'class-transformer';
-import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
-import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 @ApiTags('문제 - 풀이')
 @Controller()
@@ -109,9 +109,8 @@ export class SolutionController {
   @Get()
   readManySolution(
     @Query() query: ReadManySolutionRequestQueryDto,
-    @UserLogin() member: Member | { id: null },
   ): Promise<{ solutions: SolutionEntity[]; totalCount: number }> {
-    return this.solutionService.readManySolution(query, member.id);
+    return this.solutionService.readManySolution(query);
   }
 
   @ApiCreateSolutionLike('문제-풀이 좋아요')
