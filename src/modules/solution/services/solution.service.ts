@@ -10,8 +10,8 @@ import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read
 import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
 import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
-import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
+import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 
 @Injectable()
@@ -105,27 +105,18 @@ export class SolutionService {
 
   async readManySolution(
     query: ReadManySolutionRequestQueryDto,
-    memberId: number | null,
   ): Promise<{ solutions: ReadManySolutionEntity[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy, isLike, ...filter } = query;
+    const { page, pageSize, orderBy, sortBy, likedMemberId, ...filter } = query;
 
     // filter 셋팅
     const where = this.queryHelper.buildWherePropForFind(filter);
-    let lessonSolutionLikesWhere:
-      | {
-          lessonSolutionLikes: Prisma.LessonSolutionLikeListRelationFilter;
-        }
-      | undefined;
-
-    if (memberId && isLike) {
-      lessonSolutionLikesWhere = {
-        lessonSolutionLikes: {
-          some: {
-            memberId,
-          },
+    const lessonSolutionLikesWhere = likedMemberId && {
+      lessonSolutionLikes: {
+        some: {
+          memberId: likedMemberId,
         },
-      };
-    }
+      },
+    };
 
     // sort기준 셋팅
     const settledOrderBy = SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]

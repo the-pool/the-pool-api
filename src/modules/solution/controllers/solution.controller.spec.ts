@@ -1,20 +1,18 @@
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Member } from '@prisma/client';
 import { PrismaService } from '@src/modules/core/database/prisma/prisma.service';
-import { MemberEntity } from '@src/modules/member/entities/member.entity';
 import { SolutionController } from '@src/modules/solution/controllers/solution.controller';
 import { CreateSolutionRequestBodyDto } from '@src/modules/solution/dtos/create-solution-request-body.dto';
 import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read-many-solution-request-query.dto';
 import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
 import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockSolutionService } from '@test/mock/mock-services';
-import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
-import { SolutionDefaultEntity } from '@src/modules/solution/entities/solution-default.entity';
 
 describe('SolutionController', () => {
   let solutionController: SolutionController;
@@ -55,6 +53,7 @@ describe('SolutionController', () => {
     beforeEach(() => {
       memberId = faker.datatype.number();
       createSolutionDto = {
+        title: faker.datatype.string(),
         lessonId: faker.datatype.number(),
         description: faker.lorem.text(),
         relatedLink: faker.internet.url(),
@@ -151,30 +150,27 @@ describe('SolutionController', () => {
   });
 
   describe('readManySolution', () => {
-    let member: Member;
     let query: ReadManySolutionRequestQueryDto;
     let readManySolution: {
       solutions: ReadManySolutionEntity[];
-      totoalCount: number;
+      totalCount: number;
     };
 
     beforeEach(() => {
-      member = new MemberEntity();
-      member.id = 1;
       query = new ReadManySolutionRequestQueryDto();
       readManySolution = {
         solutions: [new ReadManySolutionEntity()],
-        totoalCount: faker.datatype.number(),
+        totalCount: faker.datatype.number(),
       };
 
       solutionService.readManySolution.mockReturnValue(readManySolution);
     });
 
     it('SUCCESS - read many solution', () => {
-      const result = solutionController.readManySolution(query, member);
+      const result = solutionController.readManySolution(query);
 
       expect(solutionService.readManySolution).toBeCalledTimes(1);
-      expect(solutionService.readManySolution).toBeCalledWith(query, 1);
+      expect(solutionService.readManySolution).toBeCalledWith(query);
       expect(result).toStrictEqual(readManySolution);
     });
   });

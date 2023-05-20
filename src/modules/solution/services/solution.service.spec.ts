@@ -12,6 +12,7 @@ import { ReadManySolutionRequestQueryDto } from '@src/modules/solution/dtos/read
 import { UpdateSolutionRequestBodyDto } from '@src/modules/solution/dtos/update-solution-request-body.dto';
 import { ReadManySolutionEntity } from '@src/modules/solution/entities/read-many-solution.entity';
 import { ReadOneSolutionEntity } from '@src/modules/solution/entities/read-one-solution.entity';
+import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 import { SolutionEntity } from '@src/modules/solution/entities/solution.entity';
 import { LessonSolutionRepository } from '@src/modules/solution/repositories/lesson-solution.repository';
 import { SolutionService } from '@src/modules/solution/services/solution.service';
@@ -19,7 +20,6 @@ import { mockMemberStatisticsEvent } from '@test/mock/mock-event';
 import { mockQueryHelper } from '@test/mock/mock-helpers';
 import { mockPrismaService } from '@test/mock/mock-prisma-service';
 import { mockLessonSolutionRepository } from '@test/mock/mock-repositories';
-import { SolutionLikeEntity } from '@src/modules/solution/entities/solution-like.entity';
 
 describe('SolutionService', () => {
   let solutionService: SolutionService;
@@ -206,12 +206,13 @@ describe('SolutionService', () => {
     });
 
     it('SUCCESS - check call', async () => {
-      const { page, pageSize, orderBy, sortBy, isLike, ...filter } = query;
+      const { page, pageSize, orderBy, sortBy, likedMemberId, ...filter } =
+        query;
       const settledOrderBy = SOLUTION_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
         ? { _count: orderBy }
         : orderBy;
 
-      await expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
@@ -225,7 +226,7 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is virtualColumn', async () => {
       query.sortBy = SolutionVirtualColumn.LessonSolutionComments;
 
-      await expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: { _count: query.orderBy },
       });
@@ -234,18 +235,18 @@ describe('SolutionService', () => {
     it('SUCCESS - sortBy is not virtualColumn', async () => {
       query.sortBy = EntityId.Id;
 
-      await expect(solutionService.readManySolution(query, memberId)).resolves;
+      await expect(solutionService.readManySolution(query)).resolves;
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
     });
 
-    it('SUCCESS - isLike filtering by logged in user', async () => {
-      query.isLike = true;
+    it('SUCCESS - likedMemberId filtering', async () => {
       memberId = 1;
+      query.likedMemberId = memberId;
 
       await expect(
-        solutionService.readManySolution(query, memberId),
+        solutionService.readManySolution(query),
       ).resolves.toBeDefined();
 
       expect(mockPrismaService.lessonSolution.findMany).toBeCalledWith(
@@ -272,26 +273,6 @@ describe('SolutionService', () => {
             },
           }),
         }),
-      );
-    });
-
-    it('SUCCESS - isLike filtering by not logged in user', async () => {
-      query.isLike = true;
-      memberId = null;
-
-      await expect(
-        solutionService.readManySolution(query, memberId),
-      ).resolves.toBeDefined();
-
-      expect(mockPrismaService.lessonSolution.findMany).toBeCalledWith(
-        expect.objectContaining({
-          skip: expect.anything(),
-          take: expect.anything(),
-          include: expect.anything(),
-        }),
-      );
-      expect(mockPrismaService.lessonSolution.count).toBeCalledWith(
-        expect.objectContaining({}),
       );
     });
   });

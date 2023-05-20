@@ -110,9 +110,8 @@ export class LessonController {
   @Get()
   readManyLesson(
     @Query() query: ReadManyLessonQueryDto,
-    @UserLogin() member: Member | { id: null },
   ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    return this.lessonService.readManyLesson(query, member.id);
+    return this.lessonService.readManyLesson(query);
   }
 
   @ApiReadOneLesson('과제 상세 조회')
