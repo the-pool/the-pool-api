@@ -126,27 +126,19 @@ export class LessonService {
    */
   async readManyLesson(
     query: ReadManyLessonQueryDto,
-    memberId: number | null,
   ): Promise<{ lessons: ReadManyLessonDto[]; totalCount: number }> {
-    const { page, pageSize, orderBy, sortBy, isBookMark, ...filter } = query;
+    const { page, pageSize, orderBy, sortBy, bookmarkedMemberId, ...filter } =
+      query;
 
     // search 조건 build
     const where = this.queryHelper.buildWherePropForFind(filter);
-    let lessonBookMarksWhere:
-      | {
-          lessonBookMarks: Prisma.LessonBookmarkListRelationFilter;
-        }
-      | undefined;
-
-    if (memberId && isBookMark) {
-      lessonBookMarksWhere = {
-        lessonBookMarks: {
-          some: {
-            memberId,
-          },
+    const lessonBookMarksWhere = bookmarkedMemberId && {
+      lessonBookMarks: {
+        some: {
+          memberId: bookmarkedMemberId,
         },
-      };
-    }
+      },
+    };
 
     // sortBy가 가상 컬럼인 경우 { _count: orderBy } 형식으로 orderBy 세팅
     const settledOrderBy = LESSON_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]

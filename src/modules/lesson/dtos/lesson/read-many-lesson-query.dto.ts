@@ -1,10 +1,6 @@
 import { ApiPropertyOptional, PickType } from '@nestjs/swagger';
 import { LessonCategory, Member } from '@prisma/client';
-import {
-  getStrMapByEnum,
-  getValueByEnum,
-  StringBooleanTransform,
-} from '@src/common/common';
+import { getStrMapByEnum, getValueByEnum } from '@src/common/common';
 import {
   EntityDate,
   EntityId,
@@ -14,8 +10,8 @@ import {
 import { IsRecord } from '@src/decorators/is-record.decorator';
 import { LESSON_VIRTUAL_COLUMN_FOR_READ_MANY } from '@src/modules/lesson/constants/lesson.const';
 import { LessonDto } from '@src/modules/lesson/dtos/lesson/lesson.dto';
-import { Transform, Type } from 'class-transformer';
-import { IsBoolean, IsEnum, IsInt, IsOptional, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
 
 export class ReadManyLessonQueryDto extends PickType(LessonDto, [
   'page',
@@ -47,16 +43,12 @@ export class ReadManyLessonQueryDto extends PickType(LessonDto, [
   memberId?: number;
 
   @ApiPropertyOptional({
-    description:
-      '북마크 여부 필터링 <br />' +
-      'true 일 경우 로그인 한 사용자 기준으로 북마크한 목록만 불러옵니다.<br />' +
-      '로그인 하지 않았다면 해당 필드를 무시합니다.',
-    type: Boolean,
+    description: '특정 유저가 북마크한 과제로 필터링',
   })
+  @IsInt()
+  @Type(() => Number)
   @IsOptional()
-  @IsBoolean()
-  @Transform(StringBooleanTransform)
-  isBookMark = false;
+  bookmarkedMemberId?: number;
 
   @ApiPropertyOptional({
     description: '과제 목록의 정렬에 사용될 필드',

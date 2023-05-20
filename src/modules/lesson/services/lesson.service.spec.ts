@@ -278,12 +278,13 @@ describe('LessonService', () => {
     });
 
     it('success - check method called', async () => {
-      const { page, pageSize, orderBy, sortBy, isBookMark, ...filter } = query;
+      const { page, pageSize, orderBy, sortBy, bookmarkedMemberId, ...filter } =
+        query;
       const settledOrderBy = LESSON_VIRTUAL_COLUMN_FOR_READ_MANY[sortBy]
         ? { _count: orderBy }
         : orderBy;
 
-      await lessonService.readManyLesson(query, memberId);
+      await lessonService.readManyLesson(query);
 
       expect(queryHelper.buildOrderByPropForFind).toBeCalledTimes(1);
       expect(queryHelper.buildWherePropForFind).toBeCalledWith(filter);
@@ -296,7 +297,7 @@ describe('LessonService', () => {
     });
 
     it('success - check Input & Output', async () => {
-      const returnValue = await lessonService.readManyLesson(query, memberId);
+      const returnValue = await lessonService.readManyLesson(query);
 
       expect(returnValue).toStrictEqual({
         lessons: readManyLesson,
@@ -307,7 +308,7 @@ describe('LessonService', () => {
     it('case - sortBy is virtualColumn', async () => {
       query.sortBy = LessonVirtualColumn.LessonSolutions;
 
-      await lessonService.readManyLesson(query, memberId);
+      await lessonService.readManyLesson(query);
 
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: { _count: query.orderBy },
@@ -317,20 +318,18 @@ describe('LessonService', () => {
     it('case - sortBy is not virtualColumn', async () => {
       query.sortBy = EntityId.Id;
 
-      await lessonService.readManyLesson(query, memberId);
+      await lessonService.readManyLesson(query);
 
       expect(queryHelper.buildOrderByPropForFind).toBeCalledWith({
         [query.sortBy]: query.orderBy,
       });
     });
 
-    it('case - isLike filtering by logged in user', async () => {
-      query.isBookMark = true;
+    it('case - bookmarkedMemberId filtering', async () => {
       memberId = 1;
+      query.bookmarkedMemberId = memberId;
 
-      await expect(
-        lessonService.readManyLesson(query, memberId),
-      ).resolves.toBeDefined();
+      await expect(lessonService.readManyLesson(query)).resolves.toBeDefined();
 
       expect(mockPrismaService.lesson.findMany).toBeCalledWith(
         expect.objectContaining({
@@ -356,26 +355,6 @@ describe('LessonService', () => {
             },
           }),
         }),
-      );
-    });
-
-    it('case - isLike filtering by not logged in user', async () => {
-      query.isBookMark = true;
-      memberId = null;
-
-      await expect(
-        lessonService.readManyLesson(query, memberId),
-      ).resolves.toBeDefined();
-
-      expect(mockPrismaService.lesson.findMany).toBeCalledWith(
-        expect.objectContaining({
-          skip: expect.anything(),
-          take: expect.anything(),
-          include: expect.anything(),
-        }),
-      );
-      expect(mockPrismaService.lesson.count).toBeCalledWith(
-        expect.objectContaining({}),
       );
     });
   });
